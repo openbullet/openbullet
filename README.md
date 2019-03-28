@@ -1,6 +1,6 @@
 # OpenBullet
 The OpenBullet web testing application.
-![Runner](https://imgur.com/vb8OUfr)
+![Runner](https://i.imgur.com/vb8OUfr.jpg)
 
 # How to compile
 1. Clone the [official Extreme.Net repository](https://github.com/nickolasKrayn/Extreme.Net).
