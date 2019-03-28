@@ -8,4 +8,6 @@ The OpenBullet web testing application.
 4. Wait until Visual Studio fetches all the required nuget packages.
 5. Right click on each of the 3 projects and from the menu select Add > Reference.
 6. Add the previously compiled Extreme.Net.dll file and click OK.
-7. Compile the solution.
+7. Switch to Release mode for a much cleaner output.
+8. Compile the solution.
+9. You can find the compiled projects under OpenBullet/bin/Release and OpenBulletCLI/bin/Release.
