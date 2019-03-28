@@ -13,4 +13,4 @@ The OpenBullet web testing application.
 9. You can find the compiled projects under OpenBullet/bin/Release and OpenBulletCLI/bin/Release.
 
 # Credits
-I want to thank all the community for their inputs that shaped OpenBullet into what it is now, and my gratitude goes to the two people who for the past couple of months helped me test and debug the build: **demiurgo** and **meinname**.
+I want to thank all the community for their inputs that shaped OpenBullet into what it is now, and my gratitude goes towards **demiurgo** and **meinname**, who spent a lot of time helping me test and debug the builds prior to the open source release.
