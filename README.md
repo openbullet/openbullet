@@ -11,3 +11,6 @@ The OpenBullet web testing application.
 7. Switch to Release mode for a much cleaner output.
 8. Compile the solution.
 9. You can find the compiled projects under OpenBullet/bin/Release and OpenBulletCLI/bin/Release.
+
+# Credits
+I want to thank all the community for their inputs that shaped OpenBullet into what it is now, and my gratitude goes to the two people who for the past couple of months helped me test and debug the build: **demiurgo** and **meinname**.
