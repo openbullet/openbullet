@@ -14,5 +14,8 @@ OpenBullet is a webtesting suite that allows to perform requests towards a targe
 8. Compile the solution.
 9. You can find the compiled projects under OpenBullet/bin/Release and OpenBulletCLI/bin/Release.
 
+# License
+This software is licensed under the MIT License.
+
 # Credits
 I want to thank all the community for their inputs that shaped OpenBullet into what it is now, and my gratitude goes towards **demiurgo** and **meinname**, who spent a lot of time helping me test and debug the builds prior to the open source release.
