@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# RuriLib API Documentation
+RuriLib/_site/
+RuriLib/log.txt
+
 # User-specific files
 *.suo
 *.user
