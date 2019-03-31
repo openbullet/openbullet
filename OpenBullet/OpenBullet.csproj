@@ -57,7 +57,7 @@
     </AllowedReferenceRelatedFileExtensions>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>BBlogoIcon.ico</ApplicationIcon>
+    <ApplicationIcon>OBlogoIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -344,9 +344,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ProxiesGraphs.xaml.cs">
-      <DependentUpon>ProxiesGraphs.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\Main\Tools.xaml.cs">
       <DependentUpon>Tools.xaml</DependentUpon>
     </Compile>
@@ -609,10 +606,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ProxiesGraphs.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\Main\Stacker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -698,7 +691,7 @@
     <Resource Include="Themes\MetroDark\HowToApplyTheme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="BBlogoIcon.ico" />
+    <Resource Include="OBlogoIcon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Icons\folder.png" />
@@ -790,7 +783,7 @@
     <Resource Include="Images\Icons\import.png" />
     <Resource Include="Images\Icons\gears.png" />
     <Resource Include="Images\Icons\code.png" />
-    <Resource Include="Images\BBIcon.png" />
+    <Resource Include="Images\OBIcon.png" />
     <Resource Include="Images\Icons\book.png" />
     <Content Include="Images\Icons\export.png" />
     <Resource Include="Images\Icons\load.png" />
