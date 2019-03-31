@@ -1,0 +1,841 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{99E40E7F-00A4-4FB1-9441-B05A56C47C08}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>OpenBullet</RootNamespace>
+    <AssemblyName>OpenBullet</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowedReferenceRelatedFileExtensions>
+      <!-- Prevent default XML and PDB files copied to output in RELEASE. 
+           Only *.allowedextension files will be included, which doesn't exist in my case.
+       -->
+      .allowedextension
+    </AllowedReferenceRelatedFileExtensions>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>BBlogoIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AngleSharp, Version=0.9.9.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
+      <HintPath>..\packages\AngleSharp.0.9.9.2\lib\net45\AngleSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Extreme.Net, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Extreme-original\Extreme.Net\bin\Debug\Extreme.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\packages\AvalonEdit.5.0.4\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython, Version=2.7.9.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPython.2.7.9\lib\net45\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Modules, Version=2.7.9.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPython.2.7.9\lib\net45\IronPython.Modules.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.SQLite, Version=2.7.9.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPython.2.7.9\lib\net45\IronPython.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Wpf, Version=2.7.9.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPython.2.7.9\lib\net45\IronPython.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Jint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jint.2.11.58\lib\net451\Jint.dll</HintPath>
+    </Reference>
+    <Reference Include="LiteDB, Version=4.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dynamic, Version=1.2.2.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicLanguageRuntime.1.2.2\lib\net45\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting, Version=1.2.2.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicLanguageRuntime.1.2.2\lib\net45\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting.Metadata, Version=1.2.2.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicLanguageRuntime.1.2.2\lib\net45\Microsoft.Scripting.Metadata.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Aero2" />
+    <Reference Include="ProxySocket, Version=1.1.2.0, Culture=neutral, PublicKeyToken=966874d7118d1436, processorArchitecture=MSIL">
+      <HintPath>..\packages\ProxySocket.1.1.2\lib\net40\ProxySocket.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Controls.Input.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Infragistics.Themes.MetroDark.Wpf.1.0.0\lib\net40\System.Windows.Controls.Input.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Controls.Layout.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Infragistics.Themes.MetroDark.Wpf.1.0.0\lib\net40\System.Windows.Controls.Layout.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WebDriver, Version=3.141.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selenium.WebDriver.3.141.0\lib\net45\WebDriver.dll</HintPath>
+    </Reference>
+    <Reference Include="WebDriver.Support, Version=3.141.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selenium.Support.3.141.0\lib\net45\WebDriver.Support.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="WPFToolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Infragistics.Themes.MetroDark.Wpf.1.0.0\lib\net40\WPFToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Converters\BooleanBrushConverter.cs" />
+    <Compile Include="Converters\EnumBooleanConverter.cs" />
+    <Compile Include="Converters\KeychainBrushConverter.cs" />
+    <Compile Include="OBIOManager.cs" />
+    <Compile Include="OBLog.cs" />
+    <Compile Include="LogWindow.xaml.cs">
+      <DependentUpon>LogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\DialogLSDoc.xaml.cs">
+      <DependentUpon>DialogLSDoc.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\DialogSelectBots.xaml.cs">
+      <DependentUpon>DialogSelectBots.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\DialogSetProxies.xaml.cs">
+      <DependentUpon>DialogSetProxies.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Configs\OtherOptions\ConfigOtherOptionsRequests.xaml.cs">
+      <DependentUpon>ConfigOtherOptionsRequests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Configs\OtherOptions\ConfigOtherOptionsSelenium.xaml.cs">
+      <DependentUpon>ConfigOtherOptionsSelenium.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\DialogShowLog.xaml.cs">
+      <DependentUpon>DialogShowLog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LoadingWindow.xaml.cs">
+      <DependentUpon>LoadingWindow.xaml</DependentUpon>
+    </Compile>
+    <None Include="LSHighlighting.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+    <Compile Include="Pages\Dialogs\DialogSelectWordlist.xaml.cs">
+      <DependentUpon>DialogSelectWordlist.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HugeFileSort.cs" />
+    <Compile Include="Pages\Dialogs\DialogAddBlock.xaml.cs">
+      <DependentUpon>DialogAddBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\DialogCustomInput.xaml.cs">
+      <DependentUpon>DialogCustomInput.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\DialogSelectConfig.xaml.cs">
+      <DependentUpon>DialogSelectConfig.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Configs\ConfigOtherOptions.xaml.cs">
+      <DependentUpon>ConfigOtherOptions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Configs\OtherOptions\ConfigOtherOptionsData.xaml.cs">
+      <DependentUpon>ConfigOtherOptionsData.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Configs\OtherOptions\ConfigOtherOptionsGeneral.xaml.cs">
+      <DependentUpon>ConfigOtherOptionsGeneral.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Configs\OtherOptions\ConfigOtherOptionsInputs.xaml.cs">
+      <DependentUpon>ConfigOtherOptionsInputs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Configs\OtherOptions\ConfigOtherOptionsProxies.xaml.cs">
+      <DependentUpon>ConfigOtherOptionsProxies.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\DialogNewConfig.xaml.cs">
+      <DependentUpon>DialogNewConfig.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Configs.xaml.cs">
+      <DependentUpon>Configs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Configs\ConfigManager.xaml.cs">
+      <DependentUpon>ConfigManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\HitsDB.xaml.cs">
+      <DependentUpon>HitsDB.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\RunnerManager.xaml.cs">
+      <DependentUpon>RunnerManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Settings\OBSettingsPage.xaml.cs">
+      <DependentUpon>OBSettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Settings\OB\OBSettingsGeneral.xaml.cs">
+      <DependentUpon>OBSettingsGeneral.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Settings\OB\OBSettingsThemes.xaml.cs">
+      <DependentUpon>OBSettingsThemes.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Settings\OB\OBSettingsSounds.xaml.cs">
+      <DependentUpon>OBSettingsSounds.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Settings\RLSettingsPage.xaml.cs">
+      <DependentUpon>RLSettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Settings\RL\RLSettingsSelenium.xaml.cs">
+      <DependentUpon>RLSettingsSelenium.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Settings\RL\RLSettingsCaptchas.xaml.cs">
+      <DependentUpon>RLSettingsCaptchas.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Settings\RL\RLSettingsProxies.xaml.cs">
+      <DependentUpon>RLSettingsProxies.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Settings\RL\RLSettingsGeneral.xaml.cs">
+      <DependentUpon>RLSettingsGeneral.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Settings.xaml.cs">
+      <DependentUpon>Settings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\DialogAddWordlist.xaml.cs">
+      <DependentUpon>DialogAddWordlist.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\DialogAddProxies.xaml.cs">
+      <DependentUpon>DialogAddProxies.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Globals.cs" />
+    <Compile Include="MainDialog.xaml.cs">
+      <DependentUpon>MainDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\ProxyManager.xaml.cs">
+      <DependentUpon>ProxyManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\StackerBlocks\PageBlockBypassCF.xaml.cs">
+      <DependentUpon>PageBlockBypassCF.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\StackerBlocks\PageBlockCaptcha.xaml.cs">
+      <DependentUpon>PageBlockCaptcha.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\StackerBlocks\PageBlockFunction.xaml.cs">
+      <DependentUpon>PageBlockFunction.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\StackerBlocks\PageBlockKeycheck.xaml.cs">
+      <DependentUpon>PageBlockKeycheck.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\StackerBlocks\PageBlockLSCode.xaml.cs">
+      <DependentUpon>PageBlockLSCode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\StackerBlocks\PageBlockParse.xaml.cs">
+      <DependentUpon>PageBlockParse.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\StackerBlocks\PageBlockRecaptcha.xaml.cs">
+      <DependentUpon>PageBlockRecaptcha.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\StackerBlocks\PageBlockRequest.xaml.cs">
+      <DependentUpon>PageBlockRequest.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\StackerBlocks\PageBlockTCP.xaml.cs">
+      <DependentUpon>PageBlockTCP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\StackerBlocks\PageBlockUtility.xaml.cs">
+      <DependentUpon>PageBlockUtility.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\StackerBlocks\PageSBlockBrowserAction.xaml.cs">
+      <DependentUpon>PageSBlockBrowserAction.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\StackerBlocks\PageSBlockElementAction.xaml.cs">
+      <DependentUpon>PageSBlockElementAction.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\StackerBlocks\PageSBlockExecuteJS.xaml.cs">
+      <DependentUpon>PageSBlockExecuteJS.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\StackerBlocks\PageSBlockNavigate.xaml.cs">
+      <DependentUpon>PageSBlockNavigate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ProxiesGraphs.xaml.cs">
+      <DependentUpon>ProxiesGraphs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Tools.xaml.cs">
+      <DependentUpon>Tools.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Tools\ToolsListGenerator.xaml.cs">
+      <DependentUpon>ToolsListGenerator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Tools\ToolsSeleniumTools.xaml.cs">
+      <DependentUpon>ToolsSeleniumTools.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\OBSettingsViewModel.cs" />
+    <Compile Include="Snowflake.xaml.cs">
+      <DependentUpon>Snowflake.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SortAdorner.cs" />
+    <Compile Include="Pages\Main\Stacker.xaml.cs">
+      <DependentUpon>Stacker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SplashWindow.xaml.cs">
+      <DependentUpon>SplashWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\BlockKeycheckViewModel.cs" />
+    <Compile Include="ViewModels\ConfigManagerViewModel.cs" />
+    <Compile Include="ViewModels\ConfigOtherOptionsInputViewModel.cs" />
+    <Compile Include="ViewModels\HitsDBViewModel.cs" />
+    <Compile Include="ViewModels\ListGeneratorViewModel.cs" />
+    <Compile Include="ViewModels\OBSettings\OBSettingsGeneral.cs" />
+    <Compile Include="ViewModels\OBSettings\OBSettingsSounds.cs" />
+    <Compile Include="ViewModels\OBSettings\OBSettingsThemes.cs" />
+    <Compile Include="ViewModels\ProxyManagerViewModel.cs" />
+    <Compile Include="ViewModels\RunnerManagerViewModel.cs" />
+    <Compile Include="ViewModels\KeychainViewModel.cs" />
+    <Compile Include="ViewModels\KeyViewModel.cs" />
+    <Compile Include="ViewModels\StackerBlockViewModel.cs" />
+    <Compile Include="ViewModels\StackerViewModel.cs" />
+    <Compile Include="ViewModels\WordlistManagerViewModel.cs" />
+    <Compile Include="Pages\Main\WordlistManager.xaml.cs">
+      <DependentUpon>WordlistManager.xaml</DependentUpon>
+    </Compile>
+    <None Include="Resources\LSHighlighting.xshd" />
+    <Page Include="LogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\DialogLSDoc.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\DialogSelectBots.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\DialogSetProxies.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Configs\OtherOptions\ConfigOtherOptionsRequests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Configs\OtherOptions\ConfigOtherOptionsSelenium.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\DialogShowLog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LoadingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\DialogSelectWordlist.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\DialogAddBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\DialogCustomInput.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\DialogSelectConfig.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Configs\ConfigOtherOptions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Configs\OtherOptions\ConfigOtherOptionsData.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Configs\OtherOptions\ConfigOtherOptionsGeneral.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Configs\OtherOptions\ConfigOtherOptionsInputs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Configs\OtherOptions\ConfigOtherOptionsProxies.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\DialogNewConfig.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Configs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Configs\ConfigManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\HitsDB.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\RunnerManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Settings\OBSettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Settings\OB\OBSettingsGeneral.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Settings\OB\OBSettingsThemes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Settings\OB\OBSettingsSounds.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Settings\RLSettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Settings\RL\RLSettingsSelenium.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Settings\RL\RLSettingsCaptchas.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Settings\RL\RLSettingsProxies.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Settings\RL\RLSettingsGeneral.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Settings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\DialogAddWordlist.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\DialogAddProxies.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Runner\Runner.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Pages\Main\Runner\Runner.xaml.cs">
+      <DependentUpon>Runner.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Pages\Main\ProxyManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\StackerBlocks\PageBlockBypassCF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\StackerBlocks\PageBlockCaptcha.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\StackerBlocks\PageBlockFunction.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\StackerBlocks\PageBlockKeycheck.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\StackerBlocks\PageBlockLSCode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\StackerBlocks\PageBlockParse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\StackerBlocks\PageBlockRecaptcha.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\StackerBlocks\PageBlockRequest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\StackerBlocks\PageBlockTCP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\StackerBlocks\PageBlockUtility.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\StackerBlocks\PageSBlockBrowserAction.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\StackerBlocks\PageSBlockElementAction.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\StackerBlocks\PageSBlockExecuteJS.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\StackerBlocks\PageSBlockNavigate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProxiesGraphs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Stacker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Snowflake.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SplashWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\MetroDark\MetroDark.MSControls.Core.Implicit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\MetroDark\MetroDark.MSControls.Toolkit.Implicit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\MetroDark\Styles.Shared.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\MetroDark\Styles.WPF.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\MetroDark\Theme.Colors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Main\WordlistManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Tools.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Tools\ToolsListGenerator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Tools\ToolsSeleniumTools.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Resource Include="Fonts\CenturyGothicBold.ttf" />
+    <Resource Include="Fonts\CenturyGothicRegular.ttf" />
+    <Resource Include="Fonts\fontawesome-webfont.ttf" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\MetroDark\HowToApplyTheme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="BBlogoIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\plus.png" />
+    <Resource Include="Images\Icons\minus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\down.png" />
+    <Resource Include="Images\Icons\up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\disable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\clone.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\left.png" />
+    <Resource Include="Images\Icons\right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BBIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BBLogowhiteBullets.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\maximize.png" />
+    <Resource Include="Images\Icons\minimize.png" />
+    <Resource Include="Images\Icons\quit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 e x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\star.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\grip.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\camera.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LSHighlighting.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LSDoc.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Themes\empty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\log.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RuriLib\RuriLib.csproj">
+      <Project>{17e95d0b-c1fd-445c-9fdf-244af7299a67}</Project>
+      <Name>RuriLib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DefaultEnvFile.ini" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SyntaxHelper.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Resource Include="Images\Icons\play.png" />
+    <Resource Include="Images\Icons\stop.png" />
+    <Resource Include="Images\Icons\delete.png" />
+    <Resource Include="Images\Icons\import.png" />
+    <Resource Include="Images\Icons\gears.png" />
+    <Resource Include="Images\Icons\code.png" />
+    <Resource Include="Images\BBIcon.png" />
+    <Resource Include="Images\Icons\book.png" />
+    <Content Include="Images\Icons\export.png" />
+    <Resource Include="Images\Icons\load.png" />
+    <Resource Include="Images\Icons\new.png" />
+    <Resource Include="Images\Icons\scan.png" />
+    <Resource Include="Images\Icons\search.png" />
+    <Resource Include="Images\Icons\tasks.png" />
+    <Resource Include="Images\Icons\undo.png" />
+    <Resource Include="Images\Icons\stack.png" />
+    <Resource Include="Images\Icons\git.png" />
+    <Content Include="Sounds\rifle_hit.wav" />
+    <Content Include="Sounds\rifle_reload.wav" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Selenium.Chrome.WebDriver.2.45\build\Selenium.Chrome.WebDriver.targets" Condition="Exists('..\packages\Selenium.Chrome.WebDriver.2.45\build\Selenium.Chrome.WebDriver.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Questo progetto fa riferimento a uno o più pacchetti NuGet che non sono presenti in questo computer. Usare lo strumento di ripristino dei pacchetti NuGet per scaricarli. Per altre informazioni, vedere http://go.microsoft.com/fwlink/?LinkID=322105. Il file mancante è {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Selenium.Chrome.WebDriver.2.45\build\Selenium.Chrome.WebDriver.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Selenium.Chrome.WebDriver.2.45\build\Selenium.Chrome.WebDriver.targets'))" />
+    <Error Condition="!Exists('..\packages\Selenium.Firefox.WebDriver.0.23.0\build\Selenium.Firefox.WebDriver.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Selenium.Firefox.WebDriver.0.23.0\build\Selenium.Firefox.WebDriver.targets'))" />
+    <Error Condition="!Exists('..\packages\Selenium.WebDriver.ChromeDriver.2.46.0\build\Selenium.WebDriver.ChromeDriver.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Selenium.WebDriver.ChromeDriver.2.46.0\build\Selenium.WebDriver.ChromeDriver.targets'))" />
+    <Error Condition="!Exists('..\packages\Selenium.WebDriver.GeckoDriver.Win64.0.24.0\build\Selenium.WebDriver.GeckoDriver.Win64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Selenium.WebDriver.GeckoDriver.Win64.0.24.0\build\Selenium.WebDriver.GeckoDriver.Win64.targets'))" />
+  </Target>
+  <Import Project="..\packages\Selenium.Firefox.WebDriver.0.23.0\build\Selenium.Firefox.WebDriver.targets" Condition="Exists('..\packages\Selenium.Firefox.WebDriver.0.23.0\build\Selenium.Firefox.WebDriver.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>if not exist "$(TargetDir)bin" mkdir "$(TargetDir)bin"
+if $(ConfigurationName) == Release move "$(TargetDir)*.dll" "$(TargetDir)bin\"
+if exist "$(TargetDir)de" RD /S /Q "$(TargetDir)de"
+if exist "$(TargetDir)es" RD /S /Q "$(TargetDir)es"
+if exist "$(TargetDir)fr" RD /S /Q "$(TargetDir)fr"
+if exist "$(TargetDir)hu" RD /S /Q "$(TargetDir)hu"
+if exist "$(TargetDir)it" RD /S /Q "$(TargetDir)it"
+if exist "$(TargetDir)pt-BR" RD /S /Q "$(TargetDir)pt-BR"
+if exist "$(TargetDir)ro" RD /S /Q "$(TargetDir)ro"
+if exist "$(TargetDir)ru" RD /S /Q "$(TargetDir)ru"
+if exist "$(TargetDir)sv" RD /S /Q "$(TargetDir)sv"
+if exist "$(TargetDir)zh-Hans" RD /S /Q "$(TargetDir)zh-Hans"
+if not exist "$(TargetDir)Settings" mkdir "$(TargetDir)Settings"
+if not exist "$(TargetDir)Settings\Environment.ini" copy "$(ProjectDir)DefaultEnvFile.ini" "$(TargetDir)Settings\Environment.ini"
+if not exist "$(TargetDir)Sounds" mkdir "$(TargetDir)Sounds"
+copy "$(ProjectDir)Sounds\rifle_hit.wav" "$(TargetDir)Sounds\rifle_hit.wav"
+copy "$(ProjectDir)Sounds\rifle_reload.wav" "$(TargetDir)Sounds\rifle_reload.wav"</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="..\packages\Selenium.WebDriver.ChromeDriver.2.46.0\build\Selenium.WebDriver.ChromeDriver.targets" Condition="Exists('..\packages\Selenium.WebDriver.ChromeDriver.2.46.0\build\Selenium.WebDriver.ChromeDriver.targets')" />
+  <Import Project="..\packages\Selenium.WebDriver.GeckoDriver.Win64.0.24.0\build\Selenium.WebDriver.GeckoDriver.Win64.targets" Condition="Exists('..\packages\Selenium.WebDriver.GeckoDriver.Win64.0.24.0\build\Selenium.WebDriver.GeckoDriver.Win64.targets')" />
+</Project>

@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="OpenBullet.Snowflake"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OpenBullet"
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="30">
+
+    <Path
+    Stretch="Fill"
+    Fill="White"
+    StrokeThickness="1"
+    Data="M -1,0 A 1,1 0 1 1 1,0 M -1,0 A 1,1 0 1 0 1,0" />
+    
+</UserControl>

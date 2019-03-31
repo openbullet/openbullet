@@ -1,0 +1,22 @@
+﻿<Window x:Class="OpenBullet.SplashWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OpenBullet"
+        mc:Ignorable="d"
+        Title="SplashWindow" Height="140" Width="300"
+        WindowStyle="None"  AllowsTransparency="True" ResizeMode="CanResizeWithGrip"
+        Background="{DynamicResource BackgroundMain}" MouseDown="WindowMouseDown">
+    <Grid>
+        <StackPanel Grid.Column="0" Margin="5">
+            <Image x:Name="quitImage" Source="/Images/Icons/quit.png" Width="15" Height="15" HorizontalAlignment="Right" Margin="3" MouseDown="quitImage_MouseDown"/>
+            <Label Content="TERMS OF USE" HorizontalAlignment="Center" FontWeight="Bold"/>
+
+            <TextBlock Foreground="{DynamicResource ForegroundMain}" TextWrapping="WrapWithOverflow" TextAlignment="Center" 
+                       Text="This software is provided 'as is' without warranties of any kind. The developer will not be held responsible for any illegal or improper use of the program. " HorizontalAlignment="Center" FontSize="11" Margin="0 0 0 0" />
+            <Button x:Name="agreeButton" Content="I AGREE" Click="agreeButton_Click" Margin="0 10 0 0"/>
+        </StackPanel>
+        
+    </Grid>
+</Window>

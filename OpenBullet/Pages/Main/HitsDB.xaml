@@ -1,0 +1,221 @@
+﻿<Page x:Class="OpenBullet.HitsDB"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OpenBullet"
+      mc:Ignorable="d" 
+      d:DesignHeight="550" d:DesignWidth="780"
+      Title="HitsDB">
+    <Page.Resources>
+        <ContextMenu x:Key="ItemContextMenu">
+            <MenuItem x:Name="copyMenu" Header="Copy Selected">
+                <MenuItem x:Name="copySelectedData" Header="Data" Click="copySelectedData_Click"/>
+                <MenuItem x:Name="copySelectedProxy" Header="Proxy" Click="copySelectedProxy_Click"/>
+                <MenuItem x:Name="copySelectedCapture" Header="Data with Capture" Click="copySelectedCapture_Click"/>
+                <MenuItem x:Name="copySelectedFull" Header="Data (Full)" Click="copySelectedFull_Click"/>
+                <MenuItem x:Name="copySelectedCustom" Header="Custom"></MenuItem>
+            </MenuItem>
+            <MenuItem x:Name="saveMenu" Header="Save Selected">
+                <MenuItem x:Name="saveSelectedData" Header="Data" Click="saveSelectedData_Click"/>
+                <MenuItem x:Name="saveSelectedCapture" Header="Data with Capture" Click="saveSelectedCapture_Click"/>
+                <MenuItem x:Name="saveSelectedFull" Header="Data (Full)" Click="saveSelectedFull_Click"/>
+                <MenuItem x:Name="saveSelectedCustom" Header="Custom"></MenuItem>
+            </MenuItem>
+            <MenuItem x:Name="deleteSelected" Header="Delete" Click="deleteSelected_Click"/>
+            <MenuItem x:Name="selectAll" Header="Select All" Click="selectAll_Click"/>
+            <MenuItem x:Name="sendToRecheck" Header="Send to Recheck" Click="sendToRecheck_Click"/>
+        </ContextMenu>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+
+        <!-- Top Filters -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Button x:Name="removeDuplicatesButton" Click="removeDuplicatesButton_Click" Margin="0 5">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Images/Icons/delete.png" Width="20" />
+                    <TextBlock VerticalAlignment="Center" Margin="5 0">Del. Dupes</TextBlock>
+                </StackPanel>
+            </Button>
+            <Button x:Name="purgeButton" Click="purgeButton_Click" Margin="0 5">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Images/Icons/delete.png" Width="20" />
+                    <TextBlock VerticalAlignment="Center" Margin="5 0">Purge</TextBlock>
+                </StackPanel>
+            </Button>
+            <Label Content="Config:" VerticalAlignment="Center" Margin="10 0 0 0"/>
+            <ComboBox x:Name="configFilterCombobox" Width="200" Margin="0 5" SelectionChanged="configFilterCombobox_SelectionChanged"/>
+            <Label Content="Type:" VerticalAlignment="Center" Margin="10 0 0 0"/>
+            <ComboBox x:Name="typeFilterCombobox" Width="130" Margin="0 5" SelectionChanged="typeFilterCombobox_SelectionChanged"/>
+            <Label Content="Number of Hits:" VerticalAlignment="Center" Margin="10 0 0 0"/>
+            <Label Content="{Binding FilteredCount}" VerticalAlignment="Center" FontWeight="Bold"/>
+        </StackPanel>
+        
+        <!-- Proxies List View -->
+        <ListView x:Name="hitsListView" Grid.Row="1" Foreground="{DynamicResource ForegroundMain}" Background="Transparent" ItemsSource="{Binding Path=HitsList}" SelectionMode="Extended" BorderThickness="1" VirtualizingPanel.IsVirtualizing="True">
+
+            <!-- Show Headers by overriding the default style -->
+            <ListView.Style>
+                <Style TargetType="{x:Type ListView}" />
+            </ListView.Style>
+
+            <!-- Align Headers to the Left -->
+            <ListView.Resources>
+                <Style x:Key="GridViewColumnHeaderGripper" TargetType="Thumb">
+                    <Setter Property="Width" Value="18" />
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <LinearGradientBrush.GradientStops>
+                                    <GradientStopCollection>
+                                        <GradientStop Color="{DynamicResource BorderLightColor}" Offset="0.0" />
+                                        <GradientStop Color="{DynamicResource BorderDarkColor}" Offset="1.0" />
+                                    </GradientStopCollection>
+                                </LinearGradientBrush.GradientStops>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Thumb}">
+                                <Border Padding="{TemplateBinding Padding}" Background="Transparent">
+                                    <Rectangle HorizontalAlignment="Center" Width="1" Fill="{TemplateBinding Background}" />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="BorderBrush">
+                        <Setter.Value>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="Black" Offset="0" />
+                                <GradientStop Color="White" Offset="1" />
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                <Style TargetType="{x:Type GridViewColumnHeader}">
+                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
+                                <Grid>
+                                    <Border BorderThickness="0,0,0,1" BorderBrush="Black" Background="Transparent">
+                                        <TextBlock x:Name="ContentHeader" Text="{TemplateBinding Content}" Padding="5,5,5,0" Width="{TemplateBinding Width}" TextAlignment="Left" />
+                                    </Border>
+                                    <Thumb x:Name="PART_HeaderGripper"
+                                         HorizontalAlignment="Right"
+                                         Margin="0,0,-9,0"
+                                         Style="{StaticResource GridViewColumnHeaderGripper}" />
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="OverridesDefaultStyle" Value="True" />
+                    <Setter Property="Foreground" Value="{DynamicResource ForegroundMain}" />
+                    <Setter Property="FontFamily" Value="pack://application:,,,/Fonts/#Century Gothic" />
+                    <Setter Property="FontSize" Value="14" />
+                </Style>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <EventSetter Event="MouseRightButtonDown" Handler="ListViewItem_MouseRightButtonDown" />
+                    <Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" 
+                    BorderThickness="{TemplateBinding BorderThickness}" 
+                    Background="{TemplateBinding Background}" 
+                    Padding="0"
+                    SnapsToDevicePixels="true">
+                                    <GridViewRowPresenter 
+                    HorizontalAlignment="Left" 
+                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource BackgroundSecondary}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource BackgroundSecondary}" />
+                        </Trigger>
+                        <EventTrigger RoutedEvent="MouseRightButtonDown">
+                            <EventTrigger.Actions>
+
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                    </Style.Triggers>
+                </Style>
+
+            </ListView.Resources>
+
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel>
+                    </VirtualizingStackPanel>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="150" DisplayMemberBinding="{Binding Path=Data}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Data" Click="listViewColumnHeader_Click">Data</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="80" DisplayMemberBinding="{Binding Path=Type}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Type" Click="listViewColumnHeader_Click">Type</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=ConfigName}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="ConfigName" Click="listViewColumnHeader_Click">Config</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="90" DisplayMemberBinding="{Binding Path=Date}" >
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Date" Click="listViewColumnHeader_Click">Date</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=Wordlist}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="WordlistName" Click="listViewColumnHeader_Click">Wordlist</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=Proxy}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Proxy" Click="listViewColumnHeader_Click">Proxy</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="5000" DisplayMemberBinding="{Binding Path=CapturedString}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="CapturedString" Click="listViewColumnHeader_Click">Captured Data</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <Grid Grid.Row="2" Margin="0 5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Column="0" Content="Search for Capture:" />
+            <TextBox Grid.Column="1" x:Name="searchBar" Text="" />
+            <Button Grid.Column="2" Content="Search" x:Name="searchButton" Click="searchButton_Click"/>
+        </Grid>
+
+    </Grid>
+</Page>

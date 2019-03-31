@@ -1,0 +1,86 @@
+﻿<Page x:Class="OpenBullet.RLSettingsCaptchas"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OpenBullet"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="780"
+      Title="RLSettingsCaptchas">
+
+    <Grid>
+        <StackPanel Margin="0">
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="Captcha Service in use" />
+                <ComboBox DockPanel.Dock="Left" x:Name="currentServiceCombobox" SelectionChanged="currentServiceCombobox_SelectionChanged"/>
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="AntiCaptcha API Key" />
+                <TextBox DockPanel.Dock="Left" Text="{Binding AntiCapToken}" />
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="2Captcha API Key" />
+                <TextBox DockPanel.Dock="Left" Text="{Binding TwoCapToken}" />
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="AZCaptcha API Key" />
+                <TextBox DockPanel.Dock="Left" Text="{Binding AZCapToken}" />
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="ImageTyperz API Key" />
+                <TextBox DockPanel.Dock="Left" Text="{Binding ImageTypToken}" />
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="DeathByCaptcha Credentials (User | Pass)" />
+                <Grid DockPanel.Dock="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Text="{Binding DBCUser}" Margin="0 0 5 0" />
+                    <TextBox Grid.Column="1" Text="{Binding DBCPass}" Margin="5 0 0 0"/>
+                </Grid>
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="DeCaptcher Credentials (User | Pass)" />
+                <Grid DockPanel.Dock="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Text="{Binding DCUser}" Margin="0 0 5 0" />
+                    <TextBox Grid.Column="1" Text="{Binding DCPass}" Margin="5 0 0 0"/>
+                </Grid>
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="SolveRecaptcha Credentials (UserId | API Key)" />
+                <Grid DockPanel.Dock="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Text="{Binding SRUserId}" Margin="0 0 5 0" />
+                    <TextBox Grid.Column="1" Text="{Binding SRToken}" Margin="5 0 0 0"/>
+                </Grid>
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="CaptchasIO API Key" />
+                <TextBox Grid.Column="0" Text="{Binding CIOToken}" Margin="0 0 5 0" />
+            </DockPanel>
+            
+            <DockPanel>
+                <CheckBox DockPanel.Dock="Top" Content="Bypass Balance Check (useful for OCR Software)" IsChecked="{Binding BypassBalanceCheck}" VerticalContentAlignment="Center"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="checkBalanceButton" Content="Check Balance" Click="checkBalanceButton_Click" />
+                    <Label Content="Your balance is:" Margin="5 0 0 0" />
+                    <Label x:Name="balanceLabel" Content="" Foreground="{DynamicResource ForegroundGood}"/>
+                </StackPanel>
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Top">
+                <Label Content="Timeout for captcha response (seconds):" />
+                <xctk:IntegerUpDown Background="Transparent" Width="70" Margin="10 0 0 0" Value="{Binding Timeout}" Foreground="{DynamicResource ForegroundMain}"  HorizontalAlignment="Right"/>
+            </DockPanel>
+        </StackPanel>
+    </Grid>
+</Page>

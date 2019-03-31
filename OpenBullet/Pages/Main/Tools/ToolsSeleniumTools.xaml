@@ -1,0 +1,33 @@
+﻿<Page x:Class="OpenBullet.ToolsSeleniumTools"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OpenBullet"
+      mc:Ignorable="d" 
+      d:DesignHeight="480" d:DesignWidth="780"
+      Title="ToolsSeleniumTools">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="400" />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Content="CARE: These might interfere with other Selenium-based programs you are running" Foreground="{DynamicResource ForegroundBad}" />
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Button x:Name="killChromedriversButton" Content="Kill Chromedrivers" Click="killChromedriversButton_Click" />
+            <Button x:Name="killGeckodriversButton" Content="Kill Geckodrivers" Click="killGeckodriversButton_Click" />
+            <Button x:Name="deleteChromeCacheFoldersButton" Content="Delete Chrome Cache Folders" Click="deleteChromeCacheFoldersButton_Click" />
+            <Button x:Name="deleteFirefoxCacheFoldersButton" Content="Delete Firefox Cache Folders" Click="deleteFirefoxCacheFoldersButton_Click" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Button x:Name="killChromesButton" Content="Kill ALL Chrome Browsers" Click="killChromesButton_Click"/>
+            <Button x:Name="killFirefoxesButton" Content="Kill ALL Firefox Browsers" Click="killFirefoxesButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Page>

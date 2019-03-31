@@ -1,0 +1,109 @@
+﻿<Window x:Class="OpenBullet.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OpenBullet"
+        mc:Ignorable="d"
+        Title="" Width="800" Height="620"
+        MinWidth="800" MinHeight="600"
+        Background="{DynamicResource BackgroundMain}"
+        WindowStyle="None" ResizeMode="NoResize" AllowsTransparency="False" Margin="0 -5 0 0">
+
+    <!-- Background="{DynamicResource BackgroundMain}" -->
+
+    <!--
+    <Window.Background>
+        <ImageBrush ImageSource="/Images/Themes/italydark.jpg"/>
+    </Window.Background>
+    -->
+
+    <Grid x:Name="Root" Margin="0">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="10" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="10" />
+        </Grid.RowDefinitions>
+
+        <!-- Title Bar -->
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Background="{DynamicResource BackgroundSecondary}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <Image Height="30" Width="30" Source="pack://application:,,,/Images/BBIcon.png"/>
+                <Label x:Name="titleLabel" Content="Open Bullet" FontFamily="pack://application:,,,/Fonts/#Century Gothic" FontSize="14" />
+            </StackPanel>
+
+            <Grid x:Name="dragPanel" Grid.Column="1" MouseDown="dragPanel_MouseDown" Background="{DynamicResource BackgroundSecondary}"/>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <!-- <Image x:Name="themeImage" Margin="0 0 4 0" Height="20" Source="/Images/Themes/charles2.png" /> -->
+                <!--<Image x:Name="themeImage2" Height="30" Source="/Images/Themes/ci.png" />-->
+                <StackPanel x:Name="minimizePanel" MouseEnter="minimizePanel_MouseEnter" MouseLeave="minimizePanel_MouseLeave" MouseDown="minimizePanel_MouseDown">
+                    <Image x:Name="minimizeImage" Margin="7" Height="15" Width="15" Source="/Images/Icons/minimize.png" ToolTip="Minimize" />
+                </StackPanel>
+                <StackPanel x:Name="maximizePanel" MouseEnter="maximizePanel_MouseEnter" MouseLeave="maximizePanel_MouseLeave" MouseDown="maximizePanel_MouseDown">
+                    <Image x:Name="maximizeImage" Margin="7" Height="15" Width="15" Source="/Images/Icons/maximize.png" ToolTip="Maximize"/>
+                </StackPanel>
+                <StackPanel x:Name="quitPanel" MouseEnter="quitPanel_MouseEnter" MouseLeave="quitPanel_MouseLeave" MouseDown="quitPanel_MouseDown">
+                    <Image x:Name="quitImage" Margin="7" Height="15" Width="15" Source="/Images/Icons/quit.png" ToolTip="Quit"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <!-- Top Menu StackPanel -->
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel x:Name="topMenu" Grid.Column="0" Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style TargetType="Label">
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="Margin" Value="0 0 5 0" />
+                        <Setter Property="Foreground" Value="{DynamicResource ForegroundMain}" />
+                        <Setter Property="FontFamily" Value="pack://application:,,,/Fonts/#Century Gothic" />
+                        <Setter Property="FontSize" Value="14" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </StackPanel.Resources>
+                <Label x:Name="menuOptionRunner" Content="Runner" MouseDown="menuOptionRunner_MouseDown" />
+                <Label x:Name="menuOptionProxyManager" Content="Proxies" MouseDown="menuOptionProxyManager_MouseDown" />
+                <Label x:Name="menuOptionWordlistManager" Content="Wordlists" MouseDown="menuOptionWordlistManager_MouseDown" />
+                <Label x:Name="menuOptionConfigCreator" Content="Configs" MouseDown="menuOptionConfigCreator_MouseDown" />
+                <Label x:Name="menuOptionHitsDatabase" Content="Hits DB" MouseDown="menuOptionHitsDatabase_MouseDown" />
+                <Label x:Name="menuOptionTools" Content="Tools" MouseDown="menuOptionTools_MouseDown" />
+                <Label x:Name="menuOptionSettings" Content="Settings" MouseDown="menuOptionSettings_MouseDown" />
+                <Label x:Name="menuOptionAbout" Content="About" MouseDown="menuOptionAbout_MouseDown" />
+            </StackPanel>
+
+            <Image Grid.Column="1" x:Name="logImage" Height="20" Width="20" Source="/Images/Icons/log.png" ToolTip="Open the Log" MouseDown="logImage_MouseDown"/>
+            <Image Grid.Column="2" x:Name="screenshotImage" Height="20" Width="20" Margin="4 0 0 0" Source="/Images/Icons/camera.png" ToolTip="Take a Screenshot" MouseDown="screenshotImage_MouseDown"/>
+
+        </Grid>
+
+        <Frame Grid.Column="1" Grid.Row="2" x:Name="Main" NavigationUIVisibility="Hidden" >
+            <!-- <Frame.Background>
+                <ImageBrush ImageSource="/Images/Hall/hall8trans2.png" AlignmentX="Center" AlignmentY="Center"/>
+            </Frame.Background> -->
+        </Frame>
+
+        <Image Grid.Row="3" Grid.Column="2" x:Name="gripImage" Source="/Images/Icons/grip.png" Height="10" Width="10" Margin="-5 -5 0 0" PreviewMouseLeftButtonDown="gripImage_PreviewMouseLeftButtonDown" PreviewMouseMove="gripImage_PreviewMouseMove" PreviewMouseLeftButtonUp="gripImage_PreviewMouseLeftButtonUp" Cursor="SizeNWSE"/>
+        
+    </Grid>
+</Window>

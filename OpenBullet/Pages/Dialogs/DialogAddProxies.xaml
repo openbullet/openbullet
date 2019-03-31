@@ -1,0 +1,41 @@
+﻿<Page x:Class="OpenBullet.DialogAddProxies"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OpenBullet"
+      mc:Ignorable="d" 
+      d:DesignHeight="320" d:DesignWidth="270"
+      Title="Add Proxies">
+
+    <StackPanel Margin="5">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0" Content="Location:" VerticalAlignment="Center"/>
+            <TextBox x:Name="locationTextbox" Grid.Column="1" VerticalContentAlignment="Center" Margin="5" IsReadOnly="True"/>
+            <Image x:Name="loadProxiesButton" Grid.Column="2" Source="/Images/Icons/folder.png" Width="20" MouseDown="loadProxiesButton_MouseDown"/>
+            <Label Grid.Column="0" Grid.Row="1" Content="Type:" VerticalAlignment="Center"/>
+            <ComboBox x:Name="proxyTypeCombobox" Grid.Column="1" Grid.Row="1" Margin="5"/>
+        </Grid>
+        <Label Content="ADVANCED MODE (auth, chain)" HorizontalContentAlignment="Center" FontWeight="Bold"/>
+        <Label Content="Hover on the box below to see the syntax" HorizontalContentAlignment="Center"/>
+        <TextBox x:Name="proxiesBox" AcceptsReturn="True" TextWrapping="Wrap" Height="100" VerticalScrollBarVisibility="Auto" Margin="0 5" FontFamily="Consolas">
+            <TextBox.ToolTip>
+                <TextBlock>Start the line with the proxy type between round brackets.<LineBreak/>Auth:<LineBreak/>(http)127.0.0.1:8888:username:password<LineBreak/>Chain:<LineBreak/>(socks4)127.0.0.1:8000->(http)127.0.0.1:8888</TextBlock>
+            </TextBox.ToolTip>
+        </TextBox>
+        
+        <Label Content="Auth and Chain won't work with Selenium" Foreground="{DynamicResource ForegroundCustom}" HorizontalContentAlignment="Center"/>
+        <Button x:Name="acceptButton" Content="ACCEPT" Click="acceptButton_Click" Margin="0 5" />
+
+    </StackPanel>
+</Page>

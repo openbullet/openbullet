@@ -1,0 +1,25 @@
+﻿<Page x:Class="OpenBullet.Pages.StackerBlocks.PageBlockCaptcha"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OpenBullet.Pages.StackerBlocks"
+      mc:Ignorable="d" 
+      d:DesignHeight="500" d:DesignWidth="400"
+      Title="PageBlockCaptcha">
+
+    <Grid>
+        <StackPanel>
+            <DockPanel>
+                <Label Content="Variable Name:" />
+                <TextBox Text="{Binding VariableName, UpdateSourceTrigger=PropertyChanged}"/>
+            </DockPanel>
+            <DockPanel Margin="0 5 0 0">
+                <Label Content="Captcha URL:" />
+                <TextBox Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" ToolTip="URL to download the captcha image from (using the assigned proxy)"/>
+            </DockPanel>
+            <CheckBox Content="Base 64 Captcha in Url box" IsChecked="{Binding Base64}" VerticalContentAlignment="Center" ToolTip="Whether in the box above there is a base64-encoded representation of an image"/>
+            <CheckBox Content="Use Previously Saved Screenshot" IsChecked="{Binding SendScreenshot}" VerticalContentAlignment="Center" ToolTip="Whether to use a screenshot that was previously saved via selenium"/>
+        </StackPanel>
+    </Grid>
+</Page>

@@ -1,0 +1,36 @@
+<SyntaxDefinition name="LoliScript"
+        xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+    <Color name="Comment" foreground="LightGray" />
+    <Color name="string" foreground="LightBlue" />
+
+    <!-- This is the main ruleset. -->
+    <RuleSet>
+        <Span color="Comment" begin="//" />
+        <Span color="Comment" multiline="true" begin="/\*" end="\*/" />
+
+        <Span color="string">
+            <Begin>"</Begin>
+            <End>"</End>
+            <RuleSet>
+                <!-- nested span for escape sequences -->
+                <Span begin="\\" end="." />
+            </RuleSet>
+        </Span>
+
+        <Keywords fontWeight="bold" foreground="Blue">
+            <Word>FUNCTION</Word>
+            <Word>GIB</Word>
+            <!-- ... -->
+        </Keywords>
+
+        <!-- Digits -->
+        <Rule foreground="GreenYellow">
+            \b0[xX][0-9a-fA-F]+  # hex number
+        |    \b
+            (    \d+(\.[0-9]+)?   #number with optional floating point
+            |    \.[0-9]+         #or just starting with floating point
+            )
+            ([eE][+-]?[0-9]+)? # optional exponent
+        </Rule>
+    </RuleSet>
+</SyntaxDefinition>

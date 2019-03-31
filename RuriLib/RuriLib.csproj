@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{17E95D0B-C1FD-445C-9FDF-244AF7299A67}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RuriLib</RootNamespace>
+    <AssemblyName>RuriLib</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\RuriLib.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AngleSharp, Version=0.9.9.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
+      <HintPath>..\packages\AngleSharp.0.9.9.2\lib\net45\AngleSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Extreme.Net, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Extreme-original\Extreme.Net\bin\Debug\Extreme.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython, Version=2.7.9.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPython.2.7.9\lib\net45\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Modules, Version=2.7.9.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPython.2.7.9\lib\net45\IronPython.Modules.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.SQLite, Version=2.7.9.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPython.2.7.9\lib\net45\IronPython.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Wpf, Version=2.7.9.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPython.2.7.9\lib\net45\IronPython.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Jint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jint.2.11.58\lib\net451\Jint.dll</HintPath>
+    </Reference>
+    <Reference Include="Leaf.xNet, Version=5.1.74.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Leaf.xNet.5.1.74\lib\net452\Leaf.xNet.dll</HintPath>
+    </Reference>
+    <Reference Include="LiteDB, Version=4.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dynamic, Version=1.2.2.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicLanguageRuntime.1.2.2\lib\net45\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.4.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting, Version=1.2.2.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicLanguageRuntime.1.2.2\lib\net45\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting.Metadata, Version=1.2.2.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicLanguageRuntime.1.2.2\lib\net45\Microsoft.Scripting.Metadata.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="ProxySocket, Version=1.1.2.0, Culture=neutral, PublicKeyToken=966874d7118d1436, processorArchitecture=MSIL">
+      <HintPath>..\packages\ProxySocket.1.1.2\lib\net40\ProxySocket.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encoding.CodePages, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.4.5.1\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WebDriver, Version=3.141.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selenium.WebDriver.3.141.0\lib\net45\WebDriver.dll</HintPath>
+    </Reference>
+    <Reference Include="WebDriver.Support, Version=3.141.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selenium.Support.3.141.0\lib\net45\WebDriver.Support.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Blocks\BlockLSCode.cs" />
+    <Compile Include="Blocks\BlockTCP.cs" />
+    <Compile Include="CaptchaServices\CaptchasIO.cs" />
+    <Compile Include="LoliScript\Exceptions\BlockProcessingException.cs" />
+    <Compile Include="LoliScript\LoliScript.cs" />
+    <Compile Include="LoliScript\Parser\BlockParser.cs" />
+    <Compile Include="LoliScript\Parser\CommandParser.cs" />
+    <Compile Include="LoliScript\Parser\MouseActionParser.cs" />
+    <Compile Include="LoliScript\Writer\BlockWriter.cs" />
+    <Compile Include="Models\DataPool.cs" />
+    <Compile Include="Models\ProxyPool.cs" />
+    <Compile Include="Runner\AbortableBackgroundWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Blocks\BlockBase.cs" />
+    <Compile Include="Blocks\BlockBypassCF.cs" />
+    <Compile Include="Blocks\BlockImageCaptcha.cs" />
+    <Compile Include="Blocks\BlockCaptcha.cs" />
+    <Compile Include="Blocks\BlockFunction.cs" />
+    <Compile Include="Blocks\BlockKeycheck.cs" />
+    <Compile Include="Blocks\BlockParse.cs" />
+    <Compile Include="Blocks\BlockRecaptcha.cs" />
+    <Compile Include="Blocks\BlockRequest.cs" />
+    <Compile Include="Blocks\BlockUtility.cs" />
+    <Compile Include="CaptchaServices\AntiCaptcha.cs" />
+    <Compile Include="CaptchaServices\AZCaptcha.cs" />
+    <Compile Include="CaptchaServices\CaptchaService.cs" />
+    <Compile Include="CaptchaServices\CWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CaptchaServices\DeathByCaptcha.cs" />
+    <Compile Include="CaptchaServices\DeCaptcher.cs" />
+    <Compile Include="CaptchaServices\ImageTyperz.cs" />
+    <Compile Include="CaptchaServices\SolveReCaptcha.cs" />
+    <Compile Include="CaptchaServices\TwoCaptcha.cs" />
+    <Compile Include="ConditionChecker.cs" />
+    <Compile Include="IOManager.cs" />
+    <Compile Include="LoliScript\Parser\LineParser.cs" />
+    <Compile Include="LoliScript\Parser\DeleteParser.cs" />
+    <Compile Include="LoliScript\Parser\SetParser.cs" />
+    <Compile Include="Models\CData.cs" />
+    <Compile Include="Models\Config.cs" />
+    <Compile Include="Models\ConfigSettings.cs" />
+    <Compile Include="Models\ExportFormat.cs" />
+    <Compile Include="Models\Record.cs" />
+    <Compile Include="Models\CVar.cs" />
+    <Compile Include="Models\Wordlist.cs" />
+    <Compile Include="Runner\IRunnerMessaging.cs" />
+    <Compile Include="Runner\RunnerBotViewModel.cs" />
+    <Compile Include="Runner\RunnerViewModel.cs" />
+    <Compile Include="TypeSwitch.cs" />
+    <Compile Include="ViewModels\ConfigViewModel.cs" />
+    <Compile Include="Models\CProxy.cs" />
+    <Compile Include="Models\LogEntry.cs" />
+    <Compile Include="Models\Hit.cs" />
+    <Compile Include="Models\CustomInput.cs" />
+    <Compile Include="Models\CustomKeychain.cs" />
+    <Compile Include="Models\EnvironmentSettings.cs" />
+    <Compile Include="Models\DataRule.cs" />
+    <Compile Include="ViewModels\RLSettings\SettingsCaptchas.cs" />
+    <Compile Include="ViewModels\RLSettings\SettingsGeneral.cs" />
+    <Compile Include="ViewModels\RLSettings\SettingsProxies.cs" />
+    <Compile Include="ViewModels\RLSettings\SettingsSelenium.cs" />
+    <Compile Include="ViewModels\RLSettingsViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Models\WordlistType.cs" />
+    <None Include="app.config" />
+    <Compile Include="Models\BotData.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Models\KeyChain.cs" />
+    <Compile Include="Models\Key.cs" />
+    <Compile Include="Blocks\SBlockBrowserAction.cs" />
+    <Compile Include="Blocks\SBlockElementAction.cs" />
+    <Compile Include="Blocks\SBlockExecuteJS.cs" />
+    <Compile Include="Blocks\SBlockNavigate.cs" />
+    <Compile Include="Models\ValidData.cs" />
+    <Compile Include="Models\VariableList.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

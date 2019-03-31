@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <item name="FUNCTION">
+FUNCTION Name [ARGUMENTS] ["INPUT STRING"] [-> VAR/CAP "NAME"]
+  </item>
+  <item name="KEYCHECK">
+KEYCHECK [BanOn4XX?] [BanOnToCheck?]
+  [KEYCHAIN TYPE ["CUSTOMNAME"] MODE
+    [KEY "STRING" [CONDITION "STRING"]]*
+  ]*
+  </item>
+  <item name="REQUEST">
+REQUEST METHOD "URL" [AutoRedirect?] [ReadResponseSource?]
+  [STANDARD / MULTIPART / BASICAUTH]
+  [CONTENT "postdata"]
+  [CONTENTTYPE "ctype"]
+  [STRINGCONTENT "name: value"]*
+  [FILECONTENT "name: path"]*
+  [BOUNDARY "abcd"]
+  [COOKIE "abc: def"]*
+  [HEADER "abc: def"]*
+  [-> STRING / -> FILE "path"]
+  </item>
+  <item name="RECAPTCHA">
+RECAPTCHA "URL" "SITEKEY" -> VAR "NAME"
+  </item>
+  <item name="CAPTCHA">
+CAPTCHA "URL" [Base64?] [SendScreenshot?] -> VAR "NAME"
+  </item>
+  <item name="PARSE">
+PARSE "TARGET" LR "LEFT" "RIGHT" [Recursive?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]
+PARSE "TARGET" CSS "SELECTOR" "ATTRIBUTE" [INDEX / Recursive?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]
+PARSE "TARGET" JSON "FIELD" [Recursive?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]
+PARSE "TARGET" REGEX "REGEX" "OUTPUT" [Recursive?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]
+  </item>
+  <item name="UTILITY">
+UTILITY LIST "List Name" ACTION [PARAMETERS] [-> VAR/CAP "NAME"]
+UTILITY VARIABLE "Variable Name" ACTION [PARAMETERS] [-> VAR/CAP "NAME"]
+UTILITY CONVERSION FROM TO "input" [-> VAR/CAP "NAME"]
+UTILITY FILE "File Name" ACTION [PARAMETERS] [-> VAR/CAP "NAME"]
+  </item>
+  <item name="TCP">
+TCP COMMAND [ARGUMENTS]
+  </item>
+  <item name="NAVIGATE">
+NAVIGATE "URL" [TIMEOUT]
+  </item>
+  <item name="BROWSERACTION">
+BROWSERACTION ACTION ["INPUT"]
+  </item>
+  <item name="ELEMENTACTION">
+ELEMENTACTION LOCATOR "LOCATOR" [INDEX / Recursive?] ACTION ["INPUT"] [-> VAR/CAP "NAME"]
+  </item>
+  <item name="EXECUTEJS">
+EXECUTEJS "SCRIPT"
+  </item>
+</doc>

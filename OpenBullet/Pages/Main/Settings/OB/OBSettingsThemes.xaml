@@ -1,0 +1,99 @@
+﻿<Page x:Class="OpenBullet.OBSettingsThemes"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      xmlns:local="clr-namespace:OpenBullet"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="780"
+      Title="OBSettingsThemes">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" Margin="5">
+            <Label Content="COLORS" FontWeight="Bold" />
+            <DockPanel>
+                <Label Content="Background Main" />
+                <xctk:ColorPicker Name="BackgroundMain" Width="100" HorizontalAlignment="Right" SelectedColorChanged="ColorPicker_SelectedColorChanged" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Background Secondary" />
+                <xctk:ColorPicker Name="BackgroundSecondary" Width="100" HorizontalAlignment="Right" SelectedColorChanged="ColorPicker_SelectedColorChanged" />
+            </DockPanel>
+            <Separator Margin="0 10"/>
+            <DockPanel>
+                <Label Content="Foreground Main" />
+                <xctk:ColorPicker Name="ForegroundMain" Width="100" HorizontalAlignment="Right" SelectedColorChanged="ColorPicker_SelectedColorChanged" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Foreground Good" />
+                <xctk:ColorPicker Name="ForegroundGood" Width="100" HorizontalAlignment="Right" SelectedColorChanged="ColorPicker_SelectedColorChanged" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Foreground Bad" />
+                <xctk:ColorPicker Name="ForegroundBad" Width="100" HorizontalAlignment="Right" SelectedColorChanged="ColorPicker_SelectedColorChanged" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Foreground Custom" />
+                <xctk:ColorPicker Name="ForegroundCustom" Width="100" HorizontalAlignment="Right" SelectedColorChanged="ColorPicker_SelectedColorChanged" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Foreground Retry" />
+                <xctk:ColorPicker Name="ForegroundRetry" Width="100" HorizontalAlignment="Right" SelectedColorChanged="ColorPicker_SelectedColorChanged" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Foreground To Check" />
+                <xctk:ColorPicker Name="ForegroundToCheck" Width="100" HorizontalAlignment="Right" SelectedColorChanged="ColorPicker_SelectedColorChanged" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Foreground Menu Sel." />
+                <xctk:ColorPicker Name="ForegroundMenuSelected" Width="100" HorizontalAlignment="Right" SelectedColorChanged="ColorPicker_SelectedColorChanged" />
+            </DockPanel>
+            <Button x:Name="resetButton" Content="RESET" Click="resetButton_Click" />
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Margin="5">
+            <Label Content="IMAGES" FontWeight="Bold" />
+            <CheckBox x:Name="useImagesCheckbox" Content="Use Images" IsChecked="{Binding UseImage}" VerticalAlignment="Center" VerticalContentAlignment="Center" Checked="useImagesCheckbox_Checked" Unchecked="useImagesCheckbox_Unchecked"/>
+            <DockPanel DockPanel.Dock="Top">
+                <Label Content="Opacity" />
+                <xctk:IntegerUpDown x:Name="backgroundImageOpacityUpDown" Background="Transparent" Width="50" Margin="10 0 0 0" Minimum="0" Maximum="100" Value="{Binding BackgroundImageOpacity}" Foreground="{DynamicResource ForegroundMain}"  HorizontalAlignment="Right" ValueChanged="backgroundImageOpacityUpDown_ValueChanged"/>
+            </DockPanel>
+            <Separator Margin="0 10" />
+            <DockPanel>
+                <Label Content="Background Image" />
+                <Image x:Name="loadBackgroundImage" Source="/Images/Icons/folder.png" Height="20" Width="20" HorizontalAlignment="Right" MouseDown="loadBackgroundImage_MouseDown"/>
+            </DockPanel>
+            <TextBox IsReadOnly="True" Text="{Binding BackgroundImage}" DockPanel.Dock="Left"/>
+            <Image x:Name="backgroundImagePreview" Width="80" Height="60" Source="/Images/Themes/empty.png" Margin="0 10 0 0"/>
+            <Separator Margin="0 10" />
+            <DockPanel>
+                <Label Content="Background Logo" />
+                <Image x:Name="loadBackgroundLogo" Source="/Images/Icons/folder.png" Height="20" Width="20" HorizontalAlignment="Right" MouseDown="loadBackgroundLogo_MouseDown" />
+            </DockPanel>
+            <TextBox IsReadOnly="True" Text="{Binding BackgroundLogo}" DockPanel.Dock="Left"/>
+            <Image x:Name="backgroundLogoPreview" Width="80" Height="80" Source="/Images/Themes/empty.png" Margin="0 10 0 0"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="2" Margin="5">
+            <Label Content="ADDITIONAL" FontWeight="Bold" />
+            <CheckBox Content="Allow Transparency [EXTREME CARE]" IsChecked="{Binding AllowTransparency}" VerticalAlignment="Center" VerticalContentAlignment="Center" >
+                <CheckBox.ToolTip>
+                    <TextBlock>Using this feature will break the HTML Viewer and the Debugger Log!<LineBreak/>Only use this if you don't plan to create configs.<LineBreak/>This feature requires a restart of the program to be activated.</TextBlock>
+                </CheckBox.ToolTip>
+            </CheckBox>
+            <Label Content="Snow Options [ RESTART REQUIRED ]" />
+            <CheckBox Content="Enable Snow" IsChecked="{Binding EnableSnow}" VerticalAlignment="Center" VerticalContentAlignment="Center" />
+            <DockPanel DockPanel.Dock="Top">
+                <Label Content="Snow amount" />
+                <xctk:IntegerUpDown Background="Transparent" Width="50" Margin="10 0 0 0" Minimum="1" Maximum="100" Value="{Binding SnowAmount}" Foreground="{DynamicResource ForegroundMain}"  HorizontalAlignment="Right"/>
+            </DockPanel>
+        </StackPanel>
+    </Grid>
+</Page>

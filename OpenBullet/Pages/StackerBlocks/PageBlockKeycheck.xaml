@@ -1,0 +1,93 @@
+﻿<Page x:Class="OpenBullet.Pages.StackerBlocks.PageBlockKeycheck"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OpenBullet.Pages.StackerBlocks"
+      mc:Ignorable="d" 
+      d:DesignHeight="500" d:DesignWidth="400"
+      Title="PageBlockKeycheck">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <DockPanel>
+                <CheckBox Content="Insta Ban 4xx" IsChecked="{Binding Block.BanOn4XX}" VerticalContentAlignment="Center"/>
+                <CheckBox Content="Ban if no key found" IsChecked="{Binding Block.BanOnToCheck}" VerticalContentAlignment="Center"/>
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Keychains:" />
+                <Image x:Name="addKeychainImage" Height="15" Width="15" Source="/Images/Icons/plus.png" MouseDown="addKeychainImage_MouseDown" HorizontalAlignment="Left" Margin="5 0" />
+            </DockPanel>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1">
+            <ItemsControl Grid.Row="1" x:Name="keychainsControl" ItemsSource="{Binding KeychainList}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Background="{Binding KeychainColor}" Margin="5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="160" />
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <Image x:Name="removeKeychainImage" Tag="{Binding Id}" MouseDown="removeKeychainImage_MouseDown"  Source="/Images/Icons/minus.png" Height="15" Width="15"/>
+                                <Label Content="Type:" />
+                                <ComboBox x:Name="keychainTypeCombobox" Tag="{Binding Id}" Loaded="keychainTypeCombobox_Loaded" SelectionChanged="keychainTypeCombobox_SelectionChanged"/>
+                                <Label Content="Mode:" />
+                                <ComboBox x:Name="keychainModeCombobox" Tag="{Binding Id}" Loaded="keychainModeCombobox_Loaded" SelectionChanged="keychainModeCombobox_SelectionChanged"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 5">
+                                <DockPanel Visibility="{Binding CustomVisibility}">
+                                    <Label Content="Custom Type:" />
+                                    <ComboBox Tag="{Binding Id}" x:Name="customTypeCombobox" Text="CUSTOM" Loaded="customTypeCombobox_Loaded" SelectionChanged="customTypeCombobox_SelectionChanged" />
+                                </DockPanel>
+                                <Label Content="Keys" />
+                                <Image x:Name="addKeyImage" Tag="{Binding Id}" Source="/Images/Icons/plus.png" MouseDown="addKeyImage_MouseDown"  Height="15" Width="15"/>
+                            </StackPanel>
+
+                            <ScrollViewer Grid.Row="2">
+                                <ItemsControl ItemsSource="{Binding KeyList}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Vertical"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <Image Grid.Column="0" Tag="{Binding Id}" Source="/Images/Icons/minus.png" x:Name="removeKeyImage" MouseDown="removeKeyImage_MouseDown" Height="15" Width="15" />
+                                                <ComboBox Grid.Column="1" Tag="{Binding Id}" Text="{Binding LeftTerm}" IsEditable="True" x:Name="leftTermCombobox" Loaded="leftTermCombobox_Loaded"/>
+                                                <ComboBox Grid.Column="2" Tag="{Binding Id}" x:Name="conditionCombobox" SelectionChanged="conditionCombobox_SelectionChanged" Loaded="conditionCombobox_Loaded"/>
+                                                <TextBox Grid.Column="3" Text="{Binding RightTerm, UpdateSourceTrigger=PropertyChanged}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</Page>

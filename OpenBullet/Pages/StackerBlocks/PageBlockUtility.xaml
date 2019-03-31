@@ -1,0 +1,177 @@
+﻿<Page x:Class="OpenBullet.Pages.StackerBlocks.PageBlockUtility"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OpenBullet.Pages.StackerBlocks"
+      mc:Ignorable="d" 
+      d:DesignHeight="500" d:DesignWidth="400"
+      Title="PageBlockUtility">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <DockPanel>
+                <Label Content="Variable Name:"/>
+                <TextBox Text="{Binding VariableName, UpdateSourceTrigger=PropertyChanged}"/>
+            </DockPanel>
+            <CheckBox VerticalContentAlignment="Center" Content="Is Capture" IsChecked="{Binding IsCapture}"/>
+            <DockPanel Margin="0 0 0 5">
+                <Label Content="Group:"/>
+                <ComboBox x:Name="groupCombobox" SelectionChanged="groupCombobox_SelectionChanged"/>
+            </DockPanel>
+        </StackPanel>
+
+        <TabControl x:Name="groupTabControl" Grid.Row="1" Background="Transparent" BorderThickness="0">
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="{x:Type TabItem}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+            </TabControl.ItemContainerStyle>
+            <TabItem x:Name="emptyTab">
+                <StackPanel>
+                    <!-- EMPTY -->
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="listTab">
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Action:"/>
+                        <ComboBox x:Name="listActionCombobox" SelectionChanged="listActionCombobox_SelectionChanged"/>
+                    </DockPanel>
+
+                    <StackPanel>
+                        <DockPanel>
+                            <Label Content="List Variable Name:"/>
+                            <TextBox Text="{Binding ListName, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DockPanel>
+                    </StackPanel>
+
+                    <TabControl x:Name="listActionTabControl" Grid.Row="1" Background="Transparent" BorderThickness="0">
+                        <TabControl.ItemContainerStyle>
+                            <Style TargetType="{x:Type TabItem}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </Style>
+                        </TabControl.ItemContainerStyle>
+                        <TabItem x:Name="emptyTab2">
+                            <StackPanel>
+                                <!-- EMPTY -->
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem x:Name="joinTab">
+                            <StackPanel>
+                                <DockPanel>
+                                    <Label Content="Separator:"/>
+                                    <TextBox Text="{Binding Separator, UpdateSourceTrigger=PropertyChanged}"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem x:Name="zipTab">
+                            <StackPanel>
+                                <DockPanel>
+                                    <Label Content="Second List Name:"/>
+                                    <TextBox Text="{Binding SecondListName, UpdateSourceTrigger=PropertyChanged}"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem x:Name="addTab">
+                            <StackPanel>
+                                <DockPanel>
+                                    <Label Content="Item:"/>
+                                    <TextBox Text="{Binding ListItem, UpdateSourceTrigger=PropertyChanged}"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <Label Content="Index:"/>
+                                    <TextBox Text="{Binding ListIndex, UpdateSourceTrigger=PropertyChanged}"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem x:Name="removeTab">
+                            <StackPanel>
+                                <DockPanel>
+                                    <Label Content="Index:"/>
+                                    <TextBox Text="{Binding ListIndex, UpdateSourceTrigger=PropertyChanged}"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </TabItem>
+                    </TabControl>
+
+                </StackPanel>
+            </TabItem>
+
+            <TabItem x:Name="varTab">
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Action:"/>
+                        <ComboBox x:Name="varActionCombobox" SelectionChanged="varActionCombobox_SelectionChanged"/>
+                    </DockPanel>
+
+                    <StackPanel>
+                        <DockPanel>
+                            <Label Content="Variable Name:"/>
+                            <TextBox Text="{Binding VarName, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DockPanel>
+                    </StackPanel>
+
+                    <TabControl x:Name="varActionTabControl" Grid.Row="1" Background="Transparent" BorderThickness="0">
+                        <TabControl.ItemContainerStyle>
+                            <Style TargetType="{x:Type TabItem}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </Style>
+                        </TabControl.ItemContainerStyle>
+                        <TabItem x:Name="emptyTab3">
+                            <StackPanel>
+                                <!-- EMPTY -->
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem x:Name="splitTab">
+                            <StackPanel>
+                                <DockPanel>
+                                    <Label Content="Separator:"/>
+                                    <TextBox Text="{Binding Separator, UpdateSourceTrigger=PropertyChanged}"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </TabItem>
+                    </TabControl>
+
+                </StackPanel>
+            </TabItem>
+
+            <TabItem x:Name="conversionTab">
+                <StackPanel>
+                    <TextBox Text="{Binding InputString, UpdateSourceTrigger=PropertyChanged}" />
+                    <DockPanel>
+                        <Label Content="From:" DockPanel.Dock="Left" />
+                        <ComboBox x:Name="conversionFromCombobox" SelectionChanged="conversionFromCombobox_SelectionChanged" />
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="To:" DockPanel.Dock="Left" />
+                        <ComboBox x:Name="conversionToCombobox" SelectionChanged="conversionToCombobox_SelectionChanged" />
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="fileTab">
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Action:" DockPanel.Dock="Left" />
+                        <ComboBox x:Name="fileActionCombobox" SelectionChanged="fileActionCombobox_SelectionChanged" />
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Path:" DockPanel.Dock="Left"/>
+                        <TextBox Text="{Binding FilePath, UpdateSourceTrigger=PropertyChanged}" />
+                    </DockPanel>
+                    <Label Foreground="{DynamicResource ForegroundCustom}" Content="Path can be relative or absolute" />
+                    <DockPanel>
+                        <Label Content="Input String:" DockPanel.Dock="Left" />
+                        <TextBox Text="{Binding InputString, UpdateSourceTrigger=PropertyChanged}" />
+                    </DockPanel>
+                    <Label Foreground="{DynamicResource ForegroundCustom}" Content="Newline escape sequences will be evaluated. &quot;Lines&quot; accept LIST[*]." />
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>

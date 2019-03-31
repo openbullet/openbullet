@@ -1,0 +1,44 @@
+﻿<Page x:Class="OpenBullet.RLSettingsSelenium"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      xmlns:local="clr-namespace:OpenBullet"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="780"
+      Title="RLSettingsSelenium">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" Margin="5">
+            <Label Content="Browser Type" />
+            <ComboBox x:Name="browserTypeCombobox" SelectionChanged="browserTypeCombobox_SelectionChanged"/>
+            <CheckBox Content="Headless Mode" IsChecked="{Binding Headless}" VerticalContentAlignment="Center"/>
+            <CheckBox Content="Draw Mouse Movement" IsChecked="{Binding DrawMouseMovement}" VerticalContentAlignment="Center"/>
+            <Label Content="Chrome Binary Location:"/>
+            <TextBox Text="{Binding ChromeBinaryLocation}" />
+            <Label Content="Firefox Binary Location:"/>
+            <TextBox Text="{Binding FirefoxBinaryLocation}" />
+            <DockPanel DockPanel.Dock="Top">
+                <Label Content="Default Timeout" />
+                <xctk:IntegerUpDown Background="Transparent" Width="50" Margin="10 0 0 0" Minimum="1" Maximum="100" Value="{Binding PageLoadTimeout}" Foreground="{DynamicResource ForegroundMain}"  HorizontalAlignment="Right"/>
+            </DockPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Margin="5">
+            <Label Content="Chrome Extensions:" >
+                <Label.ToolTip>
+                    <TextBlock>One filename per line, example:<LineBreak/>extension1.crx<LineBreak/>extension2.crx</TextBlock>
+                </Label.ToolTip>
+            </Label>
+            <TextBox x:Name="extensionsBox" AcceptsReturn="True" TextWrapping="Wrap" Height="100" VerticalScrollBarVisibility="Auto" TextChanged="extensionsBox_TextChanged"/>
+            <Label Foreground="{DynamicResource ForegroundCustom}" Content="NOTE: The .crx files need to be in the ChromeExtensions subfolder."/>
+            <Label Foreground="{DynamicResource ForegroundBad}" Content="WARNING: Extensions ONLY work when using Chrome in non-headless mode" />
+        </StackPanel>
+    </Grid>
+</Page>

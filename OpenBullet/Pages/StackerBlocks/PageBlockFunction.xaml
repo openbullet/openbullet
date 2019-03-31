@@ -1,0 +1,178 @@
+﻿<Page x:Class="OpenBullet.Pages.StackerBlocks.PageBlockFunction"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OpenBullet.Pages.StackerBlocks"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      mc:Ignorable="d" 
+      d:DesignHeight="500" d:DesignWidth="400"
+      Title="PageBlockFunction">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="0">
+            <DockPanel>
+                <Label Content="Variable Name:"/>
+                <TextBox Text="{Binding VariableName, UpdateSourceTrigger=PropertyChanged}"/>
+            </DockPanel>
+            <DockPanel Margin="0 5 0 0">
+                <Label Content="Input string:"/>
+                <TextBox Text="{Binding InputString, UpdateSourceTrigger=PropertyChanged}" ToolTip="For whole lists use the syntax &lt;LISTNAME[*]&gt;"/>
+            </DockPanel>
+            <CheckBox VerticalContentAlignment="Center" Content="Is Capture" IsChecked="{Binding IsCapture}"/>
+            <DockPanel Margin="0 0 0 5">
+                <Label Content="Function:"/>
+                <ComboBox x:Name="functionTypeCombobox" SelectionChanged="functionTypeCombobox_SelectionChanged"/>
+            </DockPanel>
+        </StackPanel>
+
+        <TabControl x:Name="functionTabControl" Grid.Row="1" Background="Transparent" BorderThickness="0">
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="{x:Type TabItem}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+            </TabControl.ItemContainerStyle>
+            <TabItem x:Name="emptyTab">
+                <StackPanel>
+                    <!-- EMPTY -->
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="hashTab">
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Hash Type:"/>
+                        <ComboBox x:Name="hashTypeCombobox" SelectionChanged="hashTypeCombobox_SelectionChanged"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="hmacTab">
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Hash Type:"/>
+                        <ComboBox x:Name="hmacHashTypeCombobox" SelectionChanged="hmacHashTypeCombobox_SelectionChanged"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 5 0 0">
+                        <Label Content="HMAC Key:"/>
+                        <TextBox Text="{Binding HmacKey, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <CheckBox VerticalContentAlignment="Center" Content="Output Base64" IsChecked="{Binding HmacBase64}" ToolTip="Whether to output with base64 encoding instead of hex encoding"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="translateTab">
+                <StackPanel>
+                    <CheckBox Content="Stop after the first match" IsChecked="{Binding StopAfterFirstMatch}" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="Dictionary:" />
+                    <RichTextBox x:Name="dictionaryRTB" FontFamily="Consolas" Height="250" VerticalScrollBarVisibility="Auto" TextChanged="dictionaryRTB_TextChanged" Background="{DynamicResource BackgroundSecondary}" Foreground="{DynamicResource ForegroundMain}" >
+                        <RichTextBox.Resources>
+                            <Style TargetType="{x:Type Paragraph}">
+                                <Setter Property="Margin" Value="0"/>
+                            </Style>
+                        </RichTextBox.Resources>
+                        <RichTextBox.ToolTip>
+                            <TextBlock>Syntax:<LineBreak/>original: translated</TextBlock>
+                        </RichTextBox.ToolTip>
+                    </RichTextBox>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="dateToUnixTimeTab">
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Date Format:"/>
+                        <TextBox Text="{Binding DateFormat, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.ToolTip>
+                                <TextBlock>Key characters:<LineBreak/>y: year<LineBreak/>M: month<LineBreak/>d: day<LineBreak/>h: hour<LineBreak/>m: minute<LineBreak/>s: second</TextBlock>
+                            </TextBox.ToolTip>
+                        </TextBox>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="stringReplaceTab">
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Replace:"/>
+                        <TextBox Text="{Binding ReplaceWhat, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 5 0 0">
+                        <Label Content="With:"/>
+                        <TextBox Text="{Binding ReplaceWith, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <CheckBox Content="Regex" IsChecked="{Binding UseRegex}" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="regexMatchTab">
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Match:"/>
+                        <TextBox Text="{Binding RegexMatch, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="randomNumberTab">
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Min:"/>
+                        <xctk:IntegerUpDown Value="{Binding RandomMin}" Minimum="0" Maximum="2147483647" Width="80" HorizontalAlignment="Left"/>
+                        <Label Content="Max:"/>
+                        <xctk:IntegerUpDown Value="{Binding RandomMax}" Minimum="0" Maximum="2147483647" Width="80" HorizontalAlignment="Left"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="countOccurrencesTab">
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Find:"/>
+                        <TextBox Text="{Binding StringToFind, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="rsaTab">
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Modulus:"/>
+                        <TextBox Text="{Binding RSAMod, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 5 0 0">
+                        <Label Content="Exponent:"/>
+                        <TextBox Text="{Binding RSAExp, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="charAtTab">
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Index:"/>
+                        <TextBox Text="{Binding CharIndex, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="substringTab">
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Start Index:"/>
+                        <TextBox Text="{Binding SubstringIndex, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 5 0 0">
+                        <Label Content="Length:"/>
+                        <TextBox Text="{Binding SubstringLength, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="aesTab">
+                <StackPanel>
+                    <DockPanel Margin="0 5 0 0">
+                        <Label Content="AES Key:"/>
+                        <TextBox Text="{Binding AesKey, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
+        <TextBlock Grid.Row="2" x:Name="functionInfoTextblock" TextWrapping="WrapWithOverflow" Foreground="{DynamicResource ForegroundMain}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Grid>
+</Page>

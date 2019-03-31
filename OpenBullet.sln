@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenBullet", "OpenBullet\OpenBullet.csproj", "{99E40E7F-00A4-4FB1-9441-B05A56C47C08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuriLib", "RuriLib\RuriLib.csproj", "{17E95D0B-C1FD-445C-9FDF-244AF7299A67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenBulletCLI", "OpenBulletCLI\OpenBulletCLI.csproj", "{0B6D8B01-861E-4CAF-B1C9-6670884381DB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99E40E7F-00A4-4FB1-9441-B05A56C47C08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99E40E7F-00A4-4FB1-9441-B05A56C47C08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99E40E7F-00A4-4FB1-9441-B05A56C47C08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99E40E7F-00A4-4FB1-9441-B05A56C47C08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17E95D0B-C1FD-445C-9FDF-244AF7299A67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17E95D0B-C1FD-445C-9FDF-244AF7299A67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17E95D0B-C1FD-445C-9FDF-244AF7299A67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17E95D0B-C1FD-445C-9FDF-244AF7299A67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B6D8B01-861E-4CAF-B1C9-6670884381DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B6D8B01-861E-4CAF-B1C9-6670884381DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B6D8B01-861E-4CAF-B1C9-6670884381DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B6D8B01-861E-4CAF-B1C9-6670884381DB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D3B9D7E8-3A43-46E9-8A81-FF84254697A0}
+	EndGlobalSection
+EndGlobal

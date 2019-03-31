@@ -1,0 +1,141 @@
+﻿<Page x:Class="OpenBullet.Pages.StackerBlocks.PageBlockParse"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      xmlns:conv="clr-namespace:OpenBullet.Converters"
+      xmlns:ruri="clr-namespace:RuriLib;assembly=RuriLib"
+      mc:Ignorable="d" 
+      d:DesignHeight="500" d:DesignWidth="400"
+      Title="PageBlockParse">
+
+    <Grid>
+        <Grid.Resources>
+            <conv:EnumBooleanConverter x:Key="ComparisonConverter"/>
+            <conv:BooleanBrushConverter x:Key="BrushConverter"/>
+        </Grid.Resources>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="Parse:"/>
+                <TextBox DockPanel.Dock="Left" Text="{Binding ParseTarget, UpdateSourceTrigger=PropertyChanged}" />
+            </DockPanel>
+            <DockPanel>
+                <CheckBox VerticalContentAlignment="Center" DockPanel.Dock="Left" Content="Is Capture" IsChecked="{Binding IsCapture}" Foreground="{Binding Path=IsCapture, Converter={StaticResource BrushConverter}}"/>
+                <Label DockPanel.Dock="Left" Content="Var/Cap Name:" Margin="5 0 0 0" />
+                <TextBox DockPanel.Dock="Left" Text="{Binding VariableName, UpdateSourceTrigger=PropertyChanged}" />
+            </DockPanel>
+
+            <Grid Margin="0 5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <DockPanel Grid.Column="0">
+                    <Label DockPanel.Dock="Left" Content="Prefix:" />
+                    <TextBox DockPanel.Dock="Left" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
+                </DockPanel>
+
+                <DockPanel Grid.Column="1">
+                    <Label DockPanel.Dock="Left" Content="Suffix:" />
+                    <TextBox DockPanel.Dock="Left" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
+                </DockPanel>
+
+            </Grid>
+
+            <DockPanel Grid.Column="1">
+                <Label Content="Mode:" />
+                <RadioButton x:Name="LRRadio" Content="LR" IsChecked="{Binding Path=Type, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static ruri:ParseType.LR}}" Checked="LRRadio_Checked" Margin="3 0"/>
+                <RadioButton x:Name="CSSRadio" Content="CSS" IsChecked="{Binding Path=Type, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static ruri:ParseType.CSS}}" Checked="CSSRadio_Checked" Margin="3 0"/>
+                <RadioButton x:Name="JSONRadio" Content="JSON" IsChecked="{Binding Path=Type, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static ruri:ParseType.JSON}}" Checked="JSONRadio_Checked" Margin="3 0"/>
+                <RadioButton x:Name="REGEXRadio" Content="REGEX" IsChecked="{Binding Path=Type, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static ruri:ParseType.REGEX}}" Checked="REGEXRadio_Checked" Margin="3 0"/>
+            </DockPanel>
+
+            <TabControl x:Name="typeTabControl" Grid.Row="1" Background="Transparent" BorderThickness="0">
+                <TabControl.ItemContainerStyle>
+                    <Style TargetType="{x:Type TabItem}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </Style>
+                </TabControl.ItemContainerStyle>
+                <TabItem>
+                    <StackPanel>
+                        <DockPanel>
+                            <Label Content="Left string:" />
+                            <TextBox Text="{Binding LeftString, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <Label Content="Right string:" />
+                            <TextBox Text="{Binding RightString, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
+                            <CheckBox Content="Use Regex" IsChecked="{Binding UseRegexLR}" VerticalContentAlignment="Center" >
+                                <CheckBox.ToolTip>
+                                    <TextBlock>Whether the program matches the LEFT and RIGHT strings through a regex pattern<LineBreak /> or with simple string in string searches</TextBlock>
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                        </DockPanel>
+                        <Label Content="Automatic mode:" />
+
+                        <RichTextBox Height="200" x:Name="LRRTB" FontFamily="Consolas" Foreground="{DynamicResource ForegroundMain}" Background="{DynamicResource BackgroundSecondary}" KeyUp="LRRTB_KeyUp">
+                            <RichTextBox.Resources>
+                                <Style TargetType="{x:Type Paragraph}">
+                                    <Setter Property="Margin" Value="0"/>
+                                </Style>
+                            </RichTextBox.Resources>
+                            <RichTextBox.ToolTip>
+                                <TextBlock>You can paste the source code in this box, and highlight the part you want to parse.<LineBreak />When the SHIFT key is released, the program will try to automatically determine the LEFT and RIGHT strings</TextBlock>
+                            </RichTextBox.ToolTip>
+                        </RichTextBox>
+                    </StackPanel>
+                </TabItem>
+                <TabItem>
+                    <StackPanel>
+                        <DockPanel>
+                            <Label Content="Selector:" />
+                            <TextBox Text="{Binding CssSelector, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                        <DockPanel>
+                            <Label Content="Attribute:" />
+                            <TextBox Text="{Binding AttributeName, UpdateSourceTrigger=PropertyChanged}" ToolTip="If you want to parse stuff directly inside the element, write innerHTML"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <Label Content="Index:" />
+                            <xctk:IntegerUpDown Value="{Binding CssElementIndex}" HorizontalAlignment="Right" Width="60" />
+                        </DockPanel>
+                        <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
+                    </StackPanel>
+                </TabItem>
+                <TabItem>
+                    <StackPanel>
+                        <DockPanel>
+                            <Label Content="Field Name:"/>
+                            <TextBox Text="{Binding JsonField, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DockPanel>
+                        <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
+                    </StackPanel>
+                </TabItem>
+                <TabItem>
+                    <StackPanel>
+                        <DockPanel>
+                            <Label Content="Regex:" />
+                            <TextBox Text="{Binding RegexString, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                        <DockPanel>
+                            <Label Content="Output:" />
+                            <TextBox Text="{Binding RegexOutput, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                        <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </StackPanel>
+    </Grid>
+</Page>
