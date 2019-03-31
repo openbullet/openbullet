@@ -11,12 +11,11 @@ OpenBullet is a webtesting suite that allows to perform requests towards a targe
 1. Clone the [official Extreme.Net repository](https://github.com/nickolasKrayn/Extreme.Net).
 2. **Compile** it and obtain the **Extreme.Net.dll** file. You will find it inside the folder Extreme.Net/bin/Debug.
 3. **Clone this repository** and open it in Visual Studio.
-4. **Wait** until Visual Studio fetches all the required nuget packages.
-5. Right click on each of the 3 projects and from the menu select **Add > Reference**.
-6. Add the previously compiled **Extreme.Net.dll** file and click OK.
-7. Switch to **Release** mode for a much cleaner output.
-8. **Compile** the solution.
-9. You can find the compiled projects under OpenBullet/bin/Release and OpenBulletCLI/bin/Release.
+4. Right click on each of the 3 projects and from the menu select **Add > Reference**.
+5. Add the previously compiled **Extreme.Net.dll** file and click OK.
+6. Switch to **Release** mode for a much cleaner output.
+7. **Compile** the solution (Visual Studio will fetch all the missing nuget packages).
+8. You can find the compiled projects under OpenBullet/bin/Release and OpenBulletCLI/bin/Release.
 
 # License
 This software is licensed under the MIT License.
