@@ -27,4 +27,4 @@ If you like this software, consider making a donation to the developer. Thank yo
 - BTC: **39yMkox6pP8tnSC7rZ5EM4nUUHgPbg1fKM**
 
 # Credits
-I want to thank all the community for their inputs that shaped OpenBullet into what it is now, and my gratitude goes towards **demiurgo** and **meinname**, who spent a lot of time helping me test and debug the builds prior to the open source release.
+I want to thank all the community for their inputs that shaped OpenBullet into what it is now, and my gratitude goes towards **demiurgo** and **meinname**, who spent a lot of time helping me test and debug the Beta builds.
