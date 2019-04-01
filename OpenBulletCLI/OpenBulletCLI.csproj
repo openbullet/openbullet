@@ -48,7 +48,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>BBlogoIcon.ico</ApplicationIcon>
+    <ApplicationIcon>OBlogoIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Colorful.Console, Version=1.2.9.0, Culture=neutral, processorArchitecture=MSIL">
@@ -81,8 +81,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BBlogo.ico" />
-    <Content Include="BBlogoIcon.ico" />
+    <Content Include="OBlogo.ico" />
+    <Content Include="OBlogoIcon.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RuriLib\RuriLib.csproj">
