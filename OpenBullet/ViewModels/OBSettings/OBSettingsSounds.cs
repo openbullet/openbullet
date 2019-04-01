@@ -11,9 +11,9 @@ namespace OpenBullet.ViewModels
     {
         private bool enableSounds = false;
         public bool EnableSounds { get { return enableSounds; } set { enableSounds = value; OnPropertyChanged(); } }
-        private string onHitSound = "riflehit.wav";
+        private string onHitSound = "rifle_hit.wav";
         public string OnHitSound { get { return onHitSound; } set { onHitSound = value; OnPropertyChanged(); } }
-        private string onReloadSound = "riflereload.wav";
+        private string onReloadSound = "rifle_reload.wav";
         public string OnReloadSound { get { return onReloadSound; } set { onReloadSound = value; OnPropertyChanged(); } }
     }
 }

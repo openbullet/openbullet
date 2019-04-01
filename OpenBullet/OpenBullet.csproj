@@ -68,7 +68,7 @@
     </Reference>
     <Reference Include="Extreme.Net, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Extreme-original\Extreme.Net\bin\Debug\Extreme.Net.dll</HintPath>
+      <HintPath>..\..\..\Extreme.Net-master\Extreme.Net-master\bin\Release\Extreme.Net.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.5.0.4\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
