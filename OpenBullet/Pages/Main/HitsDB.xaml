@@ -69,6 +69,7 @@
             <ListView.Resources>
                 <Style x:Key="GridViewColumnHeaderGripper" TargetType="Thumb">
                     <Setter Property="Width" Value="18" />
+                    <Setter Property="IsHitTestVisible" Value="False"/>
                     <Setter Property="Background">
                         <Setter.Value>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
