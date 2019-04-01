@@ -181,11 +181,12 @@ namespace RuriLib
             catch { throw new ArgumentException("Variable name not specified"); }
 
             // Parse the prefix and suffix
-            if (LineParser.ParseToken(ref input, TokenType.Literal, false, false) == "")
-                return this;
-
-            Prefix = LineParser.ParseLiteral(ref input, "PREFIX");
-            Suffix = LineParser.ParseLiteral(ref input, "SUFFIX");
+            try
+            {
+                Prefix = LineParser.ParseLiteral(ref input, "PREFIX");
+                Suffix = LineParser.ParseLiteral(ref input, "SUFFIX");
+            }
+            catch { }
 
             return this;
         }
