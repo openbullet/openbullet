@@ -1012,7 +1012,7 @@ namespace RuriLib
             // Loop through all instances of the string 'text'.
             int count = 0;
             int i = 0;
-            while ((i = text.IndexOf(text, i)) != -1)
+            while ((i = input.IndexOf(text, i)) != -1)
             {
                 i += text.Length;
                 count++;
