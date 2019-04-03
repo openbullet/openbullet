@@ -60,15 +60,15 @@ namespace OpenBullet.Pages.StackerBlocks
             switch (vm.RequestType)
             {
                 default:
-                    requestTypeTabControl.SelectedIndex = 0;
-                    break;
-
-                case RequestType.Standard:
                     requestTypeTabControl.SelectedIndex = 1;
                     break;
 
-                case RequestType.Multipart:
+                case RequestType.Standard:
                     requestTypeTabControl.SelectedIndex = 2;
+                    break;
+
+                case RequestType.Multipart:
+                    requestTypeTabControl.SelectedIndex = 3;
                     break;
             }
         }

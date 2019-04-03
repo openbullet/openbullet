@@ -51,6 +51,18 @@
                         <!-- EMPTY -->
                     </StackPanel>
                 </TabItem>
+                <TabItem x:Name="basicAuthTab">
+                    <StackPanel>
+                        <DockPanel Margin="0 5 0 0">
+                            <Label Content="Username:" />
+                            <TextBox Text="{Binding AuthUser, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                        <DockPanel Margin="0 5 0 0">
+                            <Label Content="Password:" />
+                            <TextBox Text="{Binding AuthPass, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                    </StackPanel>
+                </TabItem>
                 <TabItem x:Name="standardTab">
                     <StackPanel>
                         <DockPanel Margin="0 5 0 0">
