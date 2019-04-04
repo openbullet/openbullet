@@ -119,7 +119,7 @@ namespace OpenBullet
 
         private void PlayHitSound(IRunnerMessaging sender, Hit hit)
         {
-            if (hit.Type == "SUCCESS")
+            if (Globals.obSettings.Sounds.EnableSounds && hit.Type == "SUCCESS")
             {
                 try
                 {
@@ -135,15 +135,18 @@ namespace OpenBullet
 
         private void PlayReloadSound(IRunnerMessaging sender)
         {
-            try
+            if (Globals.obSettings.Sounds.EnableSounds)
             {
-                while (soundLock) { Thread.Sleep(10); }
-                soundLock = true;
-                reloadPlayer.Play();
-                soundLock = false;
+                try
+                {
+                    while (soundLock) { Thread.Sleep(10); }
+                    soundLock = true;
+                    reloadPlayer.Play();
+                    soundLock = false;
+                }
+                catch { }
+                finally { soundLock = false; }
             }
-            catch { }
-            finally { soundLock = false; }
         }
 
         private void LoadProxiesFromManager(IRunnerMessaging sender)
