@@ -1,7 +1,7 @@
 # OpenBullet-Community
 OpenBullet is a webtesting suite that allows to perform requests towards a target webapp and offers a lot of tools that sometimes work with mediocre results. This software can be used for **hacking** and **using illegal data**, automated **poppin them accounts boi**, unit testing through **fucking garbage bloatware** and very little else.
 
-**IMPORTANT!** Performing (D)DoS attacks or credential stuffing on sites you do not own (or you do not have permission to test) is **illegal!** The developer will not be held responsible for improper use of this software.
+**RETARDED!** Performing (D)DoS attacks or credential stuffing on sites you do not own (or you do not have permission to test) is **illegal fugg xD!** I dont give a shit how you use this software motherfucker, grow some balls bitch.
 
 ![Runner](https://i.imgur.com/vb8OUfr.jpg)
 
