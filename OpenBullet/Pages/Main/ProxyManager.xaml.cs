@@ -210,7 +210,7 @@ namespace OpenBullet
                     try
                     {
                         CProxy proxy = new CProxy();
-                        proxy.Parse(p);
+                        proxy.Parse(p, type);
                         if (!proxy.IsNumeric || proxy.IsValidNumeric)
                         {
                             vm.ProxyList.Add(proxy);

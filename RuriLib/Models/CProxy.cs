@@ -119,8 +119,9 @@ namespace RuriLib.Models
         /// Parses a CProxy object from an advanced string. Supports Proxy Chains.
         /// </summary>
         /// <param name="proxy">The string to parse the proxy from</param>
+        /// <param name="defaultType">The default type to use when not specified</param>
         /// <returns>The parsed CProxy object</returns>
-        public CProxy Parse(string proxy)
+        public CProxy Parse(string proxy, ProxyType defaultType = ProxyType.Http)
         {
             // Take the first proxy of the chain
             var chain = proxy.Split(new string[] { "->" }, 2, StringSplitOptions.None);
@@ -133,6 +134,10 @@ namespace RuriLib.Models
                 Enum.TryParse<ProxyType>(groups[1].Value, true, out var type);
                 Type = type;
                 current = current.Replace($"({groups[1].Value})", "");
+            }
+            else // Otherwise set the default type passed
+            {
+                Type = defaultType;
             }
 
             // Split the host:port:user:pass portion and set the first two
@@ -149,7 +154,7 @@ namespace RuriLib.Models
             // If the chain is not finished, set the next proxy by parsing recursively
             if (chain.Count() > 1)
             {
-                Next = (new CProxy()).Parse(chain[1]);
+                Next = (new CProxy()).Parse(chain[1], defaultType);
             }
 
             // Finally return this proxy
