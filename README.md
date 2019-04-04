@@ -20,4 +20,4 @@ Just go to the releases section and download the latest version available
 This software is licensed under the MIT License.
 
 # Credits
-Ruri for all his works on OpenBullet v1 and Updates! His Multi is just amazing and he deserve some donations to his BTC: **39yMkox6pP8tnSC7rZ5EM4nUUHgPbg1fKM** 
+Ruri for all his works on OpenBullet v1 and Updates! His Bruteforcer is just amazing and he deserve some donations to his BTC: **39yMkox6pP8tnSC7rZ5EM4nUUHgPbg1fKM** 
