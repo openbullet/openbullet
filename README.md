@@ -7,7 +7,7 @@ OpenBullet is a webtesting suite that allows to perform requests towards a targe
 
 [Here](https://openbullet.github.io) you can find the complete documentation for **usage**, **config making** and the **RuriLib API**.
 
-Found a bug? ![Create an issue!](https://help.github.com/en/articles/creating-an-issue)
+Found a bug? [Create an issue!](https://help.github.com/en/articles/creating-an-issue)
 
 # How to compile
 1. Clone the [official Extreme.Net repository](https://github.com/nickolasKrayn/Extreme.Net).
