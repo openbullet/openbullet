@@ -119,15 +119,18 @@ namespace OpenBullet
 
         private void PlayHitSound(IRunnerMessaging sender, Hit hit)
         {
-            try
+            if (hit.Type == "SUCCESS")
             {
-                while (soundLock) { Thread.Sleep(10); }
-                soundLock = true;
-                hitPlayer.Play();
-                soundLock = false;
+                try
+                {
+                    while (soundLock) { Thread.Sleep(10); }
+                    soundLock = true;
+                    hitPlayer.Play();
+                    soundLock = false;
+                }
+                catch { }
+                finally { soundLock = false; }
             }
-            catch { }
-            finally { soundLock = false; }
         }
 
         private void PlayReloadSound(IRunnerMessaging sender)
