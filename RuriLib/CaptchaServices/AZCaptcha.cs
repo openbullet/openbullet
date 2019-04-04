@@ -53,7 +53,7 @@ namespace RuriLib.CaptchaServices
                     Thread.Sleep(5000);
                     response = client.DownloadString($"http://azcaptcha.com/res.php?key={ApiKey}&action=get&id={TaskId}&json=1");
                     GenericResponse gtrr = JsonConvert.DeserializeObject<GenericResponse>(response);
-                    if (gtrr.request.Contains("NOTREADY")) continue;
+                    if (gtrr.request.Contains("NOT_READY")) continue;
                     if (gtrr.status == 0) throw new Exception(gtrr.request);
                     Status = CaptchaStatus.Completed;
                     return gtrr.request;
@@ -84,7 +84,7 @@ namespace RuriLib.CaptchaServices
                     Thread.Sleep(5000);
                     response = client.DownloadString($"http://azcaptcha.com/res.php?key={ApiKey}&action=get&id={TaskId}&json=1");
                     GenericResponse gtrr = JsonConvert.DeserializeObject<GenericResponse>(response);
-                    if (gtrr.request.Contains("NOTREADY")) continue;
+                    if (gtrr.request.Contains("NOT_READY")) continue;
                     if (gtrr.status == 0) throw new Exception(gtrr.request);
                     Status = CaptchaStatus.Completed;
                     return gtrr.request;
