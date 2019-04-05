@@ -588,7 +588,7 @@ namespace RuriLib.Runner
                     if (currentProxy == null)
                     {
                         // If we can reload them from the proxy source
-                        if (Settings.Proxies.Reload && Config.Settings.MaxProxyUses == 0)
+                        if (Settings.Proxies.Reload)
                         {
                             // If no one else is already reloading the proxies, reload them
                             if (!IsReloadingProxies)
