@@ -59,7 +59,7 @@
     </Reference>
     <Reference Include="Extreme.Net, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Extreme.Net-master\Extreme.Net-master\bin\Release\Extreme.Net.dll</HintPath>
+      <HintPath>D:\Extreme.Net\Extreme.Net-master\bin\Release\Extreme.Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
