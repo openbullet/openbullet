@@ -106,6 +106,7 @@
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(TargetDir)bin" mkdir "$(TargetDir)bin"
 if $(ConfigurationName) == Release move "$(TargetDir)*.dll" "$(TargetDir)bin\"
+if $(ConfigurationName) == Release move "$(TargetDir)*driver.exe" "$(TargetDir)bin\"
 if not exist "$(TargetDir)Settings" mkdir "$(TargetDir)Settings"
 if not exist "$(TargetDir)Settings\Environment.ini" copy "$(ProjectDir)DefaultEnvFile.ini" "$(TargetDir)Settings\Environment.ini"</PostBuildEvent>
   </PropertyGroup>
