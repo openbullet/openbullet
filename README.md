@@ -21,3 +21,5 @@ This software is licensed under the MIT License.
 
 # Credits
 Ruri for all his works on OpenBullet v1 and Updates! His Bruteforcer is just amazing and he deserve some donations to his BTC: **39yMkox6pP8tnSC7rZ5EM4nUUHgPbg1fKM** 
+
+And Maybe if you like My Works here is my BTC: **1DYArZHdWhFZadeNtqettpQx2VMVt5rkk2**
