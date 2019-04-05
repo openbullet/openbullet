@@ -166,7 +166,7 @@ namespace RuriLib.LS
 
             foreach (var block in blocks)
             {
-                Script += block.ToLS() + Environment.NewLine;
+                Script += block.ToLS() + Environment.NewLine + Environment.NewLine;
             }
         }
         #endregion
