@@ -16,14 +16,20 @@
             <RowDefinition Height="80" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Grid Width="578">
-                <Label Content="Current Config:" FontWeight="Bold" Margin="0,2,404,2"/>
-                <Label Content="{Binding CurrentConfigName}" Margin="99,2,203,2" FontWeight="Bold" Height="26"/>
-                <Label Content="Total Configs:" Margin="309,2,183,2" FontWeight="Bold" VerticalAlignment="Center"/>
-                <Label Content="{Binding Total}" VerticalAlignment="Center" Margin="395,2,32,2" />
-            </Grid>
-        </StackPanel>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Column="0">
+                <Label Content="Current Config:" FontWeight="Bold"/>
+                <Label Content="{Binding CurrentConfigName}" FontWeight="Bold" Height="26"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="1">
+                <Label Content="Total Configs:" FontWeight="Bold" VerticalAlignment="Center"/>
+                <Label Content="{Binding Total}" VerticalAlignment="Center" />
+            </StackPanel>
+        </Grid>
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
