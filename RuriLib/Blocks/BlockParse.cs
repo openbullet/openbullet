@@ -338,7 +338,7 @@ namespace RuriLib
 
                     HtmlParser parser = new HtmlParser();
                     AngleSharp.Dom.Html.IHtmlDocument document = null;
-                    try { document = parser.Parse(parseTarget); } catch { list.Add(""); }
+                    try { document = parser.Parse(original); } catch { list.Add(""); }
 
                     try
                     {

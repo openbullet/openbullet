@@ -813,6 +813,7 @@
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(TargetDir)bin" mkdir "$(TargetDir)bin"
 if $(ConfigurationName) == Release move "$(TargetDir)*.dll" "$(TargetDir)bin\"
+if $(ConfigurationName) == Release move "$(TargetDir)*driver.exe" "$(TargetDir)bin\"
 if exist "$(TargetDir)de" RD /S /Q "$(TargetDir)de"
 if exist "$(TargetDir)es" RD /S /Q "$(TargetDir)es"
 if exist "$(TargetDir)fr" RD /S /Q "$(TargetDir)fr"

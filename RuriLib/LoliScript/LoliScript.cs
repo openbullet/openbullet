@@ -166,7 +166,7 @@ namespace RuriLib.LS
 
             foreach (var block in blocks)
             {
-                Script += block.ToLS() + Environment.NewLine;
+                Script += block.ToLS() + Environment.NewLine + Environment.NewLine;
             }
         }
         #endregion
@@ -516,7 +516,7 @@ namespace RuriLib.LS
                             {
                                 // Add it to the variables and print info
                                 var value = scope.GetVariable(name);
-                                data.Variables.Set(new CVar(name, (value.GetType() == typeof(string[])) ? CVar.VarType.List : CVar.VarType.Single, value));
+                                data.Variables.Set(new CVar(name, (value.GetType() == typeof(string[])) ? CVar.VarType.List : CVar.VarType.Single, value.ToString()));
                                 data.Log(new LogEntry($"SET VARIABLE {name} WITH VALUE {value}", Colors.Yellow));
                             }
                             catch { data.Log(new LogEntry($"COULD NOT FIND VARIABLE {name}", Colors.Tomato)); }

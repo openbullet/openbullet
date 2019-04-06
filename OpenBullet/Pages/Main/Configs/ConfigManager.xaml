@@ -1,4 +1,4 @@
-﻿<Page x:Class="OpenBullet.ConfigManager"
+<Page x:Class="OpenBullet.ConfigManager"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -16,11 +16,21 @@
             <RowDefinition Height="80" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Label Content="Current Config:" FontWeight="Bold"/>
-            <Label Content="{Binding CurrentConfigName}" Margin="5 0 0 0" FontWeight="Bold"/>
-        </StackPanel>
-        
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Column="0">
+                <Label Content="Current Config:" FontWeight="Bold"/>
+                <Label Content="{Binding CurrentConfigName}" FontWeight="Bold" Height="26"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="1">
+                <Label Content="Total Configs:" FontWeight="Bold" VerticalAlignment="Center"/>
+                <Label Content="{Binding Total}" VerticalAlignment="Center" />
+            </StackPanel>
+        </Grid>
+
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -54,8 +64,7 @@
                         <TextBlock VerticalAlignment="Center" Margin="5 0">Delete</TextBlock>
                     </StackPanel>
                 </Button>
-                <Label Content="Total Configs:" Margin="0 0 5 0" FontWeight="Bold" VerticalAlignment="Center"/>
-                <Label Content="{Binding Total}" VerticalAlignment="Center" />
+                
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal">
