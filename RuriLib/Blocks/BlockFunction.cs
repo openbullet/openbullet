@@ -992,8 +992,8 @@ namespace RuriLib
                 if (line.Contains(':'))
                 {
                     var split = line.Split(new[] { ':' }, 2);
-                    var key = split[0].Trim();
-                    var val = split[1].Trim();
+                    var key = split[0];
+                    var val = split[1];
                     TranslationDictionary[key] = val;
                 }
             }
