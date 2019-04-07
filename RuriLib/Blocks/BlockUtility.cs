@@ -406,7 +406,7 @@ namespace RuriLib
                         switch (listAction)
                         {
                             case ListAction.Create:
-                                data.Variables.Set(new CVar(variableName, new List<string>()));
+                                data.Variables.Set(new CVar(variableName, new List<string>(), isCapture));
                                 break;
 
                             case ListAction.Join:
@@ -460,7 +460,7 @@ namespace RuriLib
                         {
                             case VarAction.Split:
                                 single = data.Variables.GetSingle(varName);
-                                data.Variables.Set(new CVar(variableName, single.Split(new string[] { ReplaceValues(separator, data) }, StringSplitOptions.None).ToList()));
+                                data.Variables.Set(new CVar(variableName, single.Split(new string[] { ReplaceValues(separator, data) }, StringSplitOptions.None).ToList(), isCapture));
                                 break;
                         }
                         data.Log(new LogEntry(string.Format("Executed action {0} on variable {1}", varAction, varName), Colors.White));
