@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using LiteDB;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace RuriLib.Models
 
         /// <summary>The list of all variables marked as Capture as a chained string.</summary>
         [JsonIgnore]
+        [BsonIgnore]
         public string CapturedString { get { return CapturedData.ToCaptureString(); } }
 
         /// <summary>The proxy that was used.</summary>
