@@ -32,7 +32,8 @@
                 this block will check if you defined a 2captcha API Key. If
                 it finds one, it will be used to solve the challenges. <LineBreak/><LineBreak/>
                 <Span Foreground="{DynamicResource ForegroundCustom}"><Bold>WARNING!</Bold><LineBreak/>
-                    This can quickly drain your 2captcha account if done by mistake!
+                    This can quickly drain your 2captcha account if done by mistake!<LineBreak/>
+                    Also Chain Proxies will not work with this block.
                 </Span>
             </TextBlock>
         </StackPanel>
