@@ -3,10 +3,11 @@ OpenBullet is a webtesting suite that allows to perform requests towards a targe
 
 **IMPORTANT!** Performing (D)DoS attacks or credential stuffing on sites you do not own (or you do not have permission to test) is **illegal!** The developer will not be held responsible for improper use of this software.
 
-![Runner](https://i.imgur.com/qK54XYo.png)
+![Runner](https://i.imgur.com/8HdLkJ5.png)
 ![ConfigEncryption](https://i.imgur.com/K7nTjdr.png)
-![LicensingSystem](https://i.imgur.com/UjegMpa.png)
-![LoliKeys](https://i.imgur.com/jddkx5R.png)
+![LicensingSystem](https://i.imgur.com/dWsGLH3.png)
+![proxies](https://i.imgur.com/VrVTBeW.png)
+![LoliKeys](https://i.imgur.com/8wB2m5w.png)
 
 
 [Here](https://openbullet.github.io) you can find the complete documentation for **usage**, **config making** and the **RuriLib API**.
