@@ -366,6 +366,7 @@ namespace RuriLib.Runner
             if (DataPool.Size == 0) throw new Exception("No data to process!");
             if (StartingPoint > DataPool.Size) throw new Exception("Illegal Starting Point!");
             if (Config.BlocksAmount == 0) throw new Exception("The Config has zero blocks!");
+            if (Config.AllowedWordlists == " | ") throw new Exception("Fix the Config allowed wordlists!");
 
             // Reset the stats
             NoProxyWarningSent = false;
