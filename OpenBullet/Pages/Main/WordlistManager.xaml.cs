@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -123,8 +124,24 @@ namespace OpenBullet
                 foreach(var file in files.Where(x => x.EndsWith(".txt")).ToArray())
                 {
                     try
-                    {                        
+                    {
+                        // Build the wordlist object
                         var wordlist = new Wordlist(Path.GetFileNameWithoutExtension(file), file, Globals.environment.WordlistTypes.First().Name, "");
+
+                        // Get the first line
+                        var first = File.ReadLines(wordlist.Path).First();
+
+                        // Set the correct wordlist type
+                        foreach(var type in Globals.environment.WordlistTypes)
+                        {
+                            if (Regex.Match(first, type.Regex).Success)
+                            {
+                                wordlist.Type = type.Name;
+                                break;
+                            }
+                        }
+
+                        // Add the wordlist to the manager
                         AddWordlist(wordlist);
                     }
                     catch { }

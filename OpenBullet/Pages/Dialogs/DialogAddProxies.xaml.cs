@@ -41,7 +41,7 @@ namespace OpenBullet
             {
                 ((ProxyManager)Caller).AddProxies(locationTextbox.Text,
                     (ProxyType)Enum.Parse(typeof(ProxyType), proxyTypeCombobox.Text),
-                    proxiesBox.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).ToList());
+                    proxiesBox.Text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList());
             }
             ((MainDialog)Parent).Close();
         }

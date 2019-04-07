@@ -186,7 +186,7 @@
                             <GridViewColumnHeader Tag="Date" Click="listViewColumnHeader_Click">Date</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
-                    <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=Wordlist}">
+                    <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=WordlistName}">
                         <GridViewColumn.Header>
                             <GridViewColumnHeader Tag="WordlistName" Click="listViewColumnHeader_Click">Wordlist</GridViewColumnHeader>
                         </GridViewColumn.Header>
