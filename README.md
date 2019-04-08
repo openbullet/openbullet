@@ -14,6 +14,10 @@ OpenBullet is a webtesting suite that allows to perform requests towards a targe
 
 Make sure to check out the original OpenBullet for all the latest updates v1.0 By Ruri https://github.com/openbullet/openbullet
 
+# Discord
+Join our discord and get in touch with me and with the other users ^^
+https://discord.gg/HxsFvxp
+
 # How to compile
 Just go to the releases section and download the latest version available
 
