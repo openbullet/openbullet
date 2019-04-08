@@ -1,18 +1,8 @@
-OpenBullet 1.2.1.2
+OpenBullet 1.2.1.3
 
-+Fixed a bug in the advanced licensing key now the usage is {ConfigName}Key1;Key2...{!ConfigName}
-+Fixed the Anti-Debuggers Bug
-+Added the default Environment.ini and made it auto for config makers also you won't be able to run a config unless you set an allowed wordlist to prevent any cracking bugs!
-+Updated the reference to the new Leaf.xNet package.
-+Added a warning to the Bypass CF block.
-+Fixed a couple issues with capture in utility block.
-+Added tip to TCP block.
-+Fixed issue in CF Bypass when not using a proxy.
-+Fixed issue when importing proxies with unix-like line endings.
-+Removed CapturedString from the DB entry as it was redundant.
-+Fixed the Wordlist column in Hits DB.
-+Added automatic type recognition when importing Wordlists through dra… …
-+Fixed the error when parsing a non existing field name in JSON.
-+Small fix for the translation function.
-+Fixed prompt when trying to load or make a config and the current one… …
-+Removed Trim when getting the translation dictionary.
+-Removed the Anti-debuggers as it caused several crashes.
+-Fixed a Crash issue on the config manager.
+-Content-Type header now can be used for GET Request as well (Make sure to write something in the PostData if you wan't it empty use " {} ")
+-Re-optimized several methods to prevent any upcoming crashes.
+-Added a Launcher with Auto-Updater.
+
