@@ -340,7 +340,7 @@ namespace RuriLib
 
                 case UtilityGroup.Variable:
                     writer
-                        .Literal(VariableName)
+                        .Literal(VarName)
                         .Token(VarAction);
 
                     switch (VarAction)
