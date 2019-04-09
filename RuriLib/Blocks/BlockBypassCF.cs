@@ -134,9 +134,12 @@ namespace RuriLib
             var clearanceCookie = cookies["cf_clearance"];
             var cfduidCookie = cookies["__cfduid"];
             data.Cookies.Add("cf_clearance", clearanceCookie.Value);
-            data.Proxy.Clearance = clearanceCookie.Value;
             data.Cookies.Add("__cfduid", cfduidCookie.Value);
-            data.Proxy.Cfduid = cfduidCookie.Value;
+            if (data.UseProxies)
+            {
+                data.Proxy.Clearance = clearanceCookie.Value;
+                data.Proxy.Cfduid = cfduidCookie.Value;
+            }
             data.Log(new LogEntry("Got Cloudflare clearance!", Colors.GreenYellow));
             data.Log(new LogEntry(clearanceCookie + Environment.NewLine + cfduidCookie + Environment.NewLine, Colors.White));
 

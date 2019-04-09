@@ -310,9 +310,6 @@ namespace OpenBullet
                 }
             }
 
-            if (Globals.mainWindow.ConfigsPage.StackerPage != null)
-                Globals.mainWindow.ConfigsPage.StackerPage.SetScript();
-
             if (!Globals.obSettings.General.DisableNotSavedWarning && !Globals.mainWindow.ConfigsPage.ConfigManagerPage.CheckSaved())
             {
                 Globals.LogWarning(Components.Main, "Config not saved, prompting quit confirmation");

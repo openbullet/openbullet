@@ -40,10 +40,10 @@ namespace OpenBullet
 
         public bool CheckSaved()
         {
-            if (Current == null ||
-                Globals.obSettings.General.DisableNotSavedWarning ||
-                Globals.mainWindow.ConfigsPage.StackerPage == null) return true;
-            var cvm = Globals.mainWindow.ConfigsPage.StackerPage.vm.Config;
+            var stacker = Globals.mainWindow.ConfigsPage.StackerPage;
+            if (Current == null || Globals.obSettings.General.DisableNotSavedWarning || stacker == null) return true;
+            stacker.SetScript();
+            var cvm = stacker.vm.Config;
             if (string.IsNullOrEmpty(vm.SavedConfig) || cvm == null) return true;
             return vm.SavedConfig == IOManager.SerializeConfig(cvm.Config);
         }
@@ -58,9 +58,6 @@ namespace OpenBullet
         {
             if (!CheckSaved())
             {
-                if (Globals.mainWindow.ConfigsPage.StackerPage != null)
-                    Globals.mainWindow.ConfigsPage.StackerPage.SetScript();
-
                 Globals.LogWarning(Components.Stacker, "Config not saved, prompting quit confirmation");
                 if (MessageBox.Show("The Config in Stacker wasn't saved.\nAre you sure you want to load another config?",
                     "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
@@ -183,6 +180,14 @@ namespace OpenBullet
 
         private void newConfigButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!CheckSaved())
+            {
+                Globals.LogWarning(Components.Stacker, "Config not saved, prompting quit confirmation");
+                if (MessageBox.Show("The Config in Stacker wasn't saved.\nAre you sure you want to create a new config?",
+                    "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                    return;
+            }
+
             (new MainDialog(new DialogNewConfig(this), "New Config")).ShowDialog();
         }
         

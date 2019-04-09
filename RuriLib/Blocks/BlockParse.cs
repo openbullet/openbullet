@@ -402,6 +402,8 @@ namespace RuriLib
                     foreach(var j in jsonlist)
                         if (j.Key == ReplaceValues(jsonField, data))
                             list.Add(j.Value);
+
+                    if (list.Count == 0) list.Add("");
                     break;
 
                 case ParseType.XPATH:

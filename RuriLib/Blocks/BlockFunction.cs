@@ -296,7 +296,7 @@ namespace RuriLib
                     if (LineParser.Lookahead(ref input) == TokenType.Boolean)
                         LineParser.SetBool(ref input, this);
                     TranslationDictionary = new Dictionary<string, string>();
-                    while (LineParser.Lookahead(ref input) == TokenType.Parameter)
+                    while (input != "" && LineParser.Lookahead(ref input) == TokenType.Parameter)
                     {
                         LineParser.EnsureIdentifier(ref input, "KEY");
                         var k = LineParser.ParseLiteral(ref input, "Key");
@@ -660,7 +660,8 @@ namespace RuriLib
                 outputs.Add(outputString);
             }
 
-            InsertVariables(data, isCapture, outputs.Count > 1, outputs, variableName, "", "");
+            var isList = outputs.Count > 1 || InputString.Contains("[*]") || InputString.Contains("(*)") || InputString.Contains("{*}");
+            InsertVariables(data, isCapture, isList, outputs, variableName, "", "");
         }
 
         #region Base64
@@ -992,8 +993,8 @@ namespace RuriLib
                 if (line.Contains(':'))
                 {
                     var split = line.Split(new[] { ':' }, 2);
-                    var key = split[0].Trim();
-                    var val = split[1].Trim();
+                    var key = split[0];
+                    var val = split[1].TrimStart();
                     TranslationDictionary[key] = val;
                 }
             }
