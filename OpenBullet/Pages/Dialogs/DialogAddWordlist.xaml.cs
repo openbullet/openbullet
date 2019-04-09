@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using RuriLib.Models;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -25,7 +26,6 @@ namespace OpenBullet
 
             typeCombobox.SelectedIndex = 0;
         }
-
         
         private void acceptButton_Click(object sender, RoutedEventArgs e)
         {
@@ -37,7 +37,6 @@ namespace OpenBullet
             ((MainDialog)Parent).Close();
         }
 
-        
         private void Image_MouseDown(object sender, MouseButtonEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
@@ -46,6 +45,14 @@ namespace OpenBullet
             ofd.ShowDialog();
             locationTextbox.Text = ofd.FileName;
             nameTextbox.Text = Path.GetFileNameWithoutExtension(ofd.FileName);
+
+            // Set the recognized wordlist type
+            try
+            {
+                var first = File.ReadLines(ofd.FileName).First();
+                typeCombobox.Text = Globals.environment.RecognizeWordlistType(first);
+            }
+            catch { }
         }
     }
 }

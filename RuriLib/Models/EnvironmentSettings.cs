@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace RuriLib.Models
 {
@@ -24,6 +25,24 @@ namespace RuriLib.Models
         public List<string> GetWordlistTypeNames()
         {
             return WordlistTypes.Select(w => w.Name).ToList();
+        }
+
+        /// <summary>
+        /// Automatically recognizes a Wordlist Type between the ones available by matching the Regex patterns and returning the first successful match.
+        /// </summary>
+        /// <param name="data">The data for which you want to recognize the Wordlist Type</param>
+        /// <returns>The correct Wordlist Type or (if every Regex match failed) the first one</returns>
+        public string RecognizeWordlistType(string data)
+        {
+            foreach (var type in WordlistTypes)
+            {
+                if (Regex.Match(data, type.Regex).Success)
+                {
+                    return type.Name;
+                }
+            }
+
+            return WordlistTypes.First().Name;
         }
 
         /// <summary>

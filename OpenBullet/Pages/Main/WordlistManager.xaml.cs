@@ -132,14 +132,7 @@ namespace OpenBullet
                         var first = File.ReadLines(wordlist.Path).First();
 
                         // Set the correct wordlist type
-                        foreach(var type in Globals.environment.WordlistTypes)
-                        {
-                            if (Regex.Match(first, type.Regex).Success)
-                            {
-                                wordlist.Type = type.Name;
-                                break;
-                            }
-                        }
+                        wordlist.Type = Globals.environment.RecognizeWordlistType(first);
 
                         // Add the wordlist to the manager
                         AddWordlist(wordlist);
