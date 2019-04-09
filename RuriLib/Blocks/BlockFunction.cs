@@ -660,7 +660,8 @@ namespace RuriLib
                 outputs.Add(outputString);
             }
 
-            InsertVariables(data, isCapture, outputs.Count > 1, outputs, variableName, "", "");
+            var isList = outputs.Count > 1 || InputString.Contains("[*]") || InputString.Contains("(*)") || InputString.Contains("{*}");
+            InsertVariables(data, isCapture, isList, outputs, variableName, "", "");
         }
 
         #region Base64
