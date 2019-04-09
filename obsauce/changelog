@@ -1,8 +1,9 @@
-OpenBullet 1.2.1.3
+OpenBullet 1.2.1.4
 
--Removed the Anti-debuggers as it caused several crashes.
--Fixed a Crash issue on the config manager.
--Content-Type header now can be used for GET Request as well (Make sure to write something in the PostData if you wan't it empty use " {} ")
--Re-optimized several methods to prevent any upcoming crashes.
--Added a Launcher with Auto-Updater.
+-Added More Custom Keys to the Environment.ini (Thanks to KnightShad0w).
+-Added 2 Seperated Configs Lists for LoliXs and Lolis in the Bruteforcer.
+-Fixed a bug in UTILITY block, Variable group.
+-Fixed 2 bugs in Functions block & LoliScripts .
+-Added a new discord for OpenBullet join us ^^ : https://discord.gg/HxsFvxp
+
 
