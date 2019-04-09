@@ -210,6 +210,7 @@ namespace RuriLib
                 } while (bytesRead != 0);
             }
 
+            data.Cookies = response.Cookies;
         }
     }
 }
