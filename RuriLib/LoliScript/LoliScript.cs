@@ -304,7 +304,7 @@ namespace RuriLib.LS
                             try
                             {
                                 label = LineParser.ParseToken(ref cfLine, TokenType.Label, true);
-                                i = ScanFor(lines, 0, true, new string[] { $"{label}" }) - 1;
+                                i = ScanFor(lines, -1, true, new string[] { $"{label}" }) - 1;
                                 data.LogBuffer.Add(new LogEntry($"Jumping to line {i + 1}", Colors.White));
                             }
                             catch { throw new Exception($"No block with label {label} was found"); }
