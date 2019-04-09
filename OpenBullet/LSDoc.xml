@@ -379,11 +379,11 @@ TCP DISCONNECT
 This will spawn and execute a Navigate Block.
 
 Syntax:
-NAVIGATE "URL" [TIMEOUT]
+NAVIGATE "URL" [TIMEOUT] [BanOnTimeout?]
 
 Example:
 NAVIGATE "http://example.com"
-NAVIGATE "http://example.com" 60
+NAVIGATE "http://example.com" 60 BanOnTimeout=True
     </item>
     <item name="Browser Action">
 This will spawn and execute a BrowserAction Block.
