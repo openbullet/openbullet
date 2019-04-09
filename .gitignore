@@ -7,6 +7,9 @@
 RuriLib/_site/
 RuriLib/log.txt
 
+# Exclude the compiled Extreme.Net dll
+!Extreme.Net.dll
+
 # User-specific files
 *.suo
 *.user
