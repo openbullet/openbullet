@@ -9,12 +9,12 @@ OpenBullet is a webtesting suite that allows to perform requests towards a targe
 
 Found a bug? [Create an issue!](https://help.github.com/en/articles/creating-an-issue)
 
-# How to compile
-0. Make sure you have installed the .NET framework (dev) 4.6.2 I will retarget to a more recent one soon.
+# How to build
+0. Make sure you have installed the .NET framework (dev) 4.6.1 (I will retarget to a more recent one soon).
 1. **Clone this repository** and open it in Visual Studio.
 2. Switch to **Release** mode for a much cleaner output.
-3. **Compile** the solution (Visual Studio will fetch all the missing nuget packages).
-4. You can find the compiled projects under OpenBullet/bin/Release and OpenBulletCLI/bin/Release.
+3. **Build** the solution (Visual Studio will fetch all the missing nuget packages).
+4. You can find the executables inside the folders OpenBullet/bin/Release and OpenBulletCLI/bin/Release.
 
 # License
 This software is licensed under the MIT License.
