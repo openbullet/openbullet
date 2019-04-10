@@ -28,3 +28,5 @@ I want to thank all the community for their inputs that shaped OpenBullet into w
 
 # Contact
 I am not on discord / telegram, anyone on there who claims to be me is a fake. If you need to contact me for any reason you can send me an email at ruridev on protonmail. I don't check it very often so be patient please.
+
+**I have no involvement whatsoever with the forum called darkode and be aware that some people on hacking forums are trying to steal my identity and use my name for their illegal doings.**
