@@ -130,7 +130,7 @@
                         </DockPanel>
                         <DockPanel>
                             <Label Content="Output:" />
-                            <TextBox Text="{Binding RegexOutput, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBox Text="{Binding RegexOutput, UpdateSourceTrigger=PropertyChanged}" ToolTip="You can write: [0] = Full Match, [1] = First group etc."/>
                         </DockPanel>
                         <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
                     </StackPanel>
