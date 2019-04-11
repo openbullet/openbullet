@@ -1,13 +1,6 @@
-OpenBullet 1.2.1.5
+OpenBullet 1.2.1.6
 
--Fixed the Configs loading bug in the bruteforcer. (OB Discord)
--Fixed the missing references to BanOnTimeout bool in Navigate block.
--Added Multiple AES CipherMode to Functions Block. (JOYRIDE)
--Added a warning popup you loaded a config that you're not allowed to use.
--Added ToolTip to regex output textbox in Parse block.
--Added storage of cookies set on an Image Captcha download.
--Added automatic Wordlist Type recognition.
--Added a button to deleted non tested proxies. (husu)
+-Fixed the proxies importation bug (it was an issue from proxyscrape.com host...) .
 -Added a new discord for OpenBullet join us ^^ : https://discord.gg/HxsFvxp
 
 
