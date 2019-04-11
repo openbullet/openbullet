@@ -26,10 +26,19 @@ namespace RuriLib.CaptchaServices
             using (CWebClient client = new CWebClient())
             {
                 if (Timeout > 0) client.Timeout = Timeout;
+
                 var response = client.DownloadString($"http://2captcha.com/res.php?key={ApiKey}&action=getbalance&json=1");
-                GenericResponse gbr = JsonConvert.DeserializeObject<GenericResponse>(response);
-                if (gbr.status == 0) throw new Exception(gbr.request);
-                return double.Parse(gbr.request, CultureInfo.InvariantCulture);
+                var balance = Convert.ToDouble(response);
+                if (balance == 555.00)
+                {
+                    return double.Parse(response, CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    GenericResponse gbr = JsonConvert.DeserializeObject<GenericResponse>(response);
+                    if (gbr.status == 0) throw new Exception(gbr.request);
+                    return double.Parse(gbr.request, CultureInfo.InvariantCulture);
+                }
             }
         }
 
