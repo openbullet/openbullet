@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -28,18 +29,16 @@ namespace RuriLib.CaptchaServices
                 if (Timeout > 0) client.Timeout = Timeout;
 
                 var response = client.DownloadString($"http://2captcha.com/res.php?key={ApiKey}&action=getbalance&json=1");
-                var balance = Convert.ToDouble(response);
-                if (balance == 555.00)
-                {
-                    return double.Parse(response, CultureInfo.InvariantCulture);
-                }
-                else
+                if (IsValidJson(response))
                 {
                     GenericResponse gbr = JsonConvert.DeserializeObject<GenericResponse>(response);
-                    if (gbr.status == 0) throw new Exception(gbr.request);
+                 if (gbr.status == 0) throw new Exception(gbr.request);
                     return double.Parse(gbr.request, CultureInfo.InvariantCulture);
+                } else {
+                    return double.Parse(response, CultureInfo.InvariantCulture);
+
                 }
-            }
+        }
         }
 
         /// <inheritdoc />
@@ -101,6 +100,36 @@ namespace RuriLib.CaptchaServices
                 throw new TimeoutException();
             }
         }
+        private static bool IsValidJson(string strInput)
+        {
+            strInput = strInput.Trim();
+            if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || //For object
+                (strInput.StartsWith("[") && strInput.EndsWith("]"))) //For array
+            {
+                try
+                {
+                    var obj = JToken.Parse(strInput);
+                    return true;
+                }
+                catch (JsonReaderException jex)
+                {
+                    //Exception in parsing json
+                    Console.WriteLine(jex.Message);
+                    return false;
+                }
+                catch (Exception ex) //some other exception
+                {
+                    Console.WriteLine(ex.ToString());
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
 
 #pragma warning disable 0414
 #pragma warning disable 0649
