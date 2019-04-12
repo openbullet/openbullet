@@ -20,7 +20,7 @@
             <Label Content="General"/>
             <CheckBox Content="Allow Concurrent Use" IsChecked="{Binding ConcurrentUse}" VerticalContentAlignment="Center"/>
             <CheckBox Content="Never Ban Proxies" IsChecked="{Binding NeverBan}" VerticalContentAlignment="Center"/>
-            <CheckBox Content="Ban Proxy after Good Status" IsChecked="{Binding BanProxyAfterGoodStatus}" VerticalContentAlignment="Center" ToolTip="Bans a Proxy after a SUCCESS, CUSTOM or TOCHECK result."/>
+            <CheckBox Content="Ban Proxy after Good Status" IsChecked="{Binding BanAfterGoodStatus}" VerticalContentAlignment="Center" ToolTip="Bans a Proxy after a SUCCESS, CUSTOM or TOCHECK result."/>
             <Label Content="CloudFlare"/>
             <CheckBox Content="Don't Reuse Clearance Cookie (CF)" IsChecked="{Binding AlwaysGetClearance}" VerticalContentAlignment="Center"/>
             <Label Content="Reloading"/>
