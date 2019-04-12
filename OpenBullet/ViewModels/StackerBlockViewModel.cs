@@ -31,6 +31,7 @@ namespace OpenBullet.ViewModels
 
         public void Disable()
         {
+            if (block.GetType() == typeof(BlockLSCode)) return;
             Block.Disabled = !Block.Disabled;
             OnPropertyChanged("Color");
         }
