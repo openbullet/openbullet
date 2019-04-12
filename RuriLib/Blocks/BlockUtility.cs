@@ -46,6 +46,9 @@ namespace RuriLib
         /// <summary>Creates an empty list variable.</summary>
         Create,
 
+        /// <summary>Calculates the length of a list.</summary>
+        Length,
+
         /// <summary>Joins a list into a single string, separating the elements with a separator.</summary>
         Join,
 
@@ -407,6 +410,10 @@ namespace RuriLib
                         {
                             case ListAction.Create:
                                 data.Variables.Set(new CVar(variableName, new List<string>(), isCapture));
+                                break;
+
+                            case ListAction.Length:
+                                data.Variables.Set(new CVar(variableName, list.Count().ToString(), isCapture));
                                 break;
 
                             case ListAction.Join:
