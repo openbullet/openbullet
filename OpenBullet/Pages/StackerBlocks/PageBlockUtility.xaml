@@ -132,7 +132,7 @@
                             <StackPanel>
                                 <DockPanel>
                                     <Label Content="Separator:"/>
-                                    <TextBox Text="{Binding Separator, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Text="{Binding SplitSeparator, UpdateSourceTrigger=PropertyChanged}"/>
                                 </DockPanel>
                             </StackPanel>
                         </TabItem>
