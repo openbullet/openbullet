@@ -1,13 +1,6 @@
-OpenBullet 1.2.1.7
+OpenBullet 1.2.2.0
 
--Added few features for Config Disinfectors. (Daung)
--Removed the visual feedback when disabling a LS code block.
--Added the Length function to the List group in Utility block.
--You can now double click an item in the config and wordlist selecter. (Keleop)
--Fixed a bots bug un the config options. (StridEr)
--Beast mode, allows to run up to 10k of Bots/Bruteforcer (click on 'Bots:' in the bruteforcer to enable). (Joseph Stalin)
--You can now manually select bots number by clicking on bots num on the bruteforcer. (Ari)
--You're not allowed to share any malicous configs doing that will result in getting you banned. (OB Community)
+-Well the hits db capture was fixed and several other bugs, welp idk I made alot of changes that I can't remember.
 
 -Join our OpenBullet communtiy at discord and stay in touch with us! https://discord.gg/HxsFvxp
 
