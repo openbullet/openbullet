@@ -119,7 +119,9 @@ namespace RuriLib.Models
                     return Value;
 
                 case VarType.List:
-                    return "[" + string.Join(", ", (List<string>)Value) + "]";
+                    if (Value.GetType() == typeof(List<string>)) return "[" + string.Join(", ", (List<string>)Value) + "]"; // Coming internally
+                    else if (Value.GetType() == typeof(object[])) return "[" + string.Join(", ", Value) + "]"; // Coming from the DB
+                    else return "";
 
                 case VarType.Dictionary:
                     return "{" + string.Join(", ", ((Dictionary<string, string>)Value).Select(d => "(" + d.Key + ", " + d.Value + ")")) + "}";
