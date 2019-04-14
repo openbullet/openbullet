@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RuriLib.Models
@@ -119,7 +120,9 @@ namespace RuriLib.Models
                     return Value;
 
                 case VarType.List:
-                    return "[" + string.Join(", ", (List<string>)Value) + "]";
+                    if (Value.GetType() == typeof(List<string>)) return "[" + string.Join(", ", (List<string>)Value) + "]"; // Coming internally
+                    else if (Value.GetType() == typeof(object[])) return "[" + string.Join(", ", Value) + "]"; // Coming from the DB
+                    else return "";
 
                 case VarType.Dictionary:
                     return "{" + string.Join(", ", ((Dictionary<string, string>)Value).Select(d => "(" + d.Key + ", " + d.Value + ")")) + "}";
@@ -151,7 +154,7 @@ namespace RuriLib.Models
         {
             var dict = Value as Dictionary<string, string>;
             if (dict.ContainsKey(key)) return dict.First(d => d.Key == key).Value;
-            else return dict.FirstOrDefault(d => d.Key.Contains(key)).Value;
+            else throw new Exception("Key not in dictionary");
         }
 
         /// <summary>
@@ -163,7 +166,7 @@ namespace RuriLib.Models
         {
             var dict = Value as Dictionary<string, string>;
             if (dict.ContainsValue(value)) return dict.First(d => d.Value == value).Key;
-            else return dict.FirstOrDefault(d => d.Value.Contains(value)).Key;
+            else throw new Exception("Value not in dictionary");
         }
     }
 }

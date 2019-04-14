@@ -221,12 +221,12 @@ namespace RuriLib
                             if (args.Contains("(") && args.Contains(")"))
                             {
                                 var dicKey = ParseArguments(args, '(', ')')[0];
-                                output = output.Replace(full, v.GetDictValue(dicKey));
+                                try { output = output.Replace(full, v.GetDictValue(dicKey)); } catch { }
                             }
                             else if (args.Contains("{") && args.Contains("}"))
                             {
                                 var dicVal = ParseArguments(args, '{', '}')[0];
-                                output = output.Replace(full, v.GetDictKey(dicVal));
+                                try { output = output.Replace(full, v.GetDictKey(dicVal)); } catch { }
                             }
                             break;
                     }
