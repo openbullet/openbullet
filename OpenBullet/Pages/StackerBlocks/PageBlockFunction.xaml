@@ -86,7 +86,7 @@
                         <Label Content="Date Format:"/>
                         <TextBox Text="{Binding DateFormat, UpdateSourceTrigger=PropertyChanged}">
                             <TextBox.ToolTip>
-                                <TextBlock>Key characters:<LineBreak/>y: year<LineBreak/>M: month<LineBreak/>d: day<LineBreak/>h: hour<LineBreak/>m: minute<LineBreak/>s: second</TextBlock>
+                                <TextBlock>Key characters:<LineBreak/>y: year<LineBreak/>M: month<LineBreak/>d: day<LineBreak/>H: hour<LineBreak/>m: minute<LineBreak/>s: second</TextBlock>
                             </TextBox.ToolTip>
                         </TextBox>
                     </DockPanel>
