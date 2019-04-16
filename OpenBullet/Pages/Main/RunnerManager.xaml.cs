@@ -156,5 +156,15 @@ namespace OpenBullet
                 }
             }
         }
+
+        private void startAllRunnersButton_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var runner in vm.Runners.Where(r => !r.Runner.Busy))
+            {
+                StartRunner += runner.Page.OnStartRunner;
+                OnStartRunner();
+                StartRunner -= runner.Page.OnStartRunner;
+            }
+        }
     }
 }
