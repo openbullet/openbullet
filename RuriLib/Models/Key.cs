@@ -26,7 +26,11 @@ namespace RuriLib.Models
         /// <returns>Whether the comparison is valid</returns>
         public bool CheckKey(BotData data)
         {
-            return ConditionChecker.Verify(LeftTerm, Condition, RightTerm, data);
+            try
+            {
+                return ConditionChecker.Verify(LeftTerm, Condition, RightTerm, data);
+            }
+            catch { return false; } // Return false if e.g. we can't parse the number for a LessThan/GreaterThan comparison.
         }
     }
 }
