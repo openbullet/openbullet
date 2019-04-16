@@ -689,7 +689,6 @@ namespace RuriLib.Runner
                         if (Settings.General.BotsDisplayMode == BotsDisplayMode.Everything)
                             bot.Status = $"<<< ERROR IN BLOCK: {loli.CurrentBlock} >>>";
                         RaiseMessageArrived(LogLevel.Error, $"[{bot.Id}] ERROR in block {loli.CurrentBlock} | Exception: {ex.Message}", false);
-                        botData.Status = BotStatus.ERROR;
                         Thread.Sleep(1000);
                     }
                     catch (Exception ex)
