@@ -11,7 +11,7 @@ Found a bug? [Create an issue!](https://help.github.com/en/articles/creating-an-
 
 # How to build
 0. Make sure you have installed the .NET framework (dev) 4.6.1 (I will retarget to a more recent one soon).
-1. **Clone this repository** and open it in Visual Studio.
+1. **Clone this repository** and open the solution file with Visual Studio.
 2. Switch to **Release** mode for a much cleaner output.
 3. **Build** the solution (Visual Studio will fetch all the missing nuget packages).
 4. You can find the executables inside the folders OpenBullet/bin/Release and OpenBulletCLI/bin/Release.
