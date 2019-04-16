@@ -26,6 +26,12 @@
                     <TextBlock VerticalAlignment="Center" Margin="5 0">New</TextBlock>
                 </StackPanel>
             </Button>
+            <Button x:Name="startAllRunnersButton" Click="startAllRunnersButton_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Images/Icons/play.png" Width="20" />
+                    <TextBlock VerticalAlignment="Center" Margin="5 0">Start All</TextBlock>
+                </StackPanel>
+            </Button>
             <Button x:Name="stopAllRunnersButton" Click="stopAllRunnersButton_Click">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/Images/Icons/stop.png" Width="20" />

@@ -229,18 +229,28 @@ namespace RuriLib.LS
                 // If Block -> Process Block
                 if (BlockParser.IsBlock(CurrentLine))
                 {
+                    BlockBase block = null;
                     try
                     {
-                        var block = BlockParser.Parse(CurrentLine);
+                        block = BlockParser.Parse(CurrentLine);
                         CurrentBlock = block.Label;
                         if (!block.Disabled)
                             block.Process(data);
                     }
                     catch (Exception ex)
                     {
+                        // We log the error message
                         data.LogBuffer.Add(new LogEntry("ERROR: " + ex.Message, Colors.Tomato));
-                        data.Status = BotStatus.ERROR;
-                        throw new BlockProcessingException(ex.Message);
+                        
+                        // Stop the execution only if the block is vital for the execution of the script (requests)
+                        // This way we prevent the interruption of the script and an endless retry cycle e.g. if we fail to parse a response given a specific input
+                        if (block != null && (
+                            block.GetType() == typeof(BlockRequest) ||
+                            block.GetType() == typeof(BlockBypassCF)))
+                        {
+                            data.Status = BotStatus.ERROR;
+                            throw new BlockProcessingException(ex.Message);
+                        }
                     }
                 }
 

@@ -5,6 +5,7 @@ using RuriLib.LS;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Windows.Media;
 
 namespace RuriLib
 {

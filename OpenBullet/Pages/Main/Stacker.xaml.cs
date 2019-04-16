@@ -426,7 +426,6 @@ namespace OpenBullet
             }
             catch (Exception ex) {
                 Globals.LogError(Components.Stacker, $"Processing of line {BlockBase.TruncatePretty(vm.LS.CurrentLine, 20)} failed, exception: {ex.Message}");
-                vm.BotData.Status = BotStatus.ERROR;
             }
             
             PrintBotData();
