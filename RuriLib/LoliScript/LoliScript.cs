@@ -249,9 +249,8 @@ namespace RuriLib.LS
                             block.GetType() == typeof(BlockBypassCF)))
                         {
                             data.Status = BotStatus.ERROR;
+                            throw new BlockProcessingException(ex.Message);
                         }
-
-                        throw new BlockProcessingException(ex.Message);
                     }
                 }
 
