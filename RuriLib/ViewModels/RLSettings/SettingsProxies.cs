@@ -32,6 +32,10 @@ namespace RuriLib.ViewModels
         private bool banAfterGoodStatus = false;
         /// <summary>Whether to never ban the proxy after a SUCCESS, CUSTOM or NONE status (not FAIL or RETRY).</summary>
         public bool BanAfterGoodStatus { get { return banAfterGoodStatus; } set { banAfterGoodStatus = value; OnPropertyChanged(); } }
+
+        private bool shuffleOnStart = false;
+        /// <summary>Whether proxy lists should be shuffled before being assigned to the Runner.</summary>
+        public bool ShuffleOnStart { get { return shuffleOnStart; } set { shuffleOnStart = value; OnPropertyChanged(); } }
         #endregion
 
         #region Reload
