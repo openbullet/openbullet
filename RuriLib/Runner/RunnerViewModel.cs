@@ -982,7 +982,7 @@ namespace RuriLib.Runner
                         ProxyPool = new ProxyPool(
                             GetProxiesFromAPI(Settings.Proxies.ReloadPath,
                                                 Settings.Proxies.ReloadType,
-                                                Settings.Proxies.ParseWithIPRegex));
+                                                Settings.Proxies.ParseWithIPRegex), Settings.Proxies.ShuffleOnStart);
                     }
                     catch (Exception ex) { RaiseMessageArrived(LogLevel.Error, $"Could not contact the reload API - {ex.Message}", true); }
                     break;
@@ -993,7 +993,7 @@ namespace RuriLib.Runner
                         ProxyPool = new ProxyPool(
                             GetProxiesFromFile(Settings.Proxies.ReloadPath,
                                                 Settings.Proxies.ReloadType,
-                                                Settings.Proxies.ParseWithIPRegex));
+                                                Settings.Proxies.ParseWithIPRegex), Settings.Proxies.ShuffleOnStart);
                     }
                     catch (Exception ex) { RaiseMessageArrived(LogLevel.Error, $"Could not read the proxies from file - {ex.Message}", true); }
                     break;

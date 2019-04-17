@@ -157,7 +157,7 @@ namespace OpenBullet
             else if (vm.Config.Settings.OnlySsl) toAdd = proxies.Where(x => x.Type == ProxyType.Http).ToList();
             else toAdd = proxies;
 
-            vm.ProxyPool = new ProxyPool(toAdd);
+            vm.ProxyPool = new ProxyPool(toAdd, Globals.rlSettings.Proxies.ShuffleOnStart);
         }
 
         private void ProcessStatusChange(IRunnerMessaging sender)

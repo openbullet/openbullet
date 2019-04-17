@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -9,6 +10,8 @@ namespace RuriLib.Models
     /// </summary>
     public class ProxyPool
     {
+        private static Random rng = new Random();
+
         /// <summary>The full list of proxies in the pool.</summary>
         public List<CProxy> Proxies { get; } = new List<CProxy>();
 
@@ -35,9 +38,11 @@ namespace RuriLib.Models
         /// </summary>
         /// <param name="proxies">The collection of strings to parse the proxies from</param>
         /// <param name="type">The type of the proxies</param>
-        public ProxyPool(IEnumerable<string> proxies, Extreme.Net.ProxyType type)
+        /// <param name="shuffle">Whether to shuffle the proxy list</param>
+        public ProxyPool(IEnumerable<string> proxies, Extreme.Net.ProxyType type, bool shuffle)
         {
             Proxies = proxies.Select(p => new CProxy(p, type)).ToList();
+            if (shuffle) Shuffle(Proxies);
         }
 
         /// <summary>
@@ -46,7 +51,8 @@ namespace RuriLib.Models
         /// <para>They will also be unbanned to make sure there are no leftovers from previous checks.</para>
         /// </summary>
         /// <param name="proxies">The list of CProxy objects to be cloned and added to the list</param>
-        public ProxyPool(List<CProxy> proxies)
+        /// <param name="shuffle">Whether to shuffle the proxy list</param>
+        public ProxyPool(List<CProxy> proxies, bool shuffle = false)
         {
             // We clone the list, since we don't want to target to the same objects that are in the Proxy Manager
             // If we don't do this, a ban on a runner instance would cause a ban on all the other instances as well!
@@ -54,6 +60,9 @@ namespace RuriLib.Models
 
             // Now that the list is cloned, we make sure that no proxy is already banned
             UnbanAll();
+
+            // Shuffle it if necessary
+            if (shuffle) Shuffle(Proxies);
         }
 
         /// <summary>
@@ -125,6 +134,19 @@ namespace RuriLib.Models
             }
             Locked = false;
             return proxy;
+        }
+
+        private static void Shuffle<T>(IList<T> list)
+        {
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
         }
     }
 }

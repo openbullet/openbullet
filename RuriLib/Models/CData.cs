@@ -83,10 +83,13 @@ namespace RuriLib.Models
                             valid = !CheckContains(slice, rule.RuleString);
                             break;
                     }
+
+                    if (!valid) return false;
                 }
                 catch { }
             }
-            return valid;
+
+            return true;
         }
 
         /// <summary>
