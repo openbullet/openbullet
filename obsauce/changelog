@@ -1,2 +1,14 @@
-!!I'M STILL ALIVE BUT IN REAL TROUBLES!!
+OpenBullet 1.2.2.2
+
+-Working on a new Login system.
+-Reworked Encryption algorithme (don't worry old loliX cfgs are still usable).
+-Banned few users from using OB Mod as thee were sharing malicious malwares.
+-Added Developers Tools inside of OB for developers (Ban system, users databse...) .
+-The bruteforcer is now x5 faster than what it was in the original OpenBullet.
+-Added a setting in RuriLib > Proxies to shuffle Proxies on Start.
+-Fixed bug on multiple data rules.
+-Removed the forced ERROR status when a block fails.
+-Disregarding errors when parsing numbers.
+-Added button to start all Bruteforcers.
+-Fixed tooltip for DateToUnixTime function.
 
