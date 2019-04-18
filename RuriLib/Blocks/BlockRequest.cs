@@ -349,9 +349,12 @@ namespace RuriLib
                     var pData = string.Join(Environment.NewLine, postData
                         .Split(new string[] { "\\n" }, StringSplitOptions.None)
                         .Select(p => ReplaceValues(p, data)));
-                    content = new StringContent(pData);
-                    content.ContentType = cType;
-                    data.Log(new LogEntry(string.Format("Post Data: {0}", pData), Colors.MediumTurquoise));
+                    if (pData != "")
+                    {
+                        content = new StringContent(pData);
+                        content.ContentType = cType;
+                        data.Log(new LogEntry(string.Format("Post Data: {0}", pData), Colors.MediumTurquoise));
+                    }
                     break;
 
                 case RequestType.Multipart:
