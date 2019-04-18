@@ -246,7 +246,9 @@ namespace RuriLib.LS
                         // This way we prevent the interruption of the script and an endless retry cycle e.g. if we fail to parse a response given a specific input
                         if (block != null && (
                             block.GetType() == typeof(BlockRequest) ||
-                            block.GetType() == typeof(BlockBypassCF)))
+                            block.GetType() == typeof(BlockBypassCF) ||
+                            block.GetType() == typeof(BlockImageCaptcha) ||
+                            block.GetType() == typeof(BlockRecaptcha)))
                         {
                             data.Status = BotStatus.ERROR;
                             throw new BlockProcessingException(ex.Message);
