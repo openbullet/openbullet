@@ -794,6 +794,7 @@
     <Resource Include="Images\Icons\undo.png" />
     <Resource Include="Images\Icons\stack.png" />
     <Resource Include="Images\Icons\git.png" />
+    <Resource Include="Images\Icons\retry.png" />
     <Content Include="Sounds\rifle_hit.wav" />
     <Content Include="Sounds\rifle_reload.wav" />
   </ItemGroup>

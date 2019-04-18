@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenBullet.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -67,6 +68,12 @@ namespace OpenBullet.Pages.Main.Settings
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
             OBIOManager.SaveSettings(Globals.obSettingsFile, Globals.obSettings);
+        }
+
+        private void resetButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to reset all your OpenBullet settings?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                Globals.obSettings = new OBSettingsViewModel();
         }
     }
 }

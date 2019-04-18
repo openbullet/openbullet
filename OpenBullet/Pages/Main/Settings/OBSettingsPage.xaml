@@ -34,12 +34,27 @@
 
             <Frame Grid.Row="1" x:Name="Main" NavigationUIVisibility="Hidden" />
 
-            <Button x:Name="saveButton" Grid.Row="2" Click="saveButton_Click" Margin="5">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="/Images/Icons/save.png" Width="20" />
-                    <TextBlock VerticalAlignment="Center" Margin="5 0">SAVE</TextBlock>
-                </StackPanel>
-            </Button>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="saveButton" Grid.Column="0" Click="saveButton_Click" Margin="5">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/Icons/save.png" Width="20" />
+                        <TextBlock VerticalAlignment="Center" Margin="5 0">SAVE</TextBlock>
+                    </StackPanel>
+                </Button>
+
+                <Button x:Name="resetButton" Grid.Column="1" Click="resetButton_Click" Margin="5">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/Icons/retry.png" Width="20" />
+                        <TextBlock VerticalAlignment="Center" Margin="5 0">RESET</TextBlock>
+                    </StackPanel>
+                </Button>
+
+            </Grid>
         </Grid>
     </Grid>
 </Page>

@@ -1,4 +1,5 @@
 ﻿using RuriLib;
+using RuriLib.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,6 +76,12 @@ namespace OpenBullet.Pages.Main.Settings
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
             IOManager.SaveSettings(Globals.rlSettingsFile, Globals.rlSettings);
+        }
+
+        private void resetButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to reset all your RuriLib settings?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                Globals.rlSettings = new RLSettingsViewModel();
         }
     }
 }
