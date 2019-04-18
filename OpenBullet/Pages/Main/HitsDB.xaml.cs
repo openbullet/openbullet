@@ -326,7 +326,7 @@ namespace OpenBullet
             var fileName = BlockBase.GetFirstAvailableFileName("Wordlists\\", partialName, "txt");
 
             // Write to disk
-            var path = "Wordlists\\" + fileName;
+            var path = $@"{Directory.GetCurrentDirectory()}\Wordlists\{fileName}";
             using (var sw = new StreamWriter(path))
             {
                 foreach (Hit selected in hitsListView.SelectedItems)
