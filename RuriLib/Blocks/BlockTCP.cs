@@ -174,28 +174,36 @@ namespace RuriLib
                     // Initialize the TCP client, connect to the host and get the SSL stream
                     tcp = new TcpClient();
                     tcp.Connect(h, p);
-                    net = tcp.GetStream();
-                    if (UseSSL)
+
+                    if (tcp.Connected)
                     {
-                        ssl = new SslStream(net);
-                        ssl.AuthenticateAsClient(h);
+                        net = tcp.GetStream();
+                         if (UseSSL)
+                             {
+                                  ssl = new SslStream(net);
+                                  ssl.AuthenticateAsClient(h);
+                             }
+
+                        //Wait a bit and read the Stream if not Empty
+                        System.Threading.Thread.Sleep(200);
+                        if (net.DataAvailable)
+                        {
+                            if (UseSSL) bytes = ssl.Read(buffer, 0, buffer.Length);
+                            else bytes = net.Read(buffer, 0, buffer.Length);
+                        
+                            // Save the response as ASCII in the SOURCE variable
+                            response = Encoding.ASCII.GetString(buffer, 0, bytes);
+                        }
+
+                        // Save the TCP client and the streams
+                        data.TCPClient = tcp;
+                        data.NETStream = net;
+                        data.SSLStream = ssl;
+                        data.TCPSSL = UseSSL;
+
+                        data.Log(new LogEntry($"Succesfully connected to host {h} on port {p}. The server says:", Colors.Green));
+                        data.Log(new LogEntry(response, Colors.GreenYellow));
                     }
-
-                    // Read the stream to make sure we are connected
-                    if (UseSSL) bytes = ssl.Read(buffer, 0, buffer.Length);
-                    else bytes = net.Read(buffer, 0, buffer.Length);
-
-                    // Save the response as ASCII in the SOURCE variable
-                    response = Encoding.ASCII.GetString(buffer, 0, bytes);
-
-                    // Save the TCP client and the streams
-                    data.TCPClient = tcp;
-                    data.NETStream = net;
-                    data.SSLStream = ssl;
-                    data.TCPSSL = UseSSL;
-
-                    data.Log(new LogEntry($"Succesfully connected to host {h} on port {p}. The server says:", Colors.Green));
-                    data.Log(new LogEntry(response, Colors.GreenYellow));
 
                     if (VariableName != "")
                     {
