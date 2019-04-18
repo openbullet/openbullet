@@ -688,14 +688,14 @@ namespace RuriLib.Runner
                     {
                         if (Settings.General.BotsDisplayMode == BotsDisplayMode.Everything)
                             bot.Status = $"<<< ERROR IN BLOCK: {loli.CurrentBlock} >>>";
-                        RaiseMessageArrived(LogLevel.Error, $"[{bot.Id}] ERROR in block {loli.CurrentBlock} | Exception: {ex.Message}", false);
+                        RaiseMessageArrived(LogLevel.Error, $"[{bot.Id}][{bot.Data}][{bot.Proxy}] ERROR in block {loli.CurrentBlock} | Exception: {ex.Message}", false);
                         Thread.Sleep(1000);
                     }
                     catch (Exception ex)
                     {
                         if (Settings.General.BotsDisplayMode == BotsDisplayMode.Everything)
                             bot.Status = "<<< SCRIPT ERROR >>>";
-                        RaiseMessageArrived(LogLevel.Error, $"[{bot.Id}] ERROR in the script | Exception: {ex.Message}", false);
+                        RaiseMessageArrived(LogLevel.Error, $"[{bot.Id}][{bot.Data}][{bot.Proxy}] ERROR in the script | Exception: {ex.Message}", false);
                         Thread.Sleep(1000);
                     }
 
@@ -713,7 +713,7 @@ namespace RuriLib.Runner
                 if (Settings.General.BotsDisplayMode != BotsDisplayMode.None)
                     bot.Status = $"<<< FINISHED WITH RESULT: {botData.StatusString} >>>";
 
-                RaiseMessageArrived(LogLevel.Info, $"[{bot.Id}] Ended with result {botData.StatusString}", false);
+                RaiseMessageArrived(LogLevel.Info, $"[{bot.Id}][{bot.Data}][{bot.Proxy}] Ended with result {botData.StatusString}", false);
 
                 // Quit Browser if Always Quit
                 if (Config.Settings.AlwaysQuit)
