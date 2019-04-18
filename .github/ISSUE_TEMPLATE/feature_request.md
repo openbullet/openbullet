@@ -7,6 +7,9 @@ assignees: ''
 
 ---
 
+**Before you begin**
+This is NOT Forlax's mod or any other mod. If you implemented features or fixes related to those versions DO NOT post them here as they will be closed and disregarded immediately.
+
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
