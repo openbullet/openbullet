@@ -319,7 +319,7 @@ CAPTCHA "http://example.com/image.png" -> VAR "CAP"
 This will spawn and execute a Parse Block.
 
 Syntax:
-PARSE "TARGET" LR "LEFT" "RIGHT" [Recursive?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]
+PARSE "TARGET" LR "LEFT" "RIGHT" [Recursive?] [UseRegexLR?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]
 PARSE "TARGET" CSS "SELECTOR" "ATTRIBUTE" [INDEX / Recursive?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]
 PARSE "TARGET" JSON "FIELD" [Recursive?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]
 PARSE "TARGET" REGEX "REGEX" "OUTPUT" [Recursive?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]

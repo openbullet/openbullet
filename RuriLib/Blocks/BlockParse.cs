@@ -135,7 +135,7 @@ namespace RuriLib
                     // PARSE "<SOURCE>" LR "L" "R" RECURSIVE? -> VAR/CAP "ABC"
                     LeftString = LineParser.ParseLiteral(ref input, "LEFT STRING");
                     RightString = LineParser.ParseLiteral(ref input, "RIGHT STRING");
-                    if (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                    while (LineParser.Lookahead(ref input) == TokenType.Boolean)
                         LineParser.SetBool(ref input, this);
                     break;
 
@@ -205,21 +205,32 @@ namespace RuriLib
             switch (Type)
             {
                 case ParseType.LR:
-                    writer.Literal(LeftString).Literal(RightString).Boolean(Recursive, "Recursive");
+                    writer
+                        .Literal(LeftString)
+                        .Literal(RightString)
+                        .Boolean(Recursive, "Recursive")
+                        .Boolean(UseRegexLR, "UseRegexLR");
                     break;
 
                 case ParseType.CSS:
-                    writer.Literal(CssSelector).Literal(AttributeName);
+                    writer
+                        .Literal(CssSelector)
+                        .Literal(AttributeName);
                     if (Recursive) writer.Boolean(Recursive, "Recursive");
                     else writer.Integer(CssElementIndex, "CssElementIndex");
                     break;
 
                 case ParseType.JSON:
-                    writer.Literal(JsonField).Boolean(Recursive, "Recursive");
+                    writer
+                        .Literal(JsonField)
+                        .Boolean(Recursive, "Recursive");
                     break;
 
                 case ParseType.REGEX:
-                    writer.Literal(RegexString).Literal(RegexOutput).Boolean(Recursive, "Recursive");
+                    writer
+                        .Literal(RegexString)
+                        .Literal(RegexOutput)
+                        .Boolean(Recursive, "Recursive");
                     break;
             }
 
