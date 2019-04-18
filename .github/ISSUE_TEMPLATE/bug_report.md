@@ -7,6 +7,10 @@ assignees: ''
 
 ---
 
+**Before you begin**
+1. This is **NOT** Forlax's mod or any other mod. If you have issues related to those versions **DO NOT** post them here as they will be closed and disregarded immediately.
+2. Do **NOT** post any form of illegal content (e.g. screenshots of you cracking a website with stolen credentials) and do **NOT** ask for Configs for websites. Doing that will result in a report to the GitHub security team and a permanent ban from posting to this repository.
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
