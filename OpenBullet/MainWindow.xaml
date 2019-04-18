@@ -41,7 +41,7 @@
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Orientation="Horizontal">
+            <StackPanel Grid.Column="0" Orientation="Horizontal" MouseDown="maximizePanel_MouseDC">
                 <Image Height="30" Width="30" Source="pack://application:,,,/Images/OBIcon.png"/>
                 <Label x:Name="titleLabel" Content="Open Bullet" FontFamily="pack://application:,,,/Fonts/#Century Gothic" FontSize="14" />
             </StackPanel>
