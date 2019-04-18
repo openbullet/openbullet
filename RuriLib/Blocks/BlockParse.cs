@@ -326,7 +326,7 @@ namespace RuriLib
                             {
                                 pFrom = ls == "" ? 0 : partial.IndexOf(ls) + ls.Length;
                                 partial = partial.Substring(pFrom);
-                                pTo = rs == "" ? (partial.Length - 1) : partial.IndexOf(rs);
+                                pTo = rs == "" ? partial.Length : partial.IndexOf(rs);
                                 list.Add(partial.Substring(0, pTo));
                             }
                             catch { }
