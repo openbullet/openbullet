@@ -335,7 +335,7 @@ namespace OpenBullet
 
             // Import it
             var listName = fileName.Substring(0, fileName.Length - 4);
-            var wordlist = new Wordlist(listName, path, "Unknown", "");
+            var wordlist = new Wordlist(listName, path, Globals.environment.RecognizeWordlistType(first.Data), "");
             Globals.mainWindow.WordlistManagerPage.AddWordlist(wordlist);
 
             var runner = Globals.mainWindow.CurrentRunnerPage;
