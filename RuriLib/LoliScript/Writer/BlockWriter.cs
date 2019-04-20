@@ -67,7 +67,7 @@ namespace RuriLib.LS
         public BlockWriter Literal(string literal, string property = "")
         {
             if (property != "" && CheckDefault(literal, property)) return this;
-            Write($"\"{literal.Replace("\"", "\\\"")}\" ");
+            Write($"\"{literal.Replace("\\", "\\\\").Replace("\"", "\\\"")}\" ");
             return this;
         }        
 

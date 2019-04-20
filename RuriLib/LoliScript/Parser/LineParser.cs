@@ -57,7 +57,7 @@ namespace RuriLib.LS
                     input = input.Substring(token.Length).Trim();
 
                 if (type == TokenType.Literal)
-                    token = token.Substring(1, token.Length - 2).Replace("\\\"", "\"");
+                    token = token.Substring(1, token.Length - 2).Replace("\\\\", "\\").Replace("\\\"", "\"");
             }
             else
             {
@@ -219,7 +219,8 @@ namespace RuriLib.LS
                     return "^[^ ]*";
 
                 case TokenType.Literal:
-                    return "\\\"(\\\\.|[^\\\"])*\\\"";
+                    //return "\\\"(\\\\.|[^\\\"])*\\\"";
+                    return "\"(\\\\.|[^\\\"])*\"";
 
                 case TokenType.Arrow:
                     return "^->";
