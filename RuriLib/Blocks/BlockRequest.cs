@@ -103,6 +103,10 @@ namespace RuriLib
         /// <summary>Whether to read the stream of data from the HTTP response. Set to false if only the headers are needed, in order to speed up the process.</summary>
         public bool ReadResponseSource { get { return readResponseSource; } set { readResponseSource = value; OnPropertyChanged(); } }
 
+        private bool parseQuery = false;
+        /// <summary>Whether to parse the GET parameters manually (fixes Extreme.NET issues on some websites).</summary>
+        public bool ParseQuery { get { return parseQuery; } set { parseQuery = value; OnPropertyChanged(); } }
+
         // Multipart
         private string multipartBoundary = "";
         /// <summary>The boundary that separates multipart contents.</summary>
@@ -247,6 +251,7 @@ namespace RuriLib
                 .Literal(Url)
                 .Boolean(AutoRedirect, "AutoRedirect")
                 .Boolean(ReadResponseSource, "ReadResponseSource")
+                .Boolean(ParseQuery, "ParseQuery")
                 .Token(RequestType, "RequestType")
                 .Indent();
 
@@ -341,7 +346,36 @@ namespace RuriLib
             request.ConnectTimeout = timeout;
             request.KeepAlive = true;
 
-            data.Log(new LogEntry(string.Format("Calling URL: {0}", localUrl), Colors.MediumTurquoise));
+            // Check if it has GET parameters
+            if (ParseQuery && localUrl.Contains('?') && localUrl.Contains('='))
+            {
+                // Set base url
+                var baseUrl = ReplaceValues(url.Split('?')[0], data);
+                data.Log(new LogEntry($"Calling Base URL: {baseUrl}", Colors.MediumTurquoise));
+
+                // Parse the GET parameters
+                var getParams = localUrl.Split('?')[1];
+                var paramList = getParams.Split('&');
+
+                // Build the query, first replace variables in them and encode the parameters
+                foreach (var par in paramList)
+                {
+                    var split = ReplaceValues(par, data).Split('=');
+
+                    // Encode them if needed
+                    if (split[0].Contains('%')) split[0] = Uri.EscapeDataString(split[0]);
+                    if (split[1].Contains('%')) split[1] = Uri.EscapeDataString(split[1]);
+
+                    // Add them to the query
+                    request.AddUrlParam(split[0], split[1]);
+
+                    data.Log(new LogEntry($"Added Query Parameter: {split[0]} = {split[1]}", Colors.MediumTurquoise));
+                }
+            }
+            else
+            {
+                data.Log(new LogEntry($"Calling URL: {localUrl}", Colors.MediumTurquoise));
+            }
 
             // Set up the Content and Content-Type
             HttpContent content = null;

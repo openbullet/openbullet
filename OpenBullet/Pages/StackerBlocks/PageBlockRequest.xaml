@@ -33,6 +33,7 @@
 
                 <CheckBox Grid.Column="1" Grid.Row="0" Content="Auto Redirect" IsChecked="{Binding AutoRedirect}" VerticalContentAlignment="Center" />
                 <CheckBox Grid.Column="0" Grid.Row="1" Content="Read Response Source" IsChecked="{Binding ReadResponseSource}" VerticalContentAlignment="Center" />
+                <CheckBox Grid.Column="1" Grid.Row="1" Content="Parse GET Query" IsChecked="{Binding ParseQuery}" VerticalContentAlignment="Center"/>
             </Grid>
 
             <DockPanel Margin="0 5 0 0">
