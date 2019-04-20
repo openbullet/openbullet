@@ -349,18 +349,18 @@ namespace RuriLib
             // Check if it has GET parameters
             if (ParseQuery && localUrl.Contains('?') && localUrl.Contains('='))
             {
-                // Set base url
-                var baseUrl = ReplaceValues(url.Split('?')[0], data);
-                data.Log(new LogEntry($"Calling Base URL: {baseUrl}", Colors.MediumTurquoise));
+                // Remove the query from the base URL
+                localUrl = ReplaceValues(url.Split('?')[0], data);
+                data.Log(new LogEntry($"Calling Base URL: {localUrl}", Colors.MediumTurquoise));
 
                 // Parse the GET parameters
-                var getParams = localUrl.Split('?')[1];
+                var getParams = ReplaceValues(url.Split('?')[1], data);
                 var paramList = getParams.Split('&');
 
                 // Build the query, first replace variables in them and encode the parameters
                 foreach (var par in paramList)
                 {
-                    var split = ReplaceValues(par, data).Split('=');
+                    var split = par.Split('=');
 
                     // Encode them if needed
                     if (split[0].Contains('%')) split[0] = Uri.EscapeDataString(split[0]);
