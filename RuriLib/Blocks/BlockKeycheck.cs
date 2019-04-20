@@ -76,7 +76,7 @@ namespace RuriLib
                     {
                         k.LeftTerm = first;
                         k.Condition = (Condition)LineParser.ParseEnum(ref input, "Condition", typeof(Condition));
-                        if (k.Condition != Condition.Exists)
+                        if (k.Condition != Condition.Exists && k.Condition != Condition.DoesNotExist)
                             k.RightTerm = LineParser.ParseLiteral(ref input, "Right Term");
                     }
 
@@ -128,7 +128,7 @@ namespace RuriLib
                         .Literal(k.LeftTerm)
                         .Token(k.Condition);
 
-                        if (k.Condition != Condition.Exists)
+                        if (k.Condition != Condition.Exists && k.Condition != Condition.DoesNotExist)
                             writer.Literal(k.RightTerm);
                     }
                 }

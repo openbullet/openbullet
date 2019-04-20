@@ -426,7 +426,7 @@ namespace RuriLib.LS
             var first = LineParser.ParseLiteral(ref cfLine, "STRING");
             var condition = (Condition)LineParser.ParseEnum(ref cfLine, "CONDITION", typeof(Condition));
             var second = "";
-            if (condition != Condition.Exists)
+            if (condition != Condition.Exists && condition != Condition.DoesNotExist)
                 second = LineParser.ParseLiteral(ref cfLine, "STRING");
             return (ConditionChecker.Verify(first, condition, second, data));
         }

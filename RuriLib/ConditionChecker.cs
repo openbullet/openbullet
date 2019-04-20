@@ -28,7 +28,10 @@ namespace RuriLib
         DoesNotContain,
 
         /// <summary>Whether any variable can be replaced inside the string.</summary>
-        Exists
+        Exists,
+
+        /// <summary>Whether no variable can be replaced inside the string.</summary>
+        DoesNotExist
     }
 
     /// <summary>
@@ -73,6 +76,9 @@ namespace RuriLib
 
                 case Condition.Exists:
                     return L.Any(l => l != left); // Returns true if any replacement took place
+
+                case Condition.DoesNotExist:
+                    return L.All(l => l == left); // Returns true if no replacement took place
 
                 default:
                     return false;
