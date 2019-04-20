@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 
 namespace RuriLib.ViewModels
 {
@@ -45,5 +46,19 @@ namespace RuriLib.ViewModels
         private int pageLoadTimeout = 60;
         /// <summary>The default timeout for page load in the browser.</summary>
         public int PageLoadTimeout { get { return pageLoadTimeout; } set { pageLoadTimeout = value; OnPropertyChanged(); } }
+
+        /// <summary>
+        /// Resets the properties to their default value.
+        /// </summary>
+        public void Reset()
+        {
+            SettingsSelenium def = new SettingsSelenium();
+            IList<PropertyInfo> props = new List<PropertyInfo>(typeof(SettingsSelenium).GetProperties());
+
+            foreach (PropertyInfo prop in props)
+            {
+                prop.SetValue(this, prop.GetValue(def, null));
+            }
+        }
     }
 }

@@ -13,5 +13,16 @@
         public SettingsCaptchas Captchas { get; set; } = new SettingsCaptchas();
         /// <summary>The Selenium Settings of RuriLib.</summary>
         public SettingsSelenium Selenium { get; set; } = new SettingsSelenium();
+
+        /// <summary>
+        /// Resets the properties to their default value.
+        /// </summary>
+        public void Reset()
+        {
+            General.Reset();
+            Proxies.Reset();
+            Captchas.Reset();
+            Selenium.Reset();
+        }
     }
 }

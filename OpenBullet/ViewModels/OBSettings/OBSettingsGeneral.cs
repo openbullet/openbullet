@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,5 +40,16 @@ namespace OpenBullet.ViewModels
         public bool DisableSyntaxHelper { get { return disableSyntaxHelper; } set { disableSyntaxHelper = value; OnPropertyChanged(); } }
         private bool displayCapturesLast = false;
         public bool DisplayCapturesLast { get { return displayCapturesLast; } set { displayCapturesLast = value; OnPropertyChanged(); } }
+
+        public void Reset()
+        {
+            OBSettingsGeneral def = new OBSettingsGeneral();
+            IList<PropertyInfo> props = new List<PropertyInfo>(typeof(OBSettingsGeneral).GetProperties());
+
+            foreach (PropertyInfo prop in props)
+            {
+                prop.SetValue(this, prop.GetValue(def, null));
+            }
+        }
     }
 }

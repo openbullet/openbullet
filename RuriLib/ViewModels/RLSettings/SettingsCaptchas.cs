@@ -1,4 +1,7 @@
-﻿namespace RuriLib.ViewModels
+﻿using System.Collections.Generic;
+using System.Reflection;
+
+namespace RuriLib.ViewModels
 {
     /// <summary>
     /// Provides captcha-related settings.
@@ -64,5 +67,19 @@
         private int timeout = 120;
         /// <summary>The maximum amount of time to wait until a captcha challenge is solved.</summary>
         public int Timeout { get { return timeout; } set { timeout = value; OnPropertyChanged(); } }
+
+        /// <summary>
+        /// Resets the properties to their default value.
+        /// </summary>
+        public void Reset()
+        {
+            SettingsCaptchas def = new SettingsCaptchas();
+            IList<PropertyInfo> props = new List<PropertyInfo>(typeof(SettingsCaptchas).GetProperties());
+
+            foreach (PropertyInfo prop in props)
+            {
+                prop.SetValue(this, prop.GetValue(def, null));
+            }
+        }
     }
 }

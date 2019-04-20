@@ -1,4 +1,7 @@
-﻿namespace RuriLib.ViewModels
+﻿using System.Collections.Generic;
+using System.Reflection;
+
+namespace RuriLib.ViewModels
 {
     /// <summary>
     /// The level of detail of a bot's status.
@@ -39,5 +42,19 @@
         private bool _enableBotLog = false;
         /// <summary>Whether to keep the LogBuffer from BotData stored for future use (slows down the Runner).</summary>
         public bool EnableBotLog { get { return _enableBotLog; } set { _enableBotLog = value; OnPropertyChanged(); } }
+
+        /// <summary>
+        /// Resets the properties to their default value.
+        /// </summary>
+        public void Reset()
+        {
+            SettingsGeneral def = new SettingsGeneral();
+            IList<PropertyInfo> props = new List<PropertyInfo>(typeof(SettingsGeneral).GetProperties());
+
+            foreach (PropertyInfo prop in props)
+            {
+                prop.SetValue(this, prop.GetValue(def, null));
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -47,5 +48,16 @@ namespace OpenBullet.ViewModels
         public int SnowAmount { get { return snowAmount; } set { snowAmount = value; OnPropertyChanged(); } }
         private bool allowTransparency = false;
         public bool AllowTransparency { get { return allowTransparency; } set { allowTransparency = value; OnPropertyChanged(); } }
+
+        public void Reset()
+        {
+            OBSettingsThemes def = new OBSettingsThemes();
+            IList<PropertyInfo> props = new List<PropertyInfo>(typeof(OBSettingsThemes).GetProperties());
+
+            foreach (PropertyInfo prop in props)
+            {
+                prop.SetValue(this, prop.GetValue(def, null));
+            }
+        }
     }
 }

@@ -81,7 +81,7 @@ namespace OpenBullet.Pages.Main.Settings
         private void resetButton_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Are you sure you want to reset all your RuriLib settings?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                Globals.rlSettings = new RLSettingsViewModel();
+                Globals.rlSettings.Reset();
         }
     }
 }

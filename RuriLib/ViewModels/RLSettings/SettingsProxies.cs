@@ -1,4 +1,6 @@
 ﻿using Extreme.Net;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace RuriLib.ViewModels
 {
@@ -88,5 +90,19 @@ namespace RuriLib.ViewModels
         /// </summary>
         public string[] GlobalRetryKeys { get { return globalRetryKeys; } set { globalRetryKeys = value; OnPropertyChanged(); } }
         #endregion
+
+        /// <summary>
+        /// Resets the properties to their default value.
+        /// </summary>
+        public void Reset()
+        {
+            SettingsProxies def = new SettingsProxies();
+            IList<PropertyInfo> props = new List<PropertyInfo>(typeof(SettingsProxies).GetProperties());
+
+            foreach (PropertyInfo prop in props)
+            {
+                prop.SetValue(this, prop.GetValue(def, null));
+            }
+        }
     }
 }
