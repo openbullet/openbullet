@@ -52,5 +52,10 @@ namespace OpenBullet
             AdornerLayer.GetAdornerLayer(listViewSortCol).Add(listViewSortAdorner);
             wordlistsListView.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
         }
+
+        private void ListViewItem_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            selectButton_Click(this, null);
+        }
     }
 }

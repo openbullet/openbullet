@@ -79,6 +79,7 @@
                     <Setter Property="FontSize" Value="14" />
                 </Style>
                 <Style TargetType="{x:Type ListViewItem}">
+                    <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />
                     <!-- <EventSetter Event="Selected" Handler="ListViewItem_Selected" /> -->
                     <Setter Property="Template">
                         <Setter.Value>
