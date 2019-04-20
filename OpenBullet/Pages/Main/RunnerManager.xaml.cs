@@ -120,7 +120,7 @@ namespace OpenBullet
             if (!runner.Runner.Busy)
             {
                 DelegateCalled = true;
-                (new MainDialog(new DialogSelectBots(runner.Page), "Select Bots Number")).ShowDialog();
+                (new MainDialog(new DialogSelectBots(runner.Page, runner.Runner.BotsNumber), "Select Bots Number")).ShowDialog();
             }
         }
         #endregion

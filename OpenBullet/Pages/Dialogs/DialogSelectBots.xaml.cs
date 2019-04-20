@@ -10,10 +10,11 @@ namespace OpenBullet
     {
         public object Caller { get; set; }
 
-        public DialogSelectBots(object caller)
+        public DialogSelectBots(object caller, int initial = 1)
         {
             InitializeComponent();
             Caller = caller;
+            botsNumberTextbox.Text = initial.ToString();
         }
 
         private void selectButton_Click(object sender, RoutedEventArgs e)
