@@ -754,7 +754,7 @@ namespace RuriLib.Runner
                 switch (botData.Status)
                 {
                     case BotStatus.SUCCESS:
-                        validData = new ValidData(botData.Data.Data, botData.Proxy == null ? "" : botData.Proxy.Proxy, botData.Status, capturedData.ToCaptureString(), botData.ResponseSource, BotLog);
+                        validData = new ValidData(botData.Data.Data, botData.Proxy == null ? "" : botData.Proxy.Proxy, botData.Status, capturedData.ToCaptureString(), Settings.General.SaveLastSource ? botData.ResponseSource : "", BotLog);
                         RaiseDispatchAction(new Action(() => HitsList.Add(validData)));
                         if (UseProxies && !Settings.Proxies.NeverBan && Settings.Proxies.BanAfterGoodStatus)
                         {
@@ -771,7 +771,7 @@ namespace RuriLib.Runner
 
                     case BotStatus.CUSTOM:
                         hitType = botData.CustomStatus;
-                        validData = new ValidData(botData.Data.Data, botData.Proxy == null ? "" : botData.Proxy.Proxy, botData.Status, capturedData.ToCaptureString(), botData.ResponseSource, BotLog);
+                        validData = new ValidData(botData.Data.Data, botData.Proxy == null ? "" : botData.Proxy.Proxy, botData.Status, capturedData.ToCaptureString(), Settings.General.SaveLastSource ? botData.ResponseSource : "", BotLog);
                         RaiseDispatchAction(new Action(() => CustomList.Add(validData)));
 
                         if (UseProxies && !Settings.Proxies.NeverBan && Settings.Proxies.BanAfterGoodStatus)
@@ -803,7 +803,7 @@ namespace RuriLib.Runner
                         goto GETPROXY;
 
                     case BotStatus.NONE:
-                        validData = new ValidData(botData.Data.Data, botData.Proxy == null ? "" : botData.Proxy.Proxy, botData.Status, capturedData.ToCaptureString(), botData.ResponseSource, BotLog);
+                        validData = new ValidData(botData.Data.Data, botData.Proxy == null ? "" : botData.Proxy.Proxy, botData.Status, capturedData.ToCaptureString(), Settings.General.SaveLastSource ? botData.ResponseSource : "", BotLog);
                         RaiseDispatchAction(new Action(() => ToCheckList.Add(validData)));
 
                         if (UseProxies && !Settings.Proxies.NeverBan && Settings.Proxies.BanAfterGoodStatus)

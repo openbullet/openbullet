@@ -43,6 +43,10 @@ namespace RuriLib.ViewModels
         /// <summary>Whether to keep the LogBuffer from BotData stored for future use (slows down the Runner).</summary>
         public bool EnableBotLog { get { return _enableBotLog; } set { _enableBotLog = value; OnPropertyChanged(); } }
 
+        private bool saveLastSource = false;
+        /// <summary>Whether to store the last Response Source after a successful check.</summary>
+        public bool SaveLastSource { get { return saveLastSource; } set { saveLastSource = value; OnPropertyChanged(); } }
+
         /// <summary>
         /// Resets the properties to their default value.
         /// </summary>

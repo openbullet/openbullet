@@ -33,7 +33,8 @@
             </DockPanel>
             <Label DockPanel.Dock="Top" Content="Runner Bots Display Mode" />
             <ComboBox DockPanel.Dock="Top" x:Name="botsDisplayModeCombobox" SelectionChanged="botsDisplayModeCombobox_SelectionChanged"/>
-            <CheckBox Content="Enable Bot Log (slows down Runner)" IsChecked="{Binding EnableBotLog}" VerticalAlignment="Center" VerticalContentAlignment="Center" />
+            <CheckBox Content="Enable Bot Log (slow, RAM-heavy)" IsChecked="{Binding EnableBotLog}" VerticalAlignment="Center" VerticalContentAlignment="Center" />
+            <CheckBox Content="Save Last Response Source (RAM-heavy)" IsChecked="{Binding SaveLastSource}" VerticalAlignment="Center" VerticalContentAlignment="Center" />
         </StackPanel>
     </Grid>
 </Page>
