@@ -57,6 +57,7 @@
                         <TextBox Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
                     <Label Content="Remember to end your message with \r\n to let the server know it's over!" Foreground="{DynamicResource ForegroundCustom}"/>
+                    <CheckBox Content="WebSocket" IsChecked="{Binding WebSocket}" VerticalContentAlignment="Center"/>
                 </StackPanel>
             </TabItem>
         </TabControl>

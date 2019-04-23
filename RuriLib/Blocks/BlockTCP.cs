@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
@@ -46,6 +47,10 @@ namespace RuriLib
         private bool useSSL = true;
         /// <summary>Whether the client will communicate over the Secure Sockets Layer.</summary>
         public bool UseSSL { get { return useSSL; } set { useSSL = value; OnPropertyChanged(); } }
+
+        private bool webSocket = false;
+        /// <summary>Whether to treat the message as a WebSocket payload (adds the frame overhead bytes).</summary>
+        public bool WebSocket { get { return webSocket; } set { webSocket = value; OnPropertyChanged(); } }
 
         private string message = "";
         /// <summary>The message sent to the host.</summary>
@@ -94,6 +99,9 @@ namespace RuriLib
 
                 case TCPCommand.Send:
                     Message = LineParser.ParseLiteral(ref input, "Message");
+
+                    if (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                        LineParser.SetBool(ref input, this);
                     break;
 
                 default:
@@ -140,7 +148,8 @@ namespace RuriLib
 
                 case TCPCommand.Send:
                     writer
-                        .Literal(Message);
+                        .Literal(Message)
+                        .Boolean(WebSocket, "WebSocket");
                     break;
             }
 
@@ -185,7 +194,7 @@ namespace RuriLib
                              }
 
                         //Wait a bit and read the Stream if not Empty
-                        System.Threading.Thread.Sleep(200);
+                        Thread.Sleep(200);
                         if (net.DataAvailable)
                         {
                             if (UseSSL) bytes = ssl.Read(buffer, 0, buffer.Length);
@@ -232,7 +241,59 @@ namespace RuriLib
                     }
 
                     var msg = ReplaceValues(Message, data);
-                    var b = Encoding.ASCII.GetBytes(msg.Replace(@"\r\n", "\r\n"));
+                    byte[] b = { };
+                    var payload = Encoding.ASCII.GetBytes(msg.Replace(@"\r\n", "\r\n"));
+
+                    // Manual implementation of the WebSocket frame
+                    if (WebSocket)
+                    {
+                        List<byte> bl = new List<byte>();
+
+                        // (FIN=1) (RSV1=0) (RSV2=0) (RSV3=0) (OPCODE=0001) = 128 + 1 = 129
+                        bl.Add(129);
+
+                        ulong pllen = (ulong)payload.Length;
+
+                        // We add 128 because the mask bit (MSB) is always 1. In this case the payload len is 7 bits long
+                        if (pllen <= 125)
+                        {
+                            bl.Add((byte)(pllen + 128));
+                        }
+
+                        // Payload len set to 126 -> Next 2 bytes are payload len
+                        else if (pllen <= ushort.MaxValue)
+                        {
+                            bl.Add(126 + 128);
+                            bl.Add((byte)(pllen >> 8)); // Shift by 1 byte
+                            bl.Add((byte)(pllen % 255)); // Take LSB
+                        }
+
+                        // Payload len set to 127 -> Next 4 bytes are payload len
+                        else if (pllen <= ulong.MaxValue)
+                        {
+                            bl.Add(127 + 128);
+                            bl.Add((byte)(pllen >> 24)); // Shift by 3 bytes
+                            bl.Add((byte)((pllen >> 16) % 255)); // Shift by 2 bytes and take LSB
+                            bl.Add((byte)((pllen >> 8) % 255)); // Shift by 1 byte and take LSB
+                            bl.Add((byte)(pllen % 255)); // Take LSB
+                        }
+
+                        // Set the mask used for this message
+                        byte[] mask = new byte[4] { 61, 84, 35, 6 };
+                        bl.AddRange(mask);
+
+                        // Finally we add the payload XORed with the mask
+                        for (int i = 0; i < payload.Length; i++)
+                        {
+                            bl.Add((byte)(payload[i] ^ mask[i % 4]));
+                        }
+
+                        b = bl.ToArray();
+                    }
+                    else
+                    {
+                        b = payload;
+                    }
                     data.Log(new LogEntry("> " + msg, Colors.White));
 
                     if (data.TCPSSL)
