@@ -599,17 +599,17 @@ namespace RuriLib
                         outputString = localInputString;
                         while (reserved.Any(r => outputString.Contains(r))){
                             if (outputString.Contains("?l"))
-                                outputString = outputString.Replace("?l", lowercase[data.rand.Next(0, lowercase.Length)].ToString());
+                                outputString = ReplaceFirst(outputString, "?l", lowercase[data.rand.Next(0, lowercase.Length)].ToString());
                             else if (outputString.Contains("?u"))
-                                outputString = outputString.Replace("?u", uppercase[data.rand.Next(0, uppercase.Length)].ToString());
+                                outputString = ReplaceFirst(outputString, "?u", uppercase[data.rand.Next(0, uppercase.Length)].ToString());
                             else if (outputString.Contains("?d"))
-                                outputString = outputString.Replace("?d", digits[data.rand.Next(0, digits.Length)].ToString());
+                                outputString = ReplaceFirst(outputString, "?d", digits[data.rand.Next(0, digits.Length)].ToString());
                             else if (outputString.Contains("?s"))
-                                outputString = outputString.Replace("?s", symbols[data.rand.Next(0, symbols.Length)].ToString());
+                                outputString = ReplaceFirst(outputString, "?s", symbols[data.rand.Next(0, symbols.Length)].ToString());
                             else if (outputString.Contains("?h"))
-                                outputString = outputString.Replace("?h", hex[data.rand.Next(0, hex.Length)].ToString());
+                                outputString = ReplaceFirst(outputString, "?h", hex[data.rand.Next(0, hex.Length)].ToString());
                             else if (outputString.Contains("?a"))
-                                outputString = outputString.Replace("?a", allchars[data.rand.Next(0, allchars.Length)].ToString());
+                                outputString = ReplaceFirst(outputString, "?a", allchars[data.rand.Next(0, allchars.Length)].ToString());
                         }
                         break;
 
