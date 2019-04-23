@@ -592,6 +592,7 @@ namespace RuriLib
                         var uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
                         var digits = "0123456789";
                         var symbols = "\\!\"£$%&/()=?^'{}[]@#,;.:-_*+";
+                        var hex = digits + "abcdef";
                         var allchars = lowercase + uppercase + digits + symbols;
                         outputString = new string(localInputString
                             .ToCharArray()
@@ -599,6 +600,7 @@ namespace RuriLib
                             .Select(c => c == 'U' ? uppercase[data.rand.Next(0, uppercase.Length)] : c)
                             .Select(c => c == 'D' ? digits[data.rand.Next(0, digits.Length)] : c)
                             .Select(c => c == 'S' ? symbols[data.rand.Next(0, symbols.Length)] : c)
+                            .Select(c => c == 'H' ? hex[data.rand.Next(0, hex.Length)] : c)
                             .Select(c => c == 'A' ? allchars[data.rand.Next(0, allchars.Length)] : c)
                             .ToArray());
                         break;
