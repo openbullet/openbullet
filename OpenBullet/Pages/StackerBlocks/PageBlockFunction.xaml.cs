@@ -121,8 +121,8 @@ namespace OpenBullet.Pages.StackerBlocks
             { "RSA", "Thanks to TheLittleTrain17 for this implementation" },
             { "Delay", "Write the amount of MILLISECONDS you want to wait in the input field" },
             { "CharAt", "Returns the character at the specified index of the string in the input field" },
-            { "AESEncrypt", "Using SHA256, the most commonly used along with AES" },
-            { "AESDecrypt", "Using SHA256, the most commonly used along with AES" }
+            { "AESEncrypt", "256-bit key" },
+            { "AESDecrypt", "256-bit key" }
         };
 
         private void dictionaryRTB_TextChanged(object sender, TextChangedEventArgs e)
