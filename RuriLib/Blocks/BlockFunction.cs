@@ -78,6 +78,9 @@ namespace RuriLib
             /// <summary>Generates a random integer.</summary>
             RandomNum,
 
+            /// <summary>Generates a random string based on a mask.</summary>
+            RandomString,
+
             /// <summary>Rounds a decimal input to the upper integer.</summary>
             Ceil,
 
@@ -582,6 +585,22 @@ namespace RuriLib
 
                     case Function.RandomNum:
                         outputString = (data.rand.Next(randomMin, randomMax)).ToString();
+                        break;
+
+                    case Function.RandomString:
+                        var lowercase = "abcdefghijklmnopqrstuvwxyz";
+                        var uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                        var digits = "0123456789";
+                        var symbols = "\\!\"£$%&/()=?^'{}[]@#,;.:-_*+";
+                        var allchars = lowercase + uppercase + digits + symbols;
+                        outputString = new string(localInputString
+                            .ToCharArray()
+                            .Select(c => c == 'L' ? lowercase[data.rand.Next(0, lowercase.Length)] : c)
+                            .Select(c => c == 'U' ? uppercase[data.rand.Next(0, uppercase.Length)] : c)
+                            .Select(c => c == 'D' ? digits[data.rand.Next(0, digits.Length)] : c)
+                            .Select(c => c == 'S' ? symbols[data.rand.Next(0, symbols.Length)] : c)
+                            .Select(c => c == 'A' ? allchars[data.rand.Next(0, allchars.Length)] : c)
+                            .ToArray());
                         break;
 
                     case Function.Ceil:
