@@ -588,21 +588,29 @@ namespace RuriLib
                         break;
 
                     case Function.RandomString:
+                        var reserved = new string[] { "?l", "?u", "?d", "?s", "?h", "?a" };
                         var lowercase = "abcdefghijklmnopqrstuvwxyz";
                         var uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
                         var digits = "0123456789";
                         var symbols = "\\!\"£$%&/()=?^'{}[]@#,;.:-_*+";
                         var hex = digits + "abcdef";
                         var allchars = lowercase + uppercase + digits + symbols;
-                        outputString = new string(localInputString
-                            .ToCharArray()
-                            .Select(c => c == 'L' ? lowercase[data.rand.Next(0, lowercase.Length)] : c)
-                            .Select(c => c == 'U' ? uppercase[data.rand.Next(0, uppercase.Length)] : c)
-                            .Select(c => c == 'D' ? digits[data.rand.Next(0, digits.Length)] : c)
-                            .Select(c => c == 'S' ? symbols[data.rand.Next(0, symbols.Length)] : c)
-                            .Select(c => c == 'H' ? hex[data.rand.Next(0, hex.Length)] : c)
-                            .Select(c => c == 'A' ? allchars[data.rand.Next(0, allchars.Length)] : c)
-                            .ToArray());
+
+                        outputString = localInputString;
+                        while (reserved.Any(r => outputString.Contains(r))){
+                            if (outputString.Contains("?l"))
+                                outputString = outputString.Replace("?l", lowercase[data.rand.Next(0, lowercase.Length)].ToString());
+                            else if (outputString.Contains("?u"))
+                                outputString = outputString.Replace("?u", uppercase[data.rand.Next(0, uppercase.Length)].ToString());
+                            else if (outputString.Contains("?d"))
+                                outputString = outputString.Replace("?d", digits[data.rand.Next(0, digits.Length)].ToString());
+                            else if (outputString.Contains("?s"))
+                                outputString = outputString.Replace("?s", symbols[data.rand.Next(0, symbols.Length)].ToString());
+                            else if (outputString.Contains("?h"))
+                                outputString = outputString.Replace("?h", hex[data.rand.Next(0, hex.Length)].ToString());
+                            else if (outputString.Contains("?a"))
+                                outputString = outputString.Replace("?a", allchars[data.rand.Next(0, allchars.Length)].ToString());
+                        }
                         break;
 
                     case Function.Ceil:
@@ -1040,6 +1048,18 @@ namespace RuriLib
                 count++;
             }
             return count;
+        }
+        #endregion
+
+        #region RandomString
+        private string ReplaceFirst(string text, string search, string replace)
+        {
+            int pos = text.IndexOf(search);
+            if (pos < 0)
+            {
+                return text;
+            }
+            return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
         #endregion
 
