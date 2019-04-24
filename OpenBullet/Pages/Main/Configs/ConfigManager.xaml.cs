@@ -66,6 +66,13 @@ namespace OpenBullet
 
             // Create new instance of stacker
             Current = (ConfigViewModel)configsListView.SelectedItem; // Set Current Config
+
+            if (Current.Remote)
+            {
+                Globals.LogError(Components.ConfigManager, "The config was pulled from a remote source and cannot be edited!", true);
+                return;
+            }
+
             if (Current != null)
             {
                 Globals.LogInfo(Components.ConfigManager, "Loading config: " + Current.Name);
@@ -115,6 +122,12 @@ namespace OpenBullet
                 Globals.mainWindow.ConfigsPage.OtherOptionsPage == null)
             {
                 Globals.LogError(Components.ConfigManager, "No config eligible for saving!", true);
+                return;
+            }
+
+            if (Current.Remote)
+            {
+                Globals.LogError(Components.ConfigManager, "The config was pulled from a remote source and cannot be saved!", true);
                 return;
             }
 
