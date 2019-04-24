@@ -1,10 +1,13 @@
-﻿using RuriLib;
+﻿using OpenBullet.Models;
+using RuriLib;
 using RuriLib.ViewModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Net;
 
 namespace OpenBullet.ViewModels
 {
@@ -49,8 +52,11 @@ namespace OpenBullet.ViewModels
 
         public void RefreshList()
         {
-            // Scan the directory for new configs
-            ConfigsList = new ObservableCollection<ConfigViewModel>(GetConfigsFromDisk(true));
+            // Scan the directory and the sources for configs
+            ConfigsList = new ObservableCollection<ConfigViewModel>(
+                GetConfigsFromSources()
+                .Concat(GetConfigsFromDisk(true))
+                );
 
             OnPropertyChanged("Total");
         }
@@ -71,13 +77,61 @@ namespace OpenBullet.ViewModels
             {
                 foreach(var file in Directory.EnumerateFiles(categoryFolder).Where(file => file.EndsWith(".loli")))
                 {
-                    try { models.Add(new ConfigViewModel(file, System.IO.Path.GetFileName(categoryFolder), IOManager.LoadConfig(file))); }
+                    try { models.Add(new ConfigViewModel(file, Path.GetFileName(categoryFolder), IOManager.LoadConfig(file))); }
                     catch { Globals.LogError(Components.ConfigManager, "Could not load file: " + file); }
                 }
             }
 
             if (sort) { models.Sort((m1, m2) => m1.Config.Settings.LastModified.CompareTo(m2.Config.Settings.LastModified)); }
             return models;
+        }
+
+        public List<ConfigViewModel> GetConfigsFromSources()
+        {
+            var list = new List<ConfigViewModel>();
+
+            foreach(var source in Globals.obSettings.Sources.Sources)
+            {
+                try
+                {
+                    WebClient wc = new WebClient();
+                    switch (source.Auth)
+                    {
+                        case Source.AuthMode.ApiKey:
+                            wc.Headers.Add(HttpRequestHeader.Authorization, source.ApiKey);
+                            break;
+
+                        case Source.AuthMode.UserPass:
+                            var header = BlockFunction.Base64Encode($"{source.Username}:{source.Password}");
+                            wc.Headers.Add(HttpRequestHeader.Authorization, $"Basic {header}");
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    var file = wc.DownloadData(source.ApiUrl);
+
+                    using (var zip = new ZipArchive(new MemoryStream(file), ZipArchiveMode.Read))
+                    {
+                        foreach (var entry in zip.Entries)
+                        {
+                            using (var stream = entry.Open())
+                            {
+                                using (TextReader tr = new StreamReader(stream))
+                                {
+                                    var text = tr.ReadToEnd();
+                                    var cfg = IOManager.DeserializeConfig(text);
+                                    list.Add(new ConfigViewModel("", "Remote", cfg, true));
+                                }
+                            }
+                        }
+                    }
+                }
+                catch { }
+            }
+
+            return list;
         }
     }
 }

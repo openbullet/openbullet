@@ -18,6 +18,9 @@ namespace RuriLib.ViewModels
         /// <summary>The path of the config file on disk.</summary>
         public string Path { get { return path; } set { path = value; OnPropertyChanged(); } }
 
+        /// <summary>Whether the config was pulled from a remote source.</summary>
+        public bool Remote { get; set; } = false;
+
         /// <summary>The name of the config.</summary>
         public string Name { get { return Config.Settings.Name; } }
 
@@ -27,11 +30,13 @@ namespace RuriLib.ViewModels
         /// <param name="path">The path of the config file on disk</param>
         /// <param name="category">The category of the config</param>
         /// <param name="config">The actual Config object</param>
-        public ConfigViewModel(string path, string category, Config config)
+        /// <param name="remote">Whether the Config was pulled from a remote source</param>
+        public ConfigViewModel(string path, string category, Config config, bool remote = false)
         {
             Path = path;
             Category = category;
             Config = config;
+            Remote = remote;
         }
     }
 }
