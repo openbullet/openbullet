@@ -13,7 +13,17 @@ namespace OpenBullet.ViewModels
     public class OBSettingsSources : ViewModelBase
     {
         public ObservableCollection<Source> Sources { get; set; } = new ObservableCollection<Source>();
-
+        
+        public void RemoveSourceById(int id)
+        {
+            Sources.Remove(GetSourceById(id));
+        }
+        
+        public Source GetSourceById(int id)
+        {
+            return Sources.FirstOrDefault(s => s.Id == id);
+        }
+        
         public void Reset()
         {
             OBSettingsSources def = new OBSettingsSources();

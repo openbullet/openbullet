@@ -23,6 +23,7 @@ namespace OpenBullet.Pages.Main.Settings
     {
         OBSettingsGeneral GeneralPage = new OBSettingsGeneral();
         OBSettingsSounds SoundsPage = new OBSettingsSounds();
+        OBSettingsSources SourcesPage = new OBSettingsSources();
         OBSettingsThemes ThemesPage = new OBSettingsThemes();
 
         public OBSettingsPage()
@@ -42,6 +43,12 @@ namespace OpenBullet.Pages.Main.Settings
         {
             Main.Content = SoundsPage;
             menuOptionSelected(menuOptionSounds);
+        }
+
+        private void menuOptionSources_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Main.Content = SourcesPage;
+            menuOptionSelected(menuOptionSources);
         }
 
         private void menuOptionThemes_MouseDown(object sender, MouseButtonEventArgs e)

@@ -28,7 +28,8 @@
                     </Style>
                 </StackPanel.Resources>
                 <Label x:Name="menuOptionGeneral" Content="General" MouseDown="menuOptionGeneral_MouseDown"/>
-                <Label x:Name="menuOptionSounds" Content="Sounds" MouseDown="menuOptionSounds_MouseDown" />
+                <Label x:Name="menuOptionSounds" Content="Sounds" MouseDown="menuOptionSounds_MouseDown"/>
+                <Label x:Name="menuOptionSources" Content="Sources" MouseDown="menuOptionSources_MouseDown"/>
                 <Label x:Name="menuOptionThemes" Content="Themes" MouseDown="menuOptionThemes_MouseDown"/>
             </StackPanel>
 

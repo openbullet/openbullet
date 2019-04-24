@@ -178,6 +178,7 @@
     <Compile Include="Converters\BooleanBrushConverter.cs" />
     <Compile Include="Converters\EnumBooleanConverter.cs" />
     <Compile Include="Converters\KeychainBrushConverter.cs" />
+    <Compile Include="Models\Source.cs" />
     <Compile Include="OBIOManager.cs" />
     <Compile Include="OBLog.cs" />
     <Compile Include="LogWindow.xaml.cs">
@@ -259,6 +260,9 @@
     </Compile>
     <Compile Include="Pages\Main\Settings\OB\OBSettingsGeneral.xaml.cs">
       <DependentUpon>OBSettingsGeneral.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Main\Settings\OB\OBSettingsSources.xaml.cs">
+      <DependentUpon>OBSettingsSources.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Main\Settings\OB\OBSettingsThemes.xaml.cs">
       <DependentUpon>OBSettingsThemes.xaml</DependentUpon>
@@ -371,6 +375,7 @@
     <Compile Include="ViewModels\ListGeneratorViewModel.cs" />
     <Compile Include="ViewModels\OBSettings\OBSettingsGeneral.cs" />
     <Compile Include="ViewModels\OBSettings\OBSettingsSounds.cs" />
+    <Compile Include="ViewModels\OBSettings\OBSettingsSources.cs" />
     <Compile Include="ViewModels\OBSettings\OBSettingsThemes.cs" />
     <Compile Include="ViewModels\ProxyManagerViewModel.cs" />
     <Compile Include="ViewModels\RunnerManagerViewModel.cs" />
@@ -480,6 +485,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Main\Settings\OB\OBSettingsGeneral.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Settings\OB\OBSettingsSources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
