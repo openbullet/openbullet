@@ -262,6 +262,9 @@ namespace OpenBullet
 
         private void selectConfigButton_Click(object sender, RoutedEventArgs e)
         {
+            var manager = Globals.mainWindow.ConfigsPage.ConfigManagerPage.vm;
+            manager.SearchString = "";
+            manager.RefreshList();
             (new MainDialog(new DialogSelectConfig(this), "Select Config")).ShowDialog();
         }
 
