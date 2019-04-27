@@ -34,8 +34,6 @@ namespace OpenBullet
         {
             InitializeComponent();
             DataContext = vm;
-
-            vm.RefreshList();
         }
 
         public bool CheckSaved()
@@ -160,7 +158,7 @@ namespace OpenBullet
             SaveState();
 
             Globals.LogInfo(Components.ConfigManager, "Refreshing the list");
-            vm.RefreshList();
+            // vm.RefreshList();
         }
         
         private void deleteConfigsButton_Click(object sender, RoutedEventArgs e)
@@ -178,7 +176,7 @@ namespace OpenBullet
                 }
 
                 Globals.LogInfo(Components.ConfigManager, $"Deleted {configsListView.SelectedItems.Count} configs");
-                vm.RefreshList();
+                vm.RefreshList(false);
             }
             else
             {
@@ -188,7 +186,7 @@ namespace OpenBullet
 
         private void rescanConfigsButton_Click(object sender, RoutedEventArgs e)
         {
-            vm.RefreshList();
+            vm.RefreshList(true);
         }
 
         private void newConfigButton_Click(object sender, RoutedEventArgs e)
@@ -240,7 +238,7 @@ namespace OpenBullet
             // Save to disk
             saveConfigButton_Click(this, null);
 
-            vm.RefreshList();
+            vm.RefreshList(false);
 
             // Create new instance of stacker
             Globals.mainWindow.ConfigsPage.StackerPage = new Stacker(Current);
@@ -276,7 +274,7 @@ namespace OpenBullet
         {
             vm.SearchString = filterTextbox.Text;
             if(vm.SearchString == "")
-                vm.RefreshList();
+                vm.RefreshList(false);
         }
 
         private void filterTextbox_KeyDown(object sender, KeyEventArgs e)

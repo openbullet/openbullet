@@ -13,6 +13,8 @@ namespace OpenBullet.ViewModels
 {
     public class ConfigManagerViewModel : ViewModelBase
     {
+        private List<ConfigViewModel> cachedConfigs = new List<ConfigViewModel>();
+
         private ObservableCollection<ConfigViewModel> configsList;
         public ObservableCollection<ConfigViewModel> ConfigsList {
             get {
@@ -37,7 +39,7 @@ namespace OpenBullet.ViewModels
         public ConfigManagerViewModel()
         {
             configsList = new ObservableCollection<ConfigViewModel>();            
-            RefreshList();
+            RefreshList(true);
         }
 
         public bool NameTaken(string name)
@@ -50,13 +52,23 @@ namespace OpenBullet.ViewModels
             OnPropertyChanged("CurrentConfigName");
         }
 
-        public void RefreshList()
+        public void RefreshList(bool pullSources)
         {
             // Scan the directory and the sources for configs
-            ConfigsList = new ObservableCollection<ConfigViewModel>(
+            if (pullSources)
+            {
+                ConfigsList = new ObservableCollection<ConfigViewModel>(
                 GetConfigsFromSources()
                 .Concat(GetConfigsFromDisk(true))
                 );
+            }
+            else
+            {
+                ConfigsList = new ObservableCollection<ConfigViewModel>(
+                cachedConfigs
+                .Concat(GetConfigsFromDisk(true))
+                );
+            }
 
             OnPropertyChanged("Total");
         }
@@ -89,6 +101,7 @@ namespace OpenBullet.ViewModels
         public List<ConfigViewModel> GetConfigsFromSources()
         {
             var list = new List<ConfigViewModel>();
+            cachedConfigs = new List<ConfigViewModel>();
 
             foreach(var source in Globals.obSettings.Sources.Sources)
             {
@@ -123,6 +136,7 @@ namespace OpenBullet.ViewModels
                                     var text = tr.ReadToEnd();
                                     var cfg = IOManager.DeserializeConfig(text);
                                     list.Add(new ConfigViewModel("", "Remote", cfg, true));
+                                    cachedConfigs.Add(new ConfigViewModel("", "Remote", cfg, true));
                                 }
                             }
                         }

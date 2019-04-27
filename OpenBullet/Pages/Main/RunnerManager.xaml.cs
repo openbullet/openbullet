@@ -85,8 +85,11 @@ namespace OpenBullet
             {
                 DelegateCalled = true;
                 var manager = Globals.mainWindow.ConfigsPage.ConfigManagerPage.vm;
-                manager.SearchString = "";
-                manager.RefreshList();
+                if (manager.SearchString != "")
+                {
+                    manager.SearchString = "";
+                    manager.RefreshList(false);
+                }
                 (new MainDialog(new DialogSelectConfig(runner.Page), "Select Config")).ShowDialog();
             }
         }
