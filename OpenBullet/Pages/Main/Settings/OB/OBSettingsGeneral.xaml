@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:OpenBullet"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="OBSettingsGeneral">
@@ -36,6 +37,14 @@
             <DockPanel Margin="5">
                 <Label Content="Default Author:"/>
                 <TextBox Text="{Binding DefaultAuthor}" />
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Top">
+                <Label Content="Starting Window Width" />
+                <xctk:IntegerUpDown Background="Transparent" Width="70" Margin="10 0 0 0" Minimum="800" Maximum="10000" Value="{Binding StartingWidth}" Foreground="{DynamicResource ForegroundMain}"  HorizontalAlignment="Right" />
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Top">
+                <Label Content="Starting Window Height" />
+                <xctk:IntegerUpDown Background="Transparent" Width="70" Margin="10 0 0 0" Minimum="600" Maximum="10000" Value="{Binding StartingHeight}" Foreground="{DynamicResource ForegroundMain}"  HorizontalAlignment="Right" />
             </DockPanel>
         </StackPanel>
     </Grid>

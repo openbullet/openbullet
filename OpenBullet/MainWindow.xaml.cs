@@ -54,8 +54,6 @@ namespace OpenBullet
 
             InitializeComponent();
 
-            WindowStartupLocation = WindowStartupLocation.CenterScreen;
-
             Title = title;
             titleLabel.Content = title;
 
@@ -138,8 +136,12 @@ namespace OpenBullet
 
             menuOptionRunner_MouseDown(this, null);
 
-            // Re-enable this before release
-            // (new SplashWindow()).ShowDialog();
+            var width = Globals.obSettings.General.StartingWidth;
+            var height = Globals.obSettings.General.StartingHeight;
+            if (width > 800) Width = width;
+            if (height > 600) Height = height;
+
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             if (Globals.obSettings.Themes.EnableSnow)
                 Loaded += MainWindow_Loaded;

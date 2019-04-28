@@ -14,6 +14,10 @@ namespace OpenBullet.ViewModels
         public bool DisplayLoliScriptOnLoad { get { return displayLoliScriptOnLoad; } set { displayLoliScriptOnLoad = value; OnPropertyChanged(); } }
         private bool recommendedBots = true;
         public bool RecommendedBots { get { return recommendedBots; } set { recommendedBots = value; OnPropertyChanged(); } }
+        private int startingWidth = 800;
+        public int StartingWidth { get { return startingWidth; } set { startingWidth = value; OnPropertyChanged(); } }
+        private int startingHeight = 620;
+        public int StartingHeight { get { return startingHeight; } set { startingHeight = value; OnPropertyChanged(); } }
         private bool changeRunnerInterface = false;
         public bool ChangeRunnerInterface { get { return changeRunnerInterface; } set { changeRunnerInterface = value; OnPropertyChanged(); } }
         private bool disableQuitWarning = false;
