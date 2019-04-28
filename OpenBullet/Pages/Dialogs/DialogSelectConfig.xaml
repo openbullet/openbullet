@@ -80,6 +80,7 @@
                 </Style>
                 <Style TargetType="{x:Type ListViewItem}">
                     <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />
+                    <EventSetter Event="KeyDown" Handler="ListViewItem_KeyDown"/>
                     <!-- <EventSetter Event="Selected" Handler="ListViewItem_Selected" /> -->
                     <Setter Property="Template">
                         <Setter.Value>
