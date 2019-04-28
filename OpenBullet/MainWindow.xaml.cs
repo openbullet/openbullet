@@ -54,6 +54,8 @@ namespace OpenBullet
 
             InitializeComponent();
 
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
             Title = title;
             titleLabel.Content = title;
 

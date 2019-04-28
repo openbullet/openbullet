@@ -12,6 +12,8 @@ namespace OpenBullet
         {
             InitializeComponent();
 
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
             Content = content;
             Title = title;
         }
