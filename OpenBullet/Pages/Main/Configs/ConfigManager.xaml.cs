@@ -163,6 +163,18 @@ namespace OpenBullet
         
         private void deleteConfigsButton_Click(object sender, RoutedEventArgs e)
         {
+            if (Current == null)
+            {
+                Globals.LogError(Components.ConfigManager, "No config selected!", true);
+                return;
+            }
+
+            if (Current.Remote)
+            {
+                Globals.LogError(Components.ConfigManager, "The config was pulled from a remote source and cannot be saved!", true);
+                return;
+            }
+
             Globals.LogWarning(Components.ConfigManager, "Deletion initiated, prompting warning");
             if (MessageBox.Show("This will delete the physical files from your disk! Are you sure you want to continue?", "WARNING", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
