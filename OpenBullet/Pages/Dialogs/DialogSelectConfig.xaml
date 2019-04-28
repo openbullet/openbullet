@@ -5,10 +5,10 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:OpenBullet"
       mc:Ignorable="d" 
-      d:DesignHeight="510" d:DesignWidth="410"
+      d:DesignHeight="510" d:DesignWidth="510"
       Title="DialogSelectConfig">
 
-    <Grid Height="500" Width="400" Margin="5">
+    <Grid Height="500" Width="500" Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto" />
@@ -118,9 +118,19 @@
 
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Width="180" DisplayMemberBinding="{Binding Path=Name}">
+                    <GridViewColumn Width="130" DisplayMemberBinding="{Binding Path=Name}">
                         <GridViewColumn.Header>
                             <GridViewColumnHeader Tag="Name" Click="listViewColumnHeader_Click">Name</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=Category}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Category" Click="listViewColumnHeader_Click">Category</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=Config.AllowedWordlists}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="AllowedWordlists" Click="listViewColumnHeader_Click">Wordlists</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn Width="40" DisplayMemberBinding="{Binding Path=Config.Settings.NeedsProxies}">
@@ -136,11 +146,6 @@
                     <GridViewColumn Width="40" DisplayMemberBinding="{Binding Path=Config.SeleniumPresent}">
                         <GridViewColumn.Header>
                             <GridViewColumnHeader Tag="Selenium" Click="listViewColumnHeader_Click">Sele</GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                    </GridViewColumn>
-                    <GridViewColumn Width="600" DisplayMemberBinding="{Binding Path=Path}">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Path" Click="listViewColumnHeader_Click">Path</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                 </GridView>
