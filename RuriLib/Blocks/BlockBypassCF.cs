@@ -117,7 +117,6 @@ namespace RuriLib
                     throw new Exception($"The proxy type {data.Proxy.Type} is not supported by this block yet");
                 }
 
-                var client = data.Proxy.GetClient();
                 var proxy = new WebProxy(data.Proxy.Proxy, false);
 
                 if (data.Proxy.Username != "")
