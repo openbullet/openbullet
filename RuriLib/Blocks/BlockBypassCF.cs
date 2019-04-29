@@ -112,10 +112,22 @@ namespace RuriLib
 
             if (data.UseProxies)
             {
+                if (data.Proxy.Type != Extreme.Net.ProxyType.Http)
+                {
+                    throw new Exception($"The proxy type {data.Proxy.Type} is not supported by this block yet");
+                }
+
                 var client = data.Proxy.GetClient();
+                var proxy = new WebProxy(data.Proxy.Proxy, false);
+
+                if (data.Proxy.Username != "")
+                {
+                    proxy.Credentials = new NetworkCredential(data.Proxy.Username, data.Proxy.Password);
+                }
+
                 handler = new HttpClientHandler()
                 {
-                    Proxy = (IWebProxy)client,
+                    Proxy = proxy,
                     CookieContainer = cookies,
                     AllowAutoRedirect = true,
                     AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
