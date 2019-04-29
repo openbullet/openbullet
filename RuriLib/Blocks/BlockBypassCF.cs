@@ -5,10 +5,10 @@ using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Threading;
 using Jint;
-using Leaf.xNet;
 using System.Net;
-using Leaf.xNet.Services.Cloudflare;
-using Leaf.xNet.Services.Captcha;
+using Cloudflare;
+using Cloudflare.CaptchaProviders;
+using System.Net.Http;
 
 namespace RuriLib
 {
@@ -86,62 +86,93 @@ namespace RuriLib
 
             var timeout = data.GlobalSettings.General.RequestTimeout * 1000;
 
-            var request = new HttpRequest();
-            request.IgnoreProtocolErrors = true;            
-            request.ConnectTimeout = timeout;
-            request.ReadWriteTimeout = timeout;
-            request.Cookies = new CookieStorage();
+            // We initialize the solver basing on the captcha service available
+            CloudflareSolver cf = null;
+            switch (data.GlobalSettings.Captchas.CurrentService)
+            {
+                case BlockCaptcha.CaptchaService.AntiCaptcha:
+                    cf = new CloudflareSolver(new AntiCaptchaProvider(data.GlobalSettings.Captchas.AntiCapToken));
+                    break;
+
+                case BlockCaptcha.CaptchaService.TwoCaptcha:
+                    cf = new CloudflareSolver(new TwoCaptchaProvider(data.GlobalSettings.Captchas.TwoCapToken));
+                    break;
+
+                default:
+                    cf = new CloudflareSolver();
+                    break;
+            }
+
+            // Initialize the handler with the Proxy and the previous cookies
+            HttpClientHandler handler = null;
+
+            CookieContainer cookies = new CookieContainer();
             foreach (var cookie in data.Cookies)
-                request.Cookies.Add(new Cookie(cookie.Key, cookie.Value));
+                cookies.Add(new Cookie(cookie.Key, cookie.Value));
 
             if (data.UseProxies)
             {
-                switch (data.Proxy.Type)
+                var client = data.Proxy.GetClient();
+                handler = new HttpClientHandler()
                 {
-                    case Extreme.Net.ProxyType.Http:
-                        request.Proxy = HttpProxyClient.Parse(data.Proxy.Proxy);
-                        break;
+                    Proxy = (IWebProxy)client,
+                    CookieContainer = cookies,
+                    AllowAutoRedirect = true,
+                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+                };
+            }
+            else
+            {
+                handler = new HttpClientHandler()
+                {
+                    CookieContainer = cookies,
+                    AllowAutoRedirect = true,
+                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+                };
+            }
+            
+            // Initialize the HttpClient with the given handler, timeout, user-agent
+            var httpClient = new HttpClient(handler);
+            httpClient.Timeout = TimeSpan.FromMinutes(timeout);
+            httpClient.DefaultRequestHeaders.Add("User-Agent", ReplaceValues(userAgent, data));
 
-                    case Extreme.Net.ProxyType.Socks4:
-                        request.Proxy = Socks4ProxyClient.Parse(data.Proxy.Proxy);
-                        break;
+            var uri = new Uri(localUrl);
 
-                    case Extreme.Net.ProxyType.Socks4a:
-                        request.Proxy = Socks4AProxyClient.Parse(data.Proxy.Proxy);
-                        break;
-
-                    case Extreme.Net.ProxyType.Socks5:
-                        request.Proxy = Socks5ProxyClient.Parse(data.Proxy.Proxy);
-                        break;
-
-                    case Extreme.Net.ProxyType.Chain:
-                        throw new Exception("The Chain Proxy Type is not supported in Leaf.xNet (used for CF Bypass).");
-                }
-
-                request.Proxy.ReadWriteTimeout = timeout;
-                request.Proxy.ConnectTimeout = timeout;
-                request.Proxy.Username = data.Proxy.Username;
-                request.Proxy.Password = data.Proxy.Password;
+            // Solve the CF challenge
+            var result = cf.Solve(httpClient, handler, uri).Result;
+            if (result.Success)
+            {
+                data.Log(new LogEntry($"[Success] Protection bypassed: {result.DetectResult.Protection}", Colors.GreenYellow));
+            }
+            else
+            {
+                throw new Exception($"CF Bypass Failed: {result.FailReason}");
             }
 
-            request.UserAgent = ReplaceValues(userAgent, data);
+            // Once the protection has been bypassed we can use that httpClient to send the requests as usual
+            var response = httpClient.GetAsync(uri).Result;
 
-            var twoCapToken = data.GlobalSettings.Captchas.TwoCapToken;
-            if (twoCapToken != "") request.CaptchaSolver = new TwoCaptchaSolver() { ApiKey = data.GlobalSettings.Captchas.TwoCapToken };
-            
-            var response = request.GetThroughCloudflare(new Uri(localUrl));
-            var cookies = response.Cookies.GetCookies(localUrl);
-            var clearanceCookie = cookies["cf_clearance"];
-            var cfduidCookie = cookies["__cfduid"];
-            data.Cookies.Add("cf_clearance", clearanceCookie.Value);
-            data.Cookies.Add("__cfduid", cfduidCookie.Value);
+            // Save the cookies
+            var ck = cookies.GetCookies(uri);
+
+            var clearance = "";
+            var cfduid = "";
+
+            try
+            {
+                clearance = ck["cf_clearance"].Value;
+                cfduid = ck["__cfduid"].Value;
+            }
+            catch { }
+
             if (data.UseProxies)
             {
-                data.Proxy.Clearance = clearanceCookie.Value;
-                data.Proxy.Cfduid = cfduidCookie.Value;
+                data.Proxy.Clearance = clearance;
+                data.Proxy.Cfduid = cfduid;
             }
+
             data.Log(new LogEntry("Got Cloudflare clearance!", Colors.GreenYellow));
-            data.Log(new LogEntry(clearanceCookie + Environment.NewLine + cfduidCookie + Environment.NewLine, Colors.White));
+            data.Log(new LogEntry(clearance + Environment.NewLine + cfduid + Environment.NewLine, Colors.White));
 
             // Get code
             data.ResponseCode = ((int)response.StatusCode).ToString();
@@ -150,25 +181,31 @@ namespace RuriLib
             // Get headers
             data.Log(new LogEntry("Received headers:", Colors.DeepPink));
             var headerList = new List<KeyValuePair<string, string>>();
-            var receivedHeaders = response.EnumerateHeaders();
+            var receivedHeaders = response.Headers.GetEnumerator();
             data.ResponseHeaders.Clear();
+
             while (receivedHeaders.MoveNext())
             {
                 var header = receivedHeaders.Current;
-                data.ResponseHeaders.Add(header.Key, header.Value);
-                data.Log(new LogEntry(header.Key + ": " + header.Value, Colors.LightPink));
+                var value = header.Value.GetEnumerator();
+                if (value.MoveNext())
+                {
+                    data.ResponseHeaders.Add(header.Key, value.Current);
+                    data.Log(new LogEntry(header.Key + ": " + value.Current, Colors.LightPink));
+                }
             }
 
             // Get cookies
             data.Log(new LogEntry("Received cookies:", Colors.Goldenrod));
-            foreach (Cookie cookie in response.Cookies.GetCookies(localUrl))
+            foreach (Cookie cookie in ck)
             {
                 if (data.Cookies.ContainsKey(cookie.Name)) data.Cookies[cookie.Name] = cookie.Value;
                 else data.Cookies.Add(cookie.Name, cookie.Value);
                 data.Log(new LogEntry(cookie.Name + ": " + cookie.Value, Colors.LightGoldenrodYellow));
             }
 
-            data.ResponseSource = response.ToString();
+            // Save the content
+            data.ResponseSource = response.Content.ReadAsStringAsync().Result;
             data.Log(new LogEntry("Response Source:", Colors.Green));
             data.Log(new LogEntry(data.ResponseSource, Colors.GreenYellow));
         }
