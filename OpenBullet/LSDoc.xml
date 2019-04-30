@@ -114,6 +114,7 @@ STATUS - The status of the bot
 RESPONSECODE - The response code of the last request performed
 COOKIE - Sets the value for a cookie of the global cookie jar given its name
 ADDRESS - The address of the response of the last request performed
+USEPROXY - Whether to use the proxy that is currently assigned to the bot during requests
 PROXY - Sets the current proxy
 PROXYTYPE - Sets the current proxy type
 DATA - Sets the current data
@@ -130,6 +131,7 @@ SET STATUS CUSTOM "ABCD"
 SET RESPONSECODE 200
 SET COOKIE "token" "abcdef"
 SET ADDRESS "https://www.google.com"
+SET USEPROXY FALSE
 SET PROXY "127.0.0.1:8888"
 SET PROXYTYPE HTTP
 SET DATA "abc:def"

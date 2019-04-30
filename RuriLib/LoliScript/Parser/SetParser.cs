@@ -47,6 +47,12 @@ namespace RuriLib.LS
                         data.Address = LineParser.ParseLiteral(ref input, "ADDRESS", true, data);
                         break;
 
+                    case "USEPROXY":
+                        var use = LineParser.ParseToken(ref input, TokenType.Parameter, true).ToUpper();
+                        if (use == "TRUE") data.UseProxies = true;
+                        else if (use == "FALSE") data.UseProxies = false;
+                        break;
+
                     case "PROXY":
                         data.Proxy = new CProxy(LineParser.ParseLiteral(ref input, "PROXY", true, data), data.Proxy.Type);
                         break;
