@@ -78,6 +78,7 @@ namespace RuriLib
                 if(data.Proxy.Clearance != "" && !data.GlobalSettings.Proxies.AlwaysGetClearance)
                 {
                     data.Log(new LogEntry("Skipping CF Bypass because there is already a valid cookie", Colors.White));
+                    data.Cookies.Add("cf_clearance", data.Proxy.Clearance);
                     return;
                 }
             }
