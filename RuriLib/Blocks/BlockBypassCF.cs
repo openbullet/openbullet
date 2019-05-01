@@ -105,7 +105,7 @@ namespace RuriLib
 
             CookieContainer cookies = new CookieContainer();
             foreach (var cookie in data.Cookies)
-                cookies.Add(new Cookie(cookie.Key, cookie.Value));
+                cookies.Add(uri, new Cookie(cookie.Key, cookie.Value));
 
             if (data.UseProxies)
             {
@@ -150,6 +150,13 @@ namespace RuriLib
             if (data.HasClearance)
             {
                 data.Log(new LogEntry("Skipping CF Bypass because there is already a valid cookie", Colors.White));
+
+                // Blockception!
+                BlockRequest req = new BlockRequest();
+                req.Method = Extreme.Net.HttpMethod.GET;
+                req.Url = localUrl;
+                req.Process(data);
+                return;
             }
             else // Otherwise solve the CF challenge
             {
