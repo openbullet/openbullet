@@ -72,19 +72,8 @@ namespace RuriLib
         {
             base.Process(data);
 
-            // If the clearance info is already set and we're not getting it fresh each time, skip
-            if (data.UseProxies)
-            {
-                if(data.Proxy.Clearance != "" && !data.GlobalSettings.Proxies.AlwaysGetClearance)
-                {
-                    data.Log(new LogEntry("Skipping CF Bypass because there is already a valid cookie", Colors.White));
-                    data.Cookies.Add("cf_clearance", data.Proxy.Clearance);
-                    return;
-                }
-            }
-
             var localUrl = ReplaceValues(url, data);
-
+            var uri = new Uri(localUrl);
             var timeout = data.GlobalSettings.General.RequestTimeout * 1000;
 
             // We initialize the solver basing on the captcha service available
@@ -102,6 +91,13 @@ namespace RuriLib
                 default:
                     cf = new CloudflareSolver();
                     break;
+            }
+
+            // If we have a previous clearance cookie, add it to the jar
+            if (data.HasClearance)
+            {
+                if (!data.Cookies.ContainsKey("cf_clearance")) data.Cookies.Add("cf_clearance", data.Proxy.Clearance);
+                if (!data.Cookies.ContainsKey("__cfduid") && data.Proxy.Cfduid != "") data.Cookies.Add("__cfduid", data.Proxy.Cfduid);
             }
 
             // Initialize the handler with the Proxy and the previous cookies
@@ -148,43 +144,56 @@ namespace RuriLib
             httpClient.Timeout = TimeSpan.FromMinutes(timeout);
             httpClient.DefaultRequestHeaders.Add("User-Agent", ReplaceValues(userAgent, data));
 
-            var uri = new Uri(localUrl);
+            var solved = false;
 
-            // Solve the CF challenge
-            var result = cf.Solve(httpClient, handler, uri).Result;
-            if (result.Success)
+            // If the clearance info is already set and we're not getting it fresh each time, skip
+            if (data.HasClearance)
             {
-                data.Log(new LogEntry($"[Success] Protection bypassed: {result.DetectResult.Protection}", Colors.GreenYellow));
+                data.Log(new LogEntry("Skipping CF Bypass because there is already a valid cookie", Colors.White));
             }
-            else
+            else // Otherwise solve the CF challenge
             {
-                throw new Exception($"CF Bypass Failed: {result.FailReason}");
+                var result = cf.Solve(httpClient, handler, uri).Result;
+                if (result.Success)
+                {
+                    data.Log(new LogEntry($"[Success] Protection bypassed: {result.DetectResult.Protection}", Colors.GreenYellow));
+
+                    solved = true;
+                }
+                else
+                {
+                    throw new Exception($"CF Bypass Failed: {result.FailReason}");
+                }
             }
 
-            // Once the protection has been bypassed we can use that httpClient to send the requests as usual
+            // Perform the request
             var response = httpClient.GetAsync(uri).Result;
 
-            // Save the cookies
+            // Get the cookies
             var ck = cookies.GetCookies(uri);
 
-            var clearance = "";
-            var cfduid = "";
-
-            try
+            // If we solved the challenge, print the cookies and save them inside the proxy
+            if (solved)
             {
-                clearance = ck["cf_clearance"].Value;
-                cfduid = ck["__cfduid"].Value;
-            }
-            catch { }
+                var clearance = "";
+                var cfduid = "";
 
-            if (data.UseProxies)
-            {
-                data.Proxy.Clearance = clearance;
-                data.Proxy.Cfduid = cfduid;
-            }
+                try
+                {
+                    clearance = ck["cf_clearance"].Value;
+                    cfduid = ck["__cfduid"].Value;
+                }
+                catch { }
 
-            data.Log(new LogEntry("Got Cloudflare clearance!", Colors.GreenYellow));
-            data.Log(new LogEntry(clearance + Environment.NewLine + cfduid + Environment.NewLine, Colors.White));
+                if (data.UseProxies)
+                {
+                    data.Proxy.Clearance = clearance;
+                    data.Proxy.Cfduid = cfduid;
+                }
+
+                data.Log(new LogEntry("Got Cloudflare clearance!", Colors.GreenYellow));
+                data.Log(new LogEntry(clearance + Environment.NewLine + cfduid + Environment.NewLine, Colors.White));
+            }
 
             // Get code
             data.ResponseCode = ((int)response.StatusCode).ToString();

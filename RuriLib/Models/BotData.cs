@@ -152,6 +152,9 @@ namespace RuriLib
         /// <summary>Whether this object is being used for a Debugger or for the Runner.</summary>
         public bool IsDebug { get; set; }
 
+        /// <summary>Whether a previous clearance cookie can be used.</summary>
+        public bool HasClearance { get { return UseProxies && Proxy.Clearance != "" && !GlobalSettings.Proxies.AlwaysGetClearance; } }
+
         /// <summary>
         /// Creates a BotData object given some parameters.
         /// </summary>
