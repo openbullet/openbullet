@@ -587,10 +587,20 @@ namespace OpenBullet
 
         private void previousMatchButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (vm.CurrentSearchMatch == 1 || vm.TotalSearchMatches == 0)
+            if (vm.TotalSearchMatches == 0) // If no matches, do nothing
+            {
                 return;
-
-            vm.CurrentSearchMatch--;
+            }
+                
+            if (vm.CurrentSearchMatch == 1) // If we need to loop around
+            {
+                vm.CurrentSearchMatch = vm.Indexes.Count;
+            }
+            else
+            {
+                vm.CurrentSearchMatch--;
+            }
+            
             logRTB.DeselectAll();
             logRTB.Select(vm.Indexes[vm.CurrentSearchMatch - 1], 0);
             logRTB.ScrollToCaret();
@@ -598,10 +608,20 @@ namespace OpenBullet
         
         private void nextMatchButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (vm.CurrentSearchMatch == vm.Indexes.Count || vm.TotalSearchMatches == 0)
+            if (vm.TotalSearchMatches == 0) // If no matches, do nothing
+            {
                 return;
+            }
 
-            vm.CurrentSearchMatch++;
+            if (vm.CurrentSearchMatch == vm.Indexes.Count) // If we need to loop around
+            {
+                vm.CurrentSearchMatch = 1;
+            }
+            else
+            {
+                vm.CurrentSearchMatch++;
+            }
+
             logRTB.DeselectAll();
             logRTB.Select(vm.Indexes[vm.CurrentSearchMatch - 1], 0);
             logRTB.ScrollToCaret();
