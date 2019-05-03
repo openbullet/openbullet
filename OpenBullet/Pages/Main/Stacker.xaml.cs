@@ -355,7 +355,8 @@ namespace OpenBullet
             Globals.LogInfo(Components.Stacker, "Setting the first block as the current block");
 
             // Print start line
-            vm.BotData.LogBuffer.Add(new LogEntry(string.Format("===== DEBUGGER STARTED FOR CONFIG {0} WITH DATA {1} AND PROXY {2} ({3}) ====="+Environment.NewLine, vm.Config.Name, vm.TestData, vm.TestProxy, vm.UseProxy ? "ENABLED" : "DISABLED"), Colors.White));
+            var proxyEnabledText = vm.UseProxy ? "ENABLED" : "DISABLED";
+            vm.BotData.LogBuffer.Add(new LogEntry($"===== DEBUGGER STARTED FOR CONFIG {vm.Config.Name} WITH DATA {vm.TestData} AND PROXY {vm.TestProxy} ({vm.ProxyType}) {proxyEnabledText} ====={Environment.NewLine}", Colors.White));
             startTime = DateTime.Now;
 
             // Open browser if Always Open
