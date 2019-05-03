@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace RuriLib
 {
@@ -31,7 +32,13 @@ namespace RuriLib
         Exists,
 
         /// <summary>Whether no variable can be replaced inside the string.</summary>
-        DoesNotExist
+        DoesNotExist,
+
+        /// <summary>A matches regex pattern B.</summary>
+        MatchesRegex,
+
+        /// <summary>A does not match regex pattern B.</summary>
+        DoesNotMatchRegex
     }
 
     /// <summary>
@@ -79,6 +86,12 @@ namespace RuriLib
 
                 case Condition.DoesNotExist:
                     return L.All(l => l == left); // Returns true if no replacement took place
+
+                case Condition.MatchesRegex:
+                    return L.Any(l => Regex.Match(l, r).Success);
+
+                case Condition.DoesNotMatchRegex:
+                    return L.Any(l => !Regex.Match(l, r).Success);
 
                 default:
                     return false;
