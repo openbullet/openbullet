@@ -437,9 +437,15 @@ namespace OpenBullet
         {
             try // Try because StackerPage can be null if not initialized yet
             {
-                Globals.mainWindow.ConfigsPage.StackerPage.vm.TestData = ((ValidData)GetCurrentListView().SelectedItem).Data;
-                Globals.mainWindow.ConfigsPage.StackerPage.vm.TestProxy = ((ValidData)GetCurrentListView().SelectedItem).Proxy;
-                Globals.LogInfo(Components.Runner, "Sent data '" + ((ValidData)GetCurrentListView().SelectedItem).Data + "' and proxy '" + ((ValidData)GetCurrentListView().SelectedItem).Proxy + "' to the debugger");
+                var stacker = Globals.mainWindow.ConfigsPage.StackerPage.vm;
+                var current = GetCurrentListView().SelectedItem as ValidData;
+
+                stacker.TestData = current.Data;
+
+                stacker.TestProxy = current.Proxy;
+                stacker.ProxyType = current.ProxyType;
+                
+                Globals.LogInfo(Components.Runner, $"Sent to the debugger");
             }
             catch (Exception ex) { Globals.LogError(Components.Runner, $"Could not send data and proxy to the debugger - {ex.Message}"); }
         }
