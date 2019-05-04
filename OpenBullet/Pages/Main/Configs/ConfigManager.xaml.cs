@@ -158,7 +158,7 @@ namespace OpenBullet
             SaveState();
 
             Globals.LogInfo(Components.ConfigManager, "Refreshing the list");
-            // vm.RefreshList();
+            vm.RefreshList(false);
         }
         
         private void deleteConfigsButton_Click(object sender, RoutedEventArgs e)
