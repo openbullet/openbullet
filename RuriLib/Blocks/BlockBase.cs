@@ -289,7 +289,9 @@ namespace RuriLib
         /// <param name="suffix">The string to add at the end of the value</param>
         public static void InsertVariables(BotData data, bool isCapture, bool recursive, List<string> values, string variableName, string prefix, string suffix)
         {
-            var list = values.Select(v => ReplaceValues(prefix, data) + v.Trim() + ReplaceValues(suffix, data));
+            var list = values
+                .Where(v => !string.IsNullOrEmpty(v)) // Remove the empty entries, e.g. the one added by default by the Parse Block
+                .Select(v => ReplaceValues(prefix, data) + v.Trim() + ReplaceValues(suffix, data));
             CVar variable;
             if (recursive) variable = new CVar(variableName, list.ToList(), isCapture);
             else variable = new CVar(variableName, list.First(), isCapture);
