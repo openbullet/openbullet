@@ -376,10 +376,11 @@ namespace OpenBullet
             using (var db = new LiteDatabase(Globals.dataBaseFile))
             {
                 var list = hitsListView.SelectedItems.Cast<Hit>();
-                while (list.Count() > 0)
+                Hit curr = null;
+                while ((curr = list.FirstOrDefault()) != null)
                 {
-                    db.GetCollection<Hit>("hits").Delete(list.First().Id);
-                    vm.HitsList.Remove(list.First());
+                    db.GetCollection<Hit>("hits").Delete(curr.Id);
+                    vm.HitsList.Remove(curr);
                 }
             }
 
@@ -402,11 +403,12 @@ namespace OpenBullet
                 foreach (var group in groups)
                 {
                     var list = group.ToList();
-                    while (list.Count() > 0)
+                    Hit curr = null;
+                    while ((curr = list.FirstOrDefault()) != null)
                     {
-                        db.GetCollection<Hit>("hits").Delete(list.First().Id);
-                        vm.HitsList.Remove(list.First());
-                        list.RemoveAt(0);
+                        db.GetCollection<Hit>("hits").Delete(curr.Id); // Delete in the DB
+                        vm.HitsList.Remove(vm.HitsList.First(h => h.Id == curr.Id)); // Remove the actual reference to the hit (curr is from a cloned list, generated via Select LINQ method)
+                        list.RemoveAt(0); // Remove from list of items to delete
                     }
                 }
             }
@@ -415,6 +417,34 @@ namespace OpenBullet
         private string GetHitChecksum(Hit hit)
         {
             return BlockFunction.GetHash(hit.Data + hit.ConfigName + hit.WordlistName, BlockFunction.Hash.MD5);
+        }
+
+        private void deleteFilteredButton_Click(object sender, RoutedEventArgs e)
+        {
+            Globals.LogWarning(Components.HitsDB, "Delete filtered selected, prompting warning");
+
+            if (MessageBox.Show("This will delete all the hits that are currently being displayed, are you sure you want to continue?", "WARNING", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                return;
+
+            var deleted = 0;
+            using (var db = new LiteDatabase(Globals.dataBaseFile))
+            {
+                var list = vm.HitsList.Where(h =>
+                    (string.IsNullOrEmpty(vm.SearchString) ? true : h.CapturedString.ToLower().Contains(vm.SearchString)) &&
+                    (vm.ConfigFilter == "All" ? true : h.ConfigName == vm.ConfigFilter) &&
+                    h.Type == vm.TypeFilter).ToList();
+
+                Hit curr = null;
+                while ((curr = list.FirstOrDefault()) != null)
+                {
+                    db.GetCollection<Hit>("hits").Delete(curr.Id);
+                    vm.HitsList.Remove(curr);
+                    list.Remove(curr);
+                    deleted++;
+                }
+            }
+
+            Globals.LogInfo(Components.HitsDB, $"Deleted {deleted} hits");
         }
     }
 }

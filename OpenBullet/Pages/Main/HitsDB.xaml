@@ -43,6 +43,12 @@
                     <TextBlock VerticalAlignment="Center" Margin="5 0">Del. Dupes</TextBlock>
                 </StackPanel>
             </Button>
+            <Button x:Name="deleteFilteredButton" Click="deleteFilteredButton_Click" Margin="0 5">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Images/Icons/delete.png" Width="20" />
+                    <TextBlock VerticalAlignment="Center" Margin="5 0">Del. Filtered</TextBlock>
+                </StackPanel>
+            </Button>
             <Button x:Name="purgeButton" Click="purgeButton_Click" Margin="0 5">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/Images/Icons/delete.png" Width="20" />
@@ -50,9 +56,9 @@
                 </StackPanel>
             </Button>
             <Label Content="Config:" VerticalAlignment="Center" Margin="10 0 0 0"/>
-            <ComboBox x:Name="configFilterCombobox" Width="200" Margin="0 5" SelectionChanged="configFilterCombobox_SelectionChanged"/>
+            <ComboBox x:Name="configFilterCombobox" Width="150" Margin="0 5" SelectionChanged="configFilterCombobox_SelectionChanged"/>
             <Label Content="Type:" VerticalAlignment="Center" Margin="10 0 0 0"/>
-            <ComboBox x:Name="typeFilterCombobox" Width="130" Margin="0 5" SelectionChanged="typeFilterCombobox_SelectionChanged"/>
+            <ComboBox x:Name="typeFilterCombobox" Width="100" Margin="0 5" SelectionChanged="typeFilterCombobox_SelectionChanged"/>
             <Label Content="Number of Hits:" VerticalAlignment="Center" Margin="10 0 0 0"/>
             <Label Content="{Binding FilteredCount}" VerticalAlignment="Center" FontWeight="Bold"/>
         </StackPanel>
