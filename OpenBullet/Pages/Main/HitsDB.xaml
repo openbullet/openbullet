@@ -36,32 +36,44 @@
         </Grid.RowDefinitions>
 
         <!-- Top Filters -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Button x:Name="removeDuplicatesButton" Click="removeDuplicatesButton_Click" Margin="0 5">
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" x:Name="removeDuplicatesButton" Click="removeDuplicatesButton_Click" Margin="0 5">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/Images/Icons/delete.png" Width="20" />
                     <TextBlock VerticalAlignment="Center" Margin="5 0">Del. Dupes</TextBlock>
                 </StackPanel>
             </Button>
-            <Button x:Name="deleteFilteredButton" Click="deleteFilteredButton_Click" Margin="0 5">
+            <Button Grid.Column="1" x:Name="deleteFilteredButton" Click="deleteFilteredButton_Click" Margin="0 5">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/Images/Icons/delete.png" Width="20" />
                     <TextBlock VerticalAlignment="Center" Margin="5 0">Del. Filtered</TextBlock>
                 </StackPanel>
             </Button>
-            <Button x:Name="purgeButton" Click="purgeButton_Click" Margin="0 5">
+            <Button Grid.Column="2" x:Name="purgeButton" Click="purgeButton_Click" Margin="0 5">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/Images/Icons/delete.png" Width="20" />
                     <TextBlock VerticalAlignment="Center" Margin="5 0">Purge</TextBlock>
                 </StackPanel>
             </Button>
-            <Label Content="Config:" VerticalAlignment="Center" Margin="10 0 0 0"/>
-            <ComboBox x:Name="configFilterCombobox" Width="150" Margin="0 5" SelectionChanged="configFilterCombobox_SelectionChanged"/>
-            <Label Content="Type:" VerticalAlignment="Center" Margin="10 0 0 0"/>
-            <ComboBox x:Name="typeFilterCombobox" Width="100" Margin="0 5" SelectionChanged="typeFilterCombobox_SelectionChanged"/>
-            <Label Content="Number of Hits:" VerticalAlignment="Center" Margin="10 0 0 0"/>
-            <Label Content="{Binding FilteredCount}" VerticalAlignment="Center" FontWeight="Bold"/>
-        </StackPanel>
+            <Label Grid.Column="3" Content="Config:" VerticalAlignment="Center" Margin="10 0 0 0"/>
+            <ComboBox Grid.Column="4" x:Name="configFilterCombobox" Margin="0 5" SelectionChanged="configFilterCombobox_SelectionChanged"/>
+            <Label Grid.Column="5" Content="Type:" VerticalAlignment="Center" Margin="10 0 0 0"/>
+            <ComboBox Grid.Column="6" x:Name="typeFilterCombobox" Margin="0 5" SelectionChanged="typeFilterCombobox_SelectionChanged"/>
+            <Label Grid.Column="7" Content="Number of Hits:" VerticalAlignment="Center" Margin="10 0 0 0"/>
+            <Label Grid.Column="8" Content="{Binding FilteredCount}" VerticalAlignment="Center" FontWeight="Bold"/>
+        </Grid>
         
         <!-- Proxies List View -->
         <ListView x:Name="hitsListView" Grid.Row="1" Foreground="{DynamicResource ForegroundMain}" Background="Transparent" ItemsSource="{Binding Path=HitsList}" SelectionMode="Extended" BorderThickness="1" VirtualizingPanel.IsVirtualizing="True">
