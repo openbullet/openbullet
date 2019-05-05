@@ -430,7 +430,7 @@ namespace OpenBullet
             using (var db = new LiteDatabase(Globals.dataBaseFile))
             {
                 var list = vm.HitsList.Where(h =>
-                    (string.IsNullOrEmpty(vm.SearchString) ? true : h.CapturedString.ToLower().Contains(vm.SearchString)) &&
+                    (string.IsNullOrEmpty(vm.SearchString) ? true : h.CapturedString.ToLower().Contains(vm.SearchString.ToLower())) &&
                     (vm.ConfigFilter == "All" ? true : h.ConfigName == vm.ConfigFilter) &&
                     h.Type == vm.TypeFilter).ToList();
 
