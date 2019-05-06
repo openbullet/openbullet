@@ -278,7 +278,6 @@ namespace RuriLib
                     // L or R not present and not empty
                     else if ( ((!partial.Contains(ls) && ls != "") || (!partial.Contains(rs) && rs != "")))
                     {
-                        list.Add("");
                         break;
                     }
                     
@@ -350,7 +349,7 @@ namespace RuriLib
 
                     HtmlParser parser = new HtmlParser();
                     AngleSharp.Dom.Html.IHtmlDocument document = null;
-                    try { document = parser.Parse(original); } catch { list.Add(""); }
+                    try { document = parser.Parse(original); } catch {  }
 
                     try
                     {
@@ -404,7 +403,7 @@ namespace RuriLib
                             }
                         }
                     }
-                    catch { list.Add(""); }
+                    catch { }
 
                     break;
 
@@ -415,7 +414,6 @@ namespace RuriLib
                         if (j.Key == ReplaceValues(jsonField, data))
                             list.Add(j.Value);
 
-                    if (list.Count == 0) list.Add("");
                     break;
 
                 case ParseType.XPATH:
