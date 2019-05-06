@@ -189,36 +189,40 @@ namespace OpenBullet
             Globals.LogInfo(Components.ProxyManager, $"Adding {fromFile.Count + fromBox.Count} proxies to the database");
 
             // Check if they're valid
+            var proxies = new List<CProxy>();
+
+            foreach (var p in fromFile.Where(p => !string.IsNullOrEmpty(p)).Distinct().ToList())
+            {
+                try
+                {
+                    CProxy proxy = new CProxy(p, type);
+                    if (!proxy.IsNumeric || proxy.IsValidNumeric)
+                    {
+                        vm.ProxyList.Add(proxy);
+                        proxies.Add(proxy);
+                    }
+                }
+                catch { }
+            }
+
+            foreach (var p in fromBox.Where(p => !string.IsNullOrEmpty(p)).Distinct().ToList())
+            {
+                try
+                {
+                    CProxy proxy = new CProxy();
+                    proxy.Parse(p, type);
+                    if (!proxy.IsNumeric || proxy.IsValidNumeric)
+                    {
+                        vm.ProxyList.Add(proxy);
+                        proxies.Add(proxy);
+                    }
+                }
+                catch { }
+            }
+
             using (var db = new LiteDatabase(Globals.dataBaseFile))
             {
-                foreach (var p in fromFile.Where(p => !string.IsNullOrEmpty(p)).Distinct().ToList())
-                {
-                    try
-                    {
-                        CProxy proxy = new CProxy(p, type);
-                        if (!proxy.IsNumeric || proxy.IsValidNumeric)
-                        {
-                            vm.ProxyList.Add(proxy);
-                            db.GetCollection<CProxy>("proxies").Insert(proxy);
-                        }
-                    }
-                    catch { }
-                }
-
-                foreach (var p in fromBox.Where(p => !string.IsNullOrEmpty(p)).Distinct().ToList())
-                {
-                    try
-                    {
-                        CProxy proxy = new CProxy();
-                        proxy.Parse(p, type);
-                        if (!proxy.IsNumeric || proxy.IsValidNumeric)
-                        {
-                            vm.ProxyList.Add(proxy);
-                            db.GetCollection<CProxy>("proxies").Insert(proxy);
-                        }
-                    }
-                    catch { }
-                }
+                db.GetCollection<CProxy>("proxies").InsertBulk(proxies);
             }
 
             // Refresh
