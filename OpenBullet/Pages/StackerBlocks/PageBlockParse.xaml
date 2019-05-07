@@ -76,6 +76,7 @@
                         </DockPanel>
                         <DockPanel>
                             <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
+                            <CheckBox Content="Encode Output" IsChecked="{Binding EncodeOutput}" VerticalContentAlignment="Center"/>
                             <CheckBox Content="Use Regex" IsChecked="{Binding UseRegexLR}" VerticalContentAlignment="Center" >
                                 <CheckBox.ToolTip>
                                     <TextBlock>Whether the program matches the LEFT and RIGHT strings through a regex pattern<LineBreak /> or with simple string in string searches</TextBlock>
@@ -110,7 +111,10 @@
                             <Label Content="Index:" />
                             <xctk:IntegerUpDown Value="{Binding CssElementIndex}" HorizontalAlignment="Right" Width="60" />
                         </DockPanel>
-                        <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
+                            <CheckBox Content="Encode Output" IsChecked="{Binding EncodeOutput}" VerticalContentAlignment="Center"/>
+                        </StackPanel>
                     </StackPanel>
                 </TabItem>
                 <TabItem>
@@ -119,7 +123,10 @@
                             <Label Content="Field Name:"/>
                             <TextBox Text="{Binding JsonField, UpdateSourceTrigger=PropertyChanged}"/>
                         </DockPanel>
-                        <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
+                            <CheckBox Content="Encode Output" IsChecked="{Binding EncodeOutput}" VerticalContentAlignment="Center"/>
+                        </StackPanel>
                     </StackPanel>
                 </TabItem>
                 <TabItem>
@@ -132,7 +139,10 @@
                             <Label Content="Output:" />
                             <TextBox Text="{Binding RegexOutput, UpdateSourceTrigger=PropertyChanged}" ToolTip="You can write: [0] = Full Match, [1] = First group etc."/>
                         </DockPanel>
-                        <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
+                            <CheckBox Content="Encode Output" IsChecked="{Binding EncodeOutput}" VerticalContentAlignment="Center"/>
+                        </StackPanel>
                     </StackPanel>
                 </TabItem>
             </TabControl>

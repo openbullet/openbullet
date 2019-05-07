@@ -287,9 +287,10 @@ namespace RuriLib
         /// <param name="variableName">The name of the variable to create</param>
         /// <param name="prefix">The string to add at the start of the value</param>
         /// <param name="suffix">The string to add at the end of the value</param>
-        public static void InsertVariables(BotData data, bool isCapture, bool recursive, List<string> values, string variableName, string prefix, string suffix)
+        public static void InsertVariables(BotData data, bool isCapture, bool recursive, List<string> values, string variableName, string prefix, string suffix, bool urlEncode)
         {
             var list = values.Select(v => ReplaceValues(prefix, data) + v.Trim() + ReplaceValues(suffix, data)).ToList();
+            if (urlEncode) list = list.Select(v => System.Uri.EscapeDataString(v)).ToList();
             CVar variable;
             if (recursive) variable = new CVar(variableName, list, isCapture);
             else variable = new CVar(variableName, list.Count == 0 ? "" : list.First(), isCapture);

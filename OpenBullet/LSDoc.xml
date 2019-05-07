@@ -271,7 +271,7 @@ KEYCHECK BanOnToCheck=False
 This will spawn and execute a Request Block.
 
 Syntax (expanded for readability):
-REQUEST METHOD "URL" [AutoRedirect?] [ReadResponseSource?]
+REQUEST METHOD "URL" [AutoRedirect?] [ReadResponseSource?] [ParseQuery?] [EncodeOutput?]
   [STANDARD / MULTIPART / BASICAUTH]
   [CONTENT "postdata"]
   [CONTENTTYPE "ctype"]

@@ -19,6 +19,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
@@ -26,14 +27,15 @@
                     <RowDefinition Height="30" />
                 </Grid.RowDefinitions>
 
-                <DockPanel Grid.Column="0" Grid.Row="0">
+                <DockPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
                     <Label Content="Method:"/>
                     <ComboBox x:Name="methodCombobox" SelectionChanged="methodCombobox_SelectionChanged"/>
                 </DockPanel>
 
-                <CheckBox Grid.Column="1" Grid.Row="0" Content="Auto Redirect" IsChecked="{Binding AutoRedirect}" VerticalContentAlignment="Center" />
-                <CheckBox Grid.Column="0" Grid.Row="1" Content="Read Response Source" IsChecked="{Binding ReadResponseSource}" VerticalContentAlignment="Center" />
+                <CheckBox Grid.Column="2" Grid.Row="0" Content="Auto Redirect" IsChecked="{Binding AutoRedirect}" VerticalContentAlignment="Center" />
+                <CheckBox Grid.Column="0" Grid.Row="1" Content="Read Resp. Source" IsChecked="{Binding ReadResponseSource}" VerticalContentAlignment="Center" />
                 <CheckBox Grid.Column="1" Grid.Row="1" Content="Parse GET Query" IsChecked="{Binding ParseQuery}" VerticalContentAlignment="Center"/>
+                <CheckBox Grid.Column="2" Grid.Row="1" Content="Encode Content" IsChecked="{Binding EncodeContent}" VerticalContentAlignment="Center"/>
             </Grid>
 
             <DockPanel Margin="0 5 0 0">

@@ -59,6 +59,10 @@ namespace RuriLib
         /// <summary>Whether to parse multiple values that match the criteria or just the first one.</summary>
         public bool Recursive { get { return recursive; } set { recursive = value; OnPropertyChanged(); } }
 
+        private bool encodeOutput = false;
+        /// <summary>Whether to URL encode the parsed text.</summary>
+        public bool EncodeOutput { get { return encodeOutput; } set { encodeOutput = value; OnPropertyChanged(); } }
+
         private ParseType type = ParseType.LR;
         /// <summary>The parsing algorithm being used.</summary>
         public ParseType Type { get { return type; } set { type = value; OnPropertyChanged(); } }
@@ -147,12 +151,14 @@ namespace RuriLib
                         LineParser.SetBool(ref input, this);
                     else if (LineParser.Lookahead(ref input) == TokenType.Integer)
                         CssElementIndex = LineParser.ParseInt(ref input, "INDEX");
+                    if (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                        LineParser.SetBool(ref input, this);
                     break;
 
                 case ParseType.JSON:
                     // PARSE "<SOURCE>" JSON "Field" ->
                     JsonField = LineParser.ParseLiteral(ref input, "FIELD");
-                    if (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                    while (LineParser.Lookahead(ref input) == TokenType.Boolean)
                         LineParser.SetBool(ref input, this);
                     break;
 
@@ -160,7 +166,7 @@ namespace RuriLib
                     // PARSE "<SOURCE>" REGEX "Pattern" "Output" RECURSIVE? -> 
                     RegexString = LineParser.ParseLiteral(ref input, "PATTERN");
                     RegexOutput = LineParser.ParseLiteral(ref input, "OUTPUT");
-                    if (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                    while (LineParser.Lookahead(ref input) == TokenType.Boolean)
                         LineParser.SetBool(ref input, this);
                     break;
             }
@@ -209,6 +215,7 @@ namespace RuriLib
                         .Literal(LeftString)
                         .Literal(RightString)
                         .Boolean(Recursive, "Recursive")
+                        .Boolean(EncodeOutput, "EncodeOutput")
                         .Boolean(UseRegexLR, "UseRegexLR");
                     break;
 
@@ -218,19 +225,22 @@ namespace RuriLib
                         .Literal(AttributeName);
                     if (Recursive) writer.Boolean(Recursive, "Recursive");
                     else writer.Integer(CssElementIndex, "CssElementIndex");
+                    writer.Boolean(EncodeOutput, "EncodeOutput");
                     break;
 
                 case ParseType.JSON:
                     writer
                         .Literal(JsonField)
-                        .Boolean(Recursive, "Recursive");
+                        .Boolean(Recursive, "Recursive")
+                        .Boolean(EncodeOutput, "EncodeOutput");
                     break;
 
                 case ParseType.REGEX:
                     writer
                         .Literal(RegexString)
                         .Literal(RegexOutput)
-                        .Boolean(Recursive, "Recursive");
+                        .Boolean(Recursive, "Recursive")
+                        .Boolean(EncodeOutput, "EncodeOutput");
                     break;
             }
 
@@ -250,7 +260,7 @@ namespace RuriLib
         {
             base.Process(data);
 
-            InsertVariables(data, isCapture, recursive, Parse(data), variableName, prefix, suffix);
+            InsertVariables(data, isCapture, recursive, Parse(data), variableName, prefix, suffix, encodeOutput);
         }
 
         private List<string> Parse(BotData data)

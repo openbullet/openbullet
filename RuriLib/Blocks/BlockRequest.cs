@@ -107,6 +107,10 @@ namespace RuriLib
         /// <summary>Whether to parse the GET parameters manually (fixes Extreme.NET issues on some websites).</summary>
         public bool ParseQuery { get { return parseQuery; } set { parseQuery = value; OnPropertyChanged(); } }
 
+        private bool encodeContent = false;
+        /// <summary>Whether to URL encode the content before sending it.</summary>
+        public bool EncodeContent { get { return encodeContent; } set { encodeContent = value; OnPropertyChanged(); } }
+
         // Multipart
         private string multipartBoundary = "";
         /// <summary>The boundary that separates multipart contents.</summary>
@@ -252,6 +256,7 @@ namespace RuriLib
                 .Boolean(AutoRedirect, "AutoRedirect")
                 .Boolean(ReadResponseSource, "ReadResponseSource")
                 .Boolean(ParseQuery, "ParseQuery")
+                .Boolean(EncodeContent, "EncodeContent")
                 .Token(RequestType, "RequestType")
                 .Indent();
 
@@ -387,6 +392,7 @@ namespace RuriLib
                         .Select(p => ReplaceValues(p, data)));
                     if (pData != "")
                     {
+                        if (encodeContent) pData = System.Uri.EscapeDataString(pData);
                         content = new StringContent(pData);
                         content.ContentType = cType;
                         data.Log(new LogEntry(string.Format("Post Data: {0}", pData), Colors.MediumTurquoise));
