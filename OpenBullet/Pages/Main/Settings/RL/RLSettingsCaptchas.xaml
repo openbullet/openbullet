@@ -24,6 +24,10 @@
                 <TextBox DockPanel.Dock="Left" Text="{Binding TwoCapToken}" />
             </DockPanel>
             <DockPanel>
+                <Label DockPanel.Dock="Left" Content="RuCaptcha API Key" />
+                <TextBox DockPanel.Dock="Left" Text="{Binding RuCapToken}" />
+            </DockPanel>
+            <DockPanel>
                 <Label DockPanel.Dock="Left" Content="AZCaptcha API Key" />
                 <TextBox DockPanel.Dock="Left" Text="{Binding AZCapToken}" />
             </DockPanel>

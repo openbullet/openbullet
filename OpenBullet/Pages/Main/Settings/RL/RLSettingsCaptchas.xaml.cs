@@ -58,6 +58,10 @@ namespace OpenBullet
                         balance = new TwoCaptcha(Globals.rlSettings.Captchas.TwoCapToken, 0).GetBalance();
                         break;
 
+                    case BlockCaptcha.CaptchaService.RuCaptcha:
+                        balance = new RuCaptcha(Globals.rlSettings.Captchas.RuCapToken, 0).GetBalance();
+                        break;
+
                     case BlockCaptcha.CaptchaService.AZCaptcha:
                         balance = new AZCaptcha(Globals.rlSettings.Captchas.AZCapToken, 0).GetBalance();
                         break;
