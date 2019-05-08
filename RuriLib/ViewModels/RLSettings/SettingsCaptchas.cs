@@ -32,6 +32,10 @@ namespace RuriLib.ViewModels
         /// <summary>The TwoCaptcha API Token.</summary>
         public string TwoCapToken { get { return twoCapToken; } set { twoCapToken = value; OnPropertyChanged(); } }
 
+        private string ruCapToken = "";
+        /// <summary>The RuCaptcha API Token.</summary>
+        public string RuCapToken { get { return ruCapToken; } set { ruCapToken = value; OnPropertyChanged(); } }
+
         private string dcUser = "";
         /// <summary>The DeCaptcher Username.</summary>
         public string DCUser { get { return dcUser; } set { dcUser = value; OnPropertyChanged(); } }

@@ -142,6 +142,10 @@ namespace RuriLib
                         service = new TwoCaptcha(data.GlobalSettings.Captchas.TwoCapToken, data.GlobalSettings.Captchas.Timeout);
                         break;
 
+                    case CaptchaService.RuCaptcha:
+                        service = new RuCaptcha(data.GlobalSettings.Captchas.RuCapToken, data.GlobalSettings.Captchas.Timeout);
+                        break;
+
                     case CaptchaService.DeCaptcher:
                         service = new DeCaptcher(data.GlobalSettings.Captchas.DCUser, data.GlobalSettings.Captchas.DCPass, data.GlobalSettings.Captchas.Timeout);
                         break;

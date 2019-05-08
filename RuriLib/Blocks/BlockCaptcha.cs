@@ -37,7 +37,9 @@ namespace RuriLib
             SolveRecaptcha,
 
             /// <summary>The service provided by https://2captcha.com/</summary>
-            TwoCaptcha
+            TwoCaptcha,
+                            /// <summary>The service provided by https://rucaptcha.com/</summary>
+            RuCaptcha
         }
 
         /// <summary>The balance of the account of the captcha-solving service.</summary>
@@ -72,7 +74,9 @@ namespace RuriLib
                 case CaptchaService.TwoCaptcha:
                     Balance = new TwoCaptcha(data.GlobalSettings.Captchas.TwoCapToken, 0).GetBalance();
                     break;
-
+                case CaptchaService.RuCaptcha:
+                    Balance = new RuCaptcha(data.GlobalSettings.Captchas.RuCapToken, 0).GetBalance();
+                    break;
                 case CaptchaService.DeCaptcher:
                     Balance = new DeCaptcher(data.GlobalSettings.Captchas.DCUser, data.GlobalSettings.Captchas.DCPass, 0).GetBalance();
                     break;
