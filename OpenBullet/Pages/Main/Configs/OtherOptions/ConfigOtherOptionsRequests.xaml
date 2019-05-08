@@ -4,14 +4,22 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:OpenBullet"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="780"
       Title="ConfigOtherOptionsRequests">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         <StackPanel>
-            <DockPanel Grid.Column="0" Margin="5">
-                <CheckBox Content="Ignore Response Errors" IsChecked="{Binding IgnoreResponseErrors}" VerticalContentAlignment="Center"/>
+            <CheckBox Content="Ignore Response Errors" IsChecked="{Binding IgnoreResponseErrors}" VerticalContentAlignment="Center"/>
+            <DockPanel Grid.Column="0" DockPanel.Dock="Top">
+                <Label Content="Maximum Redirects" />
+                <xctk:IntegerUpDown Background="Transparent" Width="50" Margin="10 0 0 0" Value="{Binding MaxRedirects}" Foreground="{DynamicResource ForegroundMain}"  HorizontalAlignment="Right"/>
             </DockPanel>
         </StackPanel>
     </Grid>

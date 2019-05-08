@@ -42,6 +42,10 @@ namespace RuriLib
         private bool ignoreResponseErrors = false;
         /// <summary>Whether to proceed if an HTTP request fails instead of giving the ERROR status.</summary>
         public bool IgnoreResponseErrors { get { return ignoreResponseErrors; } set { ignoreResponseErrors = value; OnPropertyChanged(); } }
+
+        private int _maxRedirects = 8;
+        /// <summary>The maximum amount of times we can be redirected to different URLs for a single request.</summary>
+        public int MaxRedirects { get { return _maxRedirects; } set { _maxRedirects = value; OnPropertyChanged(); } }
         #endregion
 
         #region Proxy

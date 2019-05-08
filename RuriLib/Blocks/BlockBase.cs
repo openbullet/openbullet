@@ -287,6 +287,7 @@ namespace RuriLib
         /// <param name="variableName">The name of the variable to create</param>
         /// <param name="prefix">The string to add at the start of the value</param>
         /// <param name="suffix">The string to add at the end of the value</param>
+        /// <param name="urlEncode">Whether to URLencode the values before creating the variables</param>
         public static void InsertVariables(BotData data, bool isCapture, bool recursive, List<string> values, string variableName, string prefix, string suffix, bool urlEncode)
         {
             var list = values.Select(v => ReplaceValues(prefix, data) + v.Trim() + ReplaceValues(suffix, data)).ToList();

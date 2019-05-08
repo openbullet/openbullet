@@ -350,6 +350,7 @@ namespace RuriLib
             request.ReadWriteTimeout = timeout;
             request.ConnectTimeout = timeout;
             request.KeepAlive = true;
+            request.MaximumAutomaticRedirections = data.ConfigSettings.MaxRedirects;
 
             // Check if it has GET parameters
             if (ParseQuery && localUrl.Contains('?') && localUrl.Contains('='))
