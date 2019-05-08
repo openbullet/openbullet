@@ -28,10 +28,10 @@ RECAPTCHA "URL" "SITEKEY" -> VAR "NAME"
 CAPTCHA "URL" [Base64?] [SendScreenshot?] -> VAR "NAME"
   </item>
   <item name="PARSE">
-PARSE "TARGET" LR "LEFT" "RIGHT" [Recursive?] [EncodeOutput?] [UseRegexLR?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]
-PARSE "TARGET" CSS "SELECTOR" "ATTRIBUTE" [INDEX / Recursive?] [EncodeOutput?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]
-PARSE "TARGET" JSON "FIELD" [Recursive?] [EncodeOutput?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]
-PARSE "TARGET" REGEX "REGEX" "OUTPUT" [Recursive?] [EncodeOutput?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]
+PARSE "TARGET" LR "LEFT" "RIGHT" [Recursive?] [EncodeOutput?] [CreateEmpty?] [UseRegexLR?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]
+PARSE "TARGET" CSS "SELECTOR" "ATTRIBUTE" [INDEX / Recursive?] [EncodeOutput?] [CreateEmpty?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]
+PARSE "TARGET" JSON "FIELD" [Recursive?] [EncodeOutput?] [CreateEmpty?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]
+PARSE "TARGET" REGEX "REGEX" "OUTPUT" [Recursive?] [EncodeOutput?] [CreateEmpty?] -> VAR/CAP "NAME" ["PREFIX" "SUFFIX"]
   </item>
   <item name="UTILITY">
 UTILITY LIST "List Name" ACTION [PARAMETERS] [-> VAR/CAP "NAME"]

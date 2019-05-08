@@ -63,6 +63,10 @@ namespace RuriLib
         /// <summary>Whether to URL encode the parsed text.</summary>
         public bool EncodeOutput { get { return encodeOutput; } set { encodeOutput = value; OnPropertyChanged(); } }
 
+        private bool createEmpty = true;
+        /// <summary>Whether to create the variable with an empty value if the parsing was not successful.</summary>
+        public bool CreateEmpty { get { return createEmpty; } set { createEmpty = value; OnPropertyChanged(); } }
+
         private ParseType type = ParseType.LR;
         /// <summary>The parsing algorithm being used.</summary>
         public ParseType Type { get { return type; } set { type = value; OnPropertyChanged(); } }
@@ -151,7 +155,7 @@ namespace RuriLib
                         LineParser.SetBool(ref input, this);
                     else if (LineParser.Lookahead(ref input) == TokenType.Integer)
                         CssElementIndex = LineParser.ParseInt(ref input, "INDEX");
-                    if (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                    while (LineParser.Lookahead(ref input) == TokenType.Boolean)
                         LineParser.SetBool(ref input, this);
                     break;
 
@@ -216,6 +220,7 @@ namespace RuriLib
                         .Literal(RightString)
                         .Boolean(Recursive, "Recursive")
                         .Boolean(EncodeOutput, "EncodeOutput")
+                        .Boolean(CreateEmpty, "CreateEmpty")
                         .Boolean(UseRegexLR, "UseRegexLR");
                     break;
 
@@ -225,14 +230,18 @@ namespace RuriLib
                         .Literal(AttributeName);
                     if (Recursive) writer.Boolean(Recursive, "Recursive");
                     else writer.Integer(CssElementIndex, "CssElementIndex");
-                    writer.Boolean(EncodeOutput, "EncodeOutput");
+
+                    writer
+                        .Boolean(EncodeOutput, "EncodeOutput")
+                        .Boolean(CreateEmpty, "CreateEmpty");
                     break;
 
                 case ParseType.JSON:
                     writer
                         .Literal(JsonField)
                         .Boolean(Recursive, "Recursive")
-                        .Boolean(EncodeOutput, "EncodeOutput");
+                        .Boolean(EncodeOutput, "EncodeOutput")
+                        .Boolean(CreateEmpty, "CreateEmpty");
                     break;
 
                 case ParseType.REGEX:
@@ -240,7 +249,8 @@ namespace RuriLib
                         .Literal(RegexString)
                         .Literal(RegexOutput)
                         .Boolean(Recursive, "Recursive")
-                        .Boolean(EncodeOutput, "EncodeOutput");
+                        .Boolean(EncodeOutput, "EncodeOutput")
+                        .Boolean(CreateEmpty, "CreateEmpty");
                     break;
             }
 
@@ -260,7 +270,7 @@ namespace RuriLib
         {
             base.Process(data);
 
-            InsertVariables(data, isCapture, recursive, Parse(data), variableName, prefix, suffix, encodeOutput);
+            InsertVariables(data, isCapture, recursive, Parse(data), variableName, prefix, suffix, encodeOutput, createEmpty);
         }
 
         private List<string> Parse(BotData data)

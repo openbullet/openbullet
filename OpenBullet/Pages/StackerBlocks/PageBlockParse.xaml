@@ -76,7 +76,8 @@
                         </DockPanel>
                         <DockPanel>
                             <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
-                            <CheckBox Content="Encode Output" IsChecked="{Binding EncodeOutput}" VerticalContentAlignment="Center"/>
+                            <CheckBox Content="Enc. Output" IsChecked="{Binding EncodeOutput}" VerticalContentAlignment="Center"/>
+                            <CheckBox Content="Create Empty" IsChecked="{Binding CreateEmpty}" VerticalContentAlignment="Center"/>
                             <CheckBox Content="Use Regex" IsChecked="{Binding UseRegexLR}" VerticalContentAlignment="Center" >
                                 <CheckBox.ToolTip>
                                     <TextBlock>Whether the program matches the LEFT and RIGHT strings through a regex pattern<LineBreak /> or with simple string in string searches</TextBlock>
@@ -114,6 +115,7 @@
                         <StackPanel Orientation="Horizontal">
                             <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
                             <CheckBox Content="Encode Output" IsChecked="{Binding EncodeOutput}" VerticalContentAlignment="Center"/>
+                            <CheckBox Content="Create Empty" IsChecked="{Binding CreateEmpty}" VerticalContentAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
                 </TabItem>
@@ -126,6 +128,7 @@
                         <StackPanel Orientation="Horizontal">
                             <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
                             <CheckBox Content="Encode Output" IsChecked="{Binding EncodeOutput}" VerticalContentAlignment="Center"/>
+                            <CheckBox Content="Create Empty" IsChecked="{Binding CreateEmpty}" VerticalContentAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
                 </TabItem>
@@ -142,6 +145,7 @@
                         <StackPanel Orientation="Horizontal">
                             <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
                             <CheckBox Content="Encode Output" IsChecked="{Binding EncodeOutput}" VerticalContentAlignment="Center"/>
+                            <CheckBox Content="Create Empty" IsChecked="{Binding CreateEmpty}" VerticalContentAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
                 </TabItem>

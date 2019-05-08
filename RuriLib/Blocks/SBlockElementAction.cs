@@ -341,7 +341,7 @@ namespace RuriLib
 
             if (outputs.Count != 0)
             {
-                InsertVariables(data, isCapture, recursive, outputs, outputVariable, "", "", false);
+                InsertVariables(data, isCapture, recursive, outputs, outputVariable, "", "", false, true);
             }
         }
 
