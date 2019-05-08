@@ -46,6 +46,7 @@
                 <Label Content="Starting Window Height" />
                 <xctk:IntegerUpDown Background="Transparent" Width="70" Margin="10 0 0 0" Minimum="600" Maximum="10000" Value="{Binding StartingHeight}" Foreground="{DynamicResource ForegroundMain}"  HorizontalAlignment="Right" />
             </DockPanel>
+            <CheckBox Content="Disable Ctrl+C/V on Blocks" IsChecked="{Binding DisableCopyPasteBlocks}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
         </StackPanel>
     </Grid>
 </Page>

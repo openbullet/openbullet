@@ -229,11 +229,13 @@ namespace OpenBullet
                         break;
 
                     case System.Windows.Input.Key.C:
+                        if (Globals.obSettings.General.DisableCopyPasteBlocks) return;
                         try { Clipboard.SetText(IOManager.SerializeBlocks(vm.SelectedBlocks.Select(b => b.Block).ToList())); }
                         catch { Globals.LogError(Components.Stacker, "Exception while copying blocks"); }
                         break;
 
                     case System.Windows.Input.Key.V:
+                        if (Globals.obSettings.General.DisableCopyPasteBlocks) return;
                         try
                         {
                             foreach (var block in IOManager.DeserializeBlocks(Clipboard.GetText()))

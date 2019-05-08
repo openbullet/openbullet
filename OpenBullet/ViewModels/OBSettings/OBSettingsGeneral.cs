@@ -44,6 +44,8 @@ namespace OpenBullet.ViewModels
         public bool DisableSyntaxHelper { get { return disableSyntaxHelper; } set { disableSyntaxHelper = value; OnPropertyChanged(); } }
         private bool displayCapturesLast = false;
         public bool DisplayCapturesLast { get { return displayCapturesLast; } set { displayCapturesLast = value; OnPropertyChanged(); } }
+        private bool disableCopyPasteBlocks = false;
+        public bool DisableCopyPasteBlocks { get { return disableCopyPasteBlocks; } set { disableCopyPasteBlocks = value; OnPropertyChanged(); } }
 
         public void Reset()
         {
