@@ -97,8 +97,16 @@ namespace RuriLib.Runner
         {
             get
             {
-                if (TestedCount == 0) cpm = 0;
-                if (IsCPMLocked) return cpm;
+                if (TestedCount == 0)
+                {
+                    cpm = 0;
+                    return cpm;
+                }
+
+                if (IsCPMLocked)
+                {
+                    return cpm;
+                }
 
                 try
                 {
@@ -113,6 +121,7 @@ namespace RuriLib.Runner
                 }
                 catch { }
                 finally { IsCPMLocked = false; }
+
                 return cpm;
             }
         }
@@ -415,6 +424,13 @@ namespace RuriLib.Runner
             // Checking Process
             foreach (var data in DataPool.List.Skip(StartingPoint - 1))
             {
+                // Check if there is a cancellation request
+                if (Master.CancellationPending)
+                {
+                    AbortAllBots();
+                    return;
+                }
+
                 // Create an instance of CData basing on the current data line
                 CData c = new CData(data, Env.GetWordlistType(Wordlist.Type));
 
@@ -501,15 +517,24 @@ namespace RuriLib.Runner
                         RaiseSaveProgress();
                     }
 
-                    // Search for the first available bot, assign the data to it and start its job
-                    foreach (var bot in Bots)
+                    // If we are above the CPM limit, go to the wait (use cpm NOT CPM so it doesn't calculate it uselessly when it checks the IF conditions)
+                    if (Config.Settings.MaxCPM > 0 && cpm >= Config.Settings.MaxCPM)
                     {
-                        if (!bot.Worker.IsBusy)
+                        // Update the CPM and go directly to the wait (which will update the other stats too)
+                        UpdateCPM();
+                    }
+                    else
+                    {
+                        // Search for the first available bot, assign the data to it and start its job
+                        foreach (var bot in Bots)
                         {
-                            RaiseMessageArrived(LogLevel.Info, "Assigned data " + data + " to bot " + bot.Id, false);
-                            bot.Worker.RunWorkerAsync(data);
-                            assigned = true;
-                            break;
+                            if (!bot.Worker.IsBusy)
+                            {
+                                RaiseMessageArrived(LogLevel.Info, "Assigned data " + data + " to bot " + bot.Id, false);
+                                bot.Worker.RunWorkerAsync(data);
+                                assigned = true;
+                                break;
+                            }
                         }
                     }
 

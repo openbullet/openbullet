@@ -10,17 +10,20 @@
       Title="ConfigOtherOptionsGeneral">
 
     <Grid>
-
         <StackPanel>
-            <DockPanel Grid.Column="0" Margin="5">
-                <Label DockPanel.Dock="Top" Content="Name" />
-                <TextBox DockPanel.Dock="Top" Text="{Binding Name}"/>
-                <Label DockPanel.Dock="Top" Content="Author" Foreground="{DynamicResource ForegroundRetry}"/>
-                <TextBox DockPanel.Dock="Top" Text="{Binding Author}"/>
-                <Label DockPanel.Dock="Top" Content="Additional Information" />
-                <TextBox DockPanel.Dock="Top" Text="{Binding AdditionalInfo}" Margin="0 0 0 10"/>
+            <Label DockPanel.Dock="Top" Content="Name" />
+            <TextBox DockPanel.Dock="Top" Text="{Binding Name}"/>
+            <Label DockPanel.Dock="Top" Content="Author" Foreground="{DynamicResource ForegroundRetry}"/>
+            <TextBox DockPanel.Dock="Top" Text="{Binding Author}"/>
+            <Label DockPanel.Dock="Top" Content="Additional Information" />
+            <TextBox DockPanel.Dock="Top" Text="{Binding AdditionalInfo}" Margin="0 0 0 10"/>
+            <DockPanel>
                 <Label Content="Suggested Bots" />
                 <xctk:IntegerUpDown Background="Transparent" Width="50" Margin="10 0 0 0" Value="{Binding SuggestedBots}" Foreground="{DynamicResource ForegroundMain}" HorizontalAlignment="Left" Minimum="1" Maximum="200"/>
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Maximum CPM to avoid overloading the website (0 = infinite)" />
+                <xctk:IntegerUpDown Background="Transparent" Width="100" Margin="10 0 0 0" Value="{Binding MaxCPM}" Foreground="{DynamicResource ForegroundMain}" HorizontalAlignment="Left" Minimum="0" Maximum="100000"/>
             </DockPanel>
         </StackPanel>
     </Grid>

@@ -21,6 +21,10 @@ namespace RuriLib
         /// <summary>The suggested amount of Bots that should be used with the config.</summary>
         public int SuggestedBots { get { return suggestedBots; } set { suggestedBots = value; OnPropertyChanged(); } }
 
+        private int maxCPM = 0;
+        /// <summary>The maximum CPM around which the Master Worker will stop starting bots and wait for the CPM to decrease below the threshold.</summary>
+        public int MaxCPM { get { return maxCPM; } set { maxCPM = value; OnPropertyChanged(); } }
+
         private DateTime lastModified = DateTime.Now;
         /// <summary>When the Config was last modified.</summary>
         public DateTime LastModified { get { return lastModified; } set { lastModified = value; OnPropertyChanged(); } }
