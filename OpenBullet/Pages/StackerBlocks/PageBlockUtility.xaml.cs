@@ -90,20 +90,24 @@ namespace OpenBullet.Pages.StackerBlocks
                     listActionTabControl.SelectedIndex = 1;
                     break;
 
+                case ListAction.Sort:
+                    listActionTabControl.SelectedIndex = 2;
+                    break;
+
                 case ListAction.Zip:
-                    listActionTabControl.SelectedIndex = 2;
-                    break;
-
-                case ListAction.Map:
-                    listActionTabControl.SelectedIndex = 2;
-                    break;
-
-                case ListAction.Add:
                     listActionTabControl.SelectedIndex = 3;
                     break;
 
-                case ListAction.Remove:
+                case ListAction.Map:
+                    listActionTabControl.SelectedIndex = 3;
+                    break;
+
+                case ListAction.Add:
                     listActionTabControl.SelectedIndex = 4;
+                    break;
+
+                case ListAction.Remove:
+                    listActionTabControl.SelectedIndex = 5;
                     break;
             }
         }

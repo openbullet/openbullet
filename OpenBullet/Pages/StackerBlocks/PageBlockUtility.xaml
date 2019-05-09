@@ -70,6 +70,12 @@
                                 </DockPanel>
                             </StackPanel>
                         </TabItem>
+                        <TabItem x:Name="sortTab">
+                            <StackPanel>
+                                <CheckBox Content="Ascending" IsChecked="{Binding Ascending}" VerticalContentAlignment="Center"/>
+                                <CheckBox Content="Numeric" IsChecked="{Binding Numeric}" VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                        </TabItem>
                         <TabItem x:Name="zipTab">
                             <StackPanel>
                                 <DockPanel>
