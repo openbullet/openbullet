@@ -71,6 +71,10 @@ namespace RuriLib
         #endregion
 
         #region Data
+        private bool encodeData = false;
+        /// <summary>Whether the data should be URLencoded after being sliced.</summary>
+        public bool EncodeData { get { return encodeData; } set { encodeData = value; OnPropertyChanged(); } }
+
         private string allowedWordlist1 = "";
         /// <summary>The name of the first allowed WordlistType.</summary>
         public string AllowedWordlist1 { get { return allowedWordlist1; } set { allowedWordlist1 = value; OnPropertyChanged(); } }

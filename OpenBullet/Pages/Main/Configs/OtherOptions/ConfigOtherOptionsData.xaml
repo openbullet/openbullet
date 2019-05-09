@@ -11,7 +11,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -20,9 +20,8 @@
             <Label Content="Allowed Wordlist Types" FontWeight="Bold"/>
             <ComboBox DockPanel.Dock="Top" x:Name="allowedWordlist1Combobox" SelectionChanged="allowedWordlist1Combobox_SelectionChanged" />
             <ComboBox DockPanel.Dock="Top" x:Name="allowedWordlist2Combobox" SelectionChanged="allowedWordlist2Combobox_SelectionChanged" />
+            <CheckBox IsChecked="{Binding EncodeData}" Content="URLencode Data after Slicing" VerticalContentAlignment="Center"/>
         </StackPanel>
-
-        
 
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <Label Grid.Row="1" Content="Rules:" FontWeight="Bold"/>

@@ -181,7 +181,7 @@ namespace RuriLib
             ResponseSource = "";
             Cookies = new Dictionary<string, string>();
             ResponseHeaders = new Dictionary<string, string>();
-            try { foreach (var v in Data.GetVariables()) Variables.Set(v); } catch { }
+            try { foreach (var v in Data.GetVariables(ConfigSettings.EncodeData)) Variables.Set(v); } catch { }
             
             GlobalVariables = new VariableList();
             GlobalCookies = new CookieDictionary();            
