@@ -63,11 +63,10 @@ namespace OpenBullet
                 {
                     db.DropCollection("wordlists");
                 }
+                vm.WordlistList.Clear();
                 Globals.LogInfo(Components.WordlistManager, "Purge finished");
             }
             else { Globals.LogInfo(Components.WordlistManager, "Purge dismissed"); }
-
-            vm.WordlistList.Clear();
         }
 
         public void AddWordlist(Wordlist wordlist)
