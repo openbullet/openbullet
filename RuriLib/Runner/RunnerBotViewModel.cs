@@ -25,7 +25,7 @@ namespace RuriLib.Runner
         /// <summary>The proxy that the Worker is using to perform requests.</summary>
         public string Proxy { get { return proxy; } set { proxy = value; OnPropertyChanged(); } }
 
-        private string status = "Initializing...";
+        private string status = "";
         /// <summary>The status of the bot.</summary>
         public string Status { get { return status; } set { status = value; OnPropertyChanged(); } }
 

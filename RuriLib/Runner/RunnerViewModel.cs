@@ -582,6 +582,7 @@ namespace RuriLib.Runner
             // Get a reference to the Worker that is executing the job and the corresponding Bot
             var senderABW = (AbortableBackgroundWorker)sender;
             var bot = Bots.First(b => b.Id == (senderABW.Id));
+            bot.Status = "INITIALIZING...";
 
             // The data line that needs to be processed
             var data = (string)e.Argument;
