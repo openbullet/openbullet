@@ -12,6 +12,7 @@ using RuriLib.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -31,7 +32,7 @@ namespace OpenBullet
     /// 
     public partial class Stacker : Page
     {
-        private DateTime startTime;
+        private Stopwatch timer;
         public StackerViewModel vm;
         private AbortableBackgroundWorker debugger = new AbortableBackgroundWorker();
         XmlNodeList syntaxHelperItems;
@@ -359,7 +360,9 @@ namespace OpenBullet
             // Print start line
             var proxyEnabledText = vm.UseProxy ? "ENABLED" : "DISABLED";
             vm.BotData.LogBuffer.Add(new LogEntry($"===== DEBUGGER STARTED FOR CONFIG {vm.Config.Name} WITH DATA {vm.TestData} AND PROXY {vm.TestProxy} ({vm.ProxyType}) {proxyEnabledText} ====={Environment.NewLine}", Colors.White));
-            startTime = DateTime.Now;
+
+            timer = new Stopwatch();
+            timer.Start();
 
             // Open browser if Always Open
             if (vm.Config.Config.Settings.AlwaysOpen)
@@ -504,6 +507,7 @@ namespace OpenBullet
         
         private void debuggerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            timer.Stop();
             debugger.Status = WorkerStatus.Idle;
             startDebuggerButton.Content = "Start";
             vm.SBSEnabled = false;
@@ -519,7 +523,7 @@ namespace OpenBullet
             if (!vm.BotData.Data.RespectsRules(vm.Config.Config.Settings.DataRules.ToList()))
                 vm.BotData.LogBuffer.Add(new LogEntry($"WARNING: The test input data did not respect the data rules of this config!", Colors.Tomato));
 
-            vm.BotData.LogBuffer.Add(new LogEntry($"===== DEBUGGER ENDED AFTER {(DateTime.Now - startTime).TotalSeconds} SECOND(S) WITH STATUS: {vm.BotData.StatusString} =====", Colors.White));
+            vm.BotData.LogBuffer.Add(new LogEntry($"===== DEBUGGER ENDED AFTER {timer.ElapsedMilliseconds / 1000.0} SECOND(S) WITH STATUS: {vm.BotData.StatusString} =====", Colors.White));
             PrintLogBuffer();
             Globals.LogInfo(Components.Stacker, "Debugger completed");
         }
