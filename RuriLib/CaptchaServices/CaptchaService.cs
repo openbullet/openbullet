@@ -186,5 +186,19 @@ namespace RuriLib.CaptchaServices
                        .Result.Content.ReadAsStreamAsync())
                    .Result;
         }
+
+        /// <summary>
+        /// URL encodes a long string.
+        /// </summary>
+        /// <param name="longString">The string to encode</param>
+        /// <returns>The encoded string</returns>
+        protected string EscapeLongString(string longString)
+        {
+            var escaped = "";
+            int maxChunkSize = 200;
+            for (int i = 0; i < longString.Length; i += maxChunkSize)
+                escaped += Uri.EscapeDataString(longString.Substring(i, Math.Min(maxChunkSize, longString.Length - i)));
+            return escaped;
+        }
     }
 }
