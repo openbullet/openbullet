@@ -75,6 +75,27 @@ namespace RuriLib.LS
         /// <summary>The current line being processed.</summary>
         public string CurrentLine { get; set; } = "";
 
+        /// <summary>The next block to be processed. Empty if the script has no more blocks to execute.</summary>
+        public string NextBlock
+        {
+            get
+            {
+                for (int j = i; j < lines.Count(); j++)
+                {
+                    var line = lines[j];
+                    if (IsEmptyOrCommentOrDisabled(line) || !BlockParser.IsBlock(line)) continue;
+
+                    var label = "";
+                    if (lines[j].StartsWith("#")) label = LineParser.ParseLabel(ref line);
+                    var blockName = LineParser.ParseToken(ref line, TokenType.Parameter, false, false);
+
+                    if (label != "") return $"{blockName} ({label})";
+                    else return blockName;
+                }
+                return "";
+            }
+        }
+
         /// <summary>The current block being processed.</summary>
         public string CurrentBlock { get; set; } = "";
 
