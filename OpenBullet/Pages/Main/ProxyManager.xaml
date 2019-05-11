@@ -234,18 +234,28 @@
                     <TextBlock VerticalAlignment="Center" Margin="5 0">Delete All</TextBlock>
                 </StackPanel>
             </Button>
-            <Button x:Name="deleteNotWorkingButton" Click="deleteNotWorkingButton_Click" >
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="/Images/Icons/delete.png" Width="20" />
-                    <TextBlock VerticalAlignment="Center" Margin="5 0">Del. Not Working</TextBlock>
+            <Expander Header="More Actions" ExpandDirection="Down" IsExpanded="False">
+                <StackPanel>
+                    <Button x:Name="deleteNotWorkingButton" Click="deleteNotWorkingButton_Click" >
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Images/Icons/delete.png" Width="20" />
+                            <TextBlock VerticalAlignment="Center" Margin="5 0">Del. Not Working</TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="deleteDuplicatesButton" Click="deleteDuplicatesButton_Click" >
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Images/Icons/delete.png" Width="20" />
+                            <TextBlock VerticalAlignment="Center" Margin="5 0">Del. Duplicates</TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="deleteUntestedButton" Click="DeleteUntestedButton_Click" >
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Images/Icons/delete.png" Width="20" />
+                            <TextBlock VerticalAlignment="Center" Margin="5 0">Del. Untested</TextBlock>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
-            </Button>
-            <Button x:Name="deleteDuplicatesButton" Click="deleteDuplicatesButton_Click" >
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="/Images/Icons/delete.png" Width="20" />
-                    <TextBlock VerticalAlignment="Center" Margin="5 0">Del. Duplicates</TextBlock>
-                </StackPanel>
-            </Button>
+            </Expander>
             <Label Content="STATISTICS" FontWeight="Bold" />
             <StackPanel Orientation="Horizontal">
                 <Label Content="Total:" />

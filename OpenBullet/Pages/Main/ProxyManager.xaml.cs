@@ -379,5 +379,22 @@ namespace OpenBullet
 
             vm.UpdateProperties();
         }
+
+        private void DeleteUntestedButton_Click(object sender, RoutedEventArgs e)
+        {
+            Globals.LogInfo(Components.ProxyManager, "Deleting all untested proxies");
+
+            using (var db = new LiteDatabase(Globals.dataBaseFile))
+            {
+                db.GetCollection<CProxy>("proxies").Delete(p => p.Working == ProxyWorking.UNTESTED);
+                var list = vm.ProxyList.Where(p => p.Working == ProxyWorking.UNTESTED);
+                while (list.Count() > 0)
+                {
+                    vm.ProxyList.Remove(list.First());
+                }
+            }
+
+            vm.UpdateProperties();
+        }
     }
 }
