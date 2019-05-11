@@ -156,6 +156,10 @@ namespace RuriLib
             {
                 data.Log(new LogEntry($"[Success] Protection bypassed: {result.DetectResult.Protection}", Colors.GreenYellow));
             }
+            else if (result.DetectResult.Protection == CloudflareProtection.Unknown)
+            {
+                data.Log(new LogEntry("Unknown protection, skipping the bypass!", Colors.Tomato));
+            }
             else
             {
                 throw new Exception($"CF Bypass Failed: {result.FailReason}");
@@ -183,8 +187,11 @@ namespace RuriLib
                 data.Proxy.Cfduid = cfduid;
             }
 
-            data.Log(new LogEntry("Got Cloudflare clearance!", Colors.GreenYellow));
-            data.Log(new LogEntry(clearance + Environment.NewLine + cfduid + Environment.NewLine, Colors.White));
+            if (clearance != "")
+            {
+                data.Log(new LogEntry("Got Cloudflare clearance!", Colors.GreenYellow));
+                data.Log(new LogEntry(clearance + Environment.NewLine + cfduid + Environment.NewLine, Colors.White));
+            }
 
             // Get code
             data.ResponseCode = ((int)response.StatusCode).ToString();
