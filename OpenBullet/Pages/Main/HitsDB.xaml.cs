@@ -416,7 +416,7 @@ namespace OpenBullet
 
         private string GetHitChecksum(Hit hit)
         {
-            return BlockFunction.GetHash(hit.Data + hit.ConfigName + hit.WordlistName, BlockFunction.Hash.MD5);
+            return BlockFunction.GetHash(hit.Data + hit.ConfigName, BlockFunction.Hash.MD5);
         }
 
         private void deleteFilteredButton_Click(object sender, RoutedEventArgs e)
