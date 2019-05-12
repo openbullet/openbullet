@@ -6,6 +6,7 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -65,6 +66,12 @@ namespace RuriLib
 
             /// <summary>Decodes a URL-encoded input.</summary>
             URLDecode,
+
+            /// <summary>Encodes the input to be displayed in HTML or XML.</summary>
+            HTMLEntityEncode,
+
+            /// <summary>Decoded an input containing HTML or XML entities.</summary>
+            HTMLEntityDecode,
 
             /// <summary>Converts a unix timestamp to a formatted date.</summary>
             UnixTimeToDate,
@@ -498,6 +505,14 @@ namespace RuriLib
 
                     case Function.Base64Decode:
                         outputString = Base64Decode(localInputString);
+                        break;
+
+                    case Function.HTMLEntityEncode:
+                        outputString = WebUtility.HtmlEncode(localInputString);
+                        break;
+
+                    case Function.HTMLEntityDecode:
+                        outputString = WebUtility.HtmlDecode(localInputString);
                         break;
 
                     case Function.Hash:
