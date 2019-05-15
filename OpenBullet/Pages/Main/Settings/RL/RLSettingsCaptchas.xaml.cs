@@ -39,39 +39,39 @@ namespace OpenBullet
                 switch (Globals.rlSettings.Captchas.CurrentService)
                 {
                     case BlockCaptcha.CaptchaService.AntiCaptcha:
-                        balance = new AntiCaptcha(Globals.rlSettings.Captchas.AntiCapToken, 0).GetBalance();
+                        balance = new AntiCaptcha(Globals.rlSettings.Captchas.AntiCapToken, Globals.rlSettings.Captchas.Timeout).GetBalance();
                         break;
 
                     case BlockCaptcha.CaptchaService.DBC:
-                        balance = new DeathByCaptcha(Globals.rlSettings.Captchas.DBCUser, Globals.rlSettings.Captchas.DBCPass, 0).GetBalance();
+                        balance = new DeathByCaptcha(Globals.rlSettings.Captchas.DBCUser, Globals.rlSettings.Captchas.DBCPass, Globals.rlSettings.Captchas.Timeout).GetBalance();
                         break;
 
                     case BlockCaptcha.CaptchaService.DeCaptcher:
-                        balance = new DeCaptcher(Globals.rlSettings.Captchas.DCUser, Globals.rlSettings.Captchas.DCPass, 0).GetBalance();
+                        balance = new DeCaptcher(Globals.rlSettings.Captchas.DCUser, Globals.rlSettings.Captchas.DCPass, Globals.rlSettings.Captchas.Timeout).GetBalance();
                         break;
 
                     case BlockCaptcha.CaptchaService.ImageTypers:
-                        balance = new ImageTyperz(Globals.rlSettings.Captchas.ImageTypToken, 0).GetBalance();
+                        balance = new ImageTyperz(Globals.rlSettings.Captchas.ImageTypToken, Globals.rlSettings.Captchas.Timeout).GetBalance();
                         break;
 
                     case BlockCaptcha.CaptchaService.TwoCaptcha:
-                        balance = new TwoCaptcha(Globals.rlSettings.Captchas.TwoCapToken, 0).GetBalance();
+                        balance = new TwoCaptcha(Globals.rlSettings.Captchas.TwoCapToken, Globals.rlSettings.Captchas.Timeout).GetBalance();
                         break;
 
                     case BlockCaptcha.CaptchaService.RuCaptcha:
-                        balance = new RuCaptcha(Globals.rlSettings.Captchas.RuCapToken, 0).GetBalance();
+                        balance = new RuCaptcha(Globals.rlSettings.Captchas.RuCapToken, Globals.rlSettings.Captchas.Timeout).GetBalance();
                         break;
 
                     case BlockCaptcha.CaptchaService.AZCaptcha:
-                        balance = new AZCaptcha(Globals.rlSettings.Captchas.AZCapToken, 0).GetBalance();
+                        balance = new AZCaptcha(Globals.rlSettings.Captchas.AZCapToken, Globals.rlSettings.Captchas.Timeout).GetBalance();
                         break;
 
                     case BlockCaptcha.CaptchaService.SolveRecaptcha:
-                        balance = new SolveReCaptcha(Globals.rlSettings.Captchas.SRUserId, Globals.rlSettings.Captchas.SRToken, 0).GetBalance();
+                        balance = new SolveReCaptcha(Globals.rlSettings.Captchas.SRUserId, Globals.rlSettings.Captchas.SRToken, Globals.rlSettings.Captchas.Timeout).GetBalance();
                         break;
 
                     case BlockCaptcha.CaptchaService.CaptchasIO:
-                        balance = new CaptchasIO(Globals.rlSettings.Captchas.CIOToken, 0).GetBalance();
+                        balance = new CaptchasIO(Globals.rlSettings.Captchas.CIOToken, Globals.rlSettings.Captchas.Timeout).GetBalance();
                         break;
 
                     default:

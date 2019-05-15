@@ -28,7 +28,7 @@ namespace RuriLib.CaptchaServices
             using (HttpClient client = new HttpClient())
             using (MultipartFormDataContent data = new MultipartFormDataContent())
             {
-                client.Timeout = new TimeSpan(0, 0, Timeout);
+                client.Timeout = TimeSpan.FromSeconds(Timeout);
                 data.Add(new StringContent(User), "username");
                 data.Add(new StringContent(Pass), "password");
                 data.Add(new StringContent("balance"), "function");
@@ -43,7 +43,7 @@ namespace RuriLib.CaptchaServices
             using (HttpClient client = new HttpClient())
             using (MultipartFormDataContent data = new MultipartFormDataContent())
             {
-                client.Timeout = new TimeSpan(0, 0, Timeout);
+                client.Timeout = TimeSpan.FromSeconds(Timeout);
                 data.Add(new StringContent(User), "username");
                 data.Add(new StringContent(Pass), "password");
                 data.Add(new StringContent("proxyurl"), "function");
@@ -61,7 +61,7 @@ namespace RuriLib.CaptchaServices
             using(HttpClient client = new HttpClient())
             using (MultipartFormDataContent data = new MultipartFormDataContent())
             {
-                client.Timeout = new TimeSpan(0, 0, Timeout);
+                client.Timeout = TimeSpan.FromSeconds(Timeout);
                 data.Add(new StringContent(User), "username");
                 data.Add(new StringContent(Pass), "password");
                 data.Add(new StringContent("picture2"), "function");

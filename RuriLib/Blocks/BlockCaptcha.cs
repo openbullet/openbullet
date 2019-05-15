@@ -61,39 +61,39 @@ namespace RuriLib
             switch (data.GlobalSettings.Captchas.CurrentService)
             {
                 case CaptchaService.ImageTypers:
-                    Balance = new ImageTyperz(data.GlobalSettings.Captchas.ImageTypToken, 0).GetBalance();
+                    Balance = new ImageTyperz(data.GlobalSettings.Captchas.ImageTypToken, data.GlobalSettings.Captchas.Timeout).GetBalance();
                     break;
 
                 case CaptchaService.AntiCaptcha:
-                    Balance = new AntiCaptcha(data.GlobalSettings.Captchas.AntiCapToken, 0).GetBalance();
+                    Balance = new AntiCaptcha(data.GlobalSettings.Captchas.AntiCapToken, data.GlobalSettings.Captchas.Timeout).GetBalance();
                     break;
 
                 case CaptchaService.DBC:
-                    Balance = new DeathByCaptcha(data.GlobalSettings.Captchas.DBCUser, data.GlobalSettings.Captchas.DBCPass, 0).GetBalance();
+                    Balance = new DeathByCaptcha(data.GlobalSettings.Captchas.DBCUser, data.GlobalSettings.Captchas.DBCPass, data.GlobalSettings.Captchas.Timeout).GetBalance();
                     break;
 
                 case CaptchaService.TwoCaptcha:
-                    Balance = new TwoCaptcha(data.GlobalSettings.Captchas.TwoCapToken, 0).GetBalance();
+                    Balance = new TwoCaptcha(data.GlobalSettings.Captchas.TwoCapToken, data.GlobalSettings.Captchas.Timeout).GetBalance();
                     break;
 
                 case CaptchaService.RuCaptcha:
-                    Balance = new RuCaptcha(data.GlobalSettings.Captchas.RuCapToken, 0).GetBalance();
+                    Balance = new RuCaptcha(data.GlobalSettings.Captchas.RuCapToken, data.GlobalSettings.Captchas.Timeout).GetBalance();
                     break;
 
                 case CaptchaService.DeCaptcher:
-                    Balance = new DeCaptcher(data.GlobalSettings.Captchas.DCUser, data.GlobalSettings.Captchas.DCPass, 0).GetBalance();
+                    Balance = new DeCaptcher(data.GlobalSettings.Captchas.DCUser, data.GlobalSettings.Captchas.DCPass, data.GlobalSettings.Captchas.Timeout).GetBalance();
                     break;
 
                 case CaptchaService.AZCaptcha:
-                    Balance = new AZCaptcha(data.GlobalSettings.Captchas.AZCapToken, 0).GetBalance();
+                    Balance = new AZCaptcha(data.GlobalSettings.Captchas.AZCapToken, data.GlobalSettings.Captchas.Timeout).GetBalance();
                     break;
 
                 case CaptchaService.SolveRecaptcha:
-                    Balance = new SolveReCaptcha(data.GlobalSettings.Captchas.SRUserId, data.GlobalSettings.Captchas.SRToken, 0).GetBalance();
+                    Balance = new SolveReCaptcha(data.GlobalSettings.Captchas.SRUserId, data.GlobalSettings.Captchas.SRToken, data.GlobalSettings.Captchas.Timeout).GetBalance();
                     break;
 
                 case CaptchaService.CaptchasIO:
-                    Balance = new CaptchasIO(data.GlobalSettings.Captchas.CIOToken, 0).GetBalance();
+                    Balance = new CaptchasIO(data.GlobalSettings.Captchas.CIOToken, data.GlobalSettings.Captchas.Timeout).GetBalance();
                     break;
 
                 default:
