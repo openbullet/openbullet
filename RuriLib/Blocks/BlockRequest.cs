@@ -393,7 +393,14 @@ namespace RuriLib
                         .Select(p => ReplaceValues(p, data)));
                     if (pData != "")
                     {
-                        if (encodeContent) pData = System.Uri.EscapeDataString(pData);
+                        if (encodeContent)
+                        {
+                            // Very dirty but it works
+                            var nonce = data.rand.Next(1000000, 9999999);
+                            pData = pData.Replace("&", $"{nonce}&{nonce}").Replace("=", $"{nonce}={nonce}");
+                            pData = System.Uri.EscapeDataString(pData).Replace($"{nonce}%26{nonce}", "&").Replace($"{nonce}%3D{nonce}", "=");
+                        }
+
                         content = new StringContent(pData);
                         content.ContentType = cType;
                         data.Log(new LogEntry(string.Format("Post Data: {0}", pData), Colors.MediumTurquoise));
