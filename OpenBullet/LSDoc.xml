@@ -368,7 +368,7 @@ Syntax:
 TCP COMMAND [ARGUMENTS]
 
 Allowed Commands:
-CONNECT "HOST" "PORT" [UseSSL?] [-> VAR/CAP "NAME"]
+CONNECT "HOST" "PORT" [UseSSL?] [WaitForHello?] [-> VAR/CAP "NAME"]
 SEND "MESSAGE" [WebSocket?] [-> VAR/CAP "NAME"]
 DISCONNECT
 

@@ -47,7 +47,8 @@
                         <Label Content="Port:"/>
                         <TextBox Text="{Binding Port}"/>
                     </DockPanel>
-                    <CheckBox Content="SSL" IsChecked="{Binding UseSSL}" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                    <CheckBox Content="SSL" IsChecked="{Binding UseSSL}" VerticalContentAlignment="Center"/>
+                    <CheckBox Content="Wait for hello" IsChecked="{Binding WaitForHello}" VerticalContentAlignment="Center"/>
                 </StackPanel>
             </TabItem>
             <TabItem x:Name="sendTab">

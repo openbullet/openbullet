@@ -52,6 +52,10 @@ namespace RuriLib
         /// <summary>Whether to treat the message as a WebSocket payload (adds the frame overhead bytes).</summary>
         public bool WebSocket { get { return webSocket; } set { webSocket = value; OnPropertyChanged(); } }
 
+        private bool waitForHello = true;
+        /// <summary>Whether to wait for the server hello message once connected.</summary>
+        public bool WaitForHello { get { return waitForHello; } set { waitForHello = value; OnPropertyChanged(); } }
+
         private string message = "";
         /// <summary>The message sent to the host.</summary>
         public string Message { get { return message; } set { message = value; OnPropertyChanged(); } }
@@ -92,7 +96,7 @@ namespace RuriLib
                     Host = LineParser.ParseLiteral(ref input, "Host");
                     Port = LineParser.ParseLiteral(ref input, "Port");
 
-                    if (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                    while (LineParser.Lookahead(ref input) == TokenType.Boolean)
                         LineParser.SetBool(ref input, this);
 
                     break;
@@ -143,7 +147,8 @@ namespace RuriLib
                     writer
                         .Literal(Host)
                         .Literal(Port)
-                        .Boolean(UseSSL, "UseSSL");
+                        .Boolean(UseSSL, "UseSSL")
+                        .Boolean(WaitForHello, "WaitForHello");
                     break;
 
                 case TCPCommand.Send:
@@ -184,22 +189,23 @@ namespace RuriLib
                     tcp = new TcpClient();
                     tcp.Connect(h, p);
 
+
                     if (tcp.Connected)
                     {
                         net = tcp.GetStream();
-                         if (UseSSL)
-                             {
-                                  ssl = new SslStream(net);
-                                  ssl.AuthenticateAsClient(h);
-                             }
 
-                        //Wait a bit and read the Stream if not Empty
-                        Thread.Sleep(200);
-                        if (net.DataAvailable)
+                        if (UseSSL)
                         {
+                             ssl = new SslStream(net);
+                             ssl.AuthenticateAsClient(h);
+                        }
+
+                        if (WaitForHello)
+                        {
+                            // Read the stream to make sure we are connected
                             if (UseSSL) bytes = ssl.Read(buffer, 0, buffer.Length);
                             else bytes = net.Read(buffer, 0, buffer.Length);
-                        
+
                             // Save the response as ASCII in the SOURCE variable
                             response = Encoding.ASCII.GetString(buffer, 0, bytes);
                         }
@@ -247,6 +253,7 @@ namespace RuriLib
                     // Manual implementation of the WebSocket frame
                     if (WebSocket)
                     {
+                        #region WebSocket
                         List<byte> bl = new List<byte>();
 
                         // (FIN=1) (RSV1=0) (RSV2=0) (RSV3=0) (OPCODE=0001) = 128 + 1 = 129
@@ -289,6 +296,7 @@ namespace RuriLib
                         }
 
                         b = bl.ToArray();
+                        #endregion
                     }
                     else
                     {
