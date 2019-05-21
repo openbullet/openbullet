@@ -355,18 +355,18 @@ namespace RuriLib
                                 if (data.Proxy.Type == Extreme.Net.ProxyType.Http)
                                 {
                                     fireprofile.SetPreference("network.proxy.http", data.Proxy.Host);
-                                    fireprofile.SetPreference("network.proxy.httpport", int.Parse(data.Proxy.Port));
+                                    fireprofile.SetPreference("network.proxy.http_port", int.Parse(data.Proxy.Port));
                                     fireprofile.SetPreference("network.proxy.ssl", data.Proxy.Host);
-                                    fireprofile.SetPreference("network.proxy.sslport", int.Parse(data.Proxy.Port));
+                                    fireprofile.SetPreference("network.proxy.ssl_port", int.Parse(data.Proxy.Port));
                                 }
                                 else
                                 {
                                     fireprofile.SetPreference("network.proxy.socks", data.Proxy.Host);
-                                    fireprofile.SetPreference("network.proxy.socksport", int.Parse(data.Proxy.Port));
+                                    fireprofile.SetPreference("network.proxy.socks_port", int.Parse(data.Proxy.Port));
                                     if (data.Proxy.Type == Extreme.Net.ProxyType.Socks4)
-                                        fireprofile.SetPreference("network.proxy.socksversion", 4);
+                                        fireprofile.SetPreference("network.proxy.socks_version", 4);
                                     else if (data.Proxy.Type == Extreme.Net.ProxyType.Socks5)
-                                        fireprofile.SetPreference("network.proxy.socksversion", 5);
+                                        fireprofile.SetPreference("network.proxy.socks_version", 5);
                                 }
                             }
 
