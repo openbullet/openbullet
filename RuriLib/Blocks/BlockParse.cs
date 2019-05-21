@@ -103,6 +103,10 @@ namespace RuriLib
         private string jsonField = "";
         /// <summary>The name of the json field for which we want to retrieve the value.</summary>
         public string JsonField { get { return jsonField; } set { jsonField = value; OnPropertyChanged(); } }
+
+        private bool jTokenParsing = false;
+        /// <summary>Whether to parse the json object using jtoken paths.</summary>
+        public bool JTokenParsing { get { return jTokenParsing; } set { jTokenParsing = value; OnPropertyChanged(); } }
         #endregion
 
         #region REGEX
@@ -239,6 +243,7 @@ namespace RuriLib
                 case ParseType.JSON:
                     writer
                         .Literal(JsonField)
+                        .Boolean(JTokenParsing, "JTokenParsing")
                         .Boolean(Recursive, "Recursive")
                         .Boolean(EncodeOutput, "EncodeOutput")
                         .Boolean(CreateEmpty, "CreateEmpty");
@@ -428,11 +433,21 @@ namespace RuriLib
                     break;
 
                 case ParseType.JSON:
-                    var jsonlist = new List<KeyValuePair<string, string>>();
-                    parseJSON("", original, jsonlist);
-                    foreach(var j in jsonlist)
-                        if (j.Key == ReplaceValues(jsonField, data))
-                            list.Add(j.Value);
+                    if (JTokenParsing)
+                    {
+                        JObject json = JObject.Parse(original);
+                        var jsonlist = json.SelectTokens(jsonField, false);
+                        foreach (var j in jsonlist)
+                            list.Add(j.ToString());
+                    }
+                    else
+                    {
+                        var jsonlist = new List<KeyValuePair<string, string>>();
+                        parseJSON("", original, jsonlist);
+                        foreach (var j in jsonlist)
+                            if (j.Key == ReplaceValues(jsonField, data))
+                                list.Add(j.Value);
+                    }
 
                     break;
 

@@ -125,6 +125,7 @@
                             <Label Content="Field Name:"/>
                             <TextBox Text="{Binding JsonField, UpdateSourceTrigger=PropertyChanged}"/>
                         </DockPanel>
+                        <CheckBox Content="Use JToken Parsing" IsChecked="{Binding JTokenParsing}" VerticalContentAlignment="Center" ToolTip="Allows navigating through fields using . for children and [i] or [*] for arrays"/>
                         <StackPanel Orientation="Horizontal">
                             <CheckBox Content="Recursive" IsChecked="{Binding Recursive}" VerticalContentAlignment="Center"/>
                             <CheckBox Content="Encode Output" IsChecked="{Binding EncodeOutput}" VerticalContentAlignment="Center"/>
