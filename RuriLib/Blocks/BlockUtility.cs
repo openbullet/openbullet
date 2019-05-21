@@ -71,6 +71,9 @@ namespace RuriLib
         /// <summary>Removes an element from a list variable.</summary>
         Remove,
 
+        /// <summary>Removes duplicate elements from a list variable, keeping only the first one.</summary>
+        RemoveDuplicates,
+
         /// <summary>Picks a random element from a list variable.</summary>
         Random
     }
@@ -487,6 +490,10 @@ namespace RuriLib
                                 if (variable.Value.Count == 0) index = 0;
                                 else if (index < 0) index += variable.Value.Count;
                                 variable.Value.RemoveAt(index);
+                                break;
+
+                            case ListAction.RemoveDuplicates:
+                                data.Variables.Set(new CVar(variableName, list.Distinct().ToList(), isCapture));
                                 break;
 
                             case ListAction.Random:
