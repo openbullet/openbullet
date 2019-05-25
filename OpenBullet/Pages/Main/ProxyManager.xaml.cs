@@ -38,74 +38,6 @@ namespace OpenBullet
             vm.UpdateProperties();
         }
 
-        private void CheckCountry(CProxy proxy)
-        {
-            try
-            {
-                using (var request = new HttpRequest())
-                {
-                    request.ConnectTimeout = (int)vm.Timeout;
-                    var response = request.Get("http://ip-api.com/csv/" + proxy.Host);
-                    var csv = response.ToString();
-                    var split = csv.Split(',');
-
-                    var country = "Unknown";
-
-                    if (split[0] == "success")
-                        country = split[1];
-
-                    proxy.Country = country.Replace("\"", "");
-
-                    using (var db = new LiteDatabase(Globals.dataBaseFile))
-                    {
-                        db.GetCollection<CProxy>("proxies").Update(proxy);
-                    }
-
-                    Globals.LogInfo(Components.ProxyManager, "Checked country for proxy '" + proxy.Proxy + "' with result '" + proxy.Country + "'");
-                }
-                
-            }
-            catch (Exception ex)
-            {
-                Globals.LogError(Components.ProxyManager, "Failted to check country for proxy '" + proxy.Proxy + $"' - {ex.Message}");
-            }
-        }
-
-        private void CheckProxy(CProxy proxy)
-        {
-            var before = DateTime.Now;
-            try
-            {
-                using (var request = new HttpRequest())
-                {
-                    request.Proxy = proxy.GetClient();
-                    request.Proxy.ConnectTimeout = (int)vm.Timeout * 1000;
-                    request.Proxy.ReadWriteTimeout = (int)vm.Timeout * 1000;
-                    request.ConnectTimeout = (int)vm.Timeout * 1000;
-                    request.KeepAliveTimeout = (int)vm.Timeout * 1000;
-                    request.ReadWriteTimeout = (int)vm.Timeout * 1000;
-                    var response = request.Get(vm.TestURL);
-                    var source = response.ToString();
-                    
-                    App.Current.Dispatcher.Invoke(new Action(() => proxy.Ping = (int)(DateTime.Now - before).TotalMilliseconds));
-
-                    App.Current.Dispatcher.Invoke(new Action(() => proxy.Working = source.Contains(vm.SuccessKey) ? ProxyWorking.YES : ProxyWorking.NO));
-
-                    Globals.LogInfo(Components.ProxyManager, "Proxy '" + proxy.Proxy + $"' responded in {proxy.Ping} ms");
-                }
-            }
-            catch (Exception ex)
-            {
-                Globals.LogInfo(Components.ProxyManager, "Proxy '" + proxy.Proxy + $"' failed to respond - {ex.Message}");
-                App.Current.Dispatcher.Invoke(new Action(() => proxy.Working = ProxyWorking.NO));
-            }
-
-            using (var db = new LiteDatabase(Globals.dataBaseFile))
-            {
-                db.GetCollection<CProxy>("proxies").Update(proxy);
-            }
-        }
-
         #region Start Button
         private void checkButton_Click(object sender, RoutedEventArgs e)
         {
@@ -208,6 +140,74 @@ namespace OpenBullet
             finally
             {
                 semaphore.Release();
+            }
+        }
+
+        private void CheckCountry(CProxy proxy)
+        {
+            try
+            {
+                using (var request = new HttpRequest())
+                {
+                    request.ConnectTimeout = (int)vm.Timeout;
+                    var response = request.Get("http://ip-api.com/csv/" + proxy.Host);
+                    var csv = response.ToString();
+                    var split = csv.Split(',');
+
+                    var country = "Unknown";
+
+                    if (split[0] == "success")
+                        country = split[1];
+
+                    App.Current.Dispatcher.Invoke(new Action(() => proxy.Country = country.Replace("\"", "")));
+
+                    using (var db = new LiteDatabase(Globals.dataBaseFile))
+                    {
+                        db.GetCollection<CProxy>("proxies").Update(proxy);
+                    }
+
+                    Globals.LogInfo(Components.ProxyManager, "Checked country for proxy '" + proxy.Proxy + "' with result '" + proxy.Country + "'");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Globals.LogError(Components.ProxyManager, "Failted to check country for proxy '" + proxy.Proxy + $"' - {ex.Message}");
+            }
+        }
+
+        private void CheckProxy(CProxy proxy)
+        {
+            var before = DateTime.Now;
+            try
+            {
+                using (var request = new HttpRequest())
+                {
+                    request.Proxy = proxy.GetClient();
+                    request.Proxy.ConnectTimeout = (int)vm.Timeout * 1000;
+                    request.Proxy.ReadWriteTimeout = (int)vm.Timeout * 1000;
+                    request.ConnectTimeout = (int)vm.Timeout * 1000;
+                    request.KeepAliveTimeout = (int)vm.Timeout * 1000;
+                    request.ReadWriteTimeout = (int)vm.Timeout * 1000;
+                    var response = request.Get(vm.TestURL);
+                    var source = response.ToString();
+
+                    App.Current.Dispatcher.Invoke(new Action(() => proxy.Ping = (int)(DateTime.Now - before).TotalMilliseconds));
+
+                    App.Current.Dispatcher.Invoke(new Action(() => proxy.Working = source.Contains(vm.SuccessKey) ? ProxyWorking.YES : ProxyWorking.NO));
+
+                    Globals.LogInfo(Components.ProxyManager, "Proxy '" + proxy.Proxy + $"' responded in {proxy.Ping} ms");
+                }
+            }
+            catch (Exception ex)
+            {
+                Globals.LogInfo(Components.ProxyManager, "Proxy '" + proxy.Proxy + $"' failed to respond - {ex.Message}");
+                App.Current.Dispatcher.Invoke(new Action(() => proxy.Working = ProxyWorking.NO));
+            }
+
+            using (var db = new LiteDatabase(Globals.dataBaseFile))
+            {
+                db.GetCollection<CProxy>("proxies").Update(proxy);
             }
         }
         #endregion
