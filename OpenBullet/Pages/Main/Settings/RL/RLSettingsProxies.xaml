@@ -67,7 +67,7 @@
             </Grid.RowDefinitions>
             
                 <Label Grid.Row="0" Content="Global Ban Keys:" />
-            <RichTextBox x:Name="globalBanKeysTextbox" Grid.Row="1" Background="Transparent" Foreground="{DynamicResource ForegroundMain}" FontFamily="Consolas" TextChanged="globalBanKeysTextbox_TextChanged">
+            <RichTextBox x:Name="globalBanKeysTextbox" Grid.Row="1" Background="{DynamicResource BackgroundSecondary}" Foreground="{DynamicResource ForegroundMain}" FontFamily="Consolas" TextChanged="globalBanKeysTextbox_TextChanged">
                 <RichTextBox.Resources>
                     <Style TargetType="{x:Type Paragraph}">
                         <Setter Property="Margin" Value="0"/>
@@ -75,7 +75,7 @@
                 </RichTextBox.Resources>
             </RichTextBox>
             <Label Grid.Row="2" Content="Global Retry Keys:" />
-            <RichTextBox x:Name="globalRetryKeysTextbox" Grid.Row="3" Background="Transparent" Foreground="{DynamicResource ForegroundMain}" FontFamily="Consolas" TextChanged="globalRetryKeysTextbox_TextChanged">
+            <RichTextBox x:Name="globalRetryKeysTextbox" Grid.Row="3" Background="{DynamicResource BackgroundSecondary}" Foreground="{DynamicResource ForegroundMain}" FontFamily="Consolas" TextChanged="globalRetryKeysTextbox_TextChanged">
                 <RichTextBox.Resources>
                     <Style TargetType="{x:Type Paragraph}">
                         <Setter Property="Margin" Value="0"/>
