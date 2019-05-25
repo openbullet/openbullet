@@ -88,8 +88,11 @@ namespace RuriLib
             catch (OpenQA.Selenium.WebDriverTimeoutException)
             {
                 data.Log(new LogEntry("Timeout on Page Load", Colors.Tomato));
+
                 if (BanOnTimeout)
+                {
                     data.Status = BotStatus.BAN;
+                }
             }
 
             data.Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(data.GlobalSettings.Selenium.PageLoadTimeout);

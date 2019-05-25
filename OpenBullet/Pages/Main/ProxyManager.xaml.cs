@@ -23,46 +23,21 @@ namespace OpenBullet
     /// </summary>
     public partial class ProxyManager : Page
     {
-        AbortableBackgroundWorker bw = new AbortableBackgroundWorker();
         public ProxyManagerViewModel vm = new ProxyManagerViewModel();
         private GridViewColumnHeader listViewSortCol = null;
         private SortAdorner listViewSortAdorner = null;
-        bool stop = false;
+        private WorkerStatus Status = WorkerStatus.Idle;
+        private CancellationTokenSource cts = new CancellationTokenSource();
 
         public ProxyManager()
         {
             InitializeComponent();
             DataContext = vm;
 
-            bw.DoWork += new DoWorkEventHandler(Check);
-            bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(CheckComplete);
-
-            bw.WorkerReportsProgress = true;
-            bw.WorkerSupportsCancellation = true;
-            bw.Status = WorkerStatus.Idle;
-
             vm.RefreshList();
             vm.UpdateProperties();
         }
 
-        
-        private void Check(object sender, DoWorkEventArgs e)
-        {
-            stop = false;
-            ThreadPool.SetMinThreads(vm.BotsNumber*2, vm.BotsNumber*2);
-            Globals.LogInfo(Components.ProxyManager, "Set the minimum threads");
-            //ThreadPool.SetMaxThreads(1000, 1000);
-            Parallel.ForEach(vm.OnlyUntested ? vm.ProxyList.Where(p => p.Working == ProxyWorking.UNTESTED) : vm.ProxyList,
-                new ParallelOptions { MaxDegreeOfParallelism = vm.BotsNumber }, (proxy, state) =>
-            {
-                if (stop) { Globals.LogWarning(Components.ProxyManager, "Abort signal received, breaking the state"); state.Break(); }
-                CheckCountry(proxy);
-                CheckProxy(proxy);
-                App.Current.Dispatcher.Invoke(new Action(() => vm.UpdateProperties()));
-            });
-        }
-
-        
         private void CheckCountry(CProxy proxy)
         {
             try
@@ -90,7 +65,10 @@ namespace OpenBullet
                 }
                 
             }
-            catch (Exception ex) { Globals.LogError(Components.ProxyManager, "Failted to check country for proxy '" + proxy.Proxy + $"' - {ex.Message}"); }
+            catch (Exception ex)
+            {
+                Globals.LogError(Components.ProxyManager, "Failted to check country for proxy '" + proxy.Proxy + $"' - {ex.Message}");
+            }
         }
 
         private void CheckProxy(CProxy proxy)
@@ -101,11 +79,15 @@ namespace OpenBullet
                 using (var request = new HttpRequest())
                 {
                     request.Proxy = proxy.GetClient();
-                    request.ConnectTimeout = (int)vm.Timeout;
+                    request.Proxy.ConnectTimeout = (int)vm.Timeout * 1000;
+                    request.Proxy.ReadWriteTimeout = (int)vm.Timeout * 1000;
+                    request.ConnectTimeout = (int)vm.Timeout * 1000;
+                    request.KeepAliveTimeout = (int)vm.Timeout * 1000;
+                    request.ReadWriteTimeout = (int)vm.Timeout * 1000;
                     var response = request.Get(vm.TestURL);
                     var source = response.ToString();
                     
-                    App.Current.Dispatcher.Invoke(new Action(() => proxy.Ping = (DateTime.Now - before).Milliseconds));
+                    App.Current.Dispatcher.Invoke(new Action(() => proxy.Ping = (int)(DateTime.Now - before).TotalMilliseconds));
 
                     App.Current.Dispatcher.Invoke(new Action(() => proxy.Working = source.Contains(vm.SuccessKey) ? ProxyWorking.YES : ProxyWorking.NO));
 
@@ -124,51 +106,111 @@ namespace OpenBullet
             }
         }
 
-        
-        private void CheckComplete(object sender, RunWorkerCompletedEventArgs e)
-        {
-            Globals.LogInfo(Components.ProxyManager, "Check completed, re-enabling the UI");
-            checkButton.Content = "CHECK";
-            botsSlider.IsEnabled = true;
-            bw.Status = WorkerStatus.Idle;
-        }
-
-        private void botsSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            vm.BotsNumber = (int)e.NewValue;
-        }
-
+        #region Start Button
         private void checkButton_Click(object sender, RoutedEventArgs e)
         {
-            switch (bw.Status)
+            switch (Status)
             {
                 case WorkerStatus.Idle:
-                    stop = false;
                     Globals.LogInfo(Components.ProxyManager, "Disabling the UI and starting the checker");
                     checkButton.Content = "ABORT";
                     botsSlider.IsEnabled = false;
-                    bw.RunWorkerAsync();
-                    bw.Status = WorkerStatus.Running;
+                    Status = WorkerStatus.Running;
+#pragma warning disable CS4014 // Non è possibile attendere la chiamata, pertanto l'esecuzione del metodo corrente continuerà prima del completamento della chiamata
+                    CheckProxiesAsync(vm.ProxyList, vm.BotsNumber, 200);
+#pragma warning restore CS4014 // Non è possibile attendere la chiamata, pertanto l'esecuzione del metodo corrente continuerà prima del completamento della chiamata
                     break;
 
                 case WorkerStatus.Running:
-                    stop = true;
                     Globals.LogWarning(Components.ProxyManager, "Abort signal sent");
                     checkButton.Content = "HARD ABORT";
-                    bw.Status = WorkerStatus.Stopping;
+                    Status = WorkerStatus.Stopping;
+                    cts.Cancel();
                     break;
 
                 case WorkerStatus.Stopping:
                     Globals.LogWarning(Components.ProxyManager, "Hard abort signal sent");
-                    bw.CancelAsync();
+                    checkButton.Content = "CHECK";
+                    botsSlider.IsEnabled = true;
+                    Status = WorkerStatus.Idle;
                     break;
             }
         }
+        #endregion
 
-        private void importButton_Click(object sender, RoutedEventArgs e)
+        #region Check
+        public async Task CheckProxiesAsync(IEnumerable<CProxy> proxies, int threads, int step)
         {
-            (new MainDialog(new DialogAddProxies(this), "Import Proxies")).ShowDialog();
+            var proxiesToCheck = vm.OnlyUntested ? proxies.ToList() : proxies.Where(p => p.Working == ProxyWorking.UNTESTED).ToList();
+
+            // The semaphore will only allow {limit} elements at most running at the same time.
+            using (var semaphore = new SemaphoreSlim(threads, threads))
+            {
+                cts = new CancellationTokenSource();
+
+                for (int i = 0; i < proxiesToCheck.Count; i += step)
+                {
+                    var tasks = proxiesToCheck
+                        .Skip(i)
+                        .Take(Math.Min(proxiesToCheck.Count - i, step))
+                        .Select(p => CheckProxyAsync(p, semaphore, cts.Token))
+                        .ToArray();
+
+                    try
+                    {
+                        await Task.WhenAny(Task.WhenAll(tasks), AsTask(cts.Token));
+                        cts.Token.ThrowIfCancellationRequested();
+                    }
+                    catch
+                    {
+                        break;
+                    }
+                }
+                
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    Globals.LogInfo(Components.ProxyManager, "Check completed, re-enabling the UI");
+                    checkButton.Content = "CHECK";
+                    botsSlider.IsEnabled = true;
+                    Status = WorkerStatus.Idle;
+                });
+            }
         }
+
+        public static Task AsTask(CancellationToken cancellationToken)
+        {
+            var tcs = new TaskCompletionSource<object>();
+            cancellationToken.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: false);
+            return tcs.Task;
+        }
+
+        public async Task CheckProxyAsync(CProxy proxy, SemaphoreSlim semaphore, CancellationToken token)
+        {
+            await semaphore.WaitAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Status != WorkerStatus.Running) throw new OperationCanceledException();
+
+                // We do it like this, otherwise if we make the requests async the ping measurement won't work
+                await Task.Run(new Action(() =>
+                {
+                    CheckCountry(proxy);
+                    CheckProxy(proxy);
+                    App.Current.Dispatcher.Invoke(new Action(() => vm.UpdateProperties()));
+                }));
+            }
+            catch (OperationCanceledException)
+            {
+                Globals.LogInfo(Components.ProxyManager, $"{proxy} - THROWING");
+                throw;
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        }
+        #endregion
 
         public void AddProxies(string fileName, ProxyType type, List<string> lines)
         {
@@ -229,7 +271,12 @@ namespace OpenBullet
             vm.UpdateProperties();
         }
 
-        
+        #region GUI Controls
+        private void botsSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            vm.BotsNumber = (int)e.NewValue;
+        }
+
         private void exportButton_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
@@ -257,7 +304,6 @@ namespace OpenBullet
             }
         }
 
-        
         private void deleteButton_Click(object sender, RoutedEventArgs e)
         {
             Globals.LogInfo(Components.ProxyManager, $"Deleting {proxiesListView.SelectedItems.Count} proxies");
@@ -268,7 +314,6 @@ namespace OpenBullet
             Globals.LogInfo(Components.ProxyManager, "Proxies deleted successfully");
         }
 
-        
         private void DeleteProxies(List<CProxy> proxies)
         {
             Globals.LogInfo(Components.ProxyManager, "Deleting selected proxies");
@@ -286,7 +331,6 @@ namespace OpenBullet
             vm.UpdateProperties();
         }
 
-        
         private void deleteAllButton_Click(object sender, RoutedEventArgs e)
         {
             Globals.LogWarning(Components.ProxyManager, "Purging all proxies");
@@ -300,7 +344,6 @@ namespace OpenBullet
             vm.UpdateProperties();
         }
 
-        
         private void deleteNotWorkingButton_Click(object sender, RoutedEventArgs e)
         {
             Globals.LogInfo(Components.ProxyManager, "Deleting all non working proxies");
@@ -318,24 +361,9 @@ namespace OpenBullet
             vm.UpdateProperties();
         }
 
-        private void listViewColumnHeader_Click(object sender, RoutedEventArgs e)
+        private void importButton_Click(object sender, RoutedEventArgs e)
         {
-            GridViewColumnHeader column = (sender as GridViewColumnHeader);
-            string sortBy = column.Tag.ToString();
-            if (listViewSortCol != null)
-            {
-                AdornerLayer.GetAdornerLayer(listViewSortCol).Remove(listViewSortAdorner);
-                proxiesListView.Items.SortDescriptions.Clear();
-            }
-
-            ListSortDirection newDir = ListSortDirection.Ascending;
-            if (listViewSortCol == column && listViewSortAdorner.Direction == newDir)
-                newDir = ListSortDirection.Descending;
-
-            listViewSortCol = column;
-            listViewSortAdorner = new SortAdorner(listViewSortCol, newDir);
-            AdornerLayer.GetAdornerLayer(listViewSortCol).Add(listViewSortAdorner);
-            proxiesListView.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
+            (new MainDialog(new DialogAddProxies(this), "Import Proxies")).ShowDialog();
         }
 
         private void copySelectedProxies_Click(object sender, RoutedEventArgs e)
@@ -350,11 +378,6 @@ namespace OpenBullet
                 Globals.LogInfo(Components.ProxyManager, $"Copied {proxiesListView.SelectedItems.Count} proxies");
             }
             catch (Exception ex) { Globals.LogError(Components.ProxyManager, $"Failed to copy proxies - {ex.Message}"); }
-        }
-
-        private void ListViewItem_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            
         }
 
         private void deleteDuplicatesButton_Click(object sender, RoutedEventArgs e)
@@ -396,5 +419,33 @@ namespace OpenBullet
 
             vm.UpdateProperties();
         }
+        #endregion
+
+        #region ListView
+        private void listViewColumnHeader_Click(object sender, RoutedEventArgs e)
+        {
+            GridViewColumnHeader column = (sender as GridViewColumnHeader);
+            string sortBy = column.Tag.ToString();
+            if (listViewSortCol != null)
+            {
+                AdornerLayer.GetAdornerLayer(listViewSortCol).Remove(listViewSortAdorner);
+                proxiesListView.Items.SortDescriptions.Clear();
+            }
+
+            ListSortDirection newDir = ListSortDirection.Ascending;
+            if (listViewSortCol == column && listViewSortAdorner.Direction == newDir)
+                newDir = ListSortDirection.Descending;
+
+            listViewSortCol = column;
+            listViewSortAdorner = new SortAdorner(listViewSortCol, newDir);
+            AdornerLayer.GetAdornerLayer(listViewSortCol).Add(listViewSortAdorner);
+            proxiesListView.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
+        }
+
+        private void ListViewItem_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+        #endregion
     }
 }
