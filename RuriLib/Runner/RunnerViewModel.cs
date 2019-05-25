@@ -86,7 +86,16 @@ namespace RuriLib.Runner
             get
             {
                 int ret = 0;
-                try { ret = ((TestedCount + StartingPoint - 1) * 100) / (DataPool.Size); } catch { }
+
+                try {
+                    double curr = TestedCount + StartingPoint - 1;
+                    double tot = DataPool.Size;
+                    double ratio = curr / tot;
+                    double percent = ratio * 100;
+                    ret = (int)percent;
+                }
+                catch { }
+
                 return Clamp(ret, 0, 100);
             }
         }
