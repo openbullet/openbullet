@@ -512,7 +512,7 @@ namespace RuriLib.Runner
 
                     // Write progress to DB every 2 minutes
                     // Useful if we cannot save it upon work completion (e.g. for a crash or power outage)
-                    if (Timer.IsRunning && Timer.Elapsed.TotalSeconds != 0 && Timer.Elapsed.TotalSeconds % 120 == 0)
+                    if (Timer.IsRunning && (int)Timer.Elapsed.TotalSeconds != 0 && (int)Timer.Elapsed.TotalSeconds % 120 == 0)
                     {
                         RaiseSaveProgress();
                     }
