@@ -32,7 +32,7 @@ namespace OpenBullet
     public static class Globals
     {
         // Version
-        public static string obVersion = "1.1.2";
+        public static string obVersion = "1.1.3";
 
         // Main Window
         public static MainWindow mainWindow;

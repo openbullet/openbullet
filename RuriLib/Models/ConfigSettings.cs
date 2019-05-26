@@ -37,7 +37,7 @@ namespace RuriLib
         /// <summary>The name of the Author of the Config.</summary>
         public string Author { get { return author; } set { author = value; OnPropertyChanged(); } }
 
-        private string version = "1.1.2";
+        private string version = "1.1.3";
         /// <summary>The version of RuriLib the Config was made with.</summary>
         public string Version { get { return version; } set { version = value; OnPropertyChanged(); } }
         #endregion
