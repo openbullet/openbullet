@@ -145,6 +145,7 @@
     <Compile Include="LoliScript\Writer\BlockWriter.cs" />
     <Compile Include="Models\DataPool.cs" />
     <Compile Include="Models\ProxyPool.cs" />
+    <Compile Include="Models\RemoteProxySource.cs" />
     <Compile Include="Runner\AbortableBackgroundWorker.cs">
       <SubType>Component</SubType>
     </Compile>

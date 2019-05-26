@@ -16,7 +16,12 @@
             <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Column="0" Grid.Row="0" Margin="5">
             <Label Content="General"/>
             <CheckBox Content="Allow Concurrent Use" IsChecked="{Binding ConcurrentUse}" VerticalContentAlignment="Center"/>
             <CheckBox Content="Never Ban Proxies" IsChecked="{Binding NeverBan}" VerticalContentAlignment="Center"/>
@@ -24,41 +29,9 @@
             <CheckBox Content="Shuffle Proxies on Start" IsChecked="{Binding ShuffleOnStart}" VerticalContentAlignment="Center" />
             <Label Content="CloudFlare"/>
             <CheckBox Content="Don't Reuse Clearance Cookie (CF)" IsChecked="{Binding AlwaysGetClearance}" VerticalContentAlignment="Center"/>
-            <Label Content="Reloading"/>
-            <CheckBox Content="Reload proxies when all banned" IsChecked="{Binding Reload}" VerticalContentAlignment="Center"/>
-
-            <DockPanel>
-                <Label Content="Source:"/>
-                <ComboBox x:Name="reloadSourceCombobox" SelectionChanged="reloadSourceCombobox_SelectionChanged"/>
-            </DockPanel>
-            <TabControl x:Name="reloadTabControl" Background="Transparent" BorderThickness="0">
-                <TabControl.ItemContainerStyle>
-                    <Style TargetType="{x:Type TabItem}">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                    </Style>
-                </TabControl.ItemContainerStyle>
-                <TabItem x:Name="emptyTab">
-                    <StackPanel>
-                        <!-- EMPTY -->
-                    </StackPanel>
-                </TabItem>
-                <TabItem x:Name="otherTab">
-                    <StackPanel>
-                        <DockPanel>
-                            <Label Content="Path:"/>
-                            <TextBox Text="{Binding ReloadPath}"/>
-                        </DockPanel>
-                        <DockPanel>
-                            <Label Content="Type:"/>
-                            <ComboBox x:Name="reloadTypeCombobox" SelectionChanged="reloadTypeCombobox_SelectionChanged"/>
-                        </DockPanel>
-                        <CheckBox Content="Parse with IP:PORT regex" IsChecked="{Binding ParseWithIPRegex}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-                    </StackPanel>
-                </TabItem>
-            </TabControl>
         </StackPanel>
 
-        <Grid Grid.Column="1" Margin="5">
+        <Grid Grid.Column="1" Grid.Row="0" Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
@@ -85,5 +58,83 @@
 
         </Grid>
 
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <StackPanel>
+                <Label Content="Reloading"/>
+                <CheckBox Content="Reload proxies when all banned" IsChecked="{Binding Reload}" VerticalContentAlignment="Center"/>
+
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Source:"/>
+                    <ComboBox x:Name="reloadSourceCombobox" HorizontalAlignment="Left" SelectionChanged="reloadSourceCombobox_SelectionChanged"/>
+                    <Button x:Name="addRemoteProxySourceButton" Margin="50 0 0 0" Content="Add Remote Source" Click="addRemoteProxySourceButton_Click" Visibility="Collapsed"/>
+                    <Button x:Name="clearRemoteProxySourcesButton" Content="Clear Remote Sources" Click="clearRemoteProxySourcesButton_Click" Visibility="Collapsed"/>
+                    <Button x:Name="testRemoteProxySourcesButton" Content="Test" Click="TestRemoteProxySourcesButton_Click" Visibility="Collapsed"/>
+                </StackPanel>
+                <TabControl x:Name="reloadTabControl" Background="Transparent" BorderThickness="0">
+                    <TabControl.ItemContainerStyle>
+                        <Style TargetType="{x:Type TabItem}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </Style>
+                    </TabControl.ItemContainerStyle>
+                    <TabItem x:Name="emptyTab">
+                        <StackPanel>
+                            <!-- EMPTY -->
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem x:Name="fileTab">
+                        <StackPanel>
+                            <DockPanel>
+                                <Label Content="Path:"/>
+                                <TextBox Text="{Binding ReloadPath}"/>
+                            </DockPanel>
+                            <DockPanel>
+                                <Label Content="Type:"/>
+                                <ComboBox x:Name="reloadTypeCombobox" SelectionChanged="reloadTypeCombobox_SelectionChanged"/>
+                            </DockPanel>
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem x:Name="remoteTab">
+                        <ItemsControl x:Name="remoteProxySourcesControl" ItemsSource="{Binding RemoteProxySources}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" Margin="0 10"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="auto" />
+
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Column="0" Content="Url:" />
+                                        <TextBox Grid.Column="1" Text="{Binding Url}" Margin="5 0"/>
+                                        <ComboBox Tag="{Binding Id}" Grid.Column="2" x:Name="remoteProxyTypeCombobox" Margin="5 0" SelectionChanged="remoteProxyTypeCombobox_SelectionChanged" Loaded="remoteProxyTypeCombobox_Loaded"/>
+
+                                        <Label Grid.Column="3" Content="Pattern:"/>
+                                        <TextBox Grid.Column="4" Text="{Binding Pattern}" Margin="5 0" ToolTip="Must use capture groups (...)"/>
+
+                                        <Label Grid.Column="5" Content="Output:"/>
+                                        <TextBox Grid.Column="6" Text="{Binding Output}" Margin="5 0" ToolTip="[0] for full match, [1] for first group etc."/>
+
+                                        <Button Grid.Column="8" x:Name="removeRemoteProxySourceButton" Tag="{Binding Id}" Content="Remove" Click="removeRemoteProxySourceButton_Click" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </TabItem>
+                </TabControl>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>

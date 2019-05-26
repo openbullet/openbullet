@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace RuriLib.Runner
@@ -1012,15 +1013,17 @@ namespace RuriLib.Runner
                     Thread.Sleep(100);
                     break;
 
-                case ProxyReloadSource.API:
-                    try
+                case ProxyReloadSource.Remote:
+                    List<CProxy> proxies = new List<CProxy>();
+                    Parallel.ForEach(Settings.Proxies.RemoteProxySources, s =>
                     {
-                        ProxyPool = new ProxyPool(
-                            GetProxiesFromAPI(Settings.Proxies.ReloadPath,
-                                                Settings.Proxies.ReloadType,
-                                                Settings.Proxies.ParseWithIPRegex), Settings.Proxies.ShuffleOnStart);
-                    }
-                    catch (Exception ex) { RaiseMessageArrived(LogLevel.Error, $"Could not contact the reload API - {ex.Message}", true); }
+                        try
+                        {
+                            proxies.AddRange(GetProxiesFromRemoteSource(s.Url, s.Type, s.Pattern, s.Output));
+                        }
+                        catch (Exception ex) { RaiseMessageArrived(LogLevel.Error, $"Could not contact the reload API - {ex.Message}", true); }
+                    });
+                    ProxyPool = new ProxyPool(proxies, Settings.Proxies.ShuffleOnStart);
                     break;
 
                 case ProxyReloadSource.File:
@@ -1028,8 +1031,7 @@ namespace RuriLib.Runner
                     {
                         ProxyPool = new ProxyPool(
                             GetProxiesFromFile(Settings.Proxies.ReloadPath,
-                                                Settings.Proxies.ReloadType,
-                                                Settings.Proxies.ParseWithIPRegex), Settings.Proxies.ShuffleOnStart);
+                                                Settings.Proxies.ReloadType), Settings.Proxies.ShuffleOnStart);
                     }
                     catch (Exception ex) { RaiseMessageArrived(LogLevel.Error, $"Could not read the proxies from file - {ex.Message}", true); }
                     break;
@@ -1039,34 +1041,80 @@ namespace RuriLib.Runner
         }
 
         /// <summary>
-        /// Loads a list of proxies from an API endpoint.
+        /// Loads a list of proxies from a remote source.
         /// </summary>
-        /// <param name="url">The URL of the API call</param>
+        /// <param name="url">The URL of the remote source</param>
         /// <param name="type">The type of the proxies</param>
-        /// <param name="useRegex">Whether to use an IP:PORT regex to extract the proxies from the lines</param>
+        /// <param name="pattern">The Regex pattern to be used for parsing the proxies</param>
+        /// <param name="output">The output format of the groups matched by the regex</param>
         /// <returns>The list of CProxy objects loaded from the API</returns>
-        public static List<CProxy> GetProxiesFromAPI(string url, ProxyType type, bool useRegex = false)
+        public static List<CProxy> GetProxiesFromRemoteSource(string url, ProxyType type, string pattern, string output)
         {
             var proxies = new List<CProxy>();
 
             HttpRequest req = new HttpRequest();
             req.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36 OPR/52.0.2871.64";
             var resp = req.Get(url).ToString();
-            if (useRegex)
+
+            try
             {
-                var pattern = "(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+";
                 var matches = Regex.Matches(resp, pattern);
-                foreach (Match m in matches)
-                    proxies.Add(new CProxy(m.Value, type));
+                foreach (Match match in matches)
+                {
+                    var result = output;
+                    for (var i = 0; i < match.Groups.Count; i++) result = result.Replace("[" + i + "]", match.Groups[i].Value);
+                    proxies.Add(new CProxy(result, type));
+                }
             }
-            else
-            {
-                proxies.AddRange(resp
-                    .Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(p => new CProxy(p.Trim(), type)));
-            }
+            catch { }
 
             return proxies;
+        }
+
+        /// <summary>
+        /// Loads a list of proxies from a remote source asynchronously.
+        /// </summary>
+        /// <param name="url">The URL of the remote source</param>
+        /// <param name="type">The type of the proxies</param>
+        /// <param name="pattern">The Regex pattern to be used for parsing the proxies</param>
+        /// <param name="output">The output format of the groups matched by the regex</param>
+        /// <returns>The list of CProxy objects loaded from the API</returns>
+        public async static Task<RemoteProxySourceResult> GetProxiesFromRemoteSourceAsync(string url, ProxyType type, string pattern, string output)
+        {
+            var proxies = new List<CProxy>();
+
+            try
+            {
+                HttpRequest req = new HttpRequest();
+                req.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36 OPR/52.0.2871.64";
+                var resp = (await req.GetAsync(url)).ToString();
+
+                var matches = Regex.Matches(resp, pattern);
+                foreach (Match match in matches)
+                {
+                    var result = output;
+                    for (var i = 0; i < match.Groups.Count; i++) result = result.Replace("[" + i + "]", match.Groups[i].Value);
+                    proxies.Add(new CProxy(result, type));
+                }
+            }
+            catch (Exception ex)
+            {
+                return new RemoteProxySourceResult()
+                {
+                    Successful = false,
+                    Error = ex.Message,
+                    Url = url,
+                    Proxies = new List<CProxy>()
+                };
+            }
+
+            return new RemoteProxySourceResult()
+            {
+                Successful = true,
+                Error = "",
+                Url = url,
+                Proxies = proxies
+            };
         }
 
         /// <summary>
@@ -1074,27 +1122,13 @@ namespace RuriLib.Runner
         /// </summary>
         /// <param name="fileName">The file containing the proxies, one per line</param>
         /// <param name="type">The type of the proxies</param>
-        /// <param name="useRegex">Whether to use an IP:PORT regex to extract the proxies from the lines</param>
         /// <returns>The list of CProxy objects loaded from the file</returns>
-        public static List<CProxy> GetProxiesFromFile(string fileName, ProxyType type, bool useRegex = false)
+        public static List<CProxy> GetProxiesFromFile(string fileName, ProxyType type)
         {
             var lines = File.ReadAllLines(fileName);
             var proxies = new List<CProxy>();
 
-            if (useRegex)
-            {
-                var pattern = "(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+";
-                foreach(var line in lines)
-                {
-                    var match = Regex.Match(line, pattern);
-                    if (match.Success)
-                        proxies.Add(new CProxy(match.Value, type));
-                }
-            }
-            else
-            {
-                proxies.AddRange(lines.Select(l => new CProxy(l, type)));
-            }
+            proxies.AddRange(lines.Select(l => new CProxy(l, type)));
 
             return proxies;
         }

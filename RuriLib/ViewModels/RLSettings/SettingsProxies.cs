@@ -1,5 +1,8 @@
 ﻿using Extreme.Net;
+using RuriLib.Models;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reflection;
 
 namespace RuriLib.ViewModels
@@ -13,8 +16,8 @@ namespace RuriLib.ViewModels
         Manager,
         /// <summary>A file on the disk.</summary>
         File,
-        /// <summary>An online API.</summary>
-        API
+        /// <summary>A remote API or website.</summary>
+        Remote
     }
 
     /// <summary>
@@ -50,21 +53,12 @@ namespace RuriLib.ViewModels
         public ProxyReloadSource ReloadSource { get { return reloadSource; } set { reloadSource = value; OnPropertyChanged(); } }
 
         private string reloadPath = "";
-        /// <summary>The API URL or the file path on disk.</summary>
+        /// <summary>The file path on disk.</summary>
         public string ReloadPath { get { return reloadPath; } set { reloadPath = value; OnPropertyChanged(); } }
 
         private ProxyType reloadType = ProxyType.Http;
         /// <summary>The Type of the proxies to load.</summary>
         public ProxyType ReloadType { get { return reloadType; } set { reloadType = value; OnPropertyChanged(); } }
-
-        private bool parseWithIPRegex = false;
-        /// <summary>
-        /// <para>Whether to use an IP:PORT regex to extract the proxies from the source.</para>
-        /// <para>The regex will match proxies of the form 127.0.0.1:8888.</para>
-        /// <para>This is useful for example when the server returns proxies in a HTML, XML or JSON format and not one proxy per line.</para>
-        /// <para>This is also useful when the server returns proxies with unix-like line endings.</para>
-        /// </summary>
-        public bool ParseWithIPRegex { get { return parseWithIPRegex; } set { parseWithIPRegex = value; OnPropertyChanged(); } }
         #endregion
 
         #region Cloudflare
@@ -89,6 +83,30 @@ namespace RuriLib.ViewModels
         /// <para>These are useful when the proxy is temporarily too busy because of high traffic.</para>
         /// </summary>
         public string[] GlobalRetryKeys { get { return globalRetryKeys; } set { globalRetryKeys = value; OnPropertyChanged(); } }
+        #endregion
+
+        #region Remote Proxy Sources
+        /// <summary>The sources where proxies are downloaded and parsed from.</summary>
+        public ObservableCollection<RemoteProxySource> RemoteProxySources { get; set; } = new ObservableCollection<RemoteProxySource>();
+
+        /// <summary>
+        /// Removes a RemoteProxySource given its id.
+        /// </summary>
+        /// <param name="id">The id of the RemoteProxySource</param>
+        public void RemoveRemoteProxySourceById(int id)
+        {
+            RemoteProxySources.Remove(GetRemoteProxySourceById(id));
+        }
+
+        /// <summary>
+        /// Gets a RemoteProxySource given its id.
+        /// </summary>
+        /// <param name="id">The id of the RemoteProxySource</param>
+        /// <returns>The wanted RemoteProxySource. Null if not found.</returns>
+        public RemoteProxySource GetRemoteProxySourceById(int id)
+        {
+            return RemoteProxySources.FirstOrDefault(s => s.Id == id);
+        }
         #endregion
 
         /// <summary>

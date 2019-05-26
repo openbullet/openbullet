@@ -457,7 +457,6 @@ namespace RuriLib
                     break;
 
                 case ParseType.REGEX:
-                    REGEXBEGIN:
                     try
                     {
                         var matches = Regex.Matches(partial, ReplaceValues(regexString, data));
@@ -466,7 +465,6 @@ namespace RuriLib
                             var output = ReplaceValues(regexOutput, data);
                             for (var i = 0; i < match.Groups.Count; i++) output = output.Replace("[" + i + "]", match.Groups[i].Value);
                             list.Add(output);
-                            if (recursive && match.Index + match.Length <= partial.Length) { partial = partial.Substring(match.Index + match.Length); goto REGEXBEGIN; }
                         }
                     }
                     catch { }
