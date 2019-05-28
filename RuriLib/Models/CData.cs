@@ -83,6 +83,10 @@ namespace RuriLib.Models
                         case RuleType.MustNotContain:
                             valid = !CheckContains(slice, rule.RuleString);
                             break;
+
+                        case RuleType.MustMatchRegex:
+                            valid = Regex.Match(slice, rule.RuleString).Success;
+                            break;
                     }
 
                     if (!valid) return false;

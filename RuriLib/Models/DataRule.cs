@@ -23,7 +23,10 @@ namespace RuriLib.Models
         MinLength,
 
         /// <summary>The slice's length must be smaller or equal to a given number.</summary>
-        MaxLength
+        MaxLength,
+
+        /// <summary>The slice must match a given regex pattern.</summary>
+        MustMatchRegex
     }
 
     /// <summary>
