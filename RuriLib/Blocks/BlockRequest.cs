@@ -448,11 +448,7 @@ namespace RuriLib
                     var replacedKey = key.Replace("-", "").ToLower(); // Used to compare with the HttpHeader enum
                     var val = ReplaceValues(header.Value, data);
 
-                    if (replacedKey == "contenttype") // If it's somewhat needed to define Content-Type in e.g. a GET request
-                    {
-                        content = new StringContent("");
-                        content.ContentType = val;
-                    }
+                    if (replacedKey == "contenttype") { } // Disregard additional Content-Type headers
                     else if (fixedNames.Contains(replacedKey)) request.AddHeader((HttpHeader)Enum.Parse(typeof(HttpHeader), replacedKey, true), val);
                     else request.AddHeader(key, val);
 
