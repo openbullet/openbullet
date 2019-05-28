@@ -528,7 +528,7 @@ namespace RuriLib
                     case UtilityGroup.File:
                         var file = ReplaceValues(filePath, data);
                         var input = ReplaceValues(inputString, data).Replace("\\r\\n", "\r\n").Replace("\\n", "\n");
-                        var inputs = ReplaceValuesRecursive(inputString, data);
+                        var inputs = ReplaceValuesRecursive(inputString, data).Select(i => i.Replace("\\r\\n", "\r\n").Replace("\\n", "\n"));
                         switch (fileAction)
                         {
                             case FileAction.Read:
