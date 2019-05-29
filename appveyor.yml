@@ -1,0 +1,14 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+install:
+- cmd: >-
+    cd %APPVEYOR_BUILD_FOLDER%
+    git submodule update --init --recursive
+    nuget restore OpenBullet.sln
+build:
+  verbosity: normal
+after_build:
+- cmd: 7z a OpenBullet.zip %APPVEYOR_BUILD_FOLDER%\openbullet\bin\debug\
+artifacts:
+- path: OpenBullet.zip
+  name: OpenBullet
