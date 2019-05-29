@@ -1,4 +1,6 @@
 # OpenBullet
+[![Build status](https://ci.appveyor.com/api/projects/status/ubdcnn38uanaoqic?svg=true)](https://ci.appveyor.com/project/openbullet/openbullet)
+
 OpenBullet is a webtesting suite that allows to perform requests towards a target webapp and offers a lot of tools to work with the results. This software can be used for **scraping** and **parsing data**, automated **pentesting**, unit testing through **selenium** and much more.
 
 **NEW** The OpenBullet API was released. It can be used to host configs remotely on your server and have OpenBullet download them upon Rescan. It's very useful to always have updated configs between different computers or people. You can learn more about it [here](https://openbullet.github.io/remote.html).
