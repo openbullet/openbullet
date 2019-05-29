@@ -10,7 +10,7 @@ KEYCHECK [BanOn4XX?] [BanOnToCheck?]
   ]*
   </item>
   <item name="REQUEST">
-REQUEST METHOD "URL" [AutoRedirect?] [ReadResponseSource?] [ParseQuery?] [EncodeContent?]
+REQUEST METHOD "URL" [AcceptEncoding?] [AutoRedirect?] [ReadResponseSource?] [ParseQuery?] [EncodeContent?]
   [STANDARD / MULTIPART / BASICAUTH]
   [CONTENT "postdata"]
   [CONTENTTYPE "ctype"]

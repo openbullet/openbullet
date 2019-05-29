@@ -111,6 +111,10 @@ namespace RuriLib
         /// <summary>Whether to URL encode the content before sending it.</summary>
         public bool EncodeContent { get { return encodeContent; } set { encodeContent = value; OnPropertyChanged(); } }
 
+        private bool acceptEncoding = true;
+        /// <summary>Whether to automatically generate an Accept-Encoding header.</summary>
+        public bool AcceptEncoding { get { return acceptEncoding; } set { acceptEncoding = value; OnPropertyChanged(); } }
+
         // Multipart
         private string multipartBoundary = "";
         /// <summary>The boundary that separates multipart contents.</summary>
@@ -253,6 +257,7 @@ namespace RuriLib
                 .Token("REQUEST")
                 .Token(Method)
                 .Literal(Url)
+                .Boolean(AcceptEncoding, "AcceptEncoding")
                 .Boolean(AutoRedirect, "AutoRedirect")
                 .Boolean(ReadResponseSource, "ReadResponseSource")
                 .Boolean(ParseQuery, "ParseQuery")
@@ -346,7 +351,7 @@ namespace RuriLib
             var timeout = data.GlobalSettings.General.RequestTimeout * 1000;
             request.IgnoreProtocolErrors = true;
             request.AllowAutoRedirect = autoRedirect;
-            request.EnableEncodingContent = true;
+            request.EnableEncodingContent = acceptEncoding;
             request.ReadWriteTimeout = timeout;
             request.ConnectTimeout = timeout;
             request.KeepAlive = true;
@@ -449,6 +454,7 @@ namespace RuriLib
                     var val = ReplaceValues(header.Value, data);
 
                     if (replacedKey == "contenttype" && content != null) { continue; } // Disregard additional Content-Type headers
+                    if (replacedKey == "acceptencoding" && acceptEncoding) { continue; } // Disregard additional Accept-Encoding headers
                     // else if (fixedNames.Contains(replacedKey)) request.AddHeader((HttpHeader)Enum.Parse(typeof(HttpHeader), replacedKey, true), val);
                     else request.AddHeader(key, val);
 
