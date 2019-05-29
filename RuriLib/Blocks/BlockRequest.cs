@@ -428,7 +428,7 @@ namespace RuriLib
                         else if (c.Type == MultipartContentType.File)
                         {
                             mContent.Add(new FileContent(rValue), rName);
-                            data.Log(new LogEntry($"Content-Disposition: form-data; name=\"{rName}\"; filename=\"{rValue}\"{Environment.NewLine}{Environment.NewLine}[FILE CONTENT OMITTED]", Colors.MediumTurquoise));
+                            data.Log(new LogEntry($"Content-Disposition: form-data; name=\"{rName}\"{Environment.NewLine}{Environment.NewLine}[FILE CONTENT OMITTED]", Colors.MediumTurquoise));
                         }
                     }
                     break;
