@@ -727,7 +727,10 @@ namespace RuriLib
         /// <returns>The decoded string</returns>
         public static string Base64Decode(string base64EncodedData)
         {
-            var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
+            var toDecode = base64EncodedData.Replace(".", "");
+            var remainder = toDecode.Length % 4;
+            if (remainder != 0) toDecode = toDecode.PadRight(toDecode.Length + remainder, '=');
+            var base64EncodedBytes = System.Convert.FromBase64String(toDecode);
             return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
         }
         #endregion
