@@ -415,7 +415,7 @@ namespace RuriLib
                     content = new Extreme.Net.MultipartContent(bdry);
                     var mContent = content as Extreme.Net.MultipartContent;
                     data.Log(new LogEntry("Multipart Data:", Colors.MediumTurquoise));
-                    data.Log(new LogEntry($"{(content as Extreme.Net.MultipartContent)}", Colors.MediumTurquoise));
+                    data.Log(new LogEntry(bdry, Colors.MediumTurquoise));
                     foreach (var c in MultipartContents)
                     {
                         var rValue = ReplaceValues(c.Value, data);
@@ -430,6 +430,7 @@ namespace RuriLib
                             mContent.Add(new FileContent(rValue), rName);
                             data.Log(new LogEntry($"Content-Disposition: form-data; name=\"{rName}\"{Environment.NewLine}{Environment.NewLine}[FILE CONTENT OMITTED]", Colors.MediumTurquoise));
                         }
+                        data.Log(new LogEntry(bdry, Colors.MediumTurquoise));
                     }
                     break;
 
