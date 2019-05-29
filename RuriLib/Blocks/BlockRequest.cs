@@ -180,15 +180,13 @@ namespace RuriLib
                         break;
 
                     case "STRINGCONTENT":
-                        var sCont = LineParser.ParseLiteral(ref input, "STRING CONTENT");
-                        var sSplit = sCont.Split(new char[] { ':' }, 2);
-                        MultipartContents.Add(new MultipartContent() { Type = MultipartContentType.String, Name = sSplit[0].Trim(), Value = sSplit[1].Trim() });
+                        var stringContentPair = ParsePair(LineParser.ParseLiteral(ref input, "STRING CONTENT"));
+                        MultipartContents.Add(new MultipartContent() { Type = MultipartContentType.String, Name = stringContentPair.Key, Value = stringContentPair.Value });
                         break;
 
                     case "FILECONTENT":
-                        var fCont = LineParser.ParseLiteral(ref input, "FILE CONTENT");
-                        var fSplit = fCont.Split(new char[] { ':' }, 2);
-                        MultipartContents.Add(new MultipartContent() { Type = MultipartContentType.File, Name = fSplit[0].Trim(), Value = fSplit[1].Trim() });
+                        var fileContentPair = ParsePair(LineParser.ParseLiteral(ref input, "FILE CONTENT"));
+                        MultipartContents.Add(new MultipartContent() { Type = MultipartContentType.File, Name = fileContentPair.Key, Value = fileContentPair.Value });
                         break;
 
                     case "COOKIE":
@@ -408,18 +406,30 @@ namespace RuriLib
 
                         content = new StringContent(pData);
                         content.ContentType = cType;
-                        data.Log(new LogEntry(string.Format("Post Data: {0}", pData), Colors.MediumTurquoise));
+                        data.Log(new LogEntry($"Post Data: {pData}", Colors.MediumTurquoise));
                     }
                     break;
 
                 case RequestType.Multipart:
-                    if (multipartBoundary != "") content = new Extreme.Net.MultipartContent(multipartBoundary);
-                    else content = new Extreme.Net.MultipartContent(GenerateMultipartBoundary());
+                    var bdry = multipartBoundary != "" ? multipartBoundary : GenerateMultipartBoundary();
+                    content = new Extreme.Net.MultipartContent(bdry);
                     var mContent = content as Extreme.Net.MultipartContent;
+                    data.Log(new LogEntry("Multipart Data:", Colors.MediumTurquoise));
+                    data.Log(new LogEntry($"{(content as Extreme.Net.MultipartContent)}", Colors.MediumTurquoise));
                     foreach (var c in MultipartContents)
                     {
-                        if (c.Type == MultipartContentType.String) mContent.Add(new StringContent(ReplaceValues(c.Value, data)), ReplaceValues(c.Name, data));
-                        else if (c.Type == MultipartContentType.File) mContent.Add(new FileContent(ReplaceValues(c.Value, data)), ReplaceValues(c.Name, data));
+                        var rValue = ReplaceValues(c.Value, data);
+                        var rName = ReplaceValues(c.Name, data);
+                        if (c.Type == MultipartContentType.String)
+                        {
+                            mContent.Add(new StringContent(rValue), rName);
+                            data.Log(new LogEntry($"Content-Disposition: form-data; name=\"{rName}\"{Environment.NewLine}{Environment.NewLine}{rValue}", Colors.MediumTurquoise));
+                        }
+                        else if (c.Type == MultipartContentType.File)
+                        {
+                            mContent.Add(new FileContent(rValue), rName);
+                            data.Log(new LogEntry($"Content-Disposition: form-data; name=\"{rName}\"; filename=\"{rValue}\"{Environment.NewLine}{Environment.NewLine}[FILE CONTENT OMITTED]", Colors.MediumTurquoise));
+                        }
                     }
                     break;
 
