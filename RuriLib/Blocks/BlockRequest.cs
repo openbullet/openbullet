@@ -414,6 +414,7 @@ namespace RuriLib
                     var bdry = multipartBoundary != "" ? multipartBoundary : GenerateMultipartBoundary();
                     content = new Extreme.Net.MultipartContent(bdry);
                     var mContent = content as Extreme.Net.MultipartContent;
+                    data.Log(new LogEntry($"Content-Type: multipart/form-data; boundary={bdry}", Colors.MediumTurquoise));
                     data.Log(new LogEntry("Multipart Data:", Colors.MediumTurquoise));
                     data.Log(new LogEntry(bdry, Colors.MediumTurquoise));
                     foreach (var c in MultipartContents)
@@ -485,8 +486,10 @@ namespace RuriLib
             }
 
             // Add the content-type header
-            if ((method == HttpMethod.POST || method == HttpMethod.PUT || method == HttpMethod.DELETE) && cType != "")
+            if (CanContainBody(method) && content != null && requestType == RequestType.Standard)
+            {
                 data.Log(new LogEntry("Content-Type: " + cType, Colors.MediumTurquoise));
+            }
 
             // Add new user-defined custom cookies to the bot's cookie jar
             request.Cookies = new CookieDictionary();
