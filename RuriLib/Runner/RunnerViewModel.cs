@@ -447,7 +447,7 @@ namespace RuriLib.Runner
                 // Check if it's valid
                 if (!c.IsValid || !c.RespectsRules(Config.Settings.DataRules.ToList()))
                 {
-                    FailedList.Add(new ValidData(data, "", ProxyType.Http, BotStatus.FAIL, "", "", null));
+                    FailedList.Add(new ValidData(data, "", ProxyType.Http, BotStatus.FAIL, "", "", "", null));
                     continue;
                 }
 
@@ -791,7 +791,7 @@ namespace RuriLib.Runner
                 switch (botData.Status)
                 {
                     case BotStatus.SUCCESS:
-                        validData = new ValidData(botData.Data.Data, botData.Proxy == null ? "" : botData.Proxy.Proxy, botData.Proxy == null ? ProxyType.Http : botData.Proxy.Type, botData.Status, capturedData.ToCaptureString(), Settings.General.SaveLastSource ? botData.ResponseSource : "", BotLog);
+                        validData = new ValidData(botData.Data.Data, botData.Proxy == null ? "" : botData.Proxy.Proxy, botData.Proxy == null ? ProxyType.Http : botData.Proxy.Type, botData.Status, "HIT", capturedData.ToCaptureString(), Settings.General.SaveLastSource ? botData.ResponseSource : "", BotLog);
                         RaiseDispatchAction(new Action(() => HitsList.Add(validData)));
                         if (UseProxies && !Settings.Proxies.NeverBan && Settings.Proxies.BanAfterGoodStatus)
                         {
@@ -803,12 +803,12 @@ namespace RuriLib.Runner
                         break;
 
                     case BotStatus.FAIL:
-                        FailedList.Add(new ValidData("", "", ProxyType.Http, botData.Status, "", "", null)); // Only needed for CPM calculation so we can set blank data to avoid filling RAM
+                        FailedList.Add(new ValidData("", "", ProxyType.Http, botData.Status, "", "", "", null)); // Only needed for CPM calculation so we can set blank data to avoid filling RAM
                         break;
 
                     case BotStatus.CUSTOM:
                         hitType = botData.CustomStatus;
-                        validData = new ValidData(botData.Data.Data, botData.Proxy == null ? "" : botData.Proxy.Proxy, botData.Proxy == null ? ProxyType.Http : botData.Proxy.Type, botData.Status, capturedData.ToCaptureString(), Settings.General.SaveLastSource ? botData.ResponseSource : "", BotLog);
+                        validData = new ValidData(botData.Data.Data, botData.Proxy == null ? "" : botData.Proxy.Proxy, botData.Proxy == null ? ProxyType.Http : botData.Proxy.Type, botData.Status, hitType, capturedData.ToCaptureString(), Settings.General.SaveLastSource ? botData.ResponseSource : "", BotLog);
                         RaiseDispatchAction(new Action(() => CustomList.Add(validData)));
 
                         if (UseProxies && !Settings.Proxies.NeverBan && Settings.Proxies.BanAfterGoodStatus)
@@ -840,7 +840,7 @@ namespace RuriLib.Runner
                         goto GETPROXY;
 
                     case BotStatus.NONE:
-                        validData = new ValidData(botData.Data.Data, botData.Proxy == null ? "" : botData.Proxy.Proxy, botData.Proxy == null ? ProxyType.Http : botData.Proxy.Type, botData.Status, capturedData.ToCaptureString(), Settings.General.SaveLastSource ? botData.ResponseSource : "", BotLog);
+                        validData = new ValidData(botData.Data.Data, botData.Proxy == null ? "" : botData.Proxy.Proxy, botData.Proxy == null ? ProxyType.Http : botData.Proxy.Type, botData.Status, "TOCHK", capturedData.ToCaptureString(), Settings.General.SaveLastSource ? botData.ResponseSource : "", BotLog);
                         RaiseDispatchAction(new Action(() => ToCheckList.Add(validData)));
 
                         if (UseProxies && !Settings.Proxies.NeverBan && Settings.Proxies.BanAfterGoodStatus)

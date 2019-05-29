@@ -226,7 +226,8 @@
                             <GridViewColumn Header="Time" DisplayMemberBinding="{Binding Path=Time}" />
                             <GridViewColumn Header="Data" DisplayMemberBinding="{Binding Path=Data}" />
                             <GridViewColumn Header="Proxy" DisplayMemberBinding="{Binding Path=Proxy}" />
-                            <GridViewColumn Width="2000" Header="Captured Data" DisplayMemberBinding="{Binding Path=CapturedData}" />
+                            <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Path=Type}"/>
+                            <GridViewColumn Width="2000" Header="Capture" DisplayMemberBinding="{Binding Path=CapturedData}" />
                         </GridView>
                     </ListView.View>
                 </ListView>

@@ -26,6 +26,10 @@ namespace RuriLib.Models
         /// <summary>The result of the check.</summary>
         public BotStatus Result { get { return result; } set { result = value; OnPropertyChanged(); } }
 
+        private string type;
+        /// <summary>The type of the result.</summary>
+        public string Type { get { return type; } set { type = value; OnPropertyChanged(); } }
+
         private string capturedData;
         /// <summary>The data captured during the check.</summary>
         public string CapturedData { get { return capturedData; } set { capturedData = value; OnPropertyChanged(); } }
@@ -55,14 +59,16 @@ namespace RuriLib.Models
         /// <param name="proxy">The proxy that was used for the check (empty string if none)</param>
         /// <param name="proxyType">The proxy type</param>
         /// <param name="result">The result of the check</param>
+        /// <param name="type">The result type</param>
         /// <param name="capturedData">The data captured during the check</param>
         /// <param name="source">The last page source code of the check</param>
         /// <param name="log">The detailed log of the check</param>
-        public ValidData(string data, string proxy, ProxyType proxyType, BotStatus result, string capturedData, string source, List<LogEntry> log)
+        public ValidData(string data, string proxy, ProxyType proxyType, BotStatus result, string type, string capturedData, string source, List<LogEntry> log)
         {
             Data = data;
             Proxy = proxy;
             Result = result;
+            Type = type;
             CapturedData = capturedData;
             UnixDate = (int)Math.Round((DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds);
             Source = source;
