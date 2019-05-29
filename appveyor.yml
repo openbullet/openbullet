@@ -1,5 +1,8 @@
-version: 1.1.3 [commit {build}]
+version: 1.1.3#{build}
 image: Visual Studio 2017
+platform: Any CPU
+skip_tags: true
+configuration: Release
 install:
 - cmd: >-
     cd %APPVEYOR_BUILD_FOLDER%
@@ -9,10 +12,15 @@ install:
     nuget restore OpenBullet.sln
 build:
   verbosity: normal
-configuration:
-- Release
 after_build:
 - cmd: 7z a OpenBullet.zip %APPVEYOR_BUILD_FOLDER%\openbullet\bin\release\
 artifacts:
 - path: OpenBullet.zip
   name: OpenBullet
+deploy:  
+  - provider: GitHub
+    artifact: /.*\.zip/
+    auth_token:
+        secure: ggc65D/J7litzhVL38h+ek4STOytVbOmx2UP3xYFEZVg0Py8ajPGHlklknuFI6Bj
+    on:
+      branch: master
