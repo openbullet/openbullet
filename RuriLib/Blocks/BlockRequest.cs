@@ -391,7 +391,7 @@ namespace RuriLib
                     var pData = string.Join(Environment.NewLine, postData
                         .Split(new string[] { "\\n" }, StringSplitOptions.None)
                         .Select(p => ReplaceValues(p, data)));
-                    if (pData != "")
+                    if (CanContainBody(method))
                     {
                         if (encodeContent)
                         {
@@ -439,7 +439,7 @@ namespace RuriLib
 
             // Set headers
             data.Log(new LogEntry("Sent Headers:", Colors.DarkTurquoise));
-            var fixedNames = Enum.GetNames(typeof(HttpHeader)).Select(n => n.ToLower());
+            // var fixedNames = Enum.GetNames(typeof(HttpHeader)).Select(n => n.ToLower());
             foreach (var header in CustomHeaders)
             {
                 try
@@ -448,8 +448,8 @@ namespace RuriLib
                     var replacedKey = key.Replace("-", "").ToLower(); // Used to compare with the HttpHeader enum
                     var val = ReplaceValues(header.Value, data);
 
-                    if (replacedKey == "contenttype") { } // Disregard additional Content-Type headers
-                    else if (fixedNames.Contains(replacedKey)) request.AddHeader((HttpHeader)Enum.Parse(typeof(HttpHeader), replacedKey, true), val);
+                    if (replacedKey == "contenttype" && content != null) { continue; } // Disregard additional Content-Type headers
+                    // else if (fixedNames.Contains(replacedKey)) request.AddHeader((HttpHeader)Enum.Parse(typeof(HttpHeader), replacedKey, true), val);
                     else request.AddHeader(key, val);
 
                     data.Log(new LogEntry(key + ": " + val, Colors.MediumTurquoise));
@@ -684,6 +684,11 @@ namespace RuriLib
                 builder.Append(ch);
             }
             return $"------WebKitFormBoundary{builder.ToString().ToLower()}";
+        }
+
+        private static bool CanContainBody(HttpMethod method)
+        {
+            return method == HttpMethod.POST || method == HttpMethod.PUT || method == HttpMethod.DELETE;
         }
     }
 
