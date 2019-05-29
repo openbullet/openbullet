@@ -3,7 +3,9 @@ image: Visual Studio 2017
 install:
 - cmd: >-
     cd %APPVEYOR_BUILD_FOLDER%
+
     git submodule update --init --recursive
+    
     nuget restore OpenBullet.sln
 build:
   verbosity: normal
