@@ -269,7 +269,7 @@ namespace RuriLib
                     break;
 
                 case BrowserAction.SetCookies:
-                    var baseURL = Regex.Match(ReplaceValues(input, data), "^(?:https?:\\/\\/)?(?:[^@\\/\n]+@)?(?:www\\.)?([^:\\/?\n]+)").Groups[1].Value;
+                    var baseURL = Regex.Match(ReplaceValues(input, data), "^(?:https?:\\/\\/)?(?:[^@\\/\n]+@)?([^:\\/?\n]+)").Groups[1].Value;
                     foreach (var cookie in data.Cookies)
                     {
                         try { data.Driver.Manage().Cookies.AddCookie(new Cookie(cookie.Key, cookie.Value, baseURL, "/", DateTime.MaxValue)); } catch { }
