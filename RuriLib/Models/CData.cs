@@ -117,7 +117,7 @@ namespace RuriLib.Models
                     return input.Any(c => char.IsDigit(c));
 
                 case "Symbol":
-                    return input.Any(c => char.IsSymbol(c));
+                    return input.Any(c => char.IsSymbol(c) || char.IsPunctuation(c));
 
                 default:
                     foreach(var c in what.ToCharArray())
