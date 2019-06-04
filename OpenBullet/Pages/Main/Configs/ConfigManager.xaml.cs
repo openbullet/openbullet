@@ -70,6 +70,7 @@ namespace OpenBullet
                 if (Current.Remote)
                 {
                     Globals.LogError(Components.ConfigManager, "The config was pulled from a remote source and cannot be edited!", true);
+                    Current = null;
                     return;
                 }
 
