@@ -126,7 +126,10 @@ namespace OpenBullet
         private async void TestRemoteProxySourcesButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             List<string> prompt = new List<string>() { "Results:" };
-            var tasks = vm.RemoteProxySources.Select(s => RunnerViewModel.GetProxiesFromRemoteSourceAsync(s.Url, s.Type, s.Pattern, s.Output)).ToList();
+            var tasks = vm.RemoteProxySources
+                .Where(s => s.Active)
+                .Select(s => RunnerViewModel.GetProxiesFromRemoteSourceAsync(s.Url, s.Type, s.Pattern, s.Output))
+                .ToList();
 
             foreach(var result in await Task.WhenAll(tasks))
             {

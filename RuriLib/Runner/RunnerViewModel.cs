@@ -1015,7 +1015,7 @@ namespace RuriLib.Runner
 
                 case ProxyReloadSource.Remote:
                     List<CProxy> proxies = new List<CProxy>();
-                    Parallel.ForEach(Settings.Proxies.RemoteProxySources, s =>
+                    Parallel.ForEach(Settings.Proxies.RemoteProxySources.Where(s => s.Active), s =>
                     {
                         try
                         {

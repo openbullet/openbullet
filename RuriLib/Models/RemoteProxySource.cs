@@ -25,6 +25,9 @@ namespace RuriLib.Models
         /// <summary>The unique ID of the RemoteProxySource.</summary>
         public int Id { get; set; } = 0;
 
+        /// <summary>Whether the RemoteProxySource is active or not.</summary>
+        public bool Active { get; set; } = true;
+
         /// <summary>The Url of the remote source.</summary>
         public string Url { get; set; } = "";
 

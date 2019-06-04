@@ -105,6 +105,7 @@
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="auto" />
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="auto" />
 
@@ -117,17 +118,18 @@
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="auto" />
                                         </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" Content="Url:" />
-                                        <TextBox Grid.Column="1" Text="{Binding Url}" Margin="5 0"/>
-                                        <ComboBox Tag="{Binding Id}" Grid.Column="2" x:Name="remoteProxyTypeCombobox" Margin="5 0" SelectionChanged="remoteProxyTypeCombobox_SelectionChanged" Loaded="remoteProxyTypeCombobox_Loaded"/>
+                                        <CheckBox Grid.Column="0" IsChecked="{Binding Active}" VerticalAlignment="Center" />
+                                        <Label Grid.Column="1" Content="Url:" />
+                                        <TextBox Grid.Column="2" Text="{Binding Url}" Margin="5 0"/>
+                                        <ComboBox Tag="{Binding Id}" Grid.Column="3" x:Name="remoteProxyTypeCombobox" Margin="5 0" SelectionChanged="remoteProxyTypeCombobox_SelectionChanged" Loaded="remoteProxyTypeCombobox_Loaded"/>
 
-                                        <Label Grid.Column="3" Content="Pattern:"/>
-                                        <TextBox Grid.Column="4" Text="{Binding Pattern}" Margin="5 0" ToolTip="Must use capture groups (...)"/>
+                                        <Label Grid.Column="4" Content="Pattern:"/>
+                                        <TextBox Grid.Column="5" Text="{Binding Pattern}" Margin="5 0" ToolTip="Must use capture groups (...)"/>
 
-                                        <Label Grid.Column="5" Content="Output:"/>
-                                        <TextBox Grid.Column="6" Text="{Binding Output}" Margin="5 0" ToolTip="[0] for full match, [1] for first group etc."/>
+                                        <Label Grid.Column="6" Content="Output:"/>
+                                        <TextBox Grid.Column="7" Text="{Binding Output}" Margin="5 0" ToolTip="[0] for full match, [1] for first group etc."/>
 
-                                        <Button Grid.Column="8" x:Name="removeRemoteProxySourceButton" Tag="{Binding Id}" Content="Remove" Click="removeRemoteProxySourceButton_Click" />
+                                        <Button Grid.Column="9" x:Name="removeRemoteProxySourceButton" Tag="{Binding Id}" Content="Remove" Click="removeRemoteProxySourceButton_Click" />
                                     </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
