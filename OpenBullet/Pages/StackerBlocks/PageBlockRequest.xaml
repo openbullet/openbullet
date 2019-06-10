@@ -99,7 +99,7 @@
                                 </Style>
                             </RichTextBox.Resources>
                             <RichTextBox.ToolTip>
-                                <TextBlock>Syntax:<LineBreak/>STRING:fieldname:fieldvalue<LineBreak/>FILE:fieldname:filepath</TextBlock>
+                                <TextBlock>Syntax:<LineBreak/>STRING:fieldname:fieldvalue<LineBreak/>FILE:fieldname:filepath:content-type</TextBlock>
                             </RichTextBox.ToolTip>
                         </RichTextBox>
                     </StackPanel>

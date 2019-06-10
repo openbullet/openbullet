@@ -275,8 +275,8 @@ REQUEST METHOD "URL" [AcceptEncoding?] [AutoRedirect?] [ReadResponseSource?] [Pa
   [STANDARD / MULTIPART / BASICAUTH]
   [CONTENT "postdata"]
   [CONTENTTYPE "ctype"]
-  [STRINGCONTENT "name: value"]*
-  [FILECONTENT "name: path"]*
+  [STRINGCONTENT "name:value"]*
+  [FILECONTENT "name:path:content-type"]*
   [BOUNDARY "abcd"]
   [COOKIE "abc: def"]*
   [HEADER "abc: def"]*

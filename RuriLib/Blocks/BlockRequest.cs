@@ -180,23 +180,23 @@ namespace RuriLib
                         break;
 
                     case "STRINGCONTENT":
-                        var stringContentPair = ParsePair(LineParser.ParseLiteral(ref input, "STRING CONTENT"));
-                        MultipartContents.Add(new MultipartContent() { Type = MultipartContentType.String, Name = stringContentPair.Key, Value = stringContentPair.Value });
+                        var stringContentPair = ParseString(LineParser.ParseLiteral(ref input, "STRING CONTENT"), ':', 2);
+                        MultipartContents.Add(new MultipartContent() { Type = MultipartContentType.String, Name = stringContentPair[0], Value = stringContentPair[1] });
                         break;
 
                     case "FILECONTENT":
-                        var fileContentPair = ParsePair(LineParser.ParseLiteral(ref input, "FILE CONTENT"));
-                        MultipartContents.Add(new MultipartContent() { Type = MultipartContentType.File, Name = fileContentPair.Key, Value = fileContentPair.Value });
+                        var fileContentTriplet = ParseString(LineParser.ParseLiteral(ref input, "FILE CONTENT"), ':', 3);
+                        MultipartContents.Add(new MultipartContent() { Type = MultipartContentType.File, Name = fileContentTriplet[0], Value = fileContentTriplet[1], ContentType = fileContentTriplet[2] });
                         break;
 
                     case "COOKIE":
-                        var cookiePair = ParsePair(LineParser.ParseLiteral(ref input, "COOKIE VALUE"));
-                        CustomCookies[cookiePair.Key] = cookiePair.Value;
+                        var cookiePair = ParseString(LineParser.ParseLiteral(ref input, "COOKIE VALUE"), ':', 2);
+                        CustomCookies[cookiePair[0]] = cookiePair[1];
                         break;
 
                     case "HEADER":
-                        var headerPair = ParsePair(LineParser.ParseLiteral(ref input, "HEADER VALUE"));
-                        CustomHeaders[headerPair.Key] = headerPair.Value;
+                        var headerPair = ParseString(LineParser.ParseLiteral(ref input, "HEADER VALUE"), ':', 2);
+                        CustomHeaders[headerPair[0]] = headerPair[1];
                         break;
 
                     case "CONTENTTYPE":
@@ -236,14 +236,15 @@ namespace RuriLib
         }
 
         /// <summary>
-        /// Parses a pair of values separated by a colon.
+        /// Parses values from a string.
         /// </summary>
-        /// <param name="pair">The string containing colon-separated values</param>
-        /// <returns>The pair of values.</returns>
-        public static KeyValuePair<string, string> ParsePair(string pair)
+        /// <param name="input">The string to parse</param>
+        /// <param name="separator">The character that separates the elements</param>
+        /// <param name="count">The number of elements to return</param>
+        /// <returns>The array of the parsed elements.</returns>
+        public static string[] ParseString(string input, char separator, int count)
         {
-            var split = pair.Split(new[] { ':' }, 2);
-            return new KeyValuePair<string, string>(split[0].Trim(), split[1].Trim());
+            return input.Split(new[] { separator }, count).Select(s => s.Trim()).ToArray();
         }
 
         /// <inheritdoc />
@@ -421,6 +422,8 @@ namespace RuriLib
                     {
                         var rValue = ReplaceValues(c.Value, data);
                         var rName = ReplaceValues(c.Name, data);
+                        var rContentType = ReplaceValues(c.ContentType, data);
+
                         if (c.Type == MultipartContentType.String)
                         {
                             mContent.Add(new StringContent(rValue), rName);
@@ -428,8 +431,8 @@ namespace RuriLib
                         }
                         else if (c.Type == MultipartContentType.File)
                         {
-                            mContent.Add(new FileContent(rValue), rName);
-                            data.Log(new LogEntry($"Content-Disposition: form-data; name=\"{rName}\"{Environment.NewLine}{Environment.NewLine}[FILE CONTENT OMITTED]", Colors.MediumTurquoise));
+                            mContent.Add(new FileContent(rValue), rName, rValue, rContentType);
+                            data.Log(new LogEntry($"Content-Disposition: form-data; name=\"{rName}\"; filename=\"{rValue}\"{Environment.NewLine}Content-Type: {rContentType}{Environment.NewLine}{Environment.NewLine}[FILE CONTENT OMITTED]", Colors.MediumTurquoise));
                         }
                         data.Log(new LogEntry(bdry, Colors.MediumTurquoise));
                     }
@@ -725,5 +728,8 @@ namespace RuriLib
 
         /// <summary>The value of the multipart content (a string value or a file path).</summary>
         public string Value { get; set; } = "";
+
+        /// <summary>The Content-Type of the file content.</summary>
+        public string ContentType { get; set; } = "";
     }
 }
