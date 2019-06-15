@@ -292,8 +292,16 @@ namespace RuriLib
                     {
                         writer
                             .Indent()
-                            .Token($"{c.Type.ToString().ToUpper()}CONTENT")
-                            .Literal($"{c.Name}: {c.Value}");
+                            .Token($"{c.Type.ToString().ToUpper()}CONTENT");
+
+                        if (c.Type == MultipartContentType.String)
+                        {
+                            writer.Literal($"{c.Name}: {c.Value}");
+                        }
+                        else if (c.Type == MultipartContentType.File)
+                        {
+                            writer.Literal($"{c.Name}: {c.Value}: {c.ContentType}");
+                        }
                     }
                     if (!writer.CheckDefault(MultipartBoundary, "MultipartBoundary"))
                     {
