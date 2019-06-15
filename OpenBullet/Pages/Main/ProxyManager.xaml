@@ -25,7 +25,7 @@
             <RowDefinition Height="80" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <!-- Top Grid -->
         <Grid Grid.Column="0" Grid.Row="0">
             <Grid.ColumnDefinitions>
@@ -33,7 +33,7 @@
                 <ColumnDefinition Width="2*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
@@ -54,12 +54,12 @@
             </DockPanel>
 
         </Grid>
-        
+
         <!-- Check Button -->
         <Button x:Name="checkButton" Grid.Column="1" Grid.Row="0" Margin="5" Content="CHECK" Click="checkButton_Click" />
 
         <!-- Proxies List View -->
-        <ListView x:Name="proxiesListView" Grid.Column="0" Grid.Row="1" Foreground="{DynamicResource ForegroundMain}" Background="Transparent" ItemsSource="{Binding Path=ProxyList}" SelectionMode="Extended" BorderThickness="1" VirtualizingPanel.IsVirtualizing="True">
+        <ListView x:Name="proxiesListView" Grid.Column="0" Grid.Row="1" Foreground="{DynamicResource ForegroundMain}" Background="Transparent" ItemsSource="{Binding Path=ProxyList}" SelectionMode="Extended" BorderThickness="1" VirtualizingPanel.IsVirtualizing="True" AllowDrop="True" Drop="ProxyListViewDrop">
 
             <!-- Show Headers by overriding the default style -->
             <ListView.Style>
@@ -150,7 +150,7 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-                
+
             </ListView.Resources>
 
             <ListView.ItemsPanel>
