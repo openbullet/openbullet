@@ -143,6 +143,11 @@ namespace RuriLib
         {
             try
             {
+                if ((config.Settings.Name + ".loli") != fileName.Replace("Configs\\", ""))
+                {
+                    File.Move(fileName, "Configs\\" + config.Settings.Name + ".loli");
+                    fileName = "Configs\\" + config.Settings.Name + ".loli";
+                }
                 File.WriteAllText(fileName, SerializeConfig(config));
                 return true;
             }
