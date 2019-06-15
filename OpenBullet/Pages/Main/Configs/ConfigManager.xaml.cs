@@ -149,6 +149,13 @@ namespace OpenBullet
             Current.Config.Settings.Version = Globals.obVersion;
             Globals.LogInfo(Components.ConfigManager, "Converted the unbinded observables and set the Last Modified date");
             
+            if (File.Exists(Current.Path) && Current.Config.Settings.Name != Path.GetFileNameWithoutExtension(Current.Path))
+            {
+                string newPath = Path.Combine(Globals.configFolder, (Current.Category == "Default" ? "" : (Current.Category + "\\")), BlockBase.MakeValidFileName(Current.Config.Settings.Name) + ".loli");
+                File.Move(Current.Path, newPath);
+                Current.Path = newPath;
+            }
+            
             // Save to file            
             if (!IOManager.SaveConfig(Current.Config, Current.Path)) {
                 Globals.LogError(Components.ConfigManager, "Failed to save the config to file.", true);
