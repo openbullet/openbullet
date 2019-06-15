@@ -212,6 +212,30 @@ namespace OpenBullet
         }
         #endregion
 
+        private void ProxyListViewDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                foreach (var file in files.Where(x => x.EndsWith(".txt")).ToArray())
+                {
+                    try
+                    {
+                        if (file.Contains("http"))
+                            AddProxies(file, ProxyType.Http, File.ReadAllText(file).Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList());
+                        else if (file.Contains("socks4"))
+                            AddProxies(file, ProxyType.Socks4, File.ReadAllText(file).Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList());
+                        else if (file.Contains("socks4a"))
+                            AddProxies(file, ProxyType.Socks4a, File.ReadAllText(file).Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList());
+                        else if (file.Contains("socks5"))
+                            AddProxies(file, ProxyType.Socks5, File.ReadAllText(file).Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList());
+                        else
+                            Globals.LogError(Components.ProxyManager, "Failed to parse proxies type from file name");
+                    }
+                    catch { }
+                }
+            }
+        }
         public void AddProxies(string fileName, ProxyType type, List<string> lines)
         {
             List<string> fromFile = new List<string>();

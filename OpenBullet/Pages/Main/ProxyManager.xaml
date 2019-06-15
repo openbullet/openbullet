@@ -59,7 +59,7 @@
         <Button x:Name="checkButton" Grid.Column="1" Grid.Row="0" Margin="5" Content="CHECK" Click="checkButton_Click" />
 
         <!-- Proxies List View -->
-        <ListView x:Name="proxiesListView" Grid.Column="0" Grid.Row="1" Foreground="{DynamicResource ForegroundMain}" Background="Transparent" ItemsSource="{Binding Path=ProxyList}" SelectionMode="Extended" BorderThickness="1" VirtualizingPanel.IsVirtualizing="True">
+        <ListView x:Name="proxiesListView" Grid.Column="0" Grid.Row="1" Foreground="{DynamicResource ForegroundMain}" Background="Transparent" ItemsSource="{Binding Path=ProxyList}" SelectionMode="Extended" BorderThickness="1" VirtualizingPanel.IsVirtualizing="True" AllowDrop="True" Drop="ProxyListViewDrop">
 
             <!-- Show Headers by overriding the default style -->
             <ListView.Style>
