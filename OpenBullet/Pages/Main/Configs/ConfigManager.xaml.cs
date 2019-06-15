@@ -51,7 +51,7 @@ namespace OpenBullet
             var cvm = Globals.mainWindow.ConfigsPage.StackerPage.vm.Config;
             if (cvm != null) vm.SavedConfig = IOManager.SerializeConfig(cvm.Config);
         }
-        
+
         private void loadConfigButton_Click(object sender, RoutedEventArgs e)
         {
             if (!CheckSaved())
@@ -101,7 +101,7 @@ namespace OpenBullet
             }
         }
 
-        
+
         private void saveConfigButton_Click(object sender, RoutedEventArgs e)
         {
             if (Current == null)
@@ -113,7 +113,7 @@ namespace OpenBullet
             SaveConfig();
         }
 
-        
+
         public void SaveConfig()
         {
             if (Globals.mainWindow.ConfigsPage.CurrentConfig == null ||
@@ -130,7 +130,8 @@ namespace OpenBullet
                 return;
             }
 
-            if (vm.CurrentConfigName == "") {
+            if (vm.CurrentConfigName == "")
+            {
                 Globals.LogError(Components.ConfigManager, "Empty config name, cannot save", true);
                 return;
             }
@@ -148,9 +149,16 @@ namespace OpenBullet
             Current.Config.Settings.LastModified = DateTime.Now;
             Current.Config.Settings.Version = Globals.obVersion;
             Globals.LogInfo(Components.ConfigManager, "Converted the unbinded observables and set the Last Modified date");
-            
+
+            if (File.Exists(Current.Path) && ((Current.Config.Settings.Name + ".loli") != Current.Path.Replace(Globals.configFolder + "\\", "")))
+            {
+                string newpath = Globals.configFolder + "\\" + (Current.Category == "Default" ? "" : (Current.Category + "\\")) + Current.Config.Settings.Name + ".loli";
+                File.Move(Current.Path, newpath);
+                Current.Path = newpath;
+            }
             // Save to file            
-            if (!IOManager.SaveConfig(Current.Config, Current.Path)) {
+            if (!IOManager.SaveConfig(Current.Config, Current.Path))
+            {
                 Globals.LogError(Components.ConfigManager, "Failed to save the config to file.", true);
                 return;
             };
@@ -161,13 +169,13 @@ namespace OpenBullet
             Globals.LogInfo(Components.ConfigManager, "Refreshing the list");
             vm.RefreshList(false);
         }
-        
+
         private void deleteConfigsButton_Click(object sender, RoutedEventArgs e)
         {
             Globals.LogWarning(Components.ConfigManager, "Deletion initiated, prompting warning");
             if (MessageBox.Show("This will delete the physical files from your disk! Are you sure you want to continue?", "WARNING", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                foreach(ConfigViewModel config in configsListView.SelectedItems)
+                foreach (ConfigViewModel config in configsListView.SelectedItems)
                 {
                     try
                     {
@@ -202,16 +210,16 @@ namespace OpenBullet
 
             (new MainDialog(new DialogNewConfig(this), "New Config")).ShowDialog();
         }
-        
+
         public void CreateConfig(string name, string category, string author)
         {
             // Build the filename
             var path = Globals.configFolder + "\\" + (category == "Default" ? "" : (category + "\\")) + name + ".loli";
 
             // Create the Category folder if it doesn't exist
-            if(category != "Default")
+            if (category != "Default")
             {
-                var categoryFolder = System.IO.Path.Combine(Directory.GetCurrentDirectory(), Globals.configFolder, category);                
+                var categoryFolder = System.IO.Path.Combine(Directory.GetCurrentDirectory(), Globals.configFolder, category);
                 if (!Directory.Exists(categoryFolder))
                     Directory.CreateDirectory(categoryFolder);
             }
@@ -274,7 +282,7 @@ namespace OpenBullet
         private void searchButton_Click(object sender, RoutedEventArgs e)
         {
             vm.SearchString = filterTextbox.Text;
-            if(vm.SearchString == "")
+            if (vm.SearchString == "")
                 vm.RefreshList(false);
         }
 
