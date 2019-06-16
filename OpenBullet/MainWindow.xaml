@@ -34,14 +34,14 @@
         </Grid.RowDefinitions>
 
         <!-- Title Bar -->
-        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Background="{DynamicResource BackgroundSecondary}">
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Background="{DynamicResource BackgroundSecondary}" MouseDown="maximizePanel_MouseDoubleClick">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Orientation="Horizontal" MouseDown="maximizePanel_MouseDoubleClick">
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
                 <Image Height="30" Width="30" Source="pack://application:,,,/Images/OBIcon.png"/>
                 <Label x:Name="titleLabel" Content="Open Bullet" FontFamily="pack://application:,,,/Fonts/#Century Gothic" FontSize="14" />
             </StackPanel>
