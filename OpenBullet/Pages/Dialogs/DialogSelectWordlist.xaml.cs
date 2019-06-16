@@ -85,7 +85,7 @@ namespace OpenBullet
                 // Set the correct wordlist type
                 wordlist.Type = Globals.environment.RecognizeWordlistType(first);
 
-                // Add the wordlist to the manager
+                // Add the wordlist to the runner
                 ((Runner)Caller).SetWordlist(wordlist);
 
                 ((MainDialog)Parent).Close();
