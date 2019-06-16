@@ -62,7 +62,7 @@ namespace OpenBullet
 
             // Make sure all folders are there or recreate them
             var folders = new string[] { "Captchas", "ChromeExtensions", "Configs", "DB", "Screenshots", "Settings", "Sounds", "Wordlists" };
-            foreach(var folder in folders.Select(f => System.IO.Path.Combine(Directory.GetCurrentDirectory(), f)))
+            foreach (var folder in folders.Select(f => System.IO.Path.Combine(Directory.GetCurrentDirectory(), f)))
             {
                 if (!Directory.Exists(folder))
                     Directory.CreateDirectory(folder);
@@ -90,13 +90,15 @@ namespace OpenBullet
             Globals.obSettings = new OBSettingsViewModel();
 
             // Create / Load Settings
-            if (!File.Exists(Globals.rlSettingsFile)) {
+            if (!File.Exists(Globals.rlSettingsFile))
+            {
                 MessageBox.Show("RuriLib Settings file not found, generating a default one");
                 Globals.LogWarning(Components.Main, "RuriLib Settings file not found, generating a default one");
                 IOManager.SaveSettings(Globals.rlSettingsFile, Globals.rlSettings);
                 Globals.LogInfo(Components.Main, $"Created the default RuriLib Settings file {Globals.rlSettingsFile}");
             }
-            else {
+            else
+            {
                 Globals.rlSettings = IOManager.LoadSettings(Globals.rlSettingsFile);
                 Globals.LogInfo(Components.Main, "Loaded the existing RuriLib Settings file");
             }
@@ -132,7 +134,7 @@ namespace OpenBullet
             Globals.LogInfo(Components.Main, "Initialized Settings");
             ToolsPage = new Tools();
             Globals.LogInfo(Components.Main, "Initialized Tools");
-            AboutPage = new About();            
+            AboutPage = new About();
 
             menuOptionRunner_MouseDown(this, null);
 
@@ -156,9 +158,10 @@ namespace OpenBullet
 
         private void Snow()
         {
-            if (snowBuffer >= 100) {
+            if (snowBuffer >= 100)
+            {
                 int i = 0;
-                while(i < Root.Children.Count)
+                while (i < Root.Children.Count)
                 {
                     // Remove first snowflake you find (oldest) before putting another one so there are max 100 snowflakes on screen
                     if (Root.Children[i].GetType() == typeof(Snowflake)) { Root.Children.RemoveAt(i); break; }
@@ -169,7 +172,7 @@ namespace OpenBullet
             var x = rand.Next(-500, (int)Root.ActualWidth - 100);
             var y = -100;
             var s = rand.Next(5, 15);
-            
+
             var flake = new Snowflake
             {
                 Width = s,
@@ -299,7 +302,7 @@ namespace OpenBullet
             if (!Globals.obSettings.General.DisableQuitWarning || active > 0)
             {
                 Globals.LogWarning(Components.Main, "Prompting quit confirmation");
-                
+
                 if (active == 0)
                 {
                     if (MessageBox.Show($"Are you sure you want to quit?",
@@ -337,10 +340,10 @@ namespace OpenBullet
 
         private void maximizePanel_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(maximized)
+            if (maximized)
             {
-                this.Width = Globals.obSettings.General.StartingWidth;
-                this.Height = Globals.obSettings.General.StartingHeight;
+                this.Width = 800;
+                this.Height = 620;
                 Left = 0;
                 Top = 0;
                 maximized = false;
@@ -356,7 +359,7 @@ namespace OpenBullet
                 WindowState = WindowState.Normal;
             }
         }
-        
+
         private void minimizePanel_MouseEnter(object sender, MouseEventArgs e)
         {
             minimizePanel.Background = new SolidColorBrush(Colors.DimGray);
@@ -367,11 +370,6 @@ namespace OpenBullet
             minimizePanel.Background = new SolidColorBrush(Colors.Transparent);
         }
 
-        private void minimizePanel_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            try { WindowState = WindowState.Minimized; } catch { }
-        }
-
         private void maximizePanel_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
@@ -380,8 +378,8 @@ namespace OpenBullet
                 if (maximized)
                 {
                     Rect workArea = SystemParameters.WorkArea;
-                    this.Width = 800;
-                    this.Height = 620;
+                    this.Width = Globals.obSettings.General.StartingWidth;
+                    this.Height = Globals.obSettings.General.StartingHeight;
                     Left = (workArea.Width - this.Width) / 2 + workArea.Left;
                     Top = (workArea.Height - this.Height) / 2 + workArea.Top;
                     maximized = false;
@@ -397,6 +395,10 @@ namespace OpenBullet
                     WindowState = WindowState.Maximized;
                 }
             }
+        }
+        private void minimizePanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            try { WindowState = WindowState.Minimized; } catch { }
         }
 
         private void dragPanel_MouseDown(object sender, MouseButtonEventArgs e)
@@ -481,7 +483,7 @@ namespace OpenBullet
 
         private void logImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(Globals.logWindow == null)
+            if (Globals.logWindow == null)
             {
                 Globals.logWindow = new LogWindow();
                 Globals.logWindow.Show();
@@ -499,7 +501,7 @@ namespace OpenBullet
                 var brush = Globals.GetBrush("BackgroundMain");
 
                 if (!Globals.obSettings.Themes.UseImage)
-                {   
+                {
                     Background = brush;
                     Main.Background = brush;
                 }
