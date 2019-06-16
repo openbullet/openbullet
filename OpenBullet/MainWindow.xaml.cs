@@ -342,10 +342,11 @@ namespace OpenBullet
         {
             if (maximized)
             {
+                Rect workArea = SystemParameters.WorkArea;
                 this.Width = Globals.obSettings.General.StartingWidth;
                 this.Height = Globals.obSettings.General.StartingHeight;
-                Left = 0;
-                Top = 0;
+                Left = (workArea.Width - this.Width) / 2 + workArea.Left;
+                Top = (workArea.Height - this.Height) / 2 + workArea.Top;
                 maximized = false;
                 WindowState = WindowState.Normal;
             }
@@ -397,7 +398,7 @@ namespace OpenBullet
                     Left = 0;
                     Top = 0;
                     maximized = true;
-                    WindowState = WindowState.Maximized;
+                    WindowState = WindowState.Normal;
                 }
             }
         }
