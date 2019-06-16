@@ -372,6 +372,32 @@ namespace OpenBullet
             try { WindowState = WindowState.Minimized; } catch { }
         }
 
+        private void maximizePanel_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+
+                if (maximized)
+                {
+                    this.Width = 800;
+                    this.Height = 620;
+                    Left = 0;
+                    Top = 0;
+                    maximized = false;
+                    WindowState = WindowState.Normal;
+                }
+                else
+                {
+                    this.Width = SystemParameters.WorkArea.Width;
+                    this.Height = SystemParameters.WorkArea.Height;
+                    Left = 0;
+                    Top = 0;
+                    maximized = true;
+                    WindowState = WindowState.Normal;
+                }
+            }
+        }
+
         private void dragPanel_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
