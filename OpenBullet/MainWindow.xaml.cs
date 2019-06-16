@@ -342,8 +342,8 @@ namespace OpenBullet
         {
             if (maximized)
             {
-                this.Width = 800;
-                this.Height = 620;
+                this.Width = Globals.obSettings.General.StartingWidth;
+                this.Height = Globals.obSettings.General.StartingHeight;
                 Left = 0;
                 Top = 0;
                 maximized = false;
@@ -370,7 +370,12 @@ namespace OpenBullet
             minimizePanel.Background = new SolidColorBrush(Colors.Transparent);
         }
 
-        private void maximizePanel_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void minimizePanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            try { WindowState = WindowState.Minimized; } catch { }
+        }
+
+        private void titleBar_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
             {
@@ -395,10 +400,6 @@ namespace OpenBullet
                     WindowState = WindowState.Maximized;
                 }
             }
-        }
-        private void minimizePanel_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            try { WindowState = WindowState.Minimized; } catch { }
         }
 
         private void dragPanel_MouseDown(object sender, MouseButtonEventArgs e)
