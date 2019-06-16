@@ -339,8 +339,8 @@ namespace OpenBullet
         {
             if(maximized)
             {
-                this.Width = 800;
-                this.Height = 620;
+                this.Width = Globals.obSettings.General.StartingWidth;
+                this.Height = Globals.obSettings.General.StartingHeight;
                 Left = 0;
                 Top = 0;
                 maximized = false;
