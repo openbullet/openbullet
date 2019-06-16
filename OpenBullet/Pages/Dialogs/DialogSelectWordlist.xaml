@@ -147,7 +147,8 @@
             </ListView.View>
         </ListView>
 
-        <Button Grid.Row="1" x:Name="selectButton" Content="Select" Click="selectButton_Click" />
+        <Button Grid.Row="1" x:Name="selectButton" Content="Select" Click="selectButton_Click" Margin="0,0,26,0" />
+        <Image HorizontalAlignment="Left" Height="20" Margin="376,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="21" Source="/Images/Icons/folder.png" MouseDown="importWordlistButton_MouseDown"/>
 
     </Grid>
 </Page>
