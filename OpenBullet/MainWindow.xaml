@@ -34,7 +34,7 @@
         </Grid.RowDefinitions>
 
         <!-- Title Bar -->
-        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Background="{DynamicResource BackgroundSecondary}">
+        <Grid x:Name="titleBar" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Background="{DynamicResource BackgroundSecondary}" MouseDown="titleBar_MouseDown">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
