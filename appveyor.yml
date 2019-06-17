@@ -10,6 +10,8 @@ install:
     git submodule update --init --recursive
 
     nuget restore OpenBullet.sln
+before_build:
+  - ps: ${env:REV} = (git rev-list --count HEAD)
 build:
   verbosity: normal
 after_build:
@@ -20,6 +22,8 @@ artifacts:
 deploy:  
   - provider: GitHub
     artifact: /.*\.zip/
+    tag: 1.1.3#$(REV)
+    force_update: true
     auth_token:
         secure: ggc65D/J7litzhVL38h+ek4STOytVbOmx2UP3xYFEZVg0Py8ajPGHlklknuFI6Bj
     on:
