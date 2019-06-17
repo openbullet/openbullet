@@ -276,7 +276,7 @@ namespace RuriLib
                     break;
 
                 case RequestType.Standard:
-                    if (!writer.CheckDefault(PostData, "PostData"))
+                    if (CanContainBody(method))
                     {
                         writer
                             .Token("CONTENT")
