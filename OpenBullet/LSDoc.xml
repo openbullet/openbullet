@@ -243,6 +243,7 @@ FUNCTION RandomNum 0 100 -> VAR "RANDOM"
 FUNCTION CountOccurrences "tofind" "input" -> VAR "COUNT"
 FUNCTION CharAt "index" "input" -> VAR "CHAR"
 FUNCTION Substring "startindex" "length" "input" -> VAR "SUBSTRING"
+FUNCTION AesEncrypt "secretkey" "secretmessage" -> VAR "ENCRYPTED"
     </item>
     <item name="Keycheck">
 This will spawn and execute a Keycheck Block.
