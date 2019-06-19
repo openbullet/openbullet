@@ -84,6 +84,7 @@ namespace RuriLib
             }
 
             var localUrl = ReplaceValues(url, data);
+            var uri = new Uri(localUrl);
 
             var timeout = data.GlobalSettings.General.RequestTimeout * 1000;
 
@@ -109,7 +110,7 @@ namespace RuriLib
 
             CookieContainer cookies = new CookieContainer();
             foreach (var cookie in data.Cookies)
-                cookies.Add(new Cookie(cookie.Key, cookie.Value));
+                cookies.Add(new Cookie(cookie.Key, cookie.Value, "/", uri.Host));
 
             if (data.UseProxies)
             {
@@ -147,8 +148,6 @@ namespace RuriLib
             var httpClient = new HttpClient(handler);
             httpClient.Timeout = TimeSpan.FromMinutes(timeout);
             httpClient.DefaultRequestHeaders.Add("User-Agent", ReplaceValues(userAgent, data));
-
-            var uri = new Uri(localUrl);
 
             // Solve the CF challenge
             var result = cf.Solve(httpClient, handler, uri).Result;
