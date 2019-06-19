@@ -354,6 +354,11 @@ namespace RuriLib
                     RSAExp = LineParser.ParseLiteral(ref input, "Exponent");
                     break;
 
+                case Function.AESDecrypt:
+                case Function.AESEncrypt:
+                    AesKey = LineParser.ParseLiteral(ref input, "AES Key");
+                    break;
+
                 default:
                     break;
             }
@@ -463,6 +468,12 @@ namespace RuriLib
                     writer
                         .Literal(RSAMod)
                         .Literal(RSAExp);
+                    break;
+
+                case Function.AESDecrypt:
+                case Function.AESEncrypt:
+                    writer
+                        .Literal(AesKey);
                     break;
             }
 
