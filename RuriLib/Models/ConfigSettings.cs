@@ -68,6 +68,10 @@ namespace RuriLib
         private int maxProxyUses = 0;
         /// <summary>The maximum amount of times a proxy can be used before being banned by the Runner (0 for infinite).</summary>
         public int MaxProxyUses { get { return maxProxyUses; } set { maxProxyUses = value; OnPropertyChanged(); } }
+
+        private bool banProxyAfterGoodStatus = false;
+        /// <summary>Whether to ban the proxy after a SUCCESS, CUSTOM or NONE status (not FAIL or RETRY).</summary>
+        public bool BanProxyAfterGoodStatus { get { return banProxyAfterGoodStatus; } set { banProxyAfterGoodStatus = value; OnPropertyChanged(); } }
         #endregion
 
         #region Data

@@ -17,15 +17,16 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel>
-            <DockPanel Grid.Column="0" Margin="5">
-                <CheckBox DockPanel.Dock="Top" Content="Needs Proxies" IsChecked="{Binding NeedsProxies}" VerticalContentAlignment="Center"/>
-                <CheckBox DockPanel.Dock="Top" Content="Use Only Socks Proxies" IsChecked="{Binding OnlySocks}" VerticalContentAlignment="Center"/>
-                <CheckBox DockPanel.Dock="Top" Content="Use Only SSL Proxies" IsChecked="{Binding OnlySsl}" VerticalContentAlignment="Center"/>
-                <DockPanel DockPanel.Dock="Top">
+            <StackPanel Grid.Column="0" Margin="5">
+                <CheckBox Content="Needs Proxies" IsChecked="{Binding NeedsProxies}" VerticalContentAlignment="Center"/>
+                <CheckBox Content="Use Only Socks Proxies" IsChecked="{Binding OnlySocks}" VerticalContentAlignment="Center"/>
+                <CheckBox Content="Use Only SSL Proxies" IsChecked="{Binding OnlySsl}" VerticalContentAlignment="Center"/>
+                <DockPanel>
                     <Label Content="Max Uses Per Proxy (0 = infinite)" />
                     <xctk:IntegerUpDown Background="Transparent" Width="50" Margin="10 0 0 0" Value="{Binding MaxProxyUses}" Foreground="{DynamicResource ForegroundMain}" HorizontalAlignment="Right"/>
                 </DockPanel>
-            </DockPanel>
+                <CheckBox Content="Ban Proxy after Good Status" IsChecked="{Binding BanProxyAfterGoodStatus}" VerticalContentAlignment="Center" ToolTip="Bans a Proxy after a SUCCESS, CUSTOM or TOCHECK result."/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>
