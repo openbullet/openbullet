@@ -145,7 +145,7 @@ namespace OpenBulletCLI
                 
         }
 
-        private static void MessageArrived(IRunnerMessaging obj, LogLevel level, string message, bool prompt)
+        private static void MessageArrived(IRunnerMessaging obj, LogLevel level, string message, bool prompt, int timeout)
         {
             // Do not print anything if no verbose argument was declared
             if (!Verbose) return;

@@ -67,9 +67,9 @@ namespace OpenBullet
         }
 
         #region Events
-        private void LogRunnerData(IRunnerMessaging sender, LogLevel level, string message, bool prompt)
+        private void LogRunnerData(IRunnerMessaging sender, LogLevel level, string message, bool prompt, int timeout)
         {
-            Globals.Log(Components.Runner, level, message, prompt);
+            Globals.Log(Components.Runner, level, message, prompt, timeout);
         }
 
         private void LogWorkerStatus(IRunnerMessaging sender)

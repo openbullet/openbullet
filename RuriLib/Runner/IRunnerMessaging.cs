@@ -13,7 +13,7 @@ namespace RuriLib.Runner
     public interface IRunnerMessaging
     {
         /// <summary>A message has arrived.</summary>
-        event Action<IRunnerMessaging, LogLevel, string, bool> MessageArrived;
+        event Action<IRunnerMessaging, LogLevel, string, bool, int> MessageArrived;
 
         /// <summary>The status of the Master Worker changed.</summary>
         event Action<IRunnerMessaging> WorkerStatusChanged;

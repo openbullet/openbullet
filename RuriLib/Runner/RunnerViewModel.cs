@@ -651,7 +651,7 @@ namespace RuriLib.Runner
                                 // If no one else issued the no more proxies warning message, issue it
                                 if (!NoProxyWarningSent)
                                 {
-                                    RaiseMessageArrived(LogLevel.Error, "No more proxies and no Unban All option selected OR the config has a max proxy use! Aborting", true);
+                                    RaiseMessageArrived(LogLevel.Error, "No more proxies and no Unban All option selected OR the config has a max proxy use! Aborting", true, 2);
                                     NoProxyWarningSent = true;
                                 }
 
@@ -927,7 +927,7 @@ namespace RuriLib.Runner
         /// <summary>
         /// Fired when a new message needs to be logged.
         /// </summary>
-        public event Action<IRunnerMessaging, LogLevel, string, bool> MessageArrived;
+        public event Action<IRunnerMessaging, LogLevel, string, bool, int> MessageArrived;
 
         /// <summary>
         /// Fired when the Master Worker status changed.
@@ -959,9 +959,9 @@ namespace RuriLib.Runner
         /// </summary>
         public event Action<IRunnerMessaging> AskCustomInputs;
 
-        private void RaiseMessageArrived(LogLevel level, string message, bool prompt)
+        private void RaiseMessageArrived(LogLevel level, string message, bool prompt = false, int timeout = 0)
         {
-            MessageArrived?.Invoke(this, level, message, prompt);
+            MessageArrived?.Invoke(this, level, message, prompt, timeout);
         }
 
         private void RaiseWorkerStatusChanged()
@@ -1021,7 +1021,7 @@ namespace RuriLib.Runner
                         {
                             proxies.AddRange(GetProxiesFromRemoteSource(s.Url, s.Type, s.Pattern, s.Output));
                         }
-                        catch (Exception ex) { RaiseMessageArrived(LogLevel.Error, $"Could not contact the reload API - {ex.Message}", true); }
+                        catch (Exception ex) { RaiseMessageArrived(LogLevel.Error, $"Could not contact the reload API - {ex.Message}", true, 5); }
                     });
                     ProxyPool = new ProxyPool(proxies, Settings.Proxies.ShuffleOnStart);
                     break;
