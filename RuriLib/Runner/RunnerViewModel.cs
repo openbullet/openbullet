@@ -1053,6 +1053,8 @@ namespace RuriLib.Runner
             var proxies = new List<CProxy>();
 
             HttpRequest req = new HttpRequest();
+            req.ConnectTimeout = 5000;
+            req.ReadWriteTimeout = 5000;
             req.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36 OPR/52.0.2871.64";
             var resp = req.Get(url).ToString();
 
