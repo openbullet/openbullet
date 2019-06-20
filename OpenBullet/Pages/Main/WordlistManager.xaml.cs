@@ -69,6 +69,22 @@ namespace OpenBullet
             else { Globals.LogInfo(Components.WordlistManager, "Purge dismissed"); }
         }
 
+        private void deleteNotFoundWordlistsButton_Click(object sender, RoutedEventArgs e)
+        {
+            Globals.LogWarning(Components.WordlistManager, "Rescan process of wordlists availability.");
+            using (var db = new LiteDatabase(Globals.dataBaseFile))
+            {
+                foreach (var wordlist in wordlistListView.Items.Cast<Wordlist>().ToList())
+                {
+                    if (!File.Exists(wordlist.Path))
+                    {
+                        db.GetCollection<Wordlist>("wordlists").Delete(wordlist.Id);
+                        vm.WordlistList.Remove(wordlist);
+                    }
+                }
+            }
+        }
+
         public void AddWordlist(Wordlist wordlist)
         {
             vm.WordlistList.Add(wordlist);
