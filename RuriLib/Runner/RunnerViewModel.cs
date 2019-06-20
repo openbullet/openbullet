@@ -793,7 +793,7 @@ namespace RuriLib.Runner
                     case BotStatus.SUCCESS:
                         validData = new ValidData(botData.Data.Data, botData.Proxy == null ? "" : botData.Proxy.Proxy, botData.Proxy == null ? ProxyType.Http : botData.Proxy.Type, botData.Status, "HIT", capturedData.ToCaptureString(), Settings.General.SaveLastSource ? botData.ResponseSource : "", BotLog);
                         RaiseDispatchAction(new Action(() => HitsList.Add(validData)));
-                        if (UseProxies && !Settings.Proxies.NeverBan && Settings.Proxies.BanAfterGoodStatus)
+                        if (UseProxies && !Settings.Proxies.NeverBan && Config.Settings.BanProxyAfterGoodStatus)
                         {
                             currentProxy.Status = Status.BANNED;
                             currentProxy.LastUsed = DateTime.Now;
@@ -811,7 +811,7 @@ namespace RuriLib.Runner
                         validData = new ValidData(botData.Data.Data, botData.Proxy == null ? "" : botData.Proxy.Proxy, botData.Proxy == null ? ProxyType.Http : botData.Proxy.Type, botData.Status, hitType, capturedData.ToCaptureString(), Settings.General.SaveLastSource ? botData.ResponseSource : "", BotLog);
                         RaiseDispatchAction(new Action(() => CustomList.Add(validData)));
 
-                        if (UseProxies && !Settings.Proxies.NeverBan && Settings.Proxies.BanAfterGoodStatus)
+                        if (UseProxies && !Settings.Proxies.NeverBan && Config.Settings.BanProxyAfterGoodStatus)
                         {
                             currentProxy.Status = Status.BANNED;
                             currentProxy.LastUsed = DateTime.Now;
@@ -843,7 +843,7 @@ namespace RuriLib.Runner
                         validData = new ValidData(botData.Data.Data, botData.Proxy == null ? "" : botData.Proxy.Proxy, botData.Proxy == null ? ProxyType.Http : botData.Proxy.Type, botData.Status, "TOCHK", capturedData.ToCaptureString(), Settings.General.SaveLastSource ? botData.ResponseSource : "", BotLog);
                         RaiseDispatchAction(new Action(() => ToCheckList.Add(validData)));
 
-                        if (UseProxies && !Settings.Proxies.NeverBan && Settings.Proxies.BanAfterGoodStatus)
+                        if (UseProxies && !Settings.Proxies.NeverBan && Config.Settings.BanProxyAfterGoodStatus)
                         {
                             currentProxy.Status = Status.BANNED;
                             currentProxy.LastUsed = DateTime.Now;
