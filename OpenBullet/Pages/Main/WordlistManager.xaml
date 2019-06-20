@@ -33,7 +33,13 @@
                     <TextBlock VerticalAlignment="Center" Margin="5 0">Delete All</TextBlock>
                 </StackPanel>
             </Button>
-            <Label Content="TIP: You can drag and drop files into the window to automatically import multiple lists at once."/>
+            <Button x:Name="rescanWordlistsButton" Click="rescanWordlistsButton_Click" ToolTip="Recheck if the wordlists are still available and update the list">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Images/Icons/scan.png" Width="20" />
+                    <TextBlock VerticalAlignment="Center" Margin="5 0">Rescan</TextBlock>
+                </StackPanel>
+            </Button>
+            <Label Content="TIP: You can drag and drop files into the window to automatically import multiple lists at once." FontSize="10"/>
         </StackPanel>
 
         <ListView x:Name="wordlistListView" Grid.Row="1" Foreground="{DynamicResource ForegroundMain}" Background="Transparent" ItemsSource="{Binding Path=WordlistList}" SelectionMode="Extended" BorderThickness="1" AllowDrop="True" Drop="wordlistListViewDrop">
