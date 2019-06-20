@@ -69,7 +69,7 @@ namespace OpenBullet
             else { Globals.LogInfo(Components.WordlistManager, "Purge dismissed"); }
         }
 
-        private void rescanWordlistsButton_Click(object sender, RoutedEventArgs e)
+        private void deleteNotFoundWordlistsButton_Click(object sender, RoutedEventArgs e)
         {
             Globals.LogWarning(Components.WordlistManager, "Rescan process of wordlists availability.");
             using (var db = new LiteDatabase(Globals.dataBaseFile))
