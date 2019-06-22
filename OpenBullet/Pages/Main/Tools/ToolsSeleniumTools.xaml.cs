@@ -47,7 +47,17 @@ namespace OpenBullet
         
         private void deleteFirefoxCacheFoldersButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
+            string path = Environment.ExpandEnvironmentVariables("%userprofile%") + "\\AppData\\Local\\Temp";
+            var directories = Directory.GetDirectories(path);
+            foreach (var dir in directories)
+            {
+                if (dir.Contains("rust_mozprofile"))
+                    try
+                    {
+                        Directory.Delete(dir, true);
+                    }
+                    catch { }
+            }
         }
 
         private void killChromesButton_Click(object sender, RoutedEventArgs e)
