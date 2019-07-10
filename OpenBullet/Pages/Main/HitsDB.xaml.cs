@@ -338,17 +338,10 @@ namespace OpenBullet
             var wordlist = new Wordlist(listName, path, Globals.environment.RecognizeWordlistType(first.Data), "");
             Globals.mainWindow.WordlistManagerPage.AddWordlist(wordlist);
 
-            var runner = Globals.mainWindow.CurrentRunnerPage;
-            if (runner == null)
-            {
-                MessageBox.Show("Please select a Runner from the manager first!");
-                return;
-            }
-            else if (runner.vm.Busy)
-            {
-                MessageBox.Show("The selected Runner is busy, please choose another one!");
-                return;
-            }
+            var manager = Globals.mainWindow.RunnerManagerPage.vm;
+            manager.CreateRunner();
+            var runner = manager.Runners.Last().Page;
+            Globals.mainWindow.ShowRunner(runner);
 
             try
             {
