@@ -533,7 +533,7 @@ namespace RuriLib
 
                 // Get code
                 data.ResponseCode = ((int)response.StatusCode).ToString();
-                data.Log(new LogEntry("Response code: " + data.ResponseCode, Colors.Cyan));
+                data.Log(new LogEntry($"Response code: {data.ResponseCode} ({response.StatusCode})", Colors.Cyan));
 
                 // Get headers
                 data.Log(new LogEntry("Received headers:", Colors.DeepPink));
