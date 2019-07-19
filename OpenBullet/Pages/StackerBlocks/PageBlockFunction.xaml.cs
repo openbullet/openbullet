@@ -115,7 +115,7 @@ namespace OpenBullet.Pages.StackerBlocks
             { "Constant", "This will just return anything written in the input string and store it in a variable, after possibly replacing all the input variables.\nUse this to chain constants and variables together." },
             { "Hash", "The input string will be hashed with the selected function. Remember you can chain variables if you need a salt." },
             { "HMAC", "" },
-            { "RandomString", "?l = Lowercase, ?u = Uppercase, ?d = Digit, ?s = Symbol, ?h = Hex (Lowercase), ?a = Any"},
+            { "RandomString", "?l = Lowercase, ?u = Uppercase, ?d = Digit, ?s = Symbol, ?h = Hex (Lowercase), ?m = Upper + Digits, ?i = Lower + Upper + Digits, ?a = Any"},
             { "Translate", "Format like headers (this: that), one per line." },
             { "Compute", "Calculates the value of a math expression, for example (6+3)*5 will return 45." },
             { "RSA", "Thanks to TheLittleTrain17 for this implementation" },
