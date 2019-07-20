@@ -614,13 +614,15 @@ namespace RuriLib
                         break;
 
                     case Function.RandomString:
-                        var reserved = new string[] { "?l", "?u", "?d", "?s", "?h", "?a" };
+                        var reserved = new string[] { "?l", "?u", "?d", "?s", "?h", "?a", "?m", "?i" };
                         var lowercase = "abcdefghijklmnopqrstuvwxyz";
                         var uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
                         var digits = "0123456789";
                         var symbols = "\\!\"£$%&/()=?^'{}[]@#,;.:-_*+";
                         var hex = digits + "abcdef";
                         var allchars = lowercase + uppercase + digits + symbols;
+                        var udchars = uppercase + digits;
+                        var ludchars = lowercase + uppercase + digits;
 
                         outputString = localInputString;
                         while (reserved.Any(r => outputString.Contains(r))){
@@ -636,6 +638,11 @@ namespace RuriLib
                                 outputString = ReplaceFirst(outputString, "?h", hex[data.rand.Next(0, hex.Length)].ToString());
                             else if (outputString.Contains("?a"))
                                 outputString = ReplaceFirst(outputString, "?a", allchars[data.rand.Next(0, allchars.Length)].ToString());
+                            else if (outputString.Contains("?m"))
+                                outputString = ReplaceFirst(outputString, "?m", udchars[data.rand.Next(0, udchars.Length)].ToString());
+                            else if (outputString.Contains("?i"))
+                                outputString = ReplaceFirst(outputString, "?i", ludchars[data.rand.Next(0, ludchars.Length)].ToString());
+                         
                         }
                         break;
 
