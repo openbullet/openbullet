@@ -61,7 +61,10 @@
                         <Label Content="HMAC Key:"/>
                         <TextBox Text="{Binding HmacKey, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
-                    <CheckBox VerticalContentAlignment="Center" Content="Output Base64" IsChecked="{Binding HmacBase64}" ToolTip="Whether to output with base64 encoding instead of hex encoding"/>
+                    <DockPanel Margin="0 5 0 0">
+                        <CheckBox VerticalContentAlignment="Center"  Content="Key Base64" IsChecked="{Binding HmacBase64Key}" ToolTip="Whether Key is Base64 encoded"/>
+                        <CheckBox VerticalContentAlignment="Center" HorizontalAlignment="Center" Content="Output Base64" IsChecked="{Binding HmacBase64}" ToolTip="Whether to output with base64 encoding instead of hex encoding"/>
+                    </DockPanel>
                 </StackPanel>
             </TabItem>
             <TabItem x:Name="translateTab">

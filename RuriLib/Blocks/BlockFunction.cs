@@ -66,9 +66,9 @@ namespace RuriLib
 
             /// <summary>Decodes a URL-encoded input.</summary>
             URLDecode,
-            
+
             /// <summary>Unescapes characters in a string.</summary>
-            Unescape,      
+            Unescape,
 
             /// <summary>Encodes the input to be displayed in HTML or XML.</summary>
             HTMLEntityEncode,
@@ -190,6 +190,10 @@ namespace RuriLib
         private bool hmacBase64 = false;
         /// <summary>Whether to output the message as a base64-encoded string instead of a hex-encoded string.</summary>
         public bool HmacBase64 { get { return hmacBase64; } set { hmacBase64 = value; OnPropertyChanged(); } }
+
+        private bool hmacBase64Key = false;
+        /// <summary>Whether the key is Base64 Encoded</summary>
+        public bool HmacBase64Key { get { return hmacBase64Key; } set { hmacBase64Key = value; OnPropertyChanged(); } }
 
         // -- Translate
         private bool stopAfterFirstMatch = true;
@@ -410,7 +414,8 @@ namespace RuriLib
                     writer
                         .Token(HashType)
                         .Literal(HmacKey)
-                        .Boolean(HmacBase64, "HmacBase64");
+                        .Boolean(HmacBase64, "HmacBase64")
+                        .Boolean(HmacBase64Key, "HmacBase64Key");
                     break;
 
                 case Function.Translate:
@@ -502,7 +507,7 @@ namespace RuriLib
             var localInputStrings = ReplaceValuesRecursive(inputString, data);
             var outputs = new List<string>();
 
-            for(int i = 0; i < localInputStrings.Count; i++)
+            for (int i = 0; i < localInputStrings.Count; i++)
             {
                 var localInputString = localInputStrings[i];
                 var outputString = "";
@@ -534,7 +539,7 @@ namespace RuriLib
                         break;
 
                     case Function.HMAC:
-                        outputString = Hmac(localInputString, hashType, ReplaceValues(hmacKey, data), hmacBase64);
+                        outputString = Hmac(localInputString, hashType, ReplaceValues(hmacKey, data), hmacBase64, hmacBase64Key);
                         break;
 
                     case Function.Translate:
@@ -578,11 +583,11 @@ namespace RuriLib
                     case Function.RegexMatch:
                         outputString = Regex.Match(localInputString, ReplaceValues(regexMatch, data)).Value;
                         break;
-                        
+
                     case Function.Unescape:
                         outputString = Regex.Unescape(localInputString);
-                        break;                        
-                   
+                        break;
+
                     case Function.URLEncode:
                         outputString = System.Uri.EscapeDataString(localInputString);
                         break;
@@ -632,7 +637,8 @@ namespace RuriLib
                         var ludchars = lowercase + uppercase + digits;
 
                         outputString = localInputString;
-                        while (reserved.Any(r => outputString.Contains(r))){
+                        while (reserved.Any(r => outputString.Contains(r)))
+                        {
                             if (outputString.Contains("?l"))
                                 outputString = ReplaceFirst(outputString, "?l", lowercase[data.rand.Next(0, lowercase.Length)].ToString());
                             else if (outputString.Contains("?u"))
@@ -649,7 +655,7 @@ namespace RuriLib
                                 outputString = ReplaceFirst(outputString, "?m", udchars[data.rand.Next(0, udchars.Length)].ToString());
                             else if (outputString.Contains("?i"))
                                 outputString = ReplaceFirst(outputString, "?i", ludchars[data.rand.Next(0, ludchars.Length)].ToString());
-                         
+
                         }
                         break;
 
@@ -697,7 +703,7 @@ namespace RuriLib
                         break;
 
                     case Function.Substring:
-                        outputString = localInputString.Substring(int.Parse(ReplaceValues(substringIndex, data)), int.Parse(ReplaceValues(substringLength,data)));
+                        outputString = localInputString.Substring(int.Parse(ReplaceValues(substringIndex, data)), int.Parse(ReplaceValues(substringLength, data)));
                         break;
 
                     case Function.ReverseString:
@@ -722,7 +728,7 @@ namespace RuriLib
                         outputString = AESDecrypt(ReplaceValues(aesKey, data), localInputString);
                         break;
                 }
-                
+
                 data.Log(new LogEntry(string.Format("Executed function {0} on input {1} with outcome {2}", functionType, localInputString, outputString), Colors.GreenYellow));
 
                 // Add to the outputs
@@ -799,24 +805,24 @@ namespace RuriLib
         /// <param name="key">The HMAC key</param>
         /// <param name="base64">Whether the output should be encrypted as a base64 string</param>
         /// <returns>The HMAC signature</returns>
-        public static string Hmac(string baseString, Hash type, string key, bool base64)
+        public static string Hmac(string baseString, Hash type, string key, bool base64, bool base64key)
         {
             switch (type)
             {
                 case Hash.MD5:
-                    return HMACMD5(baseString, key, base64);
+                    return HMACMD5(baseString, key, base64, base64key);
 
                 case Hash.SHA1:
-                    return HMACSHA1(baseString, key, base64);
+                    return HMACSHA1(baseString, key, base64, base64key);
 
                 case Hash.SHA256:
-                    return HMACSHA256(baseString, key, base64);
+                    return HMACSHA256(baseString, key, base64, base64key);
 
                 case Hash.SHA384:
-                    return HMACSHA384(baseString, key, base64);
+                    return HMACSHA384(baseString, key, base64, base64key);
 
                 case Hash.SHA512:
-                    return HMACSHA512(baseString, key, base64);
+                    return HMACSHA512(baseString, key, base64, base64key);
 
                 default:
                     return "UNRECOGNIZED HASH TYPE";
@@ -834,12 +840,11 @@ namespace RuriLib
             return sb.ToString();
         }
 
-        private static string HMACMD5(string input, string key, bool base64)
+        private static string HMACMD5(string input, string key, bool base64, bool base64key)
         {
-            HMACMD5 hmac = new HMACMD5(System.Text.Encoding.ASCII.GetBytes(key));
+            HMACMD5 hmac = new HMACMD5(base64key ? Convert.FromBase64String(key) : System.Text.Encoding.ASCII.GetBytes(key));
             var hash = hmac.ComputeHash(System.Text.Encoding.ASCII.GetBytes(input));
-            if (base64) { return Convert.ToBase64String(hash); }
-            else { return ToHex(hash); }
+            return base64 ? Convert.ToBase64String(hash) : ToHex(hash);
         }
 
         private static string SHA1(string input)
@@ -854,12 +859,11 @@ namespace RuriLib
             }
         }
 
-        private static string HMACSHA1(string input, string key, bool base64)
+        private static string HMACSHA1(string input, string key, bool base64, bool base64key)
         {
-            HMACSHA1 hmac = new HMACSHA1(System.Text.Encoding.ASCII.GetBytes(key));
+            HMACSHA1 hmac = new HMACSHA1(base64key ? Convert.FromBase64String(key) : System.Text.Encoding.ASCII.GetBytes(key));
             var hash = hmac.ComputeHash(System.Text.Encoding.ASCII.GetBytes(input));
-            if (base64) { return Convert.ToBase64String(hash); }
-            else { return ToHex(hash); }
+            return base64 ? Convert.ToBase64String(hash) : ToHex(hash);
         }
 
         private static string SHA256(string input)
@@ -874,12 +878,11 @@ namespace RuriLib
             }
         }
 
-        private static string HMACSHA256(string input, string key, bool base64)
+        private static string HMACSHA256(string input, string key, bool base64, bool base64key)
         {
-            HMACSHA256 hmac = new HMACSHA256(System.Text.Encoding.ASCII.GetBytes(key));
+            HMACSHA256 hmac = new HMACSHA256(base64key ? Convert.FromBase64String(key) : System.Text.Encoding.ASCII.GetBytes(key));
             var hash = hmac.ComputeHash(System.Text.Encoding.ASCII.GetBytes(input));
-            if (base64) { return Convert.ToBase64String(hash); }
-            else { return ToHex(hash); }
+            return base64 ? Convert.ToBase64String(hash) : ToHex(hash);
         }
 
         private static string SHA384(string input)
@@ -894,12 +897,11 @@ namespace RuriLib
             }
         }
 
-        private static string HMACSHA384(string input, string key, bool base64)
+        private static string HMACSHA384(string input, string key, bool base64, bool base64key)
         {
-            HMACSHA384 hmac = new HMACSHA384(System.Text.Encoding.ASCII.GetBytes(key));
+            HMACSHA384 hmac = new HMACSHA384(base64key ? Convert.FromBase64String(key) : System.Text.Encoding.ASCII.GetBytes(key));
             var hash = hmac.ComputeHash(System.Text.Encoding.ASCII.GetBytes(input));
-            if (base64) { return Convert.ToBase64String(hash); }
-            else { return ToHex(hash); }
+            return base64 ? Convert.ToBase64String(hash) : ToHex(hash);
         }
 
         private static string SHA512(string input)
@@ -914,12 +916,11 @@ namespace RuriLib
             }
         }
 
-        private static string HMACSHA512(string input, string key, bool base64)
+        private static string HMACSHA512(string input, string key, bool base64, bool base64key)
         {
-            HMACSHA512 hmac = new HMACSHA512(System.Text.Encoding.ASCII.GetBytes(key));
+            HMACSHA512 hmac = new HMACSHA512(base64key ? Convert.FromBase64String(key) : System.Text.Encoding.ASCII.GetBytes(key));
             var hash = hmac.ComputeHash(System.Text.Encoding.ASCII.GetBytes(input));
-            if (base64) { return Convert.ToBase64String(hash); }
-            else { return ToHex(hash); }
+            return base64 ? Convert.ToBase64String(hash) : ToHex(hash);
         }
 
         private static string ToHex(byte[] bytes)
@@ -940,7 +941,7 @@ namespace RuriLib
             using (var rsa = new RSACryptoServiceProvider(size))
             {
                 try
-                {              
+                {
                     rsa.FromXmlString(input);
                     var encryptedData = rsa.Encrypt(data, true);
                     Console.WriteLine(Convert.ToString(encryptedData));
@@ -978,7 +979,7 @@ namespace RuriLib
             }
         }
 
-        
+
         private string SteamRSAEncrypt(RsaParameters rsaParam)
         {
             // Convert the public keys to BigIntegers
@@ -1003,7 +1004,7 @@ namespace RuriLib
             return System.Numerics.BigInteger.Parse("00" + hex, NumberStyles.AllowHexSpecifier);
         }
 
-        
+
         private static System.Numerics.BigInteger Pkcs1Pad2(string data, int keySize)
         {
             if (keySize < data.Length + 11)
