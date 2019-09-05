@@ -1,9 +1,11 @@
-﻿using RuriLib;
+﻿using OpenBullet.ViewModels;
+using RuriLib;
 using RuriLib.ViewModels;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 
 namespace OpenBullet
 {
@@ -15,14 +17,15 @@ namespace OpenBullet
         private GridViewColumnHeader listViewSortCol = null;
         private SortAdorner listViewSortAdorner = null;
         object Caller { get; set; }
+        ConfigManagerViewModel vm = null;
 
         public DialogSelectConfig(object caller)
         {
             InitializeComponent();
             Caller = caller;
             DataContext = Globals.mainWindow.ConfigsPage.ConfigManagerPage.DataContext;
+            vm = Globals.mainWindow.ConfigsPage.ConfigManagerPage.vm;
         }
-
         
         private void selectButton_Click(object sender, RoutedEventArgs e)
         {
@@ -35,7 +38,6 @@ namespace OpenBullet
             ((MainDialog)Parent).Close();
         }
 
-        
         private void listViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             GridViewColumnHeader column = (sender as GridViewColumnHeader);
@@ -65,6 +67,19 @@ namespace OpenBullet
         {
             if (e.Key == System.Windows.Input.Key.Enter)
                 selectButton_Click(this, null);
+        }
+
+        private void searchButton_Click(object sender, RoutedEventArgs e)
+        {
+            vm.SearchString = filterTextbox.Text;
+            if (vm.SearchString == "")
+                vm.RefreshList(false);
+        }
+
+        private void filterTextbox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+                searchButton_Click(this, null);
         }
     }
 }

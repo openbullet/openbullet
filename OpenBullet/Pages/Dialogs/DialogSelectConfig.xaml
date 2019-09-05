@@ -10,12 +10,28 @@
 
     <Grid Height="500" Width="710" Margin="5">
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox x:Name="filterTextbox" Text="{Binding SearchString}" Grid.Column="0" KeyDown="filterTextbox_KeyDown"/>
+            <Button x:Name="searchButton" Grid.Column="1" Click="searchButton_Click" >
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Images/Icons/search.png" Width="20" />
+                    <TextBlock VerticalAlignment="Center" Margin="5 0">Search</TextBlock>
+                </StackPanel>
+            </Button>
+        </Grid>
+
         <!-- Proxies List View -->
-        <ListView x:Name="configsListView" Grid.Row="0" Foreground="{DynamicResource ForegroundMain}" Background="Transparent" ItemsSource="{Binding Path=ConfigsList}" SelectionMode="Extended" BorderThickness="1" VirtualizingPanel.IsVirtualizing="True">
+        <ListView x:Name="configsListView" Grid.Row="1" Foreground="{DynamicResource ForegroundMain}" Background="Transparent" ItemsSource="{Binding Path=ConfigsList}" SelectionMode="Extended" BorderThickness="1" VirtualizingPanel.IsVirtualizing="True">
 
             <!-- Show Headers by overriding the default style -->
             <ListView.Style>
@@ -168,7 +184,7 @@
             </ListView.View>
         </ListView>
 
-        <Button Grid.Row="1" x:Name="selectButton" Content="Select" Click="selectButton_Click" />
+        <Button Grid.Row="2" x:Name="selectButton" Content="Select" Click="selectButton_Click" />
 
     </Grid>
 </Page>

@@ -68,7 +68,7 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <TextBox x:Name="filterTextbox" Width="150" KeyDown="filterTextbox_KeyDown"/>
+                <TextBox x:Name="filterTextbox" Text="{Binding SearchString}" Width="150" KeyDown="filterTextbox_KeyDown"/>
                 <Button x:Name="searchButton" Click="searchButton_Click" >
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Images/Icons/search.png" Width="20" />
