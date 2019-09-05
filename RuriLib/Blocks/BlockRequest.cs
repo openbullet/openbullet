@@ -420,7 +420,7 @@ namespace RuriLib
                     break;
 
                 case RequestType.Multipart:
-                    var bdry = multipartBoundary != "" ? multipartBoundary : GenerateMultipartBoundary();
+                    var bdry = multipartBoundary != "" ? ReplaceValues(multipartBoundary, data) : GenerateMultipartBoundary();
                     content = new Extreme.Net.MultipartContent(bdry);
                     var mContent = content as Extreme.Net.MultipartContent;
                     data.Log(new LogEntry($"Content-Type: multipart/form-data; boundary={bdry}", Colors.MediumTurquoise));
