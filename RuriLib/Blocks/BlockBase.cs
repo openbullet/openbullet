@@ -86,30 +86,54 @@ namespace RuriLib
         {
             var toReplace = new List<string>();
 
-            // Regex parse the syntax <LIST[*]> (only the first one! This doesn't support multiple arrays because they can have different sizes)
-            var match = Regex.Match(input, @"<([^\[]*)\[\*\]>");
+            // Regex parse the syntax <LIST[*]>
+            var matches = Regex.Matches(input, @"<([^\[]*)\[\*\]>");
+            var variables = new List<CVar>();
 
-            if (match.Success)
+            foreach (Match m in matches)
             {
-                var full = match.Groups[0].Value;
-                var name = match.Groups[1].Value;
+                var name = m.Groups[1].Value;
 
                 // Retrieve the dict
-                var list = data.Variables.GetList(name);
-                if (list == null) list = data.GlobalVariables.GetList(name);
-
-                // If there's no corresponding variable, just readd the input string and proceed with normal replacement
-                if (list == null) toReplace.Add(input);
-                else
+                var variable = data.Variables.Get(name);
+                if (variable == null)
                 {
-                    foreach (var item in list)
-                        toReplace.Add(input.Replace(full, item));
+                    variable = data.GlobalVariables.Get(name);
+                    if (variable == null) continue;
+                }
+
+                if (variable.Type == CVar.VarType.List)
+                {
+                    variables.Add(variable);
+                }
+            }
+
+            // If there's no corresponding variable, just readd the input string and proceed with normal replacement
+            if (variables.Count > 0)
+            {
+                var max = variables.OrderBy(v => v.Value.Count).Last().Value.Count;
+                for (var i = 0; i < max; i++)
+                {
+                    var replaced = input;
+                    foreach(var variable in variables)
+                    {
+                        var list = (List<string>)variable.Value;
+                        if (list.Count > i)
+                        {
+                            replaced = replaced.Replace($"<{variable.Name}[*]>", list[i]);
+                        }
+                        else
+                        {
+                            replaced = replaced.Replace($"<{variable.Name}[*]>", "NULL");
+                        }
+                    }
+                    toReplace.Add(replaced);
                 }
                 goto END;
             }
 
             // Regex parse the syntax <DICT(*)> (wildcard key -> returns list of all values)
-            match = Regex.Match(input, @"<([^\(]*)\(\*\)>");
+            var match = Regex.Match(input, @"<([^\(]*)\(\*\)>");
 
             if (match.Success)            
             {
