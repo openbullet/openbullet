@@ -27,7 +27,7 @@
                 <TextBox DockPanel.Dock="Left" Text="{Binding ParseTarget, UpdateSourceTrigger=PropertyChanged}" />
             </DockPanel>
             <DockPanel>
-                <CheckBox VerticalContentAlignment="Center" DockPanel.Dock="Left" Content="Is Capture" IsChecked="{Binding IsCapture}" Foreground="{Binding Path=IsCapture, Converter={StaticResource BrushConverter}}"/>
+                <CheckBox x:Name="captureBox" VerticalContentAlignment="Center" DockPanel.Dock="Left" Content="Is Capture" IsChecked="{Binding IsCapture}" Foreground="{Binding Path=IsCapture, Converter={StaticResource BrushConverter}}" Click="CaptureBox_Click"/>
                 <Label DockPanel.Dock="Left" Content="Var/Cap Name:" Margin="5 0 0 0" />
                 <TextBox DockPanel.Dock="Left" Text="{Binding VariableName, UpdateSourceTrigger=PropertyChanged}" />
             </DockPanel>

@@ -77,6 +77,10 @@ namespace OpenBullet.Pages.StackerBlocks
             catch(Exception ex) { MessageBox.Show(ex.ToString()); }
         }
 
-
+        private void CaptureBox_Click(object sender, RoutedEventArgs e)
+        {
+            if (vm.IsCapture) vm.CreateEmpty = false;
+            else vm.CreateEmpty = true;
+        }
     }
 }
