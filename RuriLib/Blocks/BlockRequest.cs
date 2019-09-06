@@ -350,6 +350,7 @@ namespace RuriLib
             // Set base URL
             var localUrl = ReplaceValues(url, data);
             var cType = ReplaceValues(contentType, data);
+            var oldJar = data.Cookies;
 
             // Create request
             HttpRequest request = new HttpRequest();
@@ -552,6 +553,9 @@ namespace RuriLib
                 data.Cookies = response.Cookies;
                 foreach (var cookie in response.Cookies)
                 {
+                    // If the cookie was already present before, don't log it
+                    if (oldJar.ContainsKey(cookie.Key) && oldJar[cookie.Key] == cookie.Value) continue;
+
                     data.Log(new LogEntry(cookie.Key + ": " + cookie.Value, Colors.LightGoldenrodYellow));
                 }
 
