@@ -43,7 +43,7 @@ namespace RuriLib
     public class BotData
     {
         /// <summary>A random number generator that methods can refer to, in order to avoid the generation of the same random number if executed in rapid succession.</summary>
-        public Random rand = new Random();
+        public Random Random = new Random();
 
         /// <summary>The Status of the Bot.</summary>
         public BotStatus Status { get; set; }
@@ -160,13 +160,15 @@ namespace RuriLib
         /// <param name="data">The wrapped data line to check</param>
         /// <param name="proxy">The proxy to use (set to null if none)</param>
         /// <param name="useProxies">Whether to use the proxy for requests</param>
+        /// <param name="random">A reference to the global random generator</param>
         /// <param name="botNumber">The number of the bot that is creating this object</param>
         /// <param name="isDebug">Whether this object is created from a Debugger or from a Runner</param>
-        public BotData(RLSettingsViewModel globalSettings, ConfigSettings configSettings, CData data, CProxy proxy, bool useProxies, int botNumber = 0, bool isDebug = true)
+        public BotData(RLSettingsViewModel globalSettings, ConfigSettings configSettings, CData data, CProxy proxy, bool useProxies, Random random, int botNumber = 0, bool isDebug = true)
         {
             Data = data;
             Proxy = proxy;
             UseProxies = useProxies;
+            Random = random;
             Status = BotStatus.NONE;
             BotNumber = BotNumber;
             GlobalSettings = globalSettings;

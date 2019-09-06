@@ -408,7 +408,7 @@ namespace RuriLib
                         if (encodeContent)
                         {
                             // Very dirty but it works
-                            var nonce = data.rand.Next(1000000, 9999999);
+                            var nonce = data.Random.Next(1000000, 9999999);
                             pData = pData.Replace("&", $"{nonce}&{nonce}").Replace("=", $"{nonce}={nonce}");
                             pData = System.Uri.EscapeDataString(pData).Replace($"{nonce}%26{nonce}", "&").Replace($"{nonce}%3D{nonce}", "=");
                         }

@@ -40,10 +40,12 @@ namespace RuriLib.Runner
         /// </summary>
         /// <param name="environment">The environment settings</param>
         /// <param name="settings">The RuriLib settings</param>
-        public RunnerViewModel(EnvironmentSettings environment, RLSettingsViewModel settings)
+        /// <param name="random">A reference to the global random generator</param>
+        public RunnerViewModel(EnvironmentSettings environment, RLSettingsViewModel settings, Random random)
         {
             Env = environment;
             Settings = settings;
+            Random = random;
             OnPropertyChanged("Busy");
             OnPropertyChanged("ControlsEnabled");
         }
@@ -52,6 +54,7 @@ namespace RuriLib.Runner
         #region Settings
         private RLSettingsViewModel Settings { get; set; }
         private EnvironmentSettings Env { get; set; }
+        private Random Random { get; set; }
         #endregion
 
         #region Workers
@@ -666,7 +669,7 @@ namespace RuriLib.Runner
                 }
 
                 // Initialize the Bot Data
-                BotData botData = new BotData(Settings, Config.Settings, currentData, currentProxy, UseProxies, bot.Id, false);
+                BotData botData = new BotData(Settings, Config.Settings, currentData, currentProxy, UseProxies, Random, bot.Id, false);
                 botData.Driver = bot.Driver;
                 botData.BrowserOpen = bot.IsDriverOpen;
                 List<LogEntry> BotLog = new List<LogEntry>();

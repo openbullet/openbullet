@@ -497,7 +497,7 @@ namespace RuriLib
                                 break;
 
                             case ListAction.Random:
-                                data.Variables.Set(new CVar(variableName, list[data.rand.Next(list.Count)], isCapture));
+                                data.Variables.Set(new CVar(variableName, list[data.Random.Next(list.Count)], isCapture));
                                 break;
 
                             default:

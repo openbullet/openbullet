@@ -31,6 +31,7 @@ namespace OpenBulletCLI
 
         public static EnvironmentSettings Env { get; set; }
         public static RLSettingsViewModel RLSettings { get; set; }
+        private static Random random = new Random();
         public static RunnerViewModel Runner { get; set; }
         public static bool Verbose { get; set; } = false;
         public static string ProxyFile { get; set; }
@@ -103,7 +104,7 @@ namespace OpenBulletCLI
             RLSettings = IOManager.LoadSettings(settFile);
 
             // Initialize the Runner (and hook event handlers)
-            Runner = new RunnerViewModel(Env, RLSettings);
+            Runner = new RunnerViewModel(Env, RLSettings, random);
             Runner.AskCustomInputs += AskCustomInputs;
             Runner.DispatchAction += DispatchAction;
             Runner.FoundHit += FoundHit;

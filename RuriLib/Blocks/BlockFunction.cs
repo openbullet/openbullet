@@ -617,7 +617,7 @@ namespace RuriLib
                         break;
 
                     case Function.RandomNum:
-                        outputString = (data.rand.Next(randomMin, randomMax)).ToString();
+                        outputString = (data.Random.Next(randomMin, randomMax)).ToString();
                         break;
 
                     case Function.RandomString:
@@ -634,21 +634,21 @@ namespace RuriLib
                         outputString = localInputString;
                         while (reserved.Any(r => outputString.Contains(r))){
                             if (outputString.Contains("?l"))
-                                outputString = ReplaceFirst(outputString, "?l", lowercase[data.rand.Next(0, lowercase.Length)].ToString());
+                                outputString = ReplaceFirst(outputString, "?l", lowercase[data.Random.Next(0, lowercase.Length)].ToString());
                             else if (outputString.Contains("?u"))
-                                outputString = ReplaceFirst(outputString, "?u", uppercase[data.rand.Next(0, uppercase.Length)].ToString());
+                                outputString = ReplaceFirst(outputString, "?u", uppercase[data.Random.Next(0, uppercase.Length)].ToString());
                             else if (outputString.Contains("?d"))
-                                outputString = ReplaceFirst(outputString, "?d", digits[data.rand.Next(0, digits.Length)].ToString());
+                                outputString = ReplaceFirst(outputString, "?d", digits[data.Random.Next(0, digits.Length)].ToString());
                             else if (outputString.Contains("?s"))
-                                outputString = ReplaceFirst(outputString, "?s", symbols[data.rand.Next(0, symbols.Length)].ToString());
+                                outputString = ReplaceFirst(outputString, "?s", symbols[data.Random.Next(0, symbols.Length)].ToString());
                             else if (outputString.Contains("?h"))
-                                outputString = ReplaceFirst(outputString, "?h", hex[data.rand.Next(0, hex.Length)].ToString());
+                                outputString = ReplaceFirst(outputString, "?h", hex[data.Random.Next(0, hex.Length)].ToString());
                             else if (outputString.Contains("?a"))
-                                outputString = ReplaceFirst(outputString, "?a", allchars[data.rand.Next(0, allchars.Length)].ToString());
+                                outputString = ReplaceFirst(outputString, "?a", allchars[data.Random.Next(0, allchars.Length)].ToString());
                             else if (outputString.Contains("?m"))
-                                outputString = ReplaceFirst(outputString, "?m", udchars[data.rand.Next(0, udchars.Length)].ToString());
+                                outputString = ReplaceFirst(outputString, "?m", udchars[data.Random.Next(0, udchars.Length)].ToString());
                             else if (outputString.Contains("?i"))
-                                outputString = ReplaceFirst(outputString, "?i", ludchars[data.rand.Next(0, ludchars.Length)].ToString());
+                                outputString = ReplaceFirst(outputString, "?i", ludchars[data.Random.Next(0, ludchars.Length)].ToString());
                          
                         }
                         break;
@@ -711,7 +711,7 @@ namespace RuriLib
                         break;
 
                     case Function.GetRandomUA:
-                        outputString = RandomUserAgent(data.rand);
+                        outputString = RandomUserAgent(data.Random);
                         break;
 
                     case Function.AESEncrypt:

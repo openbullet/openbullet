@@ -29,7 +29,7 @@ namespace OpenBullet
     /// </summary>
     public partial class Runner : Page
     {
-        public RunnerViewModel vm = new RunnerViewModel(Globals.environment, Globals.rlSettings);
+        public RunnerViewModel vm = new RunnerViewModel(Globals.environment, Globals.rlSettings, Globals.random);
         public SoundPlayer hitPlayer;
         public SoundPlayer reloadPlayer;
 

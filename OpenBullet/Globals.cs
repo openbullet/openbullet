@@ -54,6 +54,7 @@ namespace OpenBullet
         public static OBSettingsViewModel obSettings;
         public static RLSettingsViewModel rlSettings;
         public static EnvironmentSettings environment;
+        public static Random random = new Random();
 
         // Runners
         public static ObservableCollection<RunnerViewModel> Runners = new ObservableCollection<RunnerViewModel>();
