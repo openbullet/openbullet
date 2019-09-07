@@ -35,6 +35,10 @@
             <ComboBox DockPanel.Dock="Top" x:Name="botsDisplayModeCombobox" SelectionChanged="botsDisplayModeCombobox_SelectionChanged"/>
             <CheckBox Content="Enable Bot Log (slow, RAM-heavy)" IsChecked="{Binding EnableBotLog}" VerticalAlignment="Center" VerticalContentAlignment="Center" />
             <CheckBox Content="Save Last Response Source (RAM-heavy)" IsChecked="{Binding SaveLastSource}" VerticalAlignment="Center" VerticalContentAlignment="Center" />
+            <Label FontWeight="Bold" Content="Hits Webhook" />
+            <CheckBox Content="Enabled" IsChecked="{Binding WebhookEnabled}" />
+            <Label Content="URL:" />
+            <TextBox Text="{Binding WebhookURL}" />
         </StackPanel>
     </Grid>
 </Page>

@@ -1,4 +1,5 @@
 ﻿using Extreme.Net;
+using Newtonsoft.Json;
 using RuriLib.LS;
 using RuriLib.Models;
 using RuriLib.ViewModels;
@@ -860,6 +861,23 @@ namespace RuriLib.Runner
                 {
                     var hit = new Hit(data, capturedData, currentProxy == null ? "" : currentProxy.Proxy, hitType, ConfigName, WordlistName);
                     RaiseFoundHit(hit);
+                }
+
+                // Call the webhook
+                if (Settings.General.WebhookEnabled)
+                {
+                    HttpRequest request = new HttpRequest();
+                    try
+                    {
+                        var toSend = new WebhookFormat(data, hitType, capturedData.ToCaptureString(), DateTime.Now, Config.Settings.Name, Config.Settings.Author);
+                        var json = JsonConvert.SerializeObject(toSend);
+                        //wc.UploadStringAsync(new Uri(Settings.General.WebhookURL), json);
+                        request.PostAsync(Settings.General.WebhookURL, json, "application/json");
+                    }
+                    catch
+                    {
+                        RaiseMessageArrived(LogLevel.Error, $"Could not register the hit to webhook {Settings.General.WebhookURL}");
+                    }
                 }
 
                 // Wait time

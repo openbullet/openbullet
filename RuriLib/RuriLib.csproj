@@ -146,6 +146,7 @@
     <Compile Include="Models\DataPool.cs" />
     <Compile Include="Models\ProxyPool.cs" />
     <Compile Include="Models\RemoteProxySource.cs" />
+    <Compile Include="Models\WebhookFormat.cs" />
     <Compile Include="Runner\AbortableBackgroundWorker.cs">
       <SubType>Component</SubType>
     </Compile>

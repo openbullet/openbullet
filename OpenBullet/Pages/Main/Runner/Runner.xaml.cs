@@ -1,5 +1,6 @@
 ﻿ using Extreme.Net;
 using LiteDB;
+using Newtonsoft.Json;
 using OpenBullet.ViewModels;
 using RuriLib;
 using RuriLib.Models;
