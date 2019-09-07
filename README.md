@@ -18,7 +18,7 @@ The **OpenBullet API** was released. It can be used to host configs remotely on 
 Found a bug? [Create an issue!](https://help.github.com/en/articles/creating-an-issue)
 
 # How to build
-0. Make sure you have installed the .NET framework (dev) 4.6.1 (I will retarget to a more recent one soon).
+0. Make sure you have installed the .NET framework (dev) 4.7.2.
 1. **Clone this repository** and open the solution file with Visual Studio.
 2. Switch to **Release** mode for a much cleaner output.
 3. **Build** the solution (Visual Studio will fetch all the missing nuget packages).

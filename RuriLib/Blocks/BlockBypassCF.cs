@@ -6,9 +6,10 @@ using System.Windows.Media;
 using System.Threading;
 using Jint;
 using System.Net;
-using Cloudflare;
-using Cloudflare.CaptchaProviders;
+using CloudflareSolverRe;
 using System.Net.Http;
+using CloudflareSolverRe.Types;
+using CloudflareSolverRe.CaptchaProviders;
 
 namespace RuriLib
 {
@@ -104,6 +105,8 @@ namespace RuriLib
                     cf = new CloudflareSolver();
                     break;
             }
+            cf.MaxTries = 3;
+            cf.ClearanceDelay = 3000;
 
             // Initialize the handler with the Proxy and the previous cookies
             HttpClientHandler handler = null;
@@ -145,7 +148,7 @@ namespace RuriLib
             }
             
             // Initialize the HttpClient with the given handler, timeout, user-agent
-            var httpClient = new HttpClient(handler);
+            HttpClient httpClient = new HttpClient(handler);
             httpClient.Timeout = TimeSpan.FromMinutes(timeout);
             httpClient.DefaultRequestHeaders.Add("User-Agent", ReplaceValues(userAgent, data));
 
