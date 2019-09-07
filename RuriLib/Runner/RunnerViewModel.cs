@@ -864,14 +864,13 @@ namespace RuriLib.Runner
                 }
 
                 // Call the webhook
-                if (Settings.General.WebhookEnabled)
+                if (Settings.General.WebhookEnabled && (botData.Status == BotStatus.SUCCESS || botData.Status == BotStatus.CUSTOM))
                 {
                     HttpRequest request = new HttpRequest();
                     try
                     {
                         var toSend = new WebhookFormat(data, hitType, capturedData.ToCaptureString(), DateTime.Now, Config.Settings.Name, Config.Settings.Author);
                         var json = JsonConvert.SerializeObject(toSend);
-                        //wc.UploadStringAsync(new Uri(Settings.General.WebhookURL), json);
                         request.PostAsync(Settings.General.WebhookURL, json, "application/json");
                     }
                     catch
