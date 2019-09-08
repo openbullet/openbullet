@@ -153,7 +153,7 @@ namespace RuriLib
             httpClient.DefaultRequestHeaders.Add("User-Agent", ReplaceValues(userAgent, data));
 
             // Solve the CF challenge
-            var result = cf.Solve(httpClient, handler, uri).Result;
+            var result = cf.Solve(httpClient, handler, uri, userAgent: ReplaceValues(userAgent, data)).Result;
             if (result.Success)
             {
                 data.Log(new LogEntry($"[Success] Protection bypassed: {result.DetectResult.Protection}", Colors.GreenYellow));
