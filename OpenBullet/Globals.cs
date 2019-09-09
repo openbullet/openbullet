@@ -25,6 +25,7 @@ namespace OpenBullet
         Settings,
         ListGenerator,
         SeleniumTools,
+        Database,
         ComboSuite,
         About
     }

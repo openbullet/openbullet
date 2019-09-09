@@ -10,6 +10,7 @@ namespace OpenBullet
     {
         ToolsListGenerator ListGenerator;
         ToolsSeleniumTools SeleniumTools;
+        ToolsDatabase Database;
 
         public Tools()
         {
@@ -17,6 +18,7 @@ namespace OpenBullet
 
             ListGenerator = new ToolsListGenerator();
             SeleniumTools = new ToolsSeleniumTools();
+            Database = new ToolsDatabase();
 
             menuOptionListGenerator_MouseDown(this, null);
         }
@@ -32,6 +34,12 @@ namespace OpenBullet
         {
             Main.Content = SeleniumTools;
             menuOptionSelected(menuOptionSeleniumTools);
+        }
+
+        private void MenuOptionDatabase_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Main.Content = Database;
+            menuOptionSelected(menuOptionDatabase);
         }
 
         private void menuOptionSelected(object sender)

@@ -303,6 +303,9 @@
     <Compile Include="Pages\Main\ProxyManager.xaml.cs">
       <DependentUpon>ProxyManager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Main\Tools\ToolsDatabase.xaml.cs">
+      <DependentUpon>ToolsDatabase.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\StackerBlocks\PageBlockBypassCF.xaml.cs">
       <DependentUpon>PageBlockBypassCF.xaml</DependentUpon>
     </Compile>
@@ -558,6 +561,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Pages\Main\ProxyManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Main\Tools\ToolsDatabase.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

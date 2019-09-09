@@ -27,6 +27,7 @@
             </StackPanel.Resources>
             <Label x:Name="menuOptionListGenerator" Content="List Generator" MouseDown="menuOptionListGenerator_MouseDown"/>
             <Label x:Name="menuOptionSeleniumTools" Content="Selenium Tools" MouseDown="menuOptionSeleniumUtilities_MouseDown" />
+            <Label x:Name="menuOptionDatabase" Content="Database" MouseDown="MenuOptionDatabase_MouseDown" />
         </StackPanel>
 
         <Frame Grid.Row="1" x:Name="Main" NavigationUIVisibility="Hidden" />

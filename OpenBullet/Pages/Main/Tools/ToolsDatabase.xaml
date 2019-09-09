@@ -1,0 +1,21 @@
+﻿<Page x:Class="OpenBullet.ToolsDatabase"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OpenBullet"
+      mc:Ignorable="d" 
+      d:DesignHeight="480" d:DesignWidth="780"
+      Title="ToolsDatabase">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Button x:Name="shrinkButton" Content="Shrink" Click="shrinkButton_Click" />
+            <Label Content="Reduces the database filesize by removing unused space. Please backup the database first." />
+        </StackPanel>
+    </Grid>
+</Page>
