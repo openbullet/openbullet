@@ -113,6 +113,12 @@ namespace OpenBullet
             try
             {
                 log.List.Insert(0, entry);
+
+                var count = log.List.Count;
+                if (count > obSettings.General.LogBufferSize)
+                {
+                    log.List.RemoveAt(count - 1);
+                }
             }
             catch { }
         }

@@ -22,8 +22,6 @@
             <CheckBox Content="Change Runner Interface (Restart)" IsChecked="{Binding ChangeRunnerInterface}" VerticalContentAlignment="Center" ToolTip="Whether to swap the log and the hits list in the UI" />
             <CheckBox Content="Disable Warning on Quit" IsChecked="{Binding DisableQuitWarning}" VerticalContentAlignment="Center"/>
             <CheckBox Content="Disable Warning on Config not Saved" IsChecked="{Binding DisableNotSavedWarning}" VerticalContentAlignment="Center"/>
-            <CheckBox Content="Enable Logging" IsChecked="{Binding EnableLogging}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-            <CheckBox Content="Log to file (CARE: gets cleared on start)" IsChecked="{Binding LogToFile}" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
             <CheckBox Content="Allow Live Config Editing" IsChecked="{Binding LiveConfigUpdates}" VerticalAlignment="Center" VerticalContentAlignment="Center" />
             <CheckBox Content="Disable HTML View" IsChecked="{Binding DisableHTMLView}" VerticalAlignment="Center" VerticalContentAlignment="Center" />
             <CheckBox Content="Always On Top" IsChecked="{Binding AlwaysOnTop}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
@@ -47,6 +45,13 @@
                 <xctk:IntegerUpDown Background="Transparent" Width="70" Margin="10 0 0 0" Minimum="600" Maximum="10000" Value="{Binding StartingHeight}" Foreground="{DynamicResource ForegroundMain}"  HorizontalAlignment="Right" />
             </DockPanel>
             <CheckBox Content="Disable Ctrl+C/V on Blocks" IsChecked="{Binding DisableCopyPasteBlocks}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+            <Label Content="Program Log:" FontWeight="Bold"/>
+            <CheckBox Content="Enable Logging" IsChecked="{Binding EnableLogging}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+            <CheckBox Content="Log to file (CARE: gets cleared on start)" IsChecked="{Binding LogToFile}" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+            <DockPanel DockPanel.Dock="Top">
+                <Label Content="Log Buffer Size" />
+                <xctk:IntegerUpDown Background="Transparent" Width="70" Margin="10 0 0 0" Minimum="10" Maximum="100000" Value="{Binding LogBufferSize}" Foreground="{DynamicResource ForegroundMain}"  HorizontalAlignment="Right" />
+            </DockPanel>
         </StackPanel>
     </Grid>
 </Page>

@@ -15,7 +15,7 @@
         
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button x:Name="shrinkButton" Content="Shrink" Click="shrinkButton_Click" />
-            <Label Content="Reduces the database filesize by removing unused space. Please backup the database first." />
+            <Label Content="Reduces the database filesize by removing unused space. Please backup the database first. This might take some time, do not close OB." />
         </StackPanel>
     </Grid>
 </Page>

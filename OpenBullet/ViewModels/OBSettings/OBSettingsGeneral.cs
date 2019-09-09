@@ -26,10 +26,6 @@ namespace OpenBullet.ViewModels
         public bool DisableNotSavedWarning { get { return disableNotSavedWarning; } set { disableNotSavedWarning = value; OnPropertyChanged(); } }
         private string defaultAuthor = "";
         public string DefaultAuthor { get { return defaultAuthor; } set { defaultAuthor = value; OnPropertyChanged(); } }
-        private bool enableLogging = false;
-        public bool EnableLogging { get { return enableLogging; } set { enableLogging = value; OnPropertyChanged(); } }
-        private bool logToFile = false;
-        public bool LogToFile { get { return logToFile; } set { logToFile = value; OnPropertyChanged(); } }
         private bool liveConfigUpdates = false;
         public bool LiveConfigUpdates { get { return liveConfigUpdates; } set { liveConfigUpdates = value; OnPropertyChanged(); } }
         private bool disableHTMLView = false;
@@ -46,6 +42,12 @@ namespace OpenBullet.ViewModels
         public bool DisplayCapturesLast { get { return displayCapturesLast; } set { displayCapturesLast = value; OnPropertyChanged(); } }
         private bool disableCopyPasteBlocks = false;
         public bool DisableCopyPasteBlocks { get { return disableCopyPasteBlocks; } set { disableCopyPasteBlocks = value; OnPropertyChanged(); } }
+        private bool enableLogging = false;
+        public bool EnableLogging { get { return enableLogging; } set { enableLogging = value; OnPropertyChanged(); } }
+        private bool logToFile = false;
+        public bool LogToFile { get { return logToFile; } set { logToFile = value; OnPropertyChanged(); } }
+        private int logBufferSize = 10000;
+        public int LogBufferSize { get { return logBufferSize; } set { logBufferSize = value; OnPropertyChanged(); } }
 
         public void Reset()
         {
