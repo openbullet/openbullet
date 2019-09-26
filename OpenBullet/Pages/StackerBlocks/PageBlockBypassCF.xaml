@@ -31,7 +31,7 @@
                 This block only works with HTTP proxies for now.
                 <LineBreak/><LineBreak/>
                 If the Cloudflare challenge needs a reCaptcha to be solved,
-                this block will check if you defined a 2captcha or anti-captcha API Key. If
+                this block will check if you defined a 2captcha API Key. If
                 it finds one, it will be used to solve the challenges. <LineBreak/><LineBreak/>
                 <Span Foreground="{DynamicResource ForegroundCustom}"><Bold>WARNING!</Bold><LineBreak/>
                     This can quickly drain your captcha account if done by mistake!<LineBreak/>
