@@ -547,7 +547,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Main\Settings\OB\Runner\Runner.xaml">
+    <Page Include="Pages\Main\Runner\Runner.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -559,7 +559,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Pages\Main\Settings\OB\Runner\Runner.xaml.cs">
+    <Compile Include="Pages\Main\Runner\Runner.xaml.cs">
       <DependentUpon>Runner.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
