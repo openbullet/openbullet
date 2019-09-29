@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Media;
 
 namespace RuriLib
@@ -401,9 +402,8 @@ namespace RuriLib
             switch (requestType)
             {
                 case RequestType.Standard:
-                    var pData = string.Join(Environment.NewLine, postData
-                        .Split(new string[] { "\\n" }, StringSplitOptions.None)
-                        .Select(p => ReplaceValues(p, data)));
+                    var pData = ReplaceValues(Regex.Replace(postData, @"(?<!\\)\\n", Environment.NewLine).Replace(@"\\n", @"\n"), data);
+
                     if (CanContainBody(method))
                     {
                         if (encodeContent)
