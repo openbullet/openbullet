@@ -32,7 +32,11 @@ namespace OpenBullet
             if (Caller.GetType() == typeof(WordlistManager))
             {
                 if (nameTextbox.Text.Trim() == "") { MessageBox.Show("The name cannot be blank"); return; }
-                ((WordlistManager)Caller).AddWordlist(new Wordlist(nameTextbox.Text, locationTextbox.Text, typeCombobox.Text, purposeTextbox.Text));
+
+                var path = locationTextbox.Text;
+                var cwd = Directory.GetCurrentDirectory();
+                if (path.StartsWith(cwd)) path = path.Substring(cwd.Length + 1);
+                ((WordlistManager)Caller).AddWordlist(new Wordlist(nameTextbox.Text, path, typeCombobox.Text, purposeTextbox.Text));
             }
             ((MainDialog)Parent).Close();
         }

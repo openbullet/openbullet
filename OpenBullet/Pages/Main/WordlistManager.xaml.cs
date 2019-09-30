@@ -2,6 +2,7 @@
 using OpenBullet.ViewModels;
 using RuriLib;
 using RuriLib.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -141,7 +142,10 @@ namespace OpenBullet
                     try
                     {
                         // Build the wordlist object
-                        var wordlist = new Wordlist(Path.GetFileNameWithoutExtension(file), file, Globals.environment.WordlistTypes.First().Name, "");
+                        var path = file;
+                        var cwd = Directory.GetCurrentDirectory();
+                        if (path.StartsWith(cwd)) path = path.Substring(cwd.Length + 1);
+                        var wordlist = new Wordlist(Path.GetFileNameWithoutExtension(file), path, Globals.environment.WordlistTypes.First().Name, "");
 
                         // Get the first line
                         var first = File.ReadLines(wordlist.Path).First();
