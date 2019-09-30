@@ -435,10 +435,20 @@ namespace RuriLib
                 case ParseType.JSON:
                     if (JTokenParsing)
                     {
-                        JObject json = JObject.Parse(original);
-                        var jsonlist = json.SelectTokens(jsonField, false);
-                        foreach (var j in jsonlist)
-                            list.Add(j.ToString());
+                        if (original.Trim().StartsWith("["))
+                        {
+                            JArray json = JArray.Parse(original);
+                            var jsonlist = json.SelectTokens(jsonField, false);
+                            foreach (var j in jsonlist)
+                                list.Add(j.ToString());
+                        }
+                        else
+                        {
+                            JObject json = JObject.Parse(original);
+                            var jsonlist = json.SelectTokens(jsonField, false);
+                            foreach (var j in jsonlist)
+                                list.Add(j.ToString());
+                        }
                     }
                     else
                     {
