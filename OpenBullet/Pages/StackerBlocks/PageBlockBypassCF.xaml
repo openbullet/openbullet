@@ -22,6 +22,7 @@
                 <Label Content="User Agent:" />
                 <TextBox Text="{Binding UserAgent, UpdateSourceTrigger=PropertyChanged}" />
             </DockPanel>
+            <CheckBox IsChecked="{Binding PrintResponseInfo}" Content="Print Response Info" VerticalContentAlignment="Center" />
 
             <TextBlock
                    FontSize="12" 

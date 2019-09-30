@@ -25,6 +25,10 @@ namespace RuriLib
         /// <summary>The User-Agent header to use when solving the challenge.</summary>
         public string UserAgent { get { return userAgent; } set { userAgent = value; OnPropertyChanged(); } }
 
+        private bool printResponseInfo = true;
+        /// <summary>Whether to print the full response info to the log.</summary>
+        public bool PrintResponseInfo { get { return printResponseInfo; } set { printResponseInfo = value; OnPropertyChanged(); } }
+
         /// <summary>
         /// Creates a Cloudflare bypass block.
         /// </summary>
@@ -50,7 +54,15 @@ namespace RuriLib
 
             Url = LineParser.ParseLiteral(ref input, "URL");
 
-            if (input != "") UserAgent = LineParser.ParseLiteral(ref input, "UA");
+            if (input != "" && LineParser.Lookahead(ref input) == TokenType.Literal)
+            {
+                UserAgent = LineParser.ParseLiteral(ref input, "UA");
+            }
+
+            while (input != "")
+            {
+                LineParser.SetBool(ref input, this);
+            }
 
             return this;
         }
@@ -63,7 +75,8 @@ namespace RuriLib
                 .Label(Label)
                 .Token("BYPASSCF")
                 .Literal(Url)
-                .Literal(UserAgent, "UserAgent");
+                .Literal(UserAgent, "UserAgent")
+                .Boolean(PrintResponseInfo, "PrintResponseInfo");
             return writer.ToString();
         }
 
@@ -158,10 +171,10 @@ namespace RuriLib
 
             // Get code
             data.ResponseCode = ((int)response.StatusCode).ToString();
-            data.Log(new LogEntry("Response code: " + data.ResponseCode, Colors.Cyan));
+            if (PrintResponseInfo) data.Log(new LogEntry("Response code: " + data.ResponseCode, Colors.Cyan));
 
             // Get headers
-            data.Log(new LogEntry("Received headers:", Colors.DeepPink));
+            if (PrintResponseInfo) data.Log(new LogEntry("Received headers:", Colors.DeepPink));
             var headerList = new List<KeyValuePair<string, string>>();
             var receivedHeaders = response.EnumerateHeaders();
             data.ResponseHeaders.Clear();
@@ -169,21 +182,24 @@ namespace RuriLib
             {
                 var header = receivedHeaders.Current;
                 data.ResponseHeaders.Add(header.Key, header.Value);
-                data.Log(new LogEntry(header.Key + ": " + header.Value, Colors.LightPink));
+                if (PrintResponseInfo) data.Log(new LogEntry(header.Key + ": " + header.Value, Colors.LightPink));
             }
 
             // Get cookies
-            data.Log(new LogEntry("Received cookies:", Colors.Goldenrod));
+            if (PrintResponseInfo) data.Log(new LogEntry("Received cookies:", Colors.Goldenrod));
             foreach (Cookie cookie in response.Cookies.GetCookies(localUrl))
             {
                 if (data.Cookies.ContainsKey(cookie.Name)) data.Cookies[cookie.Name] = cookie.Value;
                 else data.Cookies.Add(cookie.Name, cookie.Value);
-                data.Log(new LogEntry(cookie.Name + ": " + cookie.Value, Colors.LightGoldenrodYellow));
+                if (PrintResponseInfo) data.Log(new LogEntry(cookie.Name + ": " + cookie.Value, Colors.LightGoldenrodYellow));
             }
 
             data.ResponseSource = response.ToString();
-            data.Log(new LogEntry("Response Source:", Colors.Green));
-            data.Log(new LogEntry(data.ResponseSource, Colors.GreenYellow));
+            if (PrintResponseInfo)
+            {
+                data.Log(new LogEntry("Response Source:", Colors.Green));
+                data.Log(new LogEntry(data.ResponseSource, Colors.GreenYellow));
+            }
         }
     }
 }
