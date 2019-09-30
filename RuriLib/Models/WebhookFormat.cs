@@ -20,7 +20,8 @@ namespace RuriLib.Models
         /// <param name="timestamp">The unix timestamp</param>
         /// <param name="configName">The config name</param>
         /// <param name="configAuthor">The config author</param>
-        public WebhookFormat(string data, string type, string capturedData, DateTime timestamp, string configName, string configAuthor)
+        /// <param name="user">The user that is calling the webhook</param>
+        public WebhookFormat(string data, string type, string capturedData, DateTime timestamp, string configName, string configAuthor, string user)
         {
             Data = data;
             Type = type;
@@ -28,6 +29,7 @@ namespace RuriLib.Models
             Timestamp = Math.Round((timestamp.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
             ConfigName = configName;
             ConfigAuthor = configAuthor;
+            User = user;
         }
 
         /// <summary>The input data.</summary>
@@ -47,5 +49,8 @@ namespace RuriLib.Models
 
         /// <summary>The config author.</summary>
         public string ConfigAuthor { get; set; }
+
+        /// <summary>The user that is calling the webhook.</summary>
+        public string User { get; set; }
     }
 }

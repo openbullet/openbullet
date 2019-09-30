@@ -39,6 +39,8 @@
             <CheckBox Content="Enabled" IsChecked="{Binding WebhookEnabled}" />
             <Label Content="URL:" />
             <TextBox Text="{Binding WebhookURL}" />
+            <Label Content="Username (will be received by remote API):" />
+            <TextBox Text="{Binding WebhookUser}" />
         </StackPanel>
     </Grid>
 </Page>

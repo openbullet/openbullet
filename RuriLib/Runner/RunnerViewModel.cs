@@ -869,7 +869,7 @@ namespace RuriLib.Runner
                     HttpRequest request = new HttpRequest();
                     try
                     {
-                        var toSend = new WebhookFormat(data, hitType, capturedData.ToCaptureString(), DateTime.Now, Config.Settings.Name, Config.Settings.Author);
+                        var toSend = new WebhookFormat(data, hitType, capturedData.ToCaptureString(), DateTime.Now, Config.Settings.Name, Config.Settings.Author, Settings.General.WebhookUser);
                         var json = JsonConvert.SerializeObject(toSend);
                         request.PostAsync(Settings.General.WebhookURL, json, "application/json");
                     }
