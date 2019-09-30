@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -494,13 +495,13 @@ namespace RuriLib
                 var pwd = ReplaceValues(authPass, data);
                 var auth = "Basic " + BlockFunction.Base64Encode(usr + ":" + pwd);
                 request.AddHeader("Authorization", auth);
-                data.Log(new LogEntry("Authorization: " + auth, Colors.MediumTurquoise));
+                data.Log(new LogEntry($"Authorization: {auth}", Colors.MediumTurquoise));
             }
 
             // Add the content-type header
             if (CanContainBody(method) && content != null && requestType == RequestType.Standard)
             {
-                data.Log(new LogEntry("Content-Type: " + cType, Colors.MediumTurquoise));
+                data.Log(new LogEntry($"Content-Type: {cType}", Colors.MediumTurquoise));
             }
 
             // Add new user-defined custom cookies to the bot's cookie jar
@@ -513,7 +514,7 @@ namespace RuriLib
             foreach (var cookie in data.Cookies)
             {
                 request.Cookies.Add(cookie.Key, cookie.Value);
-                data.Log(new LogEntry(cookie.Key + " : " + cookie.Value, Colors.MediumTurquoise));
+                data.Log(new LogEntry($"{cookie.Key}: {cookie.Value}", Colors.MediumTurquoise));
             }
 
             data.LogNewLine();
@@ -527,6 +528,7 @@ namespace RuriLib
             {
                 // Get response
                 response = request.Raw(method, localUrl, content);
+                var responseString = response.ToString();
 
                 // Get address
                 data.Address = response.Address.ToString();
@@ -545,7 +547,20 @@ namespace RuriLib
                 {
                     var header = receivedHeaders.Current;
                     data.ResponseHeaders.Add(header.Key, header.Value);
-                    data.Log(new LogEntry(header.Key + ": " + header.Value, Colors.LightPink));
+                    data.Log(new LogEntry($"{header.Key}: {header.Value}", Colors.LightPink));
+                }
+                if (!response.ContainsHeader(HttpHeader.ContentLength))
+                {
+                    if (data.ResponseHeaders.ContainsKey("Content-Encoding") && data.ResponseHeaders["Content-Encoding"].Contains("gzip"))
+                    {
+                        data.ResponseHeaders["Content-Length"] = GZip.Zip(responseString).Length.ToString();
+                    }
+                    else
+                    {
+                        data.ResponseHeaders["Content-Length"] = responseString.Length.ToString();
+                    }
+
+                    data.Log(new LogEntry($"Content-Length: {data.ResponseHeaders["Content-Length"]}", Colors.LightPink));
                 }
 
                 // Get cookies
@@ -556,7 +571,7 @@ namespace RuriLib
                     // If the cookie was already present before, don't log it
                     if (oldJar.ContainsKey(cookie.Key) && oldJar[cookie.Key] == cookie.Value) continue;
 
-                    data.Log(new LogEntry(cookie.Key + ": " + cookie.Value, Colors.LightGoldenrodYellow));
+                    data.Log(new LogEntry($"{cookie.Key}: {cookie.Value}", Colors.LightGoldenrodYellow));
                 }
 
                 // Save the response content
@@ -566,7 +581,7 @@ namespace RuriLib
                         data.Log(new LogEntry("Response Source:", Colors.Green));
                         if (readResponseSource)
                         {
-                            data.ResponseSource = response.ToString();
+                            data.ResponseSource = responseString;
                             data.Log(new LogEntry(data.ResponseSource, Colors.GreenYellow));
                         }
                         else

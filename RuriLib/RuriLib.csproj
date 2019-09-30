@@ -210,6 +210,7 @@
     <Compile Include="Blocks\BlockTCP.cs" />
     <Compile Include="CaptchaServices\CaptchasIO.cs" />
     <Compile Include="CaptchaServices\RuCaptcha.cs" />
+    <Compile Include="GZip.cs" />
     <Compile Include="LoliScript\Exceptions\BlockProcessingException.cs" />
     <Compile Include="LoliScript\LoliScript.cs" />
     <Compile Include="LoliScript\Parser\BlockParser.cs" />

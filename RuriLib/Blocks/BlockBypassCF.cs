@@ -143,6 +143,7 @@ namespace RuriLib
             if (twoCapToken != "") request.CaptchaSolver = new TwoCaptchaSolver() { ApiKey = data.GlobalSettings.Captchas.TwoCapToken };
 
             var response = request.GetThroughCloudflare(new Uri(localUrl));
+            var responseString = response.ToString();
 
             // Save the cookies
             var ck = response.Cookies.GetCookies(localUrl);
@@ -171,18 +172,30 @@ namespace RuriLib
 
             // Get code
             data.ResponseCode = ((int)response.StatusCode).ToString();
-            if (PrintResponseInfo) data.Log(new LogEntry("Response code: " + data.ResponseCode, Colors.Cyan));
+            if (PrintResponseInfo) data.Log(new LogEntry($"Response code: {data.ResponseCode}", Colors.Cyan));
 
             // Get headers
             if (PrintResponseInfo) data.Log(new LogEntry("Received headers:", Colors.DeepPink));
-            var headerList = new List<KeyValuePair<string, string>>();
             var receivedHeaders = response.EnumerateHeaders();
             data.ResponseHeaders.Clear();
             while (receivedHeaders.MoveNext())
             {
                 var header = receivedHeaders.Current;
                 data.ResponseHeaders.Add(header.Key, header.Value);
-                if (PrintResponseInfo) data.Log(new LogEntry(header.Key + ": " + header.Value, Colors.LightPink));
+                if (PrintResponseInfo) data.Log(new LogEntry($"{header.Key}: {header.Value}", Colors.LightPink));
+            }
+            if (!response.ContainsHeader(HttpHeader.ContentLength))
+            {
+                if (data.ResponseHeaders.ContainsKey("Content-Encoding") && data.ResponseHeaders["Content-Encoding"].Contains("gzip"))
+                {
+                    data.ResponseHeaders["Content-Length"] = GZip.Zip(responseString).Length.ToString();
+                }
+                else
+                {
+                    data.ResponseHeaders["Content-Length"] = responseString.Length.ToString();
+                }
+
+                if (PrintResponseInfo) data.Log(new LogEntry($"Content-Length: {data.ResponseHeaders["Content-Length"]}", Colors.LightPink));
             }
 
             // Get cookies
@@ -191,10 +204,10 @@ namespace RuriLib
             {
                 if (data.Cookies.ContainsKey(cookie.Name)) data.Cookies[cookie.Name] = cookie.Value;
                 else data.Cookies.Add(cookie.Name, cookie.Value);
-                if (PrintResponseInfo) data.Log(new LogEntry(cookie.Name + ": " + cookie.Value, Colors.LightGoldenrodYellow));
+                if (PrintResponseInfo) data.Log(new LogEntry($"{cookie.Name}: {cookie.Value}", Colors.LightGoldenrodYellow));
             }
 
-            data.ResponseSource = response.ToString();
+            data.ResponseSource = responseString;
             if (PrintResponseInfo)
             {
                 data.Log(new LogEntry("Response Source:", Colors.Green));
