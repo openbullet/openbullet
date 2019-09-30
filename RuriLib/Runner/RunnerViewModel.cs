@@ -382,7 +382,7 @@ namespace RuriLib.Runner
             if (Config == null) throw new Exception("No Config loaded!");
             if (Wordlist == null) throw new Exception("No Wordlist loaded!");
 
-            DataPool = new DataPool(File.ReadLines(Wordlist.Path));
+            if (!Wordlist.Temporary) DataPool = new DataPool(File.ReadLines(Wordlist.Path));
             RaiseMessageArrived(LogLevel.Info, $"Loaded {DataPool.Size} lines", false);
             RaiseMessageArrived(LogLevel.Info, $"Using Proxies: {UseProxies}", false);
 

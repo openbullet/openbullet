@@ -320,34 +320,16 @@ namespace OpenBullet
         {
             if (hitsListView.SelectedItems.Count == 0) { Globals.LogError(Components.HitsDB, "No hits selected!", true); return; }
             var first = (Hit)hitsListView.SelectedItem;
-            var partialName = "Recheck-" + BlockBase.MakeValidFileName(first.ConfigName);
-
-            // Choose list name
-            var fileName = BlockBase.GetFirstAvailableFileName("Wordlists\\", partialName, "txt");
-
-            // Write to disk
-            var path = $@"{Directory.GetCurrentDirectory()}\Wordlists\{fileName}";
-            using (var sw = new StreamWriter(path))
-            {
-                foreach (Hit selected in hitsListView.SelectedItems)
-                    sw.WriteLine(selected.Data);
-            }
-
-            // Import it
-            var listName = fileName.Substring(0, fileName.Length - 4);
-            var wordlist = new Wordlist(listName, path, Globals.environment.RecognizeWordlistType(first.Data), "");
-            Globals.mainWindow.WordlistManagerPage.AddWordlist(wordlist);
+            var partialName = "Recheck-" + first.ConfigName;
+            var wordlist = new Wordlist(partialName, "NULL", Globals.environment.RecognizeWordlistType(first.Data), "", true, true);
 
             var manager = Globals.mainWindow.RunnerManagerPage.vm;
             manager.CreateRunner();
             var runner = manager.Runners.Last().Page;
             Globals.mainWindow.ShowRunner(runner);
 
-            try
-            {
-                runner.vm.SetWordlist(Globals.mainWindow.WordlistManagerPage.GetList(listName));
-            }
-            catch { }
+            runner.vm.SetWordlist(wordlist);
+            runner.vm.DataPool = new DataPool (hitsListView.SelectedItems.Cast<Hit>().Select(h => h.Data));
 
             // Try to select the config referring to the first selected hit
             try
