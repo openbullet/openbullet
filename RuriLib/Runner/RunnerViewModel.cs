@@ -1041,7 +1041,7 @@ namespace RuriLib.Runner
                         {
                             proxies.AddRange(GetProxiesFromRemoteSource(s.Url, s.Type, s.Pattern, s.Output));
                         }
-                        catch (Exception ex) { RaiseMessageArrived(LogLevel.Error, $"Could not contact the reload API - {ex.Message}", true, 5); }
+                        catch (Exception ex) { RaiseMessageArrived(LogLevel.Error, $"Could not contact the reload API {s.Url} for {s.Type} proxies - {ex.Message}", true, 5); }
                     });
                     ProxyPool = new ProxyPool(proxies, Settings.Proxies.ShuffleOnStart);
                     break;
@@ -1053,7 +1053,7 @@ namespace RuriLib.Runner
                             GetProxiesFromFile(Settings.Proxies.ReloadPath,
                                                 Settings.Proxies.ReloadType), Settings.Proxies.ShuffleOnStart);
                     }
-                    catch (Exception ex) { RaiseMessageArrived(LogLevel.Error, $"Could not read the proxies from file - {ex.Message}", true); }
+                    catch (Exception ex) { RaiseMessageArrived(LogLevel.Error, $"Could not read the proxies from file {Settings.Proxies.ReloadPath} - {ex.Message}", true); }
                     break;
             }
 
