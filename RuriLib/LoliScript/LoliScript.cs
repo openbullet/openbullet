@@ -488,7 +488,23 @@ namespace RuriLib.LS
                         // Add in all the variables
                         foreach (var variable in data.Variables.All)
                         {
-                            try { jsengine.SetValue(variable.Name, variable.Value); } catch { }
+                            try
+                            {
+                                switch (variable.Type)
+                                {
+                                    case CVar.VarType.Single:
+                                        jsengine.SetValue(variable.Name, variable.Value);
+                                        break;
+
+                                    case CVar.VarType.List:
+                                        jsengine.SetValue(variable.Name, (variable.Value as List<string>).ToArray());
+                                        break;
+
+                                    default:
+                                        break;
+                                }
+                            }
+                            catch { }
                         }
 
                         // Execute JS
