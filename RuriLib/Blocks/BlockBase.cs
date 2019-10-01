@@ -385,6 +385,18 @@ namespace RuriLib
         }
 
         /// <summary>
+        /// Saves a stream to a file with automatically generated name.
+        /// </summary>
+        /// <param name="stream">The input stream</param>
+        /// <param name="data">The BotData used for path creation</param>
+        public static void SaveScreenshot(MemoryStream stream, BotData data)
+        {
+            var path = MakeScreenshotPath(data);
+            using (var fileStream = File.Create(path)) { stream.CopyTo(fileStream); }
+            data.Screenshots.Add(path);
+        }
+
+        /// <summary>
         /// Builds the path for the screenshot file.
         /// </summary>
         /// <param name="data">The BotData for path creation</param>

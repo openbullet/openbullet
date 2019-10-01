@@ -132,6 +132,10 @@ namespace RuriLib
         private string downloadPath = "";
         /// <summary>The path of the file where a FILE response needs to be stored.</summary>
         public string DownloadPath { get { return downloadPath; } set { downloadPath = value; OnPropertyChanged(); } }
+
+        private bool saveAsScreenshot = false;
+        /// <summary>Whether to add the downloaded image to the default screenshot path.</summary>
+        public bool SaveAsScreenshot { get { return saveAsScreenshot; } set { saveAsScreenshot = value; OnPropertyChanged(); } }
         #endregion
 
         /// <summary>
@@ -231,6 +235,10 @@ namespace RuriLib
                 {
                     ResponseType = ResponseType.File;
                     DownloadPath = LineParser.ParseLiteral(ref input, "DOWNLOAD PATH");
+                    while (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                    {
+                        LineParser.SetBool(ref input, this);
+                    }
                 }
             }
 
@@ -337,7 +345,8 @@ namespace RuriLib
                     .Indent()
                     .Arrow()
                     .Token("FILE")
-                    .Literal(DownloadPath);
+                    .Literal(DownloadPath)
+                    .Boolean(SaveAsScreenshot, "SaveAsScreenshot");
             }
 
             return writer.ToString();
@@ -528,7 +537,7 @@ namespace RuriLib
             {
                 // Get response
                 response = request.Raw(method, localUrl, content);
-                var responseString = response.ToString();
+                var responseString = "";
 
                 // Get address
                 data.Address = response.Address.ToString();
@@ -549,8 +558,10 @@ namespace RuriLib
                     data.ResponseHeaders.Add(header.Key, header.Value);
                     data.Log(new LogEntry($"{header.Key}: {header.Value}", Colors.LightPink));
                 }
-                if (!response.ContainsHeader(HttpHeader.ContentLength))
+                if (!response.ContainsHeader(HttpHeader.ContentLength) && ResponseType != ResponseType.File)
                 {
+                    responseString = response.ToString(); // Read the stream
+
                     if (data.ResponseHeaders.ContainsKey("Content-Encoding") && data.ResponseHeaders["Content-Encoding"].Contains("gzip"))
                     {
                         data.ResponseHeaders["Content-Length"] = GZip.Zip(responseString).Length.ToString();
@@ -581,6 +592,7 @@ namespace RuriLib
                         data.Log(new LogEntry("Response Source:", Colors.Green));
                         if (readResponseSource)
                         {
+                            if (responseString == "") responseString = response.ToString(); // Read the stream if you didn't already read it
                             data.ResponseSource = responseString;
                             data.Log(new LogEntry(data.ResponseSource, Colors.GreenYellow));
                         }
@@ -592,9 +604,17 @@ namespace RuriLib
                         break;
 
                     case ResponseType.File:
-                        var file = ReplaceValues(downloadPath, data);
-                        using (var stream = File.Create(file)) { response.ToMemoryStream().CopyTo(stream); }
-                        data.Log(new LogEntry("File saved as " + file, Colors.Green));
+                        if (SaveAsScreenshot)
+                        {
+                            SaveScreenshot(response.ToMemoryStream(), data); // Read the stream
+                            data.Log(new LogEntry("File saved as screenshot", Colors.Green));
+                        }
+                        else
+                        {
+                            var file = ReplaceValues(downloadPath, data);
+                            using (var stream = File.Create(file)) { response.ToMemoryStream().CopyTo(stream); } // Read the stream
+                            data.Log(new LogEntry("File saved as " + file, Colors.Green));
+                        }
                         break;
 
                     default:

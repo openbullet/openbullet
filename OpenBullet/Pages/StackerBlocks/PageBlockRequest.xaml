@@ -154,6 +154,7 @@
                             <Label Content="File Path:"/>
                             <TextBox Text="{Binding DownloadPath, UpdateSourceTrigger=PropertyChanged}" />
                         </DockPanel>
+                        <CheckBox IsChecked="{Binding SaveAsScreenshot}" Content="Save as screenshot" VerticalContentAlignment="Center"/>
                     </StackPanel>
                 </TabItem>
             </TabControl>
