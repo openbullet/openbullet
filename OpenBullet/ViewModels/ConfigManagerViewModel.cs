@@ -149,14 +149,16 @@ namespace OpenBullet.ViewModels
                     {
                         foreach (var entry in zip.Entries)
                         {
+                            var subCategory = Path.GetDirectoryName(entry.FullName).Replace("\\", " - ");
+                            var category = subCategory == "" ? "Remote" : $"Remote - {subCategory}";
                             using (var stream = entry.Open())
                             {
                                 using (TextReader tr = new StreamReader(stream))
                                 {
                                     var text = tr.ReadToEnd();
                                     var cfg = IOManager.DeserializeConfig(text);
-                                    list.Add(new ConfigViewModel("", "Remote", cfg, true));
-                                    cachedConfigs.Add(new ConfigViewModel("", "Remote", cfg, true));
+                                    list.Add(new ConfigViewModel("", category, cfg, true));
+                                    cachedConfigs.Add(new ConfigViewModel("", category, cfg, true));
                                 }
                             }
                         }
