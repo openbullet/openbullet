@@ -5,37 +5,93 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:OpenBullet"
       mc:Ignorable="d" 
-      d:DesignHeight="320" d:DesignWidth="270"
+      d:DesignHeight="350" d:DesignWidth="270"
       Title="Add Proxies">
 
-    <StackPanel Margin="5">
-        <Grid>
+    <Grid Width="270">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <Label Content="Import from:" />
+            <Label x:Name="fileMode" Content="File" FontWeight="Bold" Foreground="{DynamicResource ForegroundMenuSelected}" MouseDown="FileMode_MouseDown" />
+            <Label x:Name="pasteMode" Content="Paste" FontWeight="Bold" MouseDown="PasteMode_MouseDown" />
+            <Label x:Name="apiMode" Content="API" FontWeight="Bold" MouseDown="ApiMode_MouseDown" />
+        </StackPanel>
+
+        <TabControl x:Name="modeTabControl" Background="Transparent" Grid.Row="1" Margin="5" BorderThickness="0">
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="{x:Type TabItem}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+            </TabControl.ItemContainerStyle>
+            <TabItem x:Name="fileTab">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Column="0" Content="Location:" VerticalAlignment="Center"/>
+                        <TextBox x:Name="locationTextbox" Grid.Column="1" VerticalContentAlignment="Center" Margin="5" IsReadOnly="True"/>
+                        <Image x:Name="loadProxiesButton" Grid.Column="2" Source="/Images/Icons/folder.png" Width="20" MouseDown="loadProxiesButton_MouseDown"/>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="pasteTab">
+                <StackPanel>
+                    <Label Content="Paste your proxies in the box below" />
+                    <TextBox x:Name="proxiesBox" AcceptsReturn="True" TextWrapping="Wrap" Height="100" VerticalScrollBarVisibility="Auto" Margin="0 5" FontFamily="Consolas"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="apiTab">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Column="0" Content="URL:" VerticalAlignment="Center"/>
+                        <TextBox x:Name="urlTextbox" Grid.Column="1" VerticalContentAlignment="Center" Margin="5"/>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
-            <Label Grid.Column="0" Content="Location:" VerticalAlignment="Center"/>
-            <TextBox x:Name="locationTextbox" Grid.Column="1" VerticalContentAlignment="Center" Margin="5" IsReadOnly="True"/>
-            <Image x:Name="loadProxiesButton" Grid.Column="2" Source="/Images/Icons/folder.png" Width="20" MouseDown="loadProxiesButton_MouseDown"/>
+
+            <TextBlock x:Name="advancedWarning" Grid.Row="0" Grid.ColumnSpan="2" FontFamily="Consolas" Margin="5">
+                <Span Foreground="{DynamicResource ForegroundMain}" FontWeight="Bold">Advanced Syntax:</Span>
+                <LineBreak/>
+                <Span Foreground="{DynamicResource ForegroundMain}">Type: (http)1.1.1.1:80</Span>
+                <LineBreak/>
+                <Span Foreground="{DynamicResource ForegroundMain}">Auth: 1.1.1.1:80:username:password</Span>
+                <LineBreak/>
+                <Span Foreground="{DynamicResource ForegroundMain}">Chain: 1.1.1.1:80 -> 2.2.2.2:80</Span>
+                <LineBreak/>
+                <Span Foreground="{DynamicResource ForegroundCustom}">Auth and Chain won't work with Selenium</Span>
+            </TextBlock>
             <Label Grid.Column="0" Grid.Row="1" Content="Type:" VerticalAlignment="Center"/>
             <ComboBox x:Name="proxyTypeCombobox" Grid.Column="1" Grid.Row="1" Margin="5"/>
+            <Button x:Name="acceptButton" Grid.ColumnSpan="2" Grid.Row="2" Content="ACCEPT" Click="acceptButton_Click" Margin="5" />
         </Grid>
-        <Label Content="ADVANCED MODE (auth, chain)" HorizontalContentAlignment="Center" FontWeight="Bold"/>
-        <Label Content="Hover on the box below to see the syntax" HorizontalContentAlignment="Center"/>
-        <TextBox x:Name="proxiesBox" AcceptsReturn="True" TextWrapping="Wrap" Height="100" VerticalScrollBarVisibility="Auto" Margin="0 5" FontFamily="Consolas">
-            <TextBox.ToolTip>
-                <TextBlock>Start the line with the proxy type between round brackets.<LineBreak/>Auth:<LineBreak/>(http)127.0.0.1:8888:username:password<LineBreak/>Chain:<LineBreak/>(socks4)127.0.0.1:8000->(http)127.0.0.1:8888</TextBlock>
-            </TextBox.ToolTip>
-        </TextBox>
-        
-        <Label Content="Auth and Chain won't work with Selenium" Foreground="{DynamicResource ForegroundCustom}" HorizontalContentAlignment="Center"/>
-        <Button x:Name="acceptButton" Content="ACCEPT" Click="acceptButton_Click" Margin="0 5" />
+    </Grid>
 
-    </StackPanel>
 </Page>
