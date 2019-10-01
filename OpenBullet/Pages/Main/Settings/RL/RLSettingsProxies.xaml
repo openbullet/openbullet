@@ -17,8 +17,8 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="3*"/>
-            <RowDefinition Height="2*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Column="0" Grid.Row="0" Margin="5">
@@ -38,7 +38,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             
-                <Label Grid.Row="0" Content="Global Ban Keys:" />
+            <Label Grid.Row="0" Content="Global Ban Keys:" />
             <RichTextBox x:Name="globalBanKeysTextbox" Grid.Row="1" Background="{DynamicResource BackgroundSecondary}" Foreground="{DynamicResource ForegroundMain}" FontFamily="Consolas" TextChanged="globalBanKeysTextbox_TextChanged">
                 <RichTextBox.Resources>
                     <Style TargetType="{x:Type Paragraph}">
@@ -61,6 +61,10 @@
             <StackPanel>
                 <Label Content="Reloading"/>
                 <CheckBox Content="Reload proxies when all banned" IsChecked="{Binding Reload}" VerticalContentAlignment="Center"/>
+                <DockPanel DockPanel.Dock="Top">
+                    <Label Content="Reload interval in minutes (0 = only reload when all banned):" />
+                    <xctk:IntegerUpDown Background="Transparent" Width="70" Margin="10 0 0 0" Value="{Binding ReloadInterval}" Foreground="{DynamicResource ForegroundMain}"  HorizontalAlignment="Right"/>
+                </DockPanel>
 
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Source:"/>

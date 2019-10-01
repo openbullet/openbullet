@@ -524,11 +524,21 @@ namespace RuriLib.Runner
                         return;
                     }
 
-                    // Write progress to DB every 2 minutes
-                    // Useful if we cannot save it upon work completion (e.g. for a crash or power outage)
-                    if (Timer.IsRunning && (int)Timer.Elapsed.TotalSeconds != 0 && (int)Timer.Elapsed.TotalSeconds % 120 == 0)
+                    // Periodic actions
+                    if (Timer.IsRunning && (int)Timer.Elapsed.TotalSeconds != 0)
                     {
-                        RaiseSaveProgress();
+                        // Write progress to DB every 2 minutes
+                        // Useful if we cannot save it upon work completion (e.g. for a crash or power outage)
+                        if ((int)Timer.Elapsed.TotalSeconds % 120 == 0)
+                        {
+                            RaiseSaveProgress();
+                        }
+
+                        // Reload proxies if a reload interval was set
+                        if (Settings.Proxies.ReloadInterval > 0 && (int)Timer.Elapsed.TotalSeconds % (Settings.Proxies.ReloadInterval * 60) == 0)
+                        {
+                            LoadProxies();
+                        }
                     }
 
                     // If we are above the CPM limit, go to the wait (use cpm NOT CPM so it doesn't calculate it uselessly when it checks the IF conditions)
