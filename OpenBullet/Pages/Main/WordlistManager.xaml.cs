@@ -148,7 +148,7 @@ namespace OpenBullet
                         var wordlist = new Wordlist(Path.GetFileNameWithoutExtension(file), path, Globals.environment.WordlistTypes.First().Name, "");
 
                         // Get the first line
-                        var first = File.ReadLines(wordlist.Path).First();
+                        var first = File.ReadLines(wordlist.Path).First(l => !string.IsNullOrWhiteSpace(l));
 
                         // Set the correct wordlist type
                         wordlist.Type = Globals.environment.RecognizeWordlistType(first);
