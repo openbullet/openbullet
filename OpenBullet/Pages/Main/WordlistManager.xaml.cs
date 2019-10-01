@@ -88,6 +88,12 @@ namespace OpenBullet
 
         public void AddWordlist(Wordlist wordlist)
         {
+            if (vm.WordlistList.Any(w => w.Path == wordlist.Path))
+            {
+                Globals.LogError(Components.WordlistManager, $"Wordlist already present: {wordlist.Path}");
+                return;
+            }
+
             vm.WordlistList.Add(wordlist);
             AddWordlistToDB(wordlist);
         }
