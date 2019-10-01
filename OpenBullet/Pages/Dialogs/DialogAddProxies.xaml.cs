@@ -95,7 +95,7 @@ namespace OpenBullet
 
             if(Caller.GetType() == typeof(ProxyManager))
             {
-                ((ProxyManager)Caller).AddProxies((ProxyType)Enum.Parse(typeof(ProxyType), proxyTypeCombobox.Text), lines);
+                ((ProxyManager)Caller).AddProxies(lines, (ProxyType)Enum.Parse(typeof(ProxyType), proxyTypeCombobox.Text), usernameTextbox.Text, passwordTextbox.Text);
             }
             ((MainDialog)Parent).Close();
         }

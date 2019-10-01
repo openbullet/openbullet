@@ -120,8 +120,10 @@ namespace RuriLib.Models
         /// </summary>
         /// <param name="proxy">The string to parse the proxy from</param>
         /// <param name="defaultType">The default type to use when not specified</param>
+        /// <param name="defaultUsername">The default username to use when not specified</param>
+        /// <param name="defaultPassword">The default password to use when not specified</param>
         /// <returns>The parsed CProxy object</returns>
-        public CProxy Parse(string proxy, ProxyType defaultType = ProxyType.Http)
+        public CProxy Parse(string proxy, ProxyType defaultType = ProxyType.Http, string defaultUsername = "", string defaultPassword = "")
         {
             // Take the first proxy of the chain
             var chain = proxy.Split(new string[] { "->" }, 2, StringSplitOptions.None);
@@ -150,11 +152,16 @@ namespace RuriLib.Models
                 Username = fields[2];
                 Password = fields[3];
             }
+            else
+            {
+                Username = defaultUsername;
+                Password = defaultPassword;
+            }
 
             // If the chain is not finished, set the next proxy by parsing recursively
             if (chain.Count() > 1)
             {
-                Next = (new CProxy()).Parse(chain[1], defaultType);
+                Next = (new CProxy()).Parse(chain[1], defaultType, defaultUsername, defaultPassword);
             }
 
             // Finally return this proxy

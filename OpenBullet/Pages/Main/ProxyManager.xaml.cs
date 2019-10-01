@@ -225,33 +225,33 @@ namespace OpenBullet
 
                         if ((file.ToLower()).Contains("http"))
                         {
-                            AddProxies(ProxyType.Http, lines);
+                            AddProxies(lines, ProxyType.Http);
                         }
                         else if ((file.ToLower()).Contains("socks4a"))
                         {
-                            AddProxies(ProxyType.Socks4a, lines);
+                            AddProxies(lines, ProxyType.Socks4a);
                         }
                         else if ((file.ToLower()).Contains("socks4"))
                         {
-                            AddProxies(ProxyType.Socks4, lines);
+                            AddProxies(lines, ProxyType.Socks4);
                         }
                         else if ((file.ToLower()).Contains("socks5"))
                         {
-                            AddProxies(ProxyType.Socks5, lines);
+                            AddProxies(lines, ProxyType.Socks5);
                         }
                         else
                         {
                             Globals.LogError(Components.ProxyManager, "Failed to parse proxies type from file name, defaulting to HTTP");
-                            AddProxies(ProxyType.Http, lines);
+                            AddProxies(lines);
                         }
                     }
                     catch { }
                 }
             }
         }
-        public void AddProxies(ProxyType type, List<string> lines)
+        public void AddProxies(List<string> lines, ProxyType defaultType = ProxyType.Http, string defaultUsername = "", string defaultPassword = "")
         {
-            Globals.LogInfo(Components.ProxyManager, $"Adding {lines.Count} {type} proxies to the database");
+            Globals.LogInfo(Components.ProxyManager, $"Adding {lines.Count} {defaultType} proxies to the database");
 
             // Check if they're valid
             var proxies = new List<CProxy>();
@@ -260,7 +260,7 @@ namespace OpenBullet
             {
                 try
                 {
-                    CProxy proxy = new CProxy(p, type);
+                    CProxy proxy = new CProxy().Parse(p, defaultType, defaultUsername, defaultPassword);
                     if (!proxy.IsNumeric || proxy.IsValidNumeric)
                     {
                         vm.ProxyList.Add(proxy);
