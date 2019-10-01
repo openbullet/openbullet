@@ -48,6 +48,8 @@ namespace OpenBullet.ViewModels
         public bool LogToFile { get { return logToFile; } set { logToFile = value; OnPropertyChanged(); } }
         private int logBufferSize = 10000;
         public int LogBufferSize { get { return logBufferSize; } set { logBufferSize = value; OnPropertyChanged(); } }
+        private bool backupDB = true;
+        public bool BackupDB { get { return backupDB; } set { backupDB = value; OnPropertyChanged(); } }
 
         public void Reset()
         {

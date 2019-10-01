@@ -29,6 +29,7 @@
             <CheckBox Content="Persist Debugger Log" IsChecked="{Binding PersistDebuggerLog}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
             <CheckBox Content="Disable Syntax Helper" IsChecked="{Binding DisableSyntaxHelper}" VerticalAlignment="Center" VerticalContentAlignment="Center" />
             <CheckBox Content="Display Captures Last in Debugger" IsChecked="{Binding DisplayCapturesLast}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+            <CheckBox Content="Backup the Database daily upon start" IsChecked="{Binding BackupDB}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
         </StackPanel>
 
         <StackPanel Grid.Column="1">

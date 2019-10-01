@@ -45,6 +45,7 @@ namespace OpenBullet
 
         // Constant file paths
         public static string dataBaseFile = @"DB/OpenBullet.db";
+        public static string dataBaseBackupFile = @"DB/OpenBullet-BackupCopy.db";
         public static string obSettingsFile = @"Settings/OBSettings.json";
         public static string rlSettingsFile = @"Settings/RLSettings.json";
         public static string envFile = @"Settings/Environment.ini";

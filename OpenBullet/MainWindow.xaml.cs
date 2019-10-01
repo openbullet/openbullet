@@ -116,6 +116,23 @@ namespace OpenBullet
                 Globals.LogInfo(Components.Main, "Loaded the existing OpenBullet Settings file");
             }
 
+            // If there is no DB backup or if it's more than 1 day old, back up the DB
+            try
+            {
+                if (Globals.obSettings.General.BackupDB &&
+                    (!File.Exists(Globals.dataBaseBackupFile) || 
+                    (File.Exists(Globals.dataBaseBackupFile) && ((DateTime.Now - File.GetCreationTime(Globals.dataBaseBackupFile)).TotalDays > 1))))
+                {
+                    File.Delete(Globals.dataBaseBackupFile);
+                    File.Copy(Globals.dataBaseFile, Globals.dataBaseBackupFile);
+                    Globals.LogInfo(Components.Main, "Backed up the DB");
+                }
+            }
+            catch (Exception ex)
+            {
+                Globals.LogError(Components.Main, $"Could not backup the DB: {ex.Message}");
+            }
+
             Topmost = Globals.obSettings.General.AlwaysOnTop;
 
             RunnerManagerPage = new RunnerManager(Globals.obSettings.General.AutoCreateRunner);
