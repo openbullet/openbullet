@@ -123,6 +123,13 @@ namespace OpenBullet
                     (!File.Exists(Globals.dataBaseBackupFile) || 
                     (File.Exists(Globals.dataBaseBackupFile) && ((DateTime.Now - File.GetCreationTime(Globals.dataBaseBackupFile)).TotalDays > 1))))
                 {
+                    // Check that the DB is not corrupted by accessing a random collection. If this fails, an exception will be thrown.
+                    using (var db = new LiteDB.LiteDatabase(Globals.dataBaseFile))
+                    {
+                        var coll = db.GetCollection<RuriLib.Models.CProxy>("proxies");
+                    }
+
+                    // Delete the old file and copy over the new one
                     File.Delete(Globals.dataBaseBackupFile);
                     File.Copy(Globals.dataBaseFile, Globals.dataBaseBackupFile);
                     Globals.LogInfo(Components.Main, "Backed up the DB");
