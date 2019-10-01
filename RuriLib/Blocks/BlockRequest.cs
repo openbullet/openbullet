@@ -611,7 +611,7 @@ namespace RuriLib
                         }
                         else
                         {
-                            var file = ReplaceValues(downloadPath, data);
+                            var file = MakeValidFileName(ReplaceValues(downloadPath, data));
                             using (var stream = File.Create(file)) { response.ToMemoryStream().CopyTo(stream); } // Read the stream
                             data.Log(new LogEntry("File saved as " + file, Colors.Green));
                         }
