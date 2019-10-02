@@ -205,6 +205,7 @@ namespace RuriLib
                 output = output.Replace("<INPUT>", data.Data.Data);
                 output = output.Replace("<STATUS>", data.Status.ToString());
                 output = output.Replace("<BOTNUM>", data.BotNumber.ToString());
+                output = output.Replace("<RETRIES>", data.Data.Retries.ToString());
                 if (data.Proxy != null)
                     output = output.Replace("<PROXY>", data.Proxy.Proxy);
 
