@@ -611,9 +611,14 @@ namespace RuriLib
                         }
                         else
                         {
-                            var file = MakeValidFileName(ReplaceValues(downloadPath, data));
-                            using (var stream = File.Create(file)) { response.ToMemoryStream().CopyTo(stream); } // Read the stream
-                            data.Log(new LogEntry("File saved as " + file, Colors.Green));
+                            var filePath = ReplaceValues(downloadPath, data);
+                            var dirName = Path.GetDirectoryName(filePath);
+                            if (dirName != "") dirName += Path.DirectorySeparatorChar.ToString();
+                            var fileName = Path.GetFileNameWithoutExtension(filePath);
+                            var fileExtension = Path.GetExtension(filePath);
+                            var sanitizedPath = $"{dirName}{MakeValidFileName(fileName)}{fileExtension}";
+                            using (var stream = File.Create(sanitizedPath)) { response.ToMemoryStream().CopyTo(stream); } // Read the stream
+                            data.Log(new LogEntry("File saved as " + sanitizedPath, Colors.Green));
                         }
                         break;
 
