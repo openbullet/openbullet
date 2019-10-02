@@ -136,6 +136,22 @@ namespace RuriLib.Models
             return proxy;
         }
 
+        /// <summary>
+        /// Removes all duplicate proxies from the pool.
+        /// </summary>
+        public void RemoveDuplicates()
+        {
+            var dupeList = Proxies
+               .GroupBy(p => p.Proxy)
+               .Where(grp => grp.Count() > 1)
+               .Select(grp => grp.First());
+
+            foreach (var p in dupeList)
+            {
+                Proxies.Remove(p);
+            }
+        }
+
         private static void Shuffle<T>(IList<T> list)
         {
             int n = list.Count;
