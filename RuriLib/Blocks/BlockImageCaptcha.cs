@@ -31,6 +31,10 @@ namespace RuriLib
         /// <summary>Whether the captcha image needs to be taken by the last screenshot taken by selenium.</summary>
         public bool SendScreenshot { get { return sendScreenshot; } set { sendScreenshot = value; OnPropertyChanged(); } }
 
+        private string userAgent = "";
+        /// <summary>The user agent to use in the image download request.</summary>
+        public string UserAgent { get { return userAgent; } set { userAgent = value; OnPropertyChanged(); } }
+
         /// <summary>
         /// Creates an Image Captcha block.
         /// </summary>
@@ -56,6 +60,11 @@ namespace RuriLib
 
             Url = LineParser.ParseLiteral(ref input, "URL");
 
+            if (LineParser.Lookahead(ref input) == TokenType.Literal)
+            {
+                UserAgent = LineParser.ParseLiteral(ref input, "UserAgent");
+            }
+
             while (LineParser.Lookahead(ref input) == TokenType.Boolean)
                 LineParser.SetBool(ref input, this);
 
@@ -75,12 +84,16 @@ namespace RuriLib
             writer
                 .Label(Label)
                 .Token("CAPTCHA")
-                .Literal(Url)
-                .Boolean(Base64, "Base64")
+                .Literal(Url);
+
+            if (UserAgent != "") writer.Literal(UserAgent);
+
+            writer.Boolean(Base64, "Base64")
                 .Boolean(SendScreenshot, "SendScreenshot")
                 .Arrow()
                 .Token("VAR")
                 .Literal(VariableName);
+
             return writer.ToString();
         }
 
@@ -180,6 +193,7 @@ namespace RuriLib
         {
             HttpRequest request = new HttpRequest();
 
+            if (UserAgent != "") request.UserAgent = ReplaceValues(UserAgent, data);
             request.Cookies = new CookieDictionary();
             foreach (var cookie in data.Cookies)
                 request.Cookies.Add(cookie.Key, cookie.Value);

@@ -18,6 +18,10 @@
                 <Label Content="Captcha URL:" />
                 <TextBox Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" ToolTip="URL to download the captcha image from (using the assigned proxy)"/>
             </DockPanel>
+            <DockPanel Margin="0 5 0 0">
+                <Label Content="User Agent:" />
+                <TextBox Text="{Binding UserAgent, UpdateSourceTrigger=PropertyChanged}" ToolTip="User Agent to use during the download request"/>
+            </DockPanel>
             <CheckBox Content="Base 64 Captcha in Url box" IsChecked="{Binding Base64}" VerticalContentAlignment="Center" ToolTip="Whether in the box above there is a base64-encoded representation of an image"/>
             <CheckBox Content="Use Previously Saved Screenshot" IsChecked="{Binding SendScreenshot}" VerticalContentAlignment="Center" ToolTip="Whether to use a screenshot that was previously saved via selenium"/>
         </StackPanel>
