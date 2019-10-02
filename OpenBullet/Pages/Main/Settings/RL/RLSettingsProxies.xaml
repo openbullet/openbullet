@@ -22,11 +22,18 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Column="0" Grid.Row="0" Margin="5">
-            <Label Content="General"/>
+            <Label Content="General" FontWeight="Bold"/>
             <CheckBox Content="Allow Concurrent Use" IsChecked="{Binding ConcurrentUse}" VerticalContentAlignment="Center"/>
             <CheckBox Content="Never Ban Proxies" IsChecked="{Binding NeverBan}" VerticalContentAlignment="Center"/>
+            <DockPanel>
+                <Label Content="Ban Loop Evasion (0 = disable)" />
+                <xctk:IntegerUpDown Background="Transparent" Width="65" Margin="10 0 0 0" Value="{Binding MaxBans}" Foreground="{DynamicResource ForegroundMain}" HorizontalAlignment="Right" />
+                <DockPanel.ToolTip>
+                    How many times a data line should be retried upon BAN status before being sent to TOCHECK
+                </DockPanel.ToolTip>
+            </DockPanel>
             <CheckBox Content="Shuffle Proxies on Start" IsChecked="{Binding ShuffleOnStart}" VerticalContentAlignment="Center" />
-            <Label Content="CloudFlare"/>
+            <Label Content="CloudFlare" FontWeight="Bold"/>
             <CheckBox Content="Don't Reuse Clearance Cookie (CF)" IsChecked="{Binding AlwaysGetClearance}" VerticalContentAlignment="Center"/>
         </StackPanel>
 

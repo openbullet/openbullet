@@ -16,6 +16,9 @@ namespace RuriLib.Models
         /// <summary>The WordlistType of the Wordlist the line belongs to.</summary>
         public WordlistType Type { get; set; }
 
+        /// <summary>The amount of times the data has been retried with a different proxy.</summary>
+        public int Retries { get; set; } = 0;
+
         /// <summary>Whether the data line respects the regex verification.</summary>
         public bool IsValid
         {

@@ -834,6 +834,7 @@ namespace RuriLib.Runner
                         break;
 
                     case BotStatus.BAN:
+                        // If the NeverBan option is true or we don't use a proxy, the BAN gets treated as a RETRY
                         if (UseProxies && !Settings.Proxies.NeverBan)
                         {
                             currentProxy.Status = Status.BANNED;
@@ -841,8 +842,16 @@ namespace RuriLib.Runner
                             RetryCount++;
                         }
 
-                        // If the NeverBan option is true or we don't use a proxy, the BAN gets treated as a RETRY
-                        goto GETPROXY;
+                        if (currentData.Retries < Settings.Proxies.MaxBans || Settings.Proxies.MaxBans == 0)
+                        {
+                            currentData.Retries++;
+                            goto GETPROXY;
+                        }
+                        else
+                        {
+                            RaiseMessageArrived(LogLevel.Warning, $"[{bot.Id}][{bot.Data}] Maximum retries exceeded");
+                            goto TOCHECK;
+                        }
 
                     case BotStatus.ERROR: // We assume it's a proxy error and that the Config is working correctly, so we mark the proxy as bad
                         RetryCount++;
@@ -854,6 +863,7 @@ namespace RuriLib.Runner
                         goto GETPROXY;
 
                     case BotStatus.NONE:
+                        TOCHECK:
                         validData = new ValidData(botData.Data.Data, botData.Proxy == null ? "" : botData.Proxy.Proxy, botData.Proxy == null ? ProxyType.Http : botData.Proxy.Type, botData.Status, "TOCHK", capturedData.ToCaptureString(), Settings.General.SaveLastSource ? botData.ResponseSource : "", BotLog);
                         RaiseDispatchAction(new Action(() => ToCheckList.Add(validData)));
 
