@@ -83,7 +83,8 @@ namespace RuriLib
             }
 
             var localUrl = ReplaceValues(url, data);
-
+            var uri = new Uri(localUrl);
+            
             var timeout = data.GlobalSettings.General.RequestTimeout * 1000;
 
             var request = new HttpRequest();
@@ -92,7 +93,7 @@ namespace RuriLib
             request.ReadWriteTimeout = timeout;
             request.Cookies = new CookieStorage();
             foreach (var cookie in data.Cookies)
-                request.Cookies.Add(new Cookie(cookie.Key, cookie.Value));
+                request.Cookies.Add(new Cookie(cookie.Key, cookie.Value, "/", uri.Host));
 
             if (data.UseProxies)
             {
