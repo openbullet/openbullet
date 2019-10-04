@@ -850,6 +850,8 @@ namespace RuriLib.Runner
                         else
                         {
                             RaiseMessageArrived(LogLevel.Warning, $"[{bot.Id}][{bot.Data}] Maximum retries exceeded");
+                            botData.Status = BotStatus.NONE;
+                            hitType = botData.Status.ToString();
                             goto TOCHECK;
                         }
 
