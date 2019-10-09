@@ -492,15 +492,12 @@ namespace RuriLib.LS
                             {
                                 switch (variable.Type)
                                 {
-                                    case CVar.VarType.Single:
-                                        jsengine.SetValue(variable.Name, variable.Value);
-                                        break;
-
                                     case CVar.VarType.List:
                                         jsengine.SetValue(variable.Name, (variable.Value as List<string>).ToArray());
                                         break;
 
                                     default:
+                                        jsengine.SetValue(variable.Name, variable.Value);
                                         break;
                                 }
                             }
