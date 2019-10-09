@@ -1277,7 +1277,13 @@ namespace RuriLib
         #endregion
 
         #region Others
-        private string[] SplitInChunks(string str, int chunkSize)
+        /// <summary>
+        /// Splits a string in chunks of a given size.
+        /// </summary>
+        /// <param name="str">The string to split</param>
+        /// <param name="chunkSize">The maximum chunk size</param>
+        /// <returns>An array of strings where the last one might be shorter than the maximum chunk size.</returns>
+        public static string[] SplitInChunks(string str, int chunkSize)
         {
             if (str.Length < chunkSize) return new string[] { str };
             return Enumerable.Range(0, (int)Math.Ceiling((double)str.Length / (double)chunkSize))

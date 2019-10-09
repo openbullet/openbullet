@@ -421,7 +421,9 @@ namespace RuriLib
                             // Very dirty but it works
                             var nonce = data.Random.Next(1000000, 9999999);
                             pData = pData.Replace("&", $"{nonce}&{nonce}").Replace("=", $"{nonce}={nonce}");
-                            pData = System.Uri.EscapeDataString(pData).Replace($"{nonce}%26{nonce}", "&").Replace($"{nonce}%3D{nonce}", "=");
+                            pData = string.Join("", BlockFunction.SplitInChunks(pData, 2080)
+                                .Select(s => Uri.EscapeDataString(s)))
+                                .Replace($"{nonce}%26{nonce}", "&").Replace($"{nonce}%3D{nonce}", "=");
                         }
 
                         content = new StringContent(pData);
