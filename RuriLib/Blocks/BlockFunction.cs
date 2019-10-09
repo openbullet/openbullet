@@ -584,11 +584,12 @@ namespace RuriLib
                         break;                        
                    
                     case Function.URLEncode:
-                        outputString = System.Uri.EscapeDataString(localInputString);
+                        // The maximum allowed Uri size is 2083 characters, we use 2080 as a precaution
+                        outputString = string.Join("", SplitInChunks(localInputString, 2080).Select(s => Uri.EscapeDataString(s)));
                         break;
 
                     case Function.URLDecode:
-                        outputString = System.Uri.UnescapeDataString(localInputString);
+                        outputString = Uri.UnescapeDataString(localInputString);
                         break;
 
                     case Function.UnixTimeToDate:
@@ -1272,6 +1273,16 @@ namespace RuriLib
 
             // Opera mini = 4%
             return Http.OperaMiniUserAgent();
+        }
+        #endregion
+
+        #region Others
+        private string[] SplitInChunks(string str, int chunkSize)
+        {
+            if (str.Length < chunkSize) return new string[] { str };
+            return Enumerable.Range(0, (int)Math.Ceiling((double)str.Length / (double)chunkSize))
+                .Select(i => str.Substring(i * chunkSize, Math.Min(str.Length - i * chunkSize, chunkSize)))
+                .ToArray();
         }
         #endregion
     }
