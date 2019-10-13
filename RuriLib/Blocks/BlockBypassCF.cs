@@ -75,9 +75,10 @@ namespace RuriLib
             // If the clearance info is already set and we're not getting it fresh each time, skip
             if (data.UseProxies)
             {
-                if (data.Proxy.Clearance != "" && data.Proxy.Cfduid != "" && !data.GlobalSettings.Proxies.AlwaysGetClearance)
+                if (data.Proxy.Clearance != "" && !data.GlobalSettings.Proxies.AlwaysGetClearance)
                 {
                     data.Log(new LogEntry("Skipping CF Bypass because there is already a valid cookie", Colors.White));
+                    data.Cookies.Add("cf_clearance", data.Proxy.Clearance);
                     return;
                 }
             }
