@@ -29,6 +29,10 @@ namespace RuriLib
         /// <summary>Whether to print the full response info to the log.</summary>
         public bool PrintResponseInfo { get { return printResponseInfo; } set { printResponseInfo = value; OnPropertyChanged(); } }
 
+        private bool errorOn302 = true;
+        /// <summary>Whether to set ERROR Status on 302.</summary>
+        public bool ErrorOn302 { get { return errorOn302; } set { errorOn302 = value; OnPropertyChanged(); } }
+
         /// <summary>
         /// Creates a Cloudflare bypass block.
         /// </summary>
@@ -76,7 +80,8 @@ namespace RuriLib
                 .Token("BYPASSCF")
                 .Literal(Url)
                 .Literal(UserAgent, "UserAgent")
-                .Boolean(PrintResponseInfo, "PrintResponseInfo");
+                .Boolean(PrintResponseInfo, "PrintResponseInfo")
+                .Boolean(ErrorOn302, "ErrorOn302");
             return writer.ToString();
         }
 
@@ -215,6 +220,11 @@ namespace RuriLib
                 data.Log(new LogEntry("Response Source:", Colors.Green));
                 data.Log(new LogEntry(data.ResponseSource, Colors.GreenYellow));
             }
+
+            if (ErrorOn302 && data.ResponseCode.Contains("302"))
+            {
+                data.Status = BotStatus.ERROR;
+            };
         }
     }
 }
