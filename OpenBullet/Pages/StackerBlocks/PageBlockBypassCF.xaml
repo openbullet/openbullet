@@ -23,6 +23,7 @@
                 <TextBox Text="{Binding UserAgent, UpdateSourceTrigger=PropertyChanged}" />
             </DockPanel>
             <CheckBox IsChecked="{Binding PrintResponseInfo}" Content="Print Response Info" VerticalContentAlignment="Center" />
+            <CheckBox IsChecked="{Binding ErrorOn302}" Content="Set Error Status on 302" VerticalContentAlignment="Center" />
 
             <TextBlock
                    FontSize="12" 
