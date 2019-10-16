@@ -842,7 +842,7 @@ namespace RuriLib.Runner
                             RetryCount++;
                         }
 
-                        if (currentData.Retries < Settings.Proxies.MaxBans || Settings.Proxies.MaxBans == 0)
+                        if (currentData.Retries < Settings.Proxies.BanLoopEvasion || Settings.Proxies.BanLoopEvasion == 0)
                         {
                             currentData.Retries++;
                             goto GETPROXY;

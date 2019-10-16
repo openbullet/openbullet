@@ -34,9 +34,9 @@ namespace RuriLib.ViewModels
         /// <summary>Whether to never ban the proxies.</summary>
         public bool NeverBan { get { return neverBan; } set { neverBan = value; OnPropertyChanged(); } }
 
-        private int maxBans = 30;
+        private int banLoopEvasion = 100;
         /// <summary>The maximum amount of times a data line ends up with a BAN status before it's marked as ToCheck.</summary>
-        public int MaxBans { get { return maxBans; } set { maxBans = value; OnPropertyChanged(); } }
+        public int BanLoopEvasion { get { return banLoopEvasion; } set { banLoopEvasion = value; OnPropertyChanged(); } }
 
         private bool shuffleOnStart = false;
         /// <summary>Whether proxy lists should be shuffled before being assigned to the Runner.</summary>

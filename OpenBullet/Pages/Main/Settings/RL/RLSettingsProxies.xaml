@@ -26,8 +26,8 @@
             <CheckBox Content="Allow Concurrent Use" IsChecked="{Binding ConcurrentUse}" VerticalContentAlignment="Center"/>
             <CheckBox Content="Never Ban Proxies" IsChecked="{Binding NeverBan}" VerticalContentAlignment="Center"/>
             <DockPanel>
-                <Label Content="Ban Loop Evasion (0 = disable)" />
-                <xctk:IntegerUpDown Background="Transparent" Width="65" Margin="10 0 0 0" Value="{Binding MaxBans}" Foreground="{DynamicResource ForegroundMain}" HorizontalAlignment="Right" />
+                <Label Content="Ban Loop Evasion (0 = disabled)" />
+                <xctk:IntegerUpDown Background="Transparent" Width="60" Margin="10 0 0 0" Value="{Binding BanLoopEvasion}" Foreground="{DynamicResource ForegroundMain}" HorizontalAlignment="Right" />
                 <DockPanel.ToolTip>
                     How many times a data line should be retried upon BAN status before being sent to TOCHECK
                 </DockPanel.ToolTip>
