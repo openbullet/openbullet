@@ -881,7 +881,7 @@ namespace RuriLib.Runner
                 // Add it to the List and to the Database as well
                 if (validData != null)
                 {
-                    var hit = new Hit(data, capturedData, currentProxy == null ? "" : currentProxy.Proxy, hitType, ConfigName, WordlistName);
+                    var hit = new Hit(botData.Data.Data, capturedData, currentProxy == null ? "" : currentProxy.Proxy, hitType, ConfigName, WordlistName);
                     RaiseFoundHit(hit);
                 }
 
