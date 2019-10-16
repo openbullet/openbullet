@@ -96,7 +96,7 @@ namespace RuriLib
                 if (data.Proxy.Clearance != "" && !data.GlobalSettings.Proxies.AlwaysGetClearance)
                 {
                     data.Log(new LogEntry("Skipping CF Bypass because there is already a valid cookie", Colors.White));
-                    data.Cookies.Add("cf_clearance", data.Proxy.Clearance);
+                    data.Cookies["cf_clearance"] = data.Proxy.Clearance;
                     return;
                 }
             }
@@ -224,7 +224,7 @@ namespace RuriLib
             if (ErrorOn302 && data.ResponseCode.Contains("302"))
             {
                 data.Status = BotStatus.ERROR;
-            };
+            }
         }
     }
 }
