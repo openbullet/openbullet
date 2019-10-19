@@ -39,7 +39,7 @@ namespace OpenBullet
             typeFilterCombobox.SelectedIndex = 0;
 
             configFilterCombobox.Items.Add("All");
-            foreach (string c in vm.ConfigsList)
+            foreach (string c in vm.ConfigsList.OrderBy(c => c))
                 configFilterCombobox.Items.Add(c);
 
             configFilterCombobox.SelectedIndex = 0;
