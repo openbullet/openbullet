@@ -329,7 +329,7 @@ namespace OpenBullet
             Globals.mainWindow.ShowRunner(runner);
 
             runner.vm.SetWordlist(wordlist);
-            runner.vm.DataPool = new DataPool (hitsListView.SelectedItems.Cast<Hit>().Select(h => h.Data));
+            runner.vm.DataPool = new DataPool (hitsListView.SelectedItems.Cast<Hit>().Select(h => h.Data).ToList());
 
             // Try to select the config referring to the first selected hit
             try
