@@ -146,8 +146,11 @@ namespace RuriLib
 
             request.UserAgent = ReplaceValues(userAgent, data);
 
-            var twoCapToken = data.GlobalSettings.Captchas.TwoCapToken;
-            if (twoCapToken != "") request.CaptchaSolver = new TwoCaptchaSolver() { ApiKey = data.GlobalSettings.Captchas.TwoCapToken };
+            var cs = data.GlobalSettings.Captchas;
+            if (cs.TwoCapToken != "")
+            {
+                request.CaptchaSolver = new TwoCaptchaSolver() { ApiKey = cs.TwoCapToken };
+            }
 
             var response = request.GetThroughCloudflare(new Uri(localUrl));
             var responseString = response.ToString();

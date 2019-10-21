@@ -64,6 +64,18 @@ namespace RuriLib.ViewModels
         /// <summary>The CaptchaDecoder API Token.</summary>
         public string CDToken { get { return cdToken; } set { cdToken = value; OnPropertyChanged(); } }
 
+        private string customTwoCapToken = "";
+        /// <summary>The custom 2Captcha API Token.</summary>
+        public string CustomTwoCapToken { get { return customTwoCapToken; } set { customTwoCapToken = value; OnPropertyChanged(); } }
+
+        private string customTwoCapDomain = "example.com";
+        /// <summary>The custom 2Captcha server's domain.</summary>
+        public string CustomTwoCapDomain { get { return customTwoCapDomain; } set { customTwoCapDomain = value; OnPropertyChanged(); } }
+
+        private int customTwoCapPort = 80;
+        /// <summary>The custom 2Captcha server's port.</summary>
+        public int CustomTwoCapPort { get { return customTwoCapPort; } set { customTwoCapPort = value; OnPropertyChanged(); } }
+
         private bool bypassBalanceCheck = false;
         /// <summary>Whether to bypass the balance check before solving a captcha challenge.</summary>
         public bool BypassBalanceCheck { get { return bypassBalanceCheck; } set { bypassBalanceCheck = value; OnPropertyChanged(); } }

@@ -40,7 +40,10 @@ namespace RuriLib
             TwoCaptcha,
 
             /// <summary>The service provided by https://rucaptcha.com/</summary>
-            RuCaptcha
+            RuCaptcha,
+
+            /// <summary>The service provided by a custom server using the official 2Captcha API.</summary>
+            CustomTwoCaptcha
         }
 
         /// <summary>The balance of the account of the captcha-solving service.</summary>
@@ -58,42 +61,47 @@ namespace RuriLib
             // Get balance. If balance is under a certain threshold, don't ask for captcha solve
             Balance = 0; // Reset it or the block will save it for future calls
             data.Log(new LogEntry("Checking balance...", Colors.White));
-            switch (data.GlobalSettings.Captchas.CurrentService)
+            var cs = data.GlobalSettings.Captchas;
+            switch (cs.CurrentService)
             {
                 case CaptchaService.ImageTypers:
-                    Balance = new ImageTyperz(data.GlobalSettings.Captchas.ImageTypToken, data.GlobalSettings.Captchas.Timeout).GetBalance();
+                    Balance = new ImageTyperz(cs.ImageTypToken, cs.Timeout).GetBalance();
                     break;
 
                 case CaptchaService.AntiCaptcha:
-                    Balance = new AntiCaptcha(data.GlobalSettings.Captchas.AntiCapToken, data.GlobalSettings.Captchas.Timeout).GetBalance();
+                    Balance = new AntiCaptcha(cs.AntiCapToken, cs.Timeout).GetBalance();
                     break;
 
                 case CaptchaService.DBC:
-                    Balance = new DeathByCaptcha(data.GlobalSettings.Captchas.DBCUser, data.GlobalSettings.Captchas.DBCPass, data.GlobalSettings.Captchas.Timeout).GetBalance();
+                    Balance = new DeathByCaptcha(cs.DBCUser, cs.DBCPass, cs.Timeout).GetBalance();
                     break;
 
                 case CaptchaService.TwoCaptcha:
-                    Balance = new TwoCaptcha(data.GlobalSettings.Captchas.TwoCapToken, data.GlobalSettings.Captchas.Timeout).GetBalance();
+                    Balance = new TwoCaptcha(cs.TwoCapToken, cs.Timeout).GetBalance();
                     break;
 
                 case CaptchaService.RuCaptcha:
-                    Balance = new RuCaptcha(data.GlobalSettings.Captchas.RuCapToken, data.GlobalSettings.Captchas.Timeout).GetBalance();
+                    Balance = new RuCaptcha(cs.RuCapToken, cs.Timeout).GetBalance();
                     break;
 
                 case CaptchaService.DeCaptcher:
-                    Balance = new DeCaptcher(data.GlobalSettings.Captchas.DCUser, data.GlobalSettings.Captchas.DCPass, data.GlobalSettings.Captchas.Timeout).GetBalance();
+                    Balance = new DeCaptcher(cs.DCUser, cs.DCPass, cs.Timeout).GetBalance();
                     break;
 
                 case CaptchaService.AZCaptcha:
-                    Balance = new AZCaptcha(data.GlobalSettings.Captchas.AZCapToken, data.GlobalSettings.Captchas.Timeout).GetBalance();
+                    Balance = new AZCaptcha(cs.AZCapToken, cs.Timeout).GetBalance();
                     break;
 
                 case CaptchaService.SolveRecaptcha:
-                    Balance = new SolveReCaptcha(data.GlobalSettings.Captchas.SRUserId, data.GlobalSettings.Captchas.SRToken, data.GlobalSettings.Captchas.Timeout).GetBalance();
+                    Balance = new SolveReCaptcha(cs.SRUserId, cs.SRToken, cs.Timeout).GetBalance();
                     break;
 
                 case CaptchaService.CaptchasIO:
-                    Balance = new CaptchasIO(data.GlobalSettings.Captchas.CIOToken, data.GlobalSettings.Captchas.Timeout).GetBalance();
+                    Balance = new CaptchasIO(cs.CIOToken, cs.Timeout).GetBalance();
+                    break;
+
+                case CaptchaService.CustomTwoCaptcha:
+                    Balance = new CustomTwoCaptcha(cs.CustomTwoCapToken, cs.CustomTwoCapDomain, cs.CustomTwoCapPort, cs.Timeout).GetBalance();
                     break;
 
                 default:

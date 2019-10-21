@@ -36,6 +36,12 @@ namespace RuriLib.CaptchaServices
         /// <summary>The password to access the captcha service.</summary>
         public string Pass { get; set; }
 
+        /// <summary>The custom server's domain.</summary>
+        public string Domain { get; set; }
+
+        /// <summary>The custom server's port.</summary>
+        public int Port { get; set; }
+
         /// <summary>The maximum time to wait for captcha completion.</summary>
         public int Timeout { get; set; }
 
@@ -69,6 +75,21 @@ namespace RuriLib.CaptchaServices
             Pass = pass;
             Timeout = timeout;
             Status = CaptchaStatus.Idle;
+        }
+
+        /// <summary>
+        /// Creates a captcha service that authenticates via api key on a custom server.
+        /// </summary>
+        /// <param name="apiKey">The API key of your account</param>
+        /// <param name="domain">The server's domain</param>
+        /// <param name="port">The server's port</param>
+        /// <param name="timeout">The maximum time to wait for captcha completion</param>
+        public CaptchaService(string apiKey, string domain, int port, int timeout)
+        {
+            ApiKey = apiKey;
+            Domain = domain;
+            Port = port;
+            Timeout = timeout;
         }
 
         /// <summary>

@@ -137,38 +137,43 @@ namespace RuriLib
             var bitmap = new Bitmap(captchaFile);
             try
             {
-                switch (data.GlobalSettings.Captchas.CurrentService)
+                var cs = data.GlobalSettings.Captchas;
+                switch (cs.CurrentService)
                 {
                     case CaptchaService.ImageTypers:
-                        service = new ImageTyperz(data.GlobalSettings.Captchas.ImageTypToken, data.GlobalSettings.Captchas.Timeout);
+                        service = new ImageTyperz(cs.ImageTypToken, cs.Timeout);
                         break;
 
                     case CaptchaService.AntiCaptcha:
-                        service = new AntiCaptcha(data.GlobalSettings.Captchas.AntiCapToken, data.GlobalSettings.Captchas.Timeout);
+                        service = new AntiCaptcha(cs.AntiCapToken, cs.Timeout);
                         break;
 
                     case CaptchaService.DBC:
-                        service = new DeathByCaptcha(data.GlobalSettings.Captchas.DBCUser, data.GlobalSettings.Captchas.DBCPass, data.GlobalSettings.Captchas.Timeout);
+                        service = new DeathByCaptcha(cs.DBCUser, cs.DBCPass, cs.Timeout);
                         break;
 
                     case CaptchaService.TwoCaptcha:
-                        service = new TwoCaptcha(data.GlobalSettings.Captchas.TwoCapToken, data.GlobalSettings.Captchas.Timeout);
+                        service = new TwoCaptcha(cs.TwoCapToken, cs.Timeout);
                         break;
 
                     case CaptchaService.RuCaptcha:
-                        service = new RuCaptcha(data.GlobalSettings.Captchas.RuCapToken, data.GlobalSettings.Captchas.Timeout);
+                        service = new RuCaptcha(cs.RuCapToken, cs.Timeout);
                         break;
 
                     case CaptchaService.DeCaptcher:
-                        service = new DeCaptcher(data.GlobalSettings.Captchas.DCUser, data.GlobalSettings.Captchas.DCPass, data.GlobalSettings.Captchas.Timeout);
+                        service = new DeCaptcher(cs.DCUser, cs.DCPass, cs.Timeout);
                         break;
 
                     case CaptchaService.AZCaptcha:
-                        service = new AZCaptcha(data.GlobalSettings.Captchas.AZCapToken, data.GlobalSettings.Captchas.Timeout);
+                        service = new AZCaptcha(cs.AZCapToken, cs.Timeout);
                         break;
 
                     case CaptchaService.CaptchasIO:
-                        service = new CaptchasIO(data.GlobalSettings.Captchas.CIOToken, data.GlobalSettings.Captchas.Timeout);
+                        service = new CaptchasIO(cs.CIOToken, cs.Timeout);
+                        break;
+
+                    case CaptchaService.CustomTwoCaptcha:
+                        service = new CustomTwoCaptcha(cs.CustomTwoCapToken, cs.CustomTwoCapDomain, cs.CustomTwoCapPort, cs.Timeout);
                         break;
 
                     default:
