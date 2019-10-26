@@ -177,6 +177,16 @@
                             <GridViewColumnHeader Tag="Port" Click="listViewColumnHeader_Click">Port</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Username}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Username" Click="listViewColumnHeader_Click">Username</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Password}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Password" Click="listViewColumnHeader_Click">Password</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=Country}">
                         <GridViewColumn.Header>
                             <GridViewColumnHeader Tag="Country" Click="listViewColumnHeader_Click">Country</GridViewColumnHeader>
