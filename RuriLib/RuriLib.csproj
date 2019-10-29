@@ -262,6 +262,7 @@
     <Compile Include="Runner\RunnerBotViewModel.cs" />
     <Compile Include="Runner\RunnerViewModel.cs" />
     <Compile Include="TypeSwitch.cs" />
+    <Compile Include="Utils\Parse.cs" />
     <Compile Include="ViewModels\ConfigViewModel.cs" />
     <Compile Include="Models\CProxy.cs" />
     <Compile Include="Models\LogEntry.cs" />
