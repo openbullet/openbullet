@@ -8,7 +8,7 @@ using AngleSharp.Html.Parser;
 using Extreme.Net;
 using Newtonsoft.Json.Linq;
 
-namespace RuriLib.Utils
+namespace RuriLib.Utils.Parsing
 {
     /// <summary>
     /// Provides parsing methods.

@@ -211,6 +211,8 @@
     <Compile Include="CaptchaServices\CaptchasIO.cs" />
     <Compile Include="CaptchaServices\CustomTwoCaptcha.cs" />
     <Compile Include="CaptchaServices\RuCaptcha.cs" />
+    <Compile Include="Functions\Crypto\Crypto.cs" />
+    <Compile Include="Functions\Encoding\Encode.cs" />
     <Compile Include="GZip.cs" />
     <Compile Include="LoliScript\Exceptions\BlockProcessingException.cs" />
     <Compile Include="LoliScript\LoliScript.cs" />
@@ -262,7 +264,7 @@
     <Compile Include="Runner\RunnerBotViewModel.cs" />
     <Compile Include="Runner\RunnerViewModel.cs" />
     <Compile Include="TypeSwitch.cs" />
-    <Compile Include="Utils\Parse.cs" />
+    <Compile Include="Functions\Parsing\Parse.cs" />
     <Compile Include="ViewModels\ConfigViewModel.cs" />
     <Compile Include="Models\CProxy.cs" />
     <Compile Include="Models\LogEntry.cs" />
