@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Encoding;
 using System.Threading.Tasks;
 
 namespace RuriLib.Functions.Crypto

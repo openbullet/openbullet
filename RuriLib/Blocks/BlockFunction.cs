@@ -144,6 +144,9 @@ namespace RuriLib
         /// </summary>
         public enum Hash
         {
+            /// <summary>The MD4 hashing function (128 bits digest).</summary>
+            MD4,
+
             /// <summary>The MD5 hashing function (128 bits digest).</summary>
             MD5,
 
@@ -746,6 +749,9 @@ namespace RuriLib
         {
             switch (type)
             {
+                case Hash.MD4:
+                    return Crypto.MD4(baseString);
+
                 case Hash.MD5:
                     return Crypto.MD5(baseString);
 
