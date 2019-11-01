@@ -204,6 +204,21 @@ namespace RuriLib.Functions.Crypto
         }
 
         /// <summary>
+        /// Converts a hex string to a byte array.
+        /// </summary>
+        /// <param name="input">The hex string</param>
+        /// <returns>A byte array</returns>
+        public static byte[] FromHex(this string input)
+        {
+            var resultantArray = new byte[input.Length / 2];
+            for (var i = 0; i < resultantArray.Length; i++)
+            {
+                resultantArray[i] = System.Convert.ToByte(input.Substring(i * 2, 2), 16);
+            }
+            return resultantArray;
+        }
+
+        /// <summary>
         /// Converts from the Hash enum to the HashAlgorithmName default struct.
         /// </summary>
         /// <param name="type">The hash type as a Hash enum</param>
@@ -310,21 +325,21 @@ namespace RuriLib.Functions.Crypto
         /// <param name="iterations">The number of times the algorithm should be executed</param>
         /// <param name="type">The hashing algorithm to use</param>
         /// <param name="keyLength">The generated key length in bytes</param>
-        /// <returns>The generated key.</returns>
+        /// <returns>The generated key as a base64 string.</returns>
         public static string PBKDF2PKCS5(string password, string salt, int saltSize = 8, int iterations = 1, int keyLength = 16, Hash type = Hash.SHA1)
         {
             if (salt != "")
             {
                 using (var deriveBytes = new Rfc2898DeriveBytes(password, Convert.FromBase64String(salt), iterations, type.ToHashAlgorithmName()))
                 {
-                    return deriveBytes.GetBytes(keyLength).ToHex();
+                    return Convert.ToBase64String(deriveBytes.GetBytes(keyLength));
                 }
             }
             else
             {
                 using (var deriveBytes = new Rfc2898DeriveBytes(password, saltSize, iterations, type.ToHashAlgorithmName()))
                 {
-                    return deriveBytes.GetBytes(keyLength).ToHex();
+                    return Convert.ToBase64String(deriveBytes.GetBytes(keyLength));
                 }
             }
         }
