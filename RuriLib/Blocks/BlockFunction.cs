@@ -274,7 +274,7 @@ namespace RuriLib
         // -- PBKDF2PKCS5
         private string kdfSalt = "";
         /// <summary>The KDF's salt as a base64 string.</summary>
-        public string KdfSalt { get { return kdfSalt; } set { KdfSalt = value; OnPropertyChanged(); } }
+        public string KdfSalt { get { return kdfSalt; } set { kdfSalt = value; OnPropertyChanged(); } }
 
         private int kdfSaltSize = 8;
         /// <summary>The size of the generated salt (in bytes) in case none is specified.</summary>
