@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using OpenBullet.ViewModels;
 using RuriLib;
+using RuriLib.Functions.Crypto;
 using RuriLib.Models;
 using RuriLib.Runner;
 using System;
@@ -391,7 +392,7 @@ namespace OpenBullet
 
         private string GetHitChecksum(Hit hit)
         {
-            return BlockFunction.GetHash(hit.Data + hit.ConfigName + hit.WordlistName, BlockFunction.Hash.MD5);
+            return BlockFunction.GetHash(hit.Data + hit.ConfigName + hit.WordlistName, Hash.MD5);
         }
 
         private void deleteFilteredButton_Click(object sender, RoutedEventArgs e)

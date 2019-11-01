@@ -1,6 +1,7 @@
 ﻿using Extreme.Net;
 using OpenBullet.Models;
 using RuriLib;
+using RuriLib.Functions.Formats;
 using RuriLib.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -117,7 +118,7 @@ namespace OpenBullet.ViewModels
                         break;
 
                     case Source.AuthMode.UserPass:
-                        var header = BlockFunction.Base64Encode($"{source.Username}:{source.Password}");
+                        var header = ($"{source.Username}:{source.Password}").ToBase64();
                         wc.Headers.Add(HttpRequestHeader.Authorization, $"Basic {header}");
                         break;
 

@@ -111,8 +111,11 @@ namespace RuriLib
             /// <summary>Clears the cookie jar used for HTTP requests.</summary>
             ClearCookies,
 
-            /// <summary>Encrypts a string with RSA given a Key.</summary>
-            RSA,
+            /// <summary>Encrypts a string with RSA.</summary>
+            RSAEncrypt,
+
+            /// <summary>Decrypts a string with RSA.</summary>
+            RSADecrypt,
 
             /// <summary>Waits a given amount of milliseconds.</summary>
             Delay,
@@ -137,30 +140,6 @@ namespace RuriLib
 
             /// <summary>Decrypts an AES-encrypted string.</summary>
             AESDecrypt
-        }
-
-        /// <summary>
-        /// The available hashing functions.
-        /// </summary>
-        public enum Hash
-        {
-            /// <summary>The MD4 hashing function (128 bits digest).</summary>
-            MD4,
-
-            /// <summary>The MD5 hashing function (128 bits digest).</summary>
-            MD5,
-
-            /// <summary>The SHA-1 hashing function (160 bits digest).</summary>
-            SHA1,
-
-            /// <summary>The SHA-256 hashing function (256 bits digest).</summary>
-            SHA256,
-
-            /// <summary>The SHA-384 hashing function (384 bits digest).</summary>
-            SHA384,
-
-            /// <summary>The SHA-512 hashing function (512 bits digest).</summary>
-            SHA512,
         }
 
         #region General Properties
@@ -242,13 +221,21 @@ namespace RuriLib
         public string StringToFind { get { return stringToFind; } set { stringToFind = value; OnPropertyChanged(); } }
 
         // -- RSA
+        private string rsaKey = "";
+        /// <summary>The RSA private key as base64.</summary>
+        public string RsaKey { get { return rsaKey; } set { rsaKey = value; OnPropertyChanged(); } }
+
         private string rsaMod = "";
-        /// <summary>The modulus of the RSA key.</summary>
-        public string RSAMod { get { return rsaMod; } set { rsaMod = value; OnPropertyChanged(); } }
+        /// <summary>The modulus of the RSA public key as base64.</summary>
+        public string RsaMod { get { return rsaMod; } set { rsaMod = value; OnPropertyChanged(); } }
 
         private string rsaExp = "";
-        /// <summary>The exponent of the RSA key.</summary>
-        public string RSAExp { get { return rsaExp; } set { rsaExp = value; OnPropertyChanged(); } }
+        /// <summary>The exponent of the RSA public key as base64.</summary>
+        public string RsaExp { get { return rsaExp; } set { rsaExp = value; OnPropertyChanged(); } }
+
+        private bool rsaOAEP = true;
+        /// <summary>Whether to use OAEP padding instead of PKCS v1.5.</summary>
+        public bool RsaOAEP { get { return rsaOAEP; } set { rsaOAEP = value; OnPropertyChanged(); } }
 
         // --- CharAt
         private string charIndex = "0";
@@ -268,6 +255,18 @@ namespace RuriLib
         private string aesKey = "";
         /// <summary>The keys used for AES encryption and decryption.</summary>
         public string AesKey { get { return aesKey; } set { aesKey = value; OnPropertyChanged(); } }
+
+        private string aesIV = "";
+        /// <summary>The initial value.</summary>
+        public string AesIV { get { return aesIV; } set { aesIV = value; OnPropertyChanged(); } }
+
+        private CipherMode aesMode = CipherMode.CBC;
+        /// <summary>The cipher mode.</summary>
+        public CipherMode AesMode { get { return aesMode; } set { aesMode = value; OnPropertyChanged(); } }
+
+        private PaddingMode aesPadding = PaddingMode.None;
+        /// <summary>The padding mode.</summary>
+        public PaddingMode AesPadding { get { return aesPadding; } set { aesPadding = value; OnPropertyChanged(); } }
         #endregion
 
         /// <summary>
@@ -357,14 +356,20 @@ namespace RuriLib
                     SubstringLength = LineParser.ParseLiteral(ref input, "Length");
                     break;
 
-                case Function.RSA:
-                    RSAMod = LineParser.ParseLiteral(ref input, "Modulus");
-                    RSAExp = LineParser.ParseLiteral(ref input, "Exponent");
+                case Function.RSAEncrypt:
+                case Function.RSADecrypt:
+                    RsaKey = LineParser.ParseLiteral(ref input, "Private Key");
+                    RsaMod = LineParser.ParseLiteral(ref input, "Public Key Modulus");
+                    RsaExp = LineParser.ParseLiteral(ref input, "Public Key Exponent");
+                    LineParser.SetBool(ref input, this);
                     break;
 
                 case Function.AESDecrypt:
                 case Function.AESEncrypt:
-                    AesKey = LineParser.ParseLiteral(ref input, "AES Key");
+                    AesKey = LineParser.ParseLiteral(ref input, "Key");
+                    AesIV = LineParser.ParseLiteral(ref input, "IV");
+                    AesMode = LineParser.ParseEnum(ref input, "Cipher mode", typeof(CipherMode));
+                    AesPadding = LineParser.ParseEnum(ref input, "Padding mode", typeof(PaddingMode));
                     break;
 
                 default:
@@ -472,16 +477,22 @@ namespace RuriLib
                         .Literal(SubstringLength);
                     break;
 
-                case Function.RSA:
+                case Function.RSAEncrypt:
+                case Function.RSADecrypt:
                     writer
-                        .Literal(RSAMod)
-                        .Literal(RSAExp);
+                        .Literal(RsaKey)
+                        .Literal(RsaMod)
+                        .Literal(RsaExp)
+                        .Boolean(RsaOAEP, "RSAOAEP");
                     break;
 
                 case Function.AESDecrypt:
                 case Function.AESEncrypt:
                     writer
-                        .Literal(AesKey);
+                        .Literal(AesKey)
+                        .Literal(AesIV)
+                        .Token(AesMode)
+                        .Token(AesPadding);
                     break;
             }
 
@@ -683,15 +694,24 @@ namespace RuriLib
                         data.Cookies.Clear();
                         break;
 
-                    case Function.RSA:
-                        try
-                        {
-                            while (outputString.Length < 2 || outputString.Substring(outputString.Length - 2) != "==")
-                            {
-                                outputString = Crypto.SteamRSAEncrypt(new RsaParameters { Exponent = ReplaceValues(RSAExp, data), Modulus = ReplaceValues(RSAMod, data), Password = localInputString });
-                            }
-                        }
-                        catch (Exception ex) { outputString = ex.ToString(); }
+                    case Function.RSAEncrypt:
+                        outputString = Crypto.RSAEncrypt(
+                            localInputString,
+                            ReplaceValues(RsaKey, data),
+                            ReplaceValues(RsaMod, data),
+                            ReplaceValues(RsaExp, data),
+                            RsaOAEP
+                            );
+                        break;
+
+                    case Function.RSADecrypt:
+                        outputString = Crypto.RSADecrypt(
+                            localInputString,
+                            ReplaceValues(RsaKey, data),
+                            ReplaceValues(RsaMod, data),
+                            ReplaceValues(RsaExp, data),
+                            RsaOAEP
+                            );
                         break;
 
                     case Function.Delay:
@@ -721,11 +741,11 @@ namespace RuriLib
                         break;
 
                     case Function.AESEncrypt:
-                        outputString = Crypto.AESEncrypt(ReplaceValues(aesKey, data), localInputString);
+                        outputString = Crypto.AESEncrypt(localInputString, ReplaceValues(aesKey, data), ReplaceValues(aesIV, data), AesMode, AesPadding);
                         break;
 
                     case Function.AESDecrypt:
-                        outputString = Crypto.AESDecrypt(ReplaceValues(aesKey, data), localInputString);
+                        outputString = Crypto.AESDecrypt(localInputString, ReplaceValues(aesKey, data), ReplaceValues(aesIV, data), AesMode, AesPadding);
                         break;
                 }
                 

@@ -1,4 +1,5 @@
 ﻿using Extreme.Net;
+using RuriLib.Functions.Formats;
 using RuriLib.LS;
 using System;
 using System.Collections.Generic;
@@ -504,7 +505,7 @@ namespace RuriLib
             {
                 var usr = ReplaceValues(authUser, data);
                 var pwd = ReplaceValues(authPass, data);
-                var auth = "Basic " + BlockFunction.Base64Encode(usr + ":" + pwd);
+                var auth = "Basic " + (usr + ":" + pwd).ToBase64();
                 request.AddHeader("Authorization", auth);
                 data.Log(new LogEntry($"Authorization: {auth}", Colors.MediumTurquoise));
             }

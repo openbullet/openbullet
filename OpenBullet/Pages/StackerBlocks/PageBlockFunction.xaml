@@ -134,13 +134,18 @@
             <TabItem x:Name="rsaTab">
                 <StackPanel>
                     <DockPanel>
+                        <Label Content="Key:"/>
+                        <TextBox Text="{Binding RsaKey, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 5 0 0">
                         <Label Content="Modulus:"/>
-                        <TextBox Text="{Binding RSAMod, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox Text="{Binding RsaMod, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
                     <DockPanel Margin="0 5 0 0">
                         <Label Content="Exponent:"/>
-                        <TextBox Text="{Binding RSAExp, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox Text="{Binding RsaExp, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
+                    <CheckBox Content="Use OAEP instead of PKCS v1.5" IsChecked="{Binding RsaOAEP}" VerticalContentAlignment="Center"/>
                 </StackPanel>
             </TabItem>
             <TabItem x:Name="charAtTab">
@@ -166,8 +171,20 @@
             <TabItem x:Name="aesTab">
                 <StackPanel>
                     <DockPanel Margin="0 5 0 0">
-                        <Label Content="AES Key:"/>
+                        <Label Content="Key:"/>
                         <TextBox Text="{Binding AesKey, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 5 0 0">
+                        <Label Content="IV:"/>
+                        <TextBox Text="{Binding AesIV, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 5 0 0">
+                        <Label Content="Mode:"/>
+                        <ComboBox x:Name="aesModeCombobox" SelectionChanged="aesModeCombobox_SelectionChanged"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 5 0 0">
+                        <Label Content="Padding:"/>
+                        <ComboBox x:Name="aesPaddingCombobox" SelectionChanged="aesPaddingCombobox_SelectionChanged"/>
                     </DockPanel>
                 </StackPanel>
             </TabItem>

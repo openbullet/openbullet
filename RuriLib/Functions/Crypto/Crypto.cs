@@ -10,6 +10,30 @@ using System.Threading.Tasks;
 namespace RuriLib.Functions.Crypto
 {
     /// <summary>
+    /// The available hashing functions.
+    /// </summary>
+    public enum Hash
+    {
+        /// <summary>The MD4 hashing function (128 bits digest).</summary>
+        MD4,
+
+        /// <summary>The MD5 hashing function (128 bits digest).</summary>
+        MD5,
+
+        /// <summary>The SHA-1 hashing function (160 bits digest).</summary>
+        SHA1,
+
+        /// <summary>The SHA-256 hashing function (256 bits digest).</summary>
+        SHA256,
+
+        /// <summary>The SHA-384 hashing function (384 bits digest).</summary>
+        SHA384,
+
+        /// <summary>The SHA-512 hashing function (512 bits digest).</summary>
+        SHA512,
+    }
+
+    /// <summary>
     /// Provides methods for encrypting, decrypting and generating signatures.
     /// </summary>
     public static class Crypto
@@ -179,126 +203,151 @@ namespace RuriLib.Functions.Crypto
             return sb.ToString();
         }
 
-        #endregion
-
-        #region RSA
-        public static string RSAEncrypt(string input, int size)
+        /// <summary>
+        /// Converts from the Hash enum to the HashAlgorithmName default struct.
+        /// </summary>
+        /// <param name="type">The hash type as a Hash enum</param>
+        /// <returns>The HashAlgorithmName equivalent.</returns>
+        public static HashAlgorithmName ToHashAlgorithmName(this Hash type)
         {
-            var data = Encoding.UTF8.GetBytes(input);
-
-            using (var rsa = new RSACryptoServiceProvider(size))
+            switch (type)
             {
-                try
-                {
-                    rsa.FromXmlString(input);
-                    var encryptedData = rsa.Encrypt(data, true);
-                    Console.WriteLine(Convert.ToString(encryptedData));
-                    return Convert.ToString(encryptedData);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                    return "";
-                }
-                finally
-                {
-                    rsa.PersistKeyInCsp = false;
-                }
+                case Hash.MD5:
+                    return HashAlgorithmName.MD5;
+
+                case Hash.SHA1:
+                    return HashAlgorithmName.SHA1;
+
+                case Hash.SHA256:
+                    return HashAlgorithmName.SHA256;
+
+                case Hash.SHA384:
+                    return HashAlgorithmName.SHA384;
+
+                case Hash.SHA512:
+                    return HashAlgorithmName.SHA512;
+
+                default:
+                    throw new NotSupportedException("No such algorithm name");
             }
-        }
-
-        public static string RSADecrypt(string input, int size)
-        {
-            var data = Encoding.UTF8.GetBytes(input);
-
-            using (var rsa = new RSACryptoServiceProvider(size))
-            {
-                try
-                {
-                    rsa.FromXmlString(input);
-                    var resultBytes = System.Text.Encoding.ASCII.GetBytes(input);
-                    var decryptedBytes = rsa.Decrypt(resultBytes, true);
-                    return Encoding.UTF8.GetString(decryptedBytes);
-                }
-                finally
-                {
-                    rsa.PersistKeyInCsp = false;
-                }
-            }
-        }
-
-        public static string SteamRSAEncrypt(RsaParameters rsaParam)
-        {
-            // Convert the public keys to BigIntegers
-            var modulus = CreateBigInteger(rsaParam.Modulus);
-            var exponent = CreateBigInteger(rsaParam.Exponent);
-
-            // (modulus.ToByteArray().Length - 1) * 8
-            //modulus has 256 bytes multiplied by 8 bits equals 2048
-            var encryptedNumber = Pkcs1Pad2(rsaParam.Password, (2048 + 7) >> 3);
-
-            // And now, the RSA encryption
-            encryptedNumber = System.Numerics.BigInteger.ModPow(encryptedNumber, exponent, modulus);
-
-            //Reverse number and convert to base64
-            var encryptedString = Convert.ToBase64String(encryptedNumber.ToByteArray().Reverse().ToArray());
-
-            return encryptedString;
-        }
-
-        private static System.Numerics.BigInteger CreateBigInteger(string hex)
-        {
-            return System.Numerics.BigInteger.Parse("00" + hex, NumberStyles.AllowHexSpecifier);
-        }
-
-        private static System.Numerics.BigInteger Pkcs1Pad2(string data, int keySize)
-        {
-            if (keySize < data.Length + 11)
-                return new System.Numerics.BigInteger();
-
-            var buffer = new byte[256];
-            var i = data.Length - 1;
-
-            while (i >= 0 && keySize > 0)
-            {
-                buffer[--keySize] = (byte)data[i--];
-            }
-
-            // Padding, I think
-            var random = new Random();
-            buffer[--keySize] = 0;
-            while (keySize > 2)
-            {
-                buffer[--keySize] = (byte)random.Next(1, 256);
-                //buffer[--keySize] = 5;
-            }
-
-            buffer[--keySize] = 2;
-            buffer[--keySize] = 0;
-
-            Array.Reverse(buffer);
-
-            return new System.Numerics.BigInteger(buffer);
         }
 
         #endregion
 
+        #region RSA
+
+        private static string RSAEncrypt(string dataToEncrypt, RSAParameters RSAKeyInfo, bool doOAEPPadding)
+        {
+            RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
+
+            RSA.ImportParameters(RSAKeyInfo);
+
+            return Convert.ToBase64String(RSA.Encrypt(Convert.FromBase64String(dataToEncrypt), doOAEPPadding));
+        }
+
+        private static string RSADecrypt(string dataToDecrypt, RSAParameters RSAKeyInfo, bool doOAEPPadding)
+        {
+            RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
+
+            RSA.ImportParameters(RSAKeyInfo);
+
+            return Convert.ToBase64String(RSA.Decrypt(Convert.FromBase64String(dataToDecrypt), doOAEPPadding));
+        }
+        
+        /// <summary>
+        /// Encrypts a string using RSA.
+        /// </summary>
+        /// <param name="data">The data to encrypt as a base64 string</param>
+        /// <param name="password">The private key as a base64 string</param>
+        /// <param name="modulus">The public key's modulus as a base64 string</param>
+        /// <param name="exponent">The public key's exponent as a base64 string</param>
+        /// <param name="oaep">Whether to use OAEP-SHA1 padding mode instead of PKCS1</param>
+        /// <returns>The encrypted data encoded as base64.</returns>
+        public static string RSAEncrypt(string data, string password, string modulus, string exponent, bool oaep)
+        {
+            return RSAEncrypt(
+                data,
+                new RSAParameters { 
+                    D = Encoding.UTF8.GetBytes(password),
+                    Modulus = Encoding.UTF8.GetBytes(modulus),
+                    Exponent = Encoding.UTF8.GetBytes(exponent)
+                },
+                oaep
+            );
+        }
+
+        /// <summary>
+        /// Decrypts a string using RSA.
+        /// </summary>
+        /// <param name="data">The data to decrypt as a base64 string</param>
+        /// <param name="password">The private key as a base64 string</param>
+        /// <param name="modulus">The public key's modulus as a base64 string</param>
+        /// <param name="exponent">The public key's exponent as a base64 string</param>
+        /// <param name="oaep">Whether to use OAEP-SHA1 padding mode instead of PKCS v1.5</param>
+        /// <returns>The decrypted data encoded as base64.</returns>
+        public static string RSADecrypt(string data, string password, string modulus, string exponent, bool oaep)
+        {
+            return RSADecrypt(
+                data,
+                new RSAParameters
+                {
+                    D = Encoding.UTF8.GetBytes(password),
+                    Modulus = Encoding.UTF8.GetBytes(modulus),
+                    Exponent = Encoding.UTF8.GetBytes(exponent)
+                },
+                oaep
+            );
+        }
+        #endregion
+
+        #region KDF
+        /// <summary>
+        /// Generates a PKCS v5 #2.0 key using a Password-Based Key Derivation Function.
+        /// </summary>
+        /// <param name="password">The password to hash</param>
+        /// <param name="salt">The salt to use encoded as base64. If empty, a random salt will be generated</param>
+        /// <param name="saltSize">The random salt size that gets generated in case no salt is provided</param>
+        /// <param name="iterations">The number of times the algorithm should be executed</param>
+        /// <param name="type">The hashing algorithm to use</param>
+        /// <param name="keyLength">The generated key length in bytes</param>
+        /// <returns>The generated key.</returns>
+        public static string PBKDF2PKCS5(string password, string salt, int saltSize, int iterations, int keyLength, Hash type = Hash.SHA1)
+        {
+            if (salt != "")
+            {
+                using (var deriveBytes = new Rfc2898DeriveBytes(password, Convert.FromBase64String(salt), iterations, type.ToHashAlgorithmName()))
+                {
+                    return deriveBytes.GetBytes(keyLength).ToHex();
+                }
+            }
+            else
+            {
+                using (var deriveBytes = new Rfc2898DeriveBytes(password, saltSize, iterations, type.ToHashAlgorithmName()))
+                {
+                    return deriveBytes.GetBytes(keyLength).ToHex();
+                }
+            }
+        }
+        #endregion
 
         #region AES
         /// <summary>
         /// Encrypts a string with AES.
         /// </summary>
-        /// <param name="key">The encryption key</param>
-        /// <param name="data">The data to encrypt</param>
-        /// <returns>The AES-encrypted string</returns>
-        public static string AESEncrypt(string key, string data)
+        /// <param name="data">The AES-encrypted data</param>
+        /// <param name="key">The decryption key as base64</param>
+        /// <param name="iv">The initial value as base64</param>
+        /// <param name="mode">The cipher mode</param>
+        /// <param name="padding">The padding mode</param>
+        /// <returns>The AES-encrypted string encoded as base64</returns>
+        public static string AESEncrypt(string data, string key, string iv = "", CipherMode mode = CipherMode.CBC, PaddingMode padding = PaddingMode.None)
         {
             string encData = null;
-            byte[][] keys = GetHashKeys(key);
+            byte[][] keys = GetHashKeys(key, iv);
 
             try
             {
-                encData = EncryptStringToBytes_Aes(data, keys[0], keys[1]);
+                encData = EncryptStringToBytes_Aes(data, keys[0], keys[1], mode, padding);
             }
             catch (CryptographicException) { }
             catch (ArgumentNullException) { }
@@ -309,17 +358,20 @@ namespace RuriLib.Functions.Crypto
         /// <summary>
         /// Decrypts an AES-encrypted string.
         /// </summary>
-        /// <param name="key">The decryption key</param>
-        /// <param name="data">The AES-encrypted data</param>
+        /// <param name="data">The AES-encrypted data encoded as base64</param>
+        /// <param name="key">The decryption key as base64</param>
+        /// <param name="iv">The initial value as base64</param>
+        /// <param name="mode">The cipher mode</param>
+        /// <param name="padding">The padding mode</param>
         /// <returns>The plaintext string</returns>
-        public static string AESDecrypt(string key, string data)
+        public static string AESDecrypt(string data, string key, string iv = "", CipherMode mode = CipherMode.CBC, PaddingMode padding = PaddingMode.None)
         {
             string decData = null;
-            byte[][] keys = GetHashKeys(key);
+            byte[][] keys = GetHashKeys(key, iv);
 
             try
             {
-                decData = DecryptStringFromBytes_Aes(data, keys[0], keys[1]);
+                decData = DecryptStringFromBytes_Aes(data, keys[0], keys[1], mode, padding);
             }
             catch (CryptographicException) { }
             catch (ArgumentNullException) { }
@@ -327,15 +379,14 @@ namespace RuriLib.Functions.Crypto
             return decData;
         }
 
-        private static byte[][] GetHashKeys(string key)
+        private static byte[][] GetHashKeys(string key, string iv)
         {
             byte[][] result = new byte[2][];
-            Encoding enc = Encoding.UTF8;
 
             SHA256 sha2 = new SHA256CryptoServiceProvider();
 
-            byte[] rawKey = enc.GetBytes(key);
-            byte[] rawIV = enc.GetBytes(key);
+            byte[] rawKey = Convert.FromBase64String(key);
+            byte[] rawIV = iv != "" ? Convert.FromBase64String(iv) : Convert.FromBase64String(key);
 
             byte[] hashKey = sha2.ComputeHash(rawKey);
             byte[] hashIV = sha2.ComputeHash(rawIV);
@@ -348,7 +399,7 @@ namespace RuriLib.Functions.Crypto
             return result;
         }
 
-        private static string EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV)
+        private static string EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV, CipherMode mode, PaddingMode padding)
         {
             if (plainText == null || plainText.Length <= 0)
                 throw new ArgumentNullException("plainText");
@@ -363,6 +414,8 @@ namespace RuriLib.Functions.Crypto
             {
                 aesAlg.Key = Key;
                 aesAlg.IV = IV;
+                aesAlg.Mode = mode;
+                aesAlg.Padding = padding;
 
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
@@ -382,7 +435,7 @@ namespace RuriLib.Functions.Crypto
             return Convert.ToBase64String(encrypted);
         }
 
-        private static string DecryptStringFromBytes_Aes(string cipherTextString, byte[] Key, byte[] IV)
+        private static string DecryptStringFromBytes_Aes(string cipherTextString, byte[] Key, byte[] IV, CipherMode mode, PaddingMode padding)
         {
             byte[] cipherText = Convert.FromBase64String(cipherTextString);
 
@@ -399,6 +452,8 @@ namespace RuriLib.Functions.Crypto
             {
                 aesAlg.Key = Key;
                 aesAlg.IV = IV;
+                aesAlg.Mode = mode;
+                aesAlg.Padding = padding;
 
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 
@@ -459,20 +514,5 @@ namespace RuriLib.Functions.Crypto
             return new[] { a, b, c, d }.SelectMany(BitConverter.GetBytes).ToArray();
         }
         #endregion
-    }
-
-    /// <summary>
-    /// The RSA parameters.
-    /// </summary>
-    public struct RsaParameters
-    {
-        /// <summary>The key exponent.</summary>
-        public string Exponent;
-
-        /// <summary>The key modulus.</summary>
-        public string Modulus;
-
-        /// <summary>The encryption password.</summary>
-        public string Password;
     }
 }
