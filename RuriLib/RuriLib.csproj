@@ -213,6 +213,7 @@
     <Compile Include="CaptchaServices\RuCaptcha.cs" />
     <Compile Include="Functions\Crypto\Crypto.cs" />
     <Compile Include="Functions\Encoding\Encode.cs" />
+    <Compile Include="Functions\Time\Time.cs" />
     <Compile Include="GZip.cs" />
     <Compile Include="LoliScript\Exceptions\BlockProcessingException.cs" />
     <Compile Include="LoliScript\LoliScript.cs" />

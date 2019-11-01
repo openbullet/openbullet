@@ -1,6 +1,7 @@
 ﻿using Extreme.Net;
 using RuriLib.Functions.Crypto;
 using RuriLib.Functions.Formats;
+using RuriLib.Functions.Time;
 using RuriLib.LS;
 using System;
 using System.Collections.Generic;
@@ -608,10 +609,7 @@ namespace RuriLib
                         break;
 
                     case Function.DateToUnixTime:
-                        outputString = (DateTime.ParseExact(localInputString, dateFormat, new CultureInfo("en-US"), DateTimeStyles.AllowWhiteSpaces)
-                            .Subtract(new DateTime(1970, 1, 1)))
-                            .TotalSeconds
-                            .ToString();
+                        outputString = localInputString.ToDateTime(dateFormat).ToUnixTimeSeconds().ToString();
                         break;
 
                     case Function.Length:
@@ -651,28 +649,15 @@ namespace RuriLib
                         break;
 
                     case Function.UnixTimeToDate:
-                        try
-                        {
-                            var loc = localInputString;
-                            if (localInputString.Length > 10) loc = localInputString.Substring(0, 10);
-                            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-                            dtDateTime = dtDateTime.AddSeconds(int.Parse(loc)).ToLocalTime();
-                            outputString = dtDateTime.ToShortDateString();
-                        }
-                        catch { }
-
+                        outputString = double.Parse(localInputString).ToDateTime().ToShortDateString();
                         break;
 
                     case Function.CurrentUnixTime:
-                        outputString = Math.Round((DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds).ToString();
+                        outputString = DateTime.UtcNow.ToUnixTimeSeconds().ToString();
                         break;
 
                     case Function.UnixTimeToISO8601:
-                        var loc2 = localInputString;
-                        if (localInputString.Length > 10) loc2 = localInputString.Substring(0, 10);
-                        DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-                        dateTime = dateTime.AddSeconds(int.Parse(loc2)).ToLocalTime();
-                        outputString = dateTime.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffZ");
+                        outputString = double.Parse(localInputString).ToDateTime().ToISO8601();
                         break;
 
                     case Function.RandomNum:
