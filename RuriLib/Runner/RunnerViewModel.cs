@@ -152,7 +152,20 @@ namespace RuriLib.Runner
         public ProxyMode ProxyMode { get { return proxyMode; } set { proxyMode = value; OnPropertyChanged(); } }
 
         /// <summary>Whether proxies can be used for the current session given the Proxy Mode and the Config.</summary>
-        public bool UseProxies { get { return (Config.Settings.NeedsProxies && ProxyMode == ProxyMode.Default) || ProxyMode == ProxyMode.On; } }
+        public bool UseProxies 
+        { 
+            get 
+            {
+                if (Config != null)
+                {
+                    return (Config.Settings.NeedsProxies && ProxyMode == ProxyMode.Default) || ProxyMode == ProxyMode.On;
+                }
+                else
+                {
+                    return true;
+                }
+            } 
+        }
 
         /// <summary>The loaded Config to use for the check.</summary>
         public Config Config { get; private set; }
@@ -191,7 +204,20 @@ namespace RuriLib.Runner
         public DataPool DataPool { get; set; }
 
         /// <summary>The size of the DataPool.</summary>
-        public int DataSize { get { return DataPool.Size; } }
+        public int DataSize 
+        { 
+            get 
+            { 
+                if (DataPool != null)
+                {
+                    return DataPool.Size;
+                }
+                else
+                {
+                    return 0;
+                }
+            } 
+        }
         #endregion
 
         #region Bot-Shared Fields
@@ -278,6 +304,7 @@ namespace RuriLib.Runner
         {
             get
             {
+                if (Wordlist == null) return "Unknown time left";
                 var dataLeft = Wordlist.Total - StartingPoint - TestedCount;
                 if (CPM == 0) return "+inf";
                 int amountLeft = (dataLeft / CPM) * 60; // in seconds

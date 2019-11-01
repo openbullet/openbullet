@@ -3,6 +3,7 @@ using RuriLib.Functions.Crypto;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace OpenBullet.Pages.StackerBlocks
@@ -39,14 +40,14 @@ namespace OpenBullet.Pages.StackerBlocks
                 aesModeCombobox.Items.Add(m);
             }
 
-            aesModeCombobox.SelectedIndex = (int)vm.AesMode;
+            aesModeCombobox.SelectedIndex = (int)vm.AesMode - 1;
 
             foreach (var p in Enum.GetNames(typeof(PaddingMode)))
             {
                 aesPaddingCombobox.Items.Add(p);
             }
 
-            aesPaddingCombobox.SelectedIndex = (int)vm.AesPadding;
+            aesPaddingCombobox.SelectedIndex = (int)vm.AesPadding - 1;
 
             dictionaryRTB.AppendText(vm.GetDictionary());
         }
@@ -147,12 +148,12 @@ namespace OpenBullet.Pages.StackerBlocks
 
         private void aesModeCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            vm.AesMode = (CipherMode)((ComboBox)e.OriginalSource).SelectedIndex;
+            vm.AesMode = (CipherMode)(((ComboBox)e.OriginalSource).SelectedIndex + 1);
         }
 
         private void aesPaddingCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            vm.AesPadding = (PaddingMode)((ComboBox)e.OriginalSource).SelectedIndex;
+            vm.AesPadding = (PaddingMode)(((ComboBox)e.OriginalSource).SelectedIndex + 1);
         }
     }
 }

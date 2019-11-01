@@ -36,7 +36,20 @@ namespace OpenBullet.ViewModels
         public Config moreInfoConfig;
         public Config MoreInfoConfig { get { return moreInfoConfig; } set { moreInfoConfig = value; OnPropertyChanged("MoreInfoConfig"); } }
 
-        public string CurrentConfigName { get { return Globals.mainWindow.ConfigsPage.CurrentConfig.Name; } }
+        public string CurrentConfigName 
+        { 
+            get 
+            { 
+                if (Globals.mainWindow.ConfigsPage.CurrentConfig != null)
+                {
+                    return Globals.mainWindow.ConfigsPage.CurrentConfig.Name;
+                }
+                else
+                {
+                    return "None";
+                }
+            } 
+        }
 
         private string searchString = "";
         public string SearchString { get { return searchString; } set { searchString = value; OnPropertyChanged("SearchString"); OnPropertyChanged("ConfigsList"); OnPropertyChanged("Total"); } }
