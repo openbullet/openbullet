@@ -188,6 +188,30 @@
                     </DockPanel>
                 </StackPanel>
             </TabItem>
+            <TabItem x:Name="kdfTab">
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Salt (optional):"/>
+                        <TextBox Text="{Binding KdfSalt, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 5 0 0">
+                        <Label Content="Generated Salt Size (if no salt provided) in bytes:"/>
+                        <xctk:IntegerUpDown Value="{Binding KdfSaltSize}" Minimum="0" Maximum="2147483647" Width="80" HorizontalAlignment="Right"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 5 0 0">
+                        <Label Content="Iterations:"/>
+                        <xctk:IntegerUpDown Value="{Binding KdfIterations}" Minimum="0" Maximum="2147483647" Width="80" HorizontalAlignment="Right"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 5 0 0">
+                        <Label Content="Output Key Size in bytes:"/>
+                        <xctk:IntegerUpDown Value="{Binding KdfKeySize}" Minimum="0" Maximum="2147483647" Width="80" HorizontalAlignment="Right"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 5 0 0">
+                        <Label Content="Algorithm:"/>
+                        <ComboBox x:Name="kdfAlgorithmCombobox" SelectionChanged="kdfAlgorithmCombobox_SelectionChanged"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
         </TabControl>
 
         <TextBlock Grid.Row="2" x:Name="functionInfoTextblock" TextWrapping="WrapWithOverflow" Foreground="{DynamicResource ForegroundMain}" HorizontalAlignment="Center" VerticalAlignment="Center"/>

@@ -139,7 +139,10 @@ namespace RuriLib
             AESEncrypt,
 
             /// <summary>Decrypts an AES-encrypted string.</summary>
-            AESDecrypt
+            AESDecrypt,
+
+            /// <summary>Generates a key using a password based KDF.</summary>
+            PBKDF2PKCS5
         }
 
         #region General Properties
@@ -222,15 +225,15 @@ namespace RuriLib
 
         // -- RSA
         private string rsaKey = "";
-        /// <summary>The RSA private key as base64.</summary>
+        /// <summary>The RSA private key as a base64 string.</summary>
         public string RsaKey { get { return rsaKey; } set { rsaKey = value; OnPropertyChanged(); } }
 
         private string rsaMod = "";
-        /// <summary>The modulus of the RSA public key as base64.</summary>
+        /// <summary>The modulus of the RSA public key as a base64 string.</summary>
         public string RsaMod { get { return rsaMod; } set { rsaMod = value; OnPropertyChanged(); } }
 
         private string rsaExp = "";
-        /// <summary>The exponent of the RSA public key as base64.</summary>
+        /// <summary>The exponent of the RSA public key as a base64 string.</summary>
         public string RsaExp { get { return rsaExp; } set { rsaExp = value; OnPropertyChanged(); } }
 
         private bool rsaOAEP = true;
@@ -253,11 +256,11 @@ namespace RuriLib
 
         // -- AES
         private string aesKey = "";
-        /// <summary>The keys used for AES encryption and decryption.</summary>
+        /// <summary>The keys used for AES encryption and decryption as a base64 string.</summary>
         public string AesKey { get { return aesKey; } set { aesKey = value; OnPropertyChanged(); } }
 
         private string aesIV = "";
-        /// <summary>The initial value.</summary>
+        /// <summary>The initial value as a base64 string.</summary>
         public string AesIV { get { return aesIV; } set { aesIV = value; OnPropertyChanged(); } }
 
         private CipherMode aesMode = CipherMode.CBC;
@@ -267,6 +270,27 @@ namespace RuriLib
         private PaddingMode aesPadding = PaddingMode.None;
         /// <summary>The padding mode.</summary>
         public PaddingMode AesPadding { get { return aesPadding; } set { aesPadding = value; OnPropertyChanged(); } }
+
+        // -- PBKDF2PKCS5
+        private string kdfSalt = "";
+        /// <summary>The KDF's salt as a base64 string.</summary>
+        public string KdfSalt { get { return kdfSalt; } set { KdfSalt = value; OnPropertyChanged(); } }
+
+        private int kdfSaltSize = 8;
+        /// <summary>The size of the generated salt (in bytes) in case none is specified.</summary>
+        public int KdfSaltSize { get { return kdfSaltSize; } set { kdfSaltSize = value; OnPropertyChanged(); } }
+
+        private int kdfIterations = 1;
+        /// <summary>The number of times to perform the algorithm.</summary>
+        public int KdfIterations { get { return kdfIterations; } set { kdfIterations = value; OnPropertyChanged(); } }
+
+        private int kdfKeySize = 16;
+        /// <summary>The size of the generated key (in bytes).</summary>
+        public int KdfKeySize { get { return kdfKeySize; } set { kdfKeySize = value; OnPropertyChanged(); } }
+
+        private Hash kdfAlgorithm = Hash.SHA1;
+        /// <summary>The size of the generated salt (in bytes) in case none is specified.</summary>
+        public Hash KdfAlgorithm { get { return kdfAlgorithm; } set { kdfAlgorithm = value; OnPropertyChanged(); } }
         #endregion
 
         /// <summary>
@@ -370,6 +394,14 @@ namespace RuriLib
                     AesIV = LineParser.ParseLiteral(ref input, "IV");
                     AesMode = LineParser.ParseEnum(ref input, "Cipher mode", typeof(CipherMode));
                     AesPadding = LineParser.ParseEnum(ref input, "Padding mode", typeof(PaddingMode));
+                    break;
+
+                case Function.PBKDF2PKCS5:
+                    if (LineParser.Lookahead(ref input) == TokenType.Literal) KdfSalt = LineParser.ParseLiteral(ref input, "Salt");
+                    else KdfSaltSize = LineParser.ParseInt(ref input, "Salt size");
+                    KdfIterations = LineParser.ParseInt(ref input, "Iterations");
+                    KdfKeySize = LineParser.ParseInt(ref input, "Key size");
+                    KdfAlgorithm = LineParser.ParseEnum(ref input, "Algorithm", typeof(Hash));
                     break;
 
                 default:
@@ -494,6 +526,16 @@ namespace RuriLib
                         .Token(AesMode)
                         .Token(AesPadding);
                     break;
+
+                case Function.PBKDF2PKCS5:
+                    if (KdfSalt != "") writer.Literal(KdfSalt);
+                    else writer.Integer(KdfSaltSize);
+                    writer
+                        .Integer(KdfIterations)
+                        .Integer(KdfKeySize)
+                        .Token(KdfAlgorithm);
+                    break;
+                        
             }
 
             writer
@@ -746,6 +788,10 @@ namespace RuriLib
 
                     case Function.AESDecrypt:
                         outputString = Crypto.AESDecrypt(localInputString, ReplaceValues(aesKey, data), ReplaceValues(aesIV, data), AesMode, AesPadding);
+                        break;
+
+                    case Function.PBKDF2PKCS5:
+                        outputString = Crypto.PBKDF2PKCS5(localInputString, ReplaceValues(KdfSalt, data), KdfSaltSize, KdfIterations, KdfKeySize, KdfAlgorithm);
                         break;
                 }
                 

@@ -30,10 +30,12 @@ namespace OpenBullet.Pages.StackerBlocks
             {
                 hashTypeCombobox.Items.Add(h);
                 hmacHashTypeCombobox.Items.Add(h);
+                kdfAlgorithmCombobox.Items.Add(h);
             }
 
             hashTypeCombobox.SelectedIndex = (int)vm.HashType;
             hmacHashTypeCombobox.SelectedIndex = (int)vm.HashType;
+            kdfAlgorithmCombobox.SelectedIndex = (int)vm.KdfAlgorithm;
 
             foreach (var m in Enum.GetNames(typeof(CipherMode)))
             {
@@ -112,6 +114,10 @@ namespace OpenBullet.Pages.StackerBlocks
                 case BlockFunction.Function.AESDecrypt:
                     functionTabControl.SelectedIndex = 12;
                     break;
+
+                case BlockFunction.Function.PBKDF2PKCS5:
+                    functionTabControl.SelectedIndex = 13;
+                    break;
             }
         }
 
@@ -128,7 +134,8 @@ namespace OpenBullet.Pages.StackerBlocks
             { "Delay", "Write the amount of MILLISECONDS you want to wait in the input field" },
             { "CharAt", "Returns the character at the specified index of the string in the input field" },
             { "AESEncrypt", "Encrypts data with AES. All parameters must be provided as base64 strings. Uses SHA-256 to get a 256 bit key" },
-            { "AESDecrypt", "Decrypts data with AES. All parameters must be provided as base64 strings. Uses SHA-256 to get a 256 bit key" }
+            { "AESDecrypt", "Decrypts data with AES. All parameters must be provided as base64 strings. Uses SHA-256 to get a 256 bit key" },
+            { "PBKDF2PKCS5", "Generates a key based on a password. The salt, if provided, must be a base64 string" }
         };
 
         private void dictionaryRTB_TextChanged(object sender, TextChangedEventArgs e)
@@ -154,6 +161,11 @@ namespace OpenBullet.Pages.StackerBlocks
         private void aesPaddingCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             vm.AesPadding = (PaddingMode)(((ComboBox)e.OriginalSource).SelectedIndex + 1);
+        }
+
+        private void kdfAlgorithmCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            vm.KdfAlgorithm = (Hash)((ComboBox)e.OriginalSource).SelectedIndex;
         }
     }
 }

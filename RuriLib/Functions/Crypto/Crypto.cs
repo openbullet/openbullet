@@ -311,7 +311,7 @@ namespace RuriLib.Functions.Crypto
         /// <param name="type">The hashing algorithm to use</param>
         /// <param name="keyLength">The generated key length in bytes</param>
         /// <returns>The generated key.</returns>
-        public static string PBKDF2PKCS5(string password, string salt, int saltSize, int iterations, int keyLength, Hash type = Hash.SHA1)
+        public static string PBKDF2PKCS5(string password, string salt, int saltSize = 8, int iterations = 1, int keyLength = 16, Hash type = Hash.SHA1)
         {
             if (salt != "")
             {
