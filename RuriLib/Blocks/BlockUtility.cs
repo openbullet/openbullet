@@ -1,4 +1,5 @@
-﻿using RuriLib.LS;
+﻿using RuriLib.Functions.Conversions;
+using RuriLib.LS;
 using RuriLib.Models;
 using RuriLib.ViewModels;
 using System;
@@ -7,7 +8,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Text;
 using System.Windows.Media;
 
 namespace RuriLib
@@ -76,21 +76,6 @@ namespace RuriLib
 
         /// <summary>Picks a random element from a list variable.</summary>
         Random
-    }
-
-    /// <summary>
-    /// The available conversion formats.
-    /// </summary>
-    public enum Conversion
-    {
-        /// <summary>A hexadecimal representation of a byte array.</summary>
-        HEX,
-
-        /// <summary>A binary representation of a byte array, containing a multiple of 8 binary digits.</summary>
-        BIN,
-
-        /// <summary>A base64 representation of a byte array.</summary>
-        BASE64
     }
 
     /// <summary>
@@ -190,13 +175,13 @@ namespace RuriLib
         #endregion
 
         // Conversion
-        private Conversion conversionFrom = Conversion.HEX;
+        private Encoding conversionFrom = Encoding.HEX;
         /// <summary>The encoding to convert from.</summary>
-        public Conversion ConversionFrom { get { return conversionFrom; } set { conversionFrom = value; OnPropertyChanged(); } }
+        public Encoding ConversionFrom { get { return conversionFrom; } set { conversionFrom = value; OnPropertyChanged(); } }
 
-        private Conversion conversionTo = Conversion.BASE64;
+        private Encoding conversionTo = Encoding.BASE64;
         /// <summary>The encoding to convert to.</summary>
-        public Conversion ConversionTo { get { return conversionTo; } set { conversionTo = value; OnPropertyChanged(); } }
+        public Encoding ConversionTo { get { return conversionTo; } set { conversionTo = value; OnPropertyChanged(); } }
 
         // Files
         private string filePath = "test.txt";
@@ -277,8 +262,8 @@ namespace RuriLib
                     break;
 
                 case UtilityGroup.Conversion:
-                    ConversionFrom = (Conversion)LineParser.ParseEnum(ref input, "Conversion From", typeof(Conversion));
-                    ConversionTo = (Conversion)LineParser.ParseEnum(ref input, "Conversion To", typeof(Conversion));
+                    ConversionFrom = (Encoding)LineParser.ParseEnum(ref input, "Conversion From", typeof(Encoding));
+                    ConversionTo = (Encoding)LineParser.ParseEnum(ref input, "Conversion To", typeof(Encoding));
                     InputString = LineParser.ParseLiteral(ref input, "Input");
                     break;
 
@@ -520,8 +505,8 @@ namespace RuriLib
                         break;
 
                     case UtilityGroup.Conversion:
-                        byte[] convertedBytes = ConvertFrom(ReplaceValues(inputString, data), conversionFrom);
-                        data.Variables.Set(new CVar(variableName, ConvertTo(convertedBytes, conversionTo), isCapture));
+                        byte[] convertedBytes = ReplaceValues(inputString, data).ConvertFrom(conversionFrom);
+                        data.Variables.Set(new CVar(variableName, convertedBytes.ConvertTo(conversionTo), isCapture));
                         data.Log(new LogEntry(string.Format("Converted input from {0} to {1}", conversionFrom, conversionTo), Colors.White));
                         break;
 
@@ -562,66 +547,6 @@ namespace RuriLib
                 }
             }
             catch(Exception ex) { data.Log(new LogEntry(ex.Message, Colors.Tomato)); }
-        }
-
-        /// <summary>
-        /// Converts an encoded input to a byte array.
-        /// </summary>
-        /// <param name="input">The encoded input</param>
-        /// <param name="type">The encoding</param>
-        /// <returns>The converted byte array</returns>
-        public byte[] ConvertFrom(string input, Conversion type)
-        {
-            switch (type)
-            {
-                case Conversion.BASE64:
-                    return Convert.FromBase64String(input);
-
-                case Conversion.HEX:
-                    input = new string(input.ToCharArray()
-                                .Where(c => !char.IsWhiteSpace(c))
-                                .ToArray()).Replace("0x", "");
-                    return Enumerable.Range(0, input.Length)
-                     .Where(x => x % 2 == 0)
-                     .Select(x => Convert.ToByte(input.Substring(x, 2), 16))
-                     .ToArray();
-
-                case Conversion.BIN:
-                    int numOfBytes = input.Length / 8;
-                    byte[] bytes = new byte[numOfBytes];
-                    for (int i = 0; i < numOfBytes; ++i) { bytes[i] = Convert.ToByte(input.Substring(8 * i, 8), 2); }
-                    return bytes;
-
-                default:
-                    return new byte[0];
-            }
-        }
-
-        /// <summary>
-        /// Converts a byte array to an encoded string.
-        /// </summary>
-        /// <param name="input">The byte array to encode</param>
-        /// <param name="type">The encoding</param>
-        /// <returns>The encoded string</returns>
-        public string ConvertTo(byte[] input, Conversion type)
-        {
-            StringBuilder sb = new StringBuilder();
-            switch (type)
-            {
-                case Conversion.BASE64:
-                    return Convert.ToBase64String(input);
-
-                case Conversion.HEX:
-                    foreach (byte b in input)
-                        sb.AppendFormat("{0:x2}", b);
-                    return sb.ToString().ToUpper();
-
-                case Conversion.BIN:
-                    return string.Concat(input.Select(b => Convert.ToString(b, 2).PadLeft(8, '0')));
-
-                default:
-                    return "";
-            }
         }
     }
 }

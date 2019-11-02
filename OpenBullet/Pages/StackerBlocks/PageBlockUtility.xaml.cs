@@ -1,4 +1,5 @@
 ﻿using RuriLib;
+using RuriLib.Functions.Conversions;
 using System;
 using System.Windows.Controls;
 
@@ -32,12 +33,12 @@ namespace OpenBullet.Pages.StackerBlocks
 
             varActionCombobox.SelectedIndex = (int)block.VarAction;
 
-            foreach (var c in Enum.GetNames(typeof(Conversion)))
+            foreach (var c in Enum.GetNames(typeof(Encoding)))
                 conversionFromCombobox.Items.Add(c);
 
             conversionFromCombobox.SelectedIndex = (int)block.ConversionFrom;
 
-            foreach (var c in Enum.GetNames(typeof(Conversion)))
+            foreach (var c in Enum.GetNames(typeof(Encoding)))
                 conversionToCombobox.Items.Add(c);
 
             conversionToCombobox.SelectedIndex = (int)block.ConversionTo;
@@ -114,12 +115,12 @@ namespace OpenBullet.Pages.StackerBlocks
 
         private void conversionFromCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            block.ConversionFrom = (Conversion)((ComboBox)e.OriginalSource).SelectedIndex;
+            block.ConversionFrom = (Encoding)((ComboBox)e.OriginalSource).SelectedIndex;
         }
 
         private void conversionToCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            block.ConversionTo = (Conversion)((ComboBox)e.OriginalSource).SelectedIndex;
+            block.ConversionTo = (Encoding)((ComboBox)e.OriginalSource).SelectedIndex;
         }
 
         private void fileActionCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)

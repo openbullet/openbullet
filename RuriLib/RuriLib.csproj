@@ -211,6 +211,7 @@
     <Compile Include="CaptchaServices\CaptchasIO.cs" />
     <Compile Include="CaptchaServices\CustomTwoCaptcha.cs" />
     <Compile Include="CaptchaServices\RuCaptcha.cs" />
+    <Compile Include="Functions\Conversion\Conversion.cs" />
     <Compile Include="Functions\Crypto\Crypto.cs" />
     <Compile Include="Functions\Encoding\Encode.cs" />
     <Compile Include="Functions\Time\Time.cs" />
