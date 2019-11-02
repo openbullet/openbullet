@@ -1,5 +1,6 @@
 ﻿using OpenBullet.ViewModels;
 using RuriLib;
+using RuriLib.Functions.Conditions;
 using RuriLib.Models;
 using System;
 using System.Windows;
@@ -90,7 +91,7 @@ namespace OpenBullet.Pages.StackerBlocks
         private void conditionCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var tag = (KeyFullId)(((ComboBox)e.OriginalSource).Tag);
-            vm.GetKeychainById(tag.ParentId).GetKeyById(tag.KeyId).Condition = (RuriLib.Condition)((ComboBox)e.OriginalSource).SelectedIndex;
+            vm.GetKeychainById(tag.ParentId).GetKeyById(tag.KeyId).Comparer = (Comparer)((ComboBox)e.OriginalSource).SelectedIndex;
         }
 
         private void conditionCombobox_Loaded(object sender, RoutedEventArgs e)
@@ -100,10 +101,10 @@ namespace OpenBullet.Pages.StackerBlocks
                 return;
 
             tag.ConditionInitialized = true;
-            foreach (var c in Enum.GetNames(typeof(RuriLib.Condition)))
+            foreach (var c in Enum.GetNames(typeof(Comparer)))
                 ((ComboBox)e.OriginalSource).Items.Add(c);
 
-            ((ComboBox)e.OriginalSource).SelectedIndex = (int)vm.GetKeychainById(tag.ParentId).GetKeyById(tag.KeyId).Condition;
+            ((ComboBox)e.OriginalSource).SelectedIndex = (int)vm.GetKeychainById(tag.ParentId).GetKeyById(tag.KeyId).Comparer;
         }
 
         private void leftTermCombobox_Loaded(object sender, RoutedEventArgs e)

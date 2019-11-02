@@ -71,7 +71,7 @@ namespace RuriLib.Models
                         {
                             data.Log(new LogEntry(string.Format("Found 'OR' Key {0} {1} {2}", 
                                 BlockBase.TruncatePretty(BlockBase.ReplaceValues(key.LeftTerm, data), 20),
-                                key.Condition.ToString(),
+                                key.Comparer.ToString(),
                                 BlockBase.ReplaceValues(key.RightTerm, data)),
                                 Colors.White));
                             return true;
@@ -88,7 +88,7 @@ namespace RuriLib.Models
                         {
                             data.Log(new LogEntry(string.Format("Found 'AND' Key {0} {1} {2}", 
                                 BlockBase.TruncatePretty(BlockBase.ReplaceValues(key.LeftTerm, data), 20),
-                                key.Condition.ToString(),
+                                key.Comparer.ToString(),
                                 BlockBase.ReplaceValues(key.RightTerm, data)),
                                 Colors.White));
                         }

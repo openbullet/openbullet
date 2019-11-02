@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using RuriLib.Functions.Conditions;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -168,12 +169,12 @@ namespace RuriLib.Models
         /// <para>Removes all non-hidden variables if their name matches a condition.</para>
         /// <para>The name of the variables in the list are the left-hand term of the comparison.</para>
         /// </summary>
-        /// <param name="cond">The condition type</param>
+        /// <param name="comparer">The comparison operator</param>
         /// <param name="name">The right-hand term of the comparison</param>
         /// <param name="data">The BotData object used for variable replacement</param>
-        public void Remove(Condition cond, string name, BotData data)
+        public void Remove(Comparer comparer, string name, BotData data)
         {
-            All.RemoveAll(v => ConditionChecker.Verify(v.Name, cond, name, data) && !v.Hidden);
+            All.RemoveAll(v => Condition.Verify(v.Name, comparer, name, data) && !v.Hidden);
         }
 
         /// <summary>

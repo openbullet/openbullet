@@ -1,4 +1,5 @@
-﻿using RuriLib.ViewModels;
+﻿using RuriLib.Functions.Conditions;
+using RuriLib.ViewModels;
 
 namespace RuriLib.Models
 {
@@ -11,9 +12,9 @@ namespace RuriLib.Models
         /// <summary>The left-hand term for the comparison.</summary>
         public string LeftTerm { get { return leftTerm; } set { leftTerm = value; OnPropertyChanged(); } }
 
-        private Condition condition = Condition.Contains;
-        /// <summary>The condition of the comparison.</summary>
-        public Condition Condition { get { return condition; } set { condition = value; OnPropertyChanged(); } }
+        private Comparer comparer = Comparer.Contains;
+        /// <summary>The comparison operator.</summary>
+        public Comparer Comparer { get { return comparer; } set { comparer = value; OnPropertyChanged(); } }
 
         private string rightTerm = "";
         /// <summary>The right-hand term of the comparison.</summary>
@@ -28,7 +29,7 @@ namespace RuriLib.Models
         {
             try
             {
-                return ConditionChecker.Verify(LeftTerm, Condition, RightTerm, data);
+                return Condition.Verify(LeftTerm, Comparer, RightTerm, data);
             }
             catch { return false; } // Return false if e.g. we can't parse the number for a LessThan/GreaterThan comparison.
         }

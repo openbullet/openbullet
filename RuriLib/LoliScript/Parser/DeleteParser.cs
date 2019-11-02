@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RuriLib.Functions.Conditions;
+using System;
 using System.Linq;
 using System.Windows.Media;
 
@@ -23,35 +24,35 @@ namespace RuriLib.LS
             return new Action(() =>
             {
                 var name = "";
-                Condition cond = Condition.EqualTo;
+                Comparer comparer = Comparer.EqualTo;
 
                 switch (field)
                 {
                     case "COOKIE":
                         if(LineParser.Lookahead(ref input) == TokenType.Parameter)
-                            cond = (Condition)LineParser.ParseEnum(ref input, "TYPE", typeof(Condition));
+                            comparer = (Comparer)LineParser.ParseEnum(ref input, "TYPE", typeof(Comparer));
                         name = LineParser.ParseLiteral(ref input, "NAME");
                         for (int i=0; i<data.Cookies.Count; i++)
                         {
                             var curr = data.Cookies.ToList()[i].Key;
-                            if (ConditionChecker.Verify(curr, cond, name, data)) data.Cookies.Remove(curr);
+                            if (Condition.Verify(curr, comparer, name, data)) data.Cookies.Remove(curr);
                         }
                         break;
 
                     case "VAR":
                         if (LineParser.Lookahead(ref input) == TokenType.Parameter)
-                            cond = (Condition)LineParser.ParseEnum(ref input, "TYPE", typeof(Condition));
+                            comparer = (Comparer)LineParser.ParseEnum(ref input, "TYPE", typeof(Comparer));
                         name = LineParser.ParseLiteral(ref input, "NAME");
-                        data.Variables.Remove(cond, name, data);
+                        data.Variables.Remove(comparer, name, data);
                         break;
 
                     case "GVAR":
                         if (LineParser.Lookahead(ref input) == TokenType.Parameter)
-                            cond = (Condition)LineParser.ParseEnum(ref input, "TYPE", typeof(Condition));
+                            comparer = (Comparer)LineParser.ParseEnum(ref input, "TYPE", typeof(Comparer));
                         name = LineParser.ParseLiteral(ref input, "NAME");
                         try
                         {
-                            data.GlobalVariables.Remove(cond, name, data);
+                            data.GlobalVariables.Remove(comparer, name, data);
                         }
                         catch { }
                         break;

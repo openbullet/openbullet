@@ -2,6 +2,7 @@
 using IronPython.Hosting;
 using IronPython.Runtime;
 using Jint;
+using RuriLib.Functions.Conditions;
 using RuriLib.Models;
 using System;
 using System.Collections.Generic;
@@ -445,11 +446,11 @@ namespace RuriLib.LS
         public static bool ParseCheckCondition(ref string cfLine, BotData data)
         {
             var first = LineParser.ParseLiteral(ref cfLine, "STRING");
-            var condition = (Condition)LineParser.ParseEnum(ref cfLine, "CONDITION", typeof(Condition));
+            var Comparer = (Comparer)LineParser.ParseEnum(ref cfLine, "Comparer", typeof(Comparer));
             var second = "";
-            if (condition != Condition.Exists && condition != Condition.DoesNotExist)
+            if (Comparer != Comparer.Exists && Comparer != Comparer.DoesNotExist)
                 second = LineParser.ParseLiteral(ref cfLine, "STRING");
-            return (ConditionChecker.Verify(first, condition, second, data));
+            return (Condition.Verify(first, Comparer, second, data));
         }
 
         /// <summary>

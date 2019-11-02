@@ -3,12 +3,12 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace RuriLib
+namespace RuriLib.Functions.Conditions
 {
     /// <summary>
     /// The condition on which to base the outcome of a comparison.
     /// </summary>
-    public enum Condition
+    public enum Comparer
     {
         /// <summary>A is less than B.</summary>
         LessThan,
@@ -44,58 +44,112 @@ namespace RuriLib
     /// <summary>
     /// Static Class used to check if a condition is true or false.
     /// </summary>
-    public static class ConditionChecker
+    public static class Condition
     {
         /// <summary>
-        /// Verifies if a comparison is true or false.
+        /// Verifies if a condition is true or false.
         /// </summary>
-        /// <param name="left">The left-hand term in the comparison</param>
-        /// <param name="condition">The condition of the comparison</param>
-        /// <param name="right">The right-hand term in the comparison</param>
+        /// <param name="left">The left term</param>
+        /// <param name="comparer">The comparison operator</param>
+        /// <param name="right">The right term</param>
         /// <param name="data">The BotData used for variable replacement</param>
-        /// <returns>Whether the comparison is true or false</returns>
-        public static bool Verify(string left, Condition condition, string right, BotData data)
+        /// <returns>Whether the comparison is verified or not.</returns>
+        public static bool Verify(string left, Comparer comparer, string right, BotData data)
+        {
+            return Verify(new KeycheckCondition() { Left = left, Comparer = comparer, Right = right }, data);
+        }
+
+        /// <summary>
+        /// Verifies if a condition is true or false.
+        /// </summary>
+        /// <param name="kcCond">The keycheck condition struct</param>
+        /// <param name="data">The BotData used for variable replacement</param>
+        /// <returns>Whether the comparison is verified or not.</returns>
+        public static bool Verify(KeycheckCondition kcCond, BotData data)
         {
             var style = NumberStyles.Number | NumberStyles.AllowCurrencySymbol; // Needed when comparing values with a currency symbol
             var provider = new CultureInfo("en-US");
-            var L = BlockBase.ReplaceValuesRecursive(left, data); // The left-hand term can accept recursive values like <LIST[*]>
-            var r = BlockBase.ReplaceValues(right, data); // The right-hand term cannot
+            var L = BlockBase.ReplaceValuesRecursive(kcCond.Left, data); // The left-hand term can accept recursive values like <LIST[*]>
+            var r = BlockBase.ReplaceValues(kcCond.Right, data); // The right-hand term cannot
 
-            switch (condition)
+            switch (kcCond.Comparer)
             {
-                case Condition.EqualTo:
+                case Comparer.EqualTo:
                     return L.Any(l => l == r);
 
-                case Condition.NotEqualTo:
+                case Comparer.NotEqualTo:
                     return L.Any(l => l != r);
 
-                case Condition.GreaterThan:
+                case Comparer.GreaterThan:
                     return L.Any(l => decimal.Parse(l.Replace(',', '.'), style, provider) > decimal.Parse(r, style, provider));
 
-                case Condition.LessThan:
+                case Comparer.LessThan:
                     return L.Any(l => decimal.Parse(l.Replace(',', '.'), style, provider) < decimal.Parse(r, style, provider));
 
-                case Condition.Contains:
+                case Comparer.Contains:
                     return L.Any(l => l.Contains(r));
 
-                case Condition.DoesNotContain:
+                case Comparer.DoesNotContain:
                     return L.Any(l => !l.Contains(r));
 
-                case Condition.Exists:
-                    return L.Any(l => l != left); // Returns true if any replacement took place
+                case Comparer.Exists:
+                    return L.Any(l => l != kcCond.Left); // Returns true if any replacement took place
 
-                case Condition.DoesNotExist:
-                    return L.All(l => l == left); // Returns true if no replacement took place
+                case Comparer.DoesNotExist:
+                    return L.All(l => l == kcCond.Left); // Returns true if no replacement took place
 
-                case Condition.MatchesRegex:
+                case Comparer.MatchesRegex:
                     return L.Any(l => Regex.Match(l, r).Success);
 
-                case Condition.DoesNotMatchRegex:
+                case Comparer.DoesNotMatchRegex:
                     return L.Any(l => !Regex.Match(l, r).Success);
 
                 default:
                     return false;
             }
         }
+
+        /// <summary>
+        /// Verifies if all the provided conditions are true.
+        /// </summary>
+        /// <param name="conditions">The keycheck conditions</param>
+        /// <param name="data">The BotData used for variable replacement</param>
+        /// <returns>True if all the conditions are verified.</returns>
+        public static bool VerifyAll(KeycheckCondition[] conditions, BotData data)
+        {
+            return conditions.All(c => Verify(c, data));
+        }
+
+        /// <summary>
+        /// Verifies if at least one of the provided conditions is true.
+        /// </summary>
+        /// <param name="conditions">The keycheck conditions</param>
+        /// <param name="data">The BotData used for variable replacement</param>
+        /// <returns>True if any condition is verified.</returns>
+        public static bool VerifyAny(KeycheckCondition[] conditions, BotData data)
+        {
+            return conditions.Any(c => Verify(c, data));
+        }
+    }
+
+    /// <summary>
+    /// Represents a condition of a keycheck.
+    /// </summary>
+    public struct KeycheckCondition
+    {
+        /// <summary>
+        /// The left term.
+        /// </summary>
+        public string Left;
+
+        /// <summary>
+        /// The comparison operator.
+        /// </summary>
+        public Comparer Comparer;
+
+        /// <summary>
+        /// The right term.
+        /// </summary>
+        public string Right;
     }
 }
