@@ -249,7 +249,7 @@
     <Compile Include="CaptchaServices\ImageTyperz.cs" />
     <Compile Include="CaptchaServices\SolveReCaptcha.cs" />
     <Compile Include="CaptchaServices\TwoCaptcha.cs" />
-    <Compile Include="ConditionChecker.cs" />
+    <Compile Include="Functions\Conditions\Condition.cs" />
     <Compile Include="IOManager.cs" />
     <Compile Include="LoliScript\Parser\LineParser.cs" />
     <Compile Include="LoliScript\Parser\DeleteParser.cs" />
