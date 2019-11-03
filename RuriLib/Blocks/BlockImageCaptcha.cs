@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Media;
 using RuriLib.Functions.Download;
+using System.Collections.Generic;
 
 namespace RuriLib
 {
@@ -128,7 +129,10 @@ namespace RuriLib
             {
                 try
                 {
-                    Download.ImageToFile(captchaFile, data, localUrl, ReplaceValues(UserAgent, data));
+                    Download.ImageToFile(captchaFile, localUrl,
+                        data.UseProxies, data.Proxy, data.Cookies, out Dictionary<string, string> newCookies,
+                        data.GlobalSettings.General.RequestTimeout * 1000, ReplaceValues(UserAgent, data));
+                    data.Cookies = newCookies;
                 }
                 catch (Exception ex) { data.Log(new LogEntry(ex.Message, Colors.Tomato)); throw; }
             }

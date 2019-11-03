@@ -1,4 +1,5 @@
 ﻿using Extreme.Net;
+using RuriLib.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,34 +9,43 @@ using System.Threading.Tasks;
 
 namespace RuriLib.Functions.Download
 {
+    /// <summary>
+    /// Provides methods to download files from the internet.
+    /// </summary>
     public static class Download
     {
-        public static void ImageToFile(string fileName, BotData data, string localUrl, string userAgent = "")
+        /// <summary>
+        /// Downloads an image to a file.
+        /// </summary>
+        /// <param name="fileName">The file where the image will be saved</param>
+        /// <param name="url">The URL of the image</param>
+        /// <param name="useProxies">Whether to use proxies for the request</param>
+        /// <param name="proxy">The proxy, if needed</param>
+        /// <param name="cookies">The cookies to use in the request</param>
+        /// <param name="newCookies">The new cookie dictionary containing the new cookies too</param>
+        /// <param name="timeout">The request timeout in milliseconds</param>
+        /// <param name="userAgent">The user agent to use</param>
+        public static void ImageToFile(
+            string fileName, string url, bool useProxies, CProxy proxy, Dictionary<string, string> cookies, out Dictionary<string, string> newCookies, int timeout, string userAgent = "")
         {
             HttpRequest request = new HttpRequest();
 
             if (userAgent != "") request.UserAgent = userAgent;
             request.Cookies = new CookieDictionary();
-            foreach (var cookie in data.Cookies)
+            foreach (var cookie in cookies)
                 request.Cookies.Add(cookie.Key, cookie.Value);
 
             // Set proxy
-            if (data.UseProxies)
+            if (useProxies)
             {
-                request.Proxy = data.Proxy.GetClient();
-
-                var timeout = data.GlobalSettings.General.RequestTimeout * 1000;
-                try
-                {
-                    request.Proxy.ReadWriteTimeout = timeout;
-                    request.Proxy.ConnectTimeout = timeout;
-                    request.Proxy.Username = data.Proxy.Username;
-                    request.Proxy.Password = data.Proxy.Password;
-                }
-                catch { }
+                request.Proxy = proxy.GetClient();
+                request.Proxy.ReadWriteTimeout = timeout;
+                request.Proxy.ConnectTimeout = timeout;
+                request.Proxy.Username = proxy.Username;
+                request.Proxy.Password = proxy.Password;
             }
 
-            HttpResponse response = request.Get(localUrl);
+            HttpResponse response = request.Get(url);
 
             using (Stream inputStream = response.ToMemoryStream())
             using (Stream outputStream = File.OpenWrite(fileName))
@@ -49,7 +59,7 @@ namespace RuriLib.Functions.Download
                 } while (bytesRead != 0);
             }
 
-            data.Cookies = response.Cookies;
+            newCookies = response.Cookies;
         }
     }
 }

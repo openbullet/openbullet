@@ -49,6 +49,11 @@ namespace RuriLib.CaptchaServices
     /// </summary>
     public static class Service
     {
+        /// <summary>
+        /// Initializes a Captcha Service basing on its type and authentication credentials.
+        /// </summary>
+        /// <param name="cs">The Captcha Settings</param>
+        /// <returns>The Captcha Service.</returns>
         public static CaptchaService Initialize(SettingsCaptchas cs)
         {
             switch (cs.CurrentService)
