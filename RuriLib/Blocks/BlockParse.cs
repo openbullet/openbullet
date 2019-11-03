@@ -284,7 +284,7 @@ namespace RuriLib
             switch (Type)
             {
                 case ParseType.LR:
-                    list = Parse.LR(original, ReplaceValues(leftString, data), ReplaceValues(rightString, data)).ToList();
+                    list = Parse.LR(original, ReplaceValues(leftString, data), ReplaceValues(rightString, data), recursive, useRegexLR).ToList();
                     break;
 
                 case ParseType.CSS:
