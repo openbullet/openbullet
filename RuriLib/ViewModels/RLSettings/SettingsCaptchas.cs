@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using RuriLib.CaptchaServices;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace RuriLib.ViewModels
@@ -8,9 +9,9 @@ namespace RuriLib.ViewModels
     /// </summary>
     public class SettingsCaptchas : ViewModelBase
     {
-        private BlockCaptcha.CaptchaService currentService = BlockCaptcha.CaptchaService.AntiCaptcha;
+        private ServiceType currentService = ServiceType.AntiCaptcha;
         /// <summary>Which Captcha Service is currently selected for solving captcha challenges.</summary>
-        public BlockCaptcha.CaptchaService CurrentService { get { return currentService; } set { currentService = value; OnPropertyChanged(); } }
+        public ServiceType CurrentService { get { return currentService; } set { currentService = value; OnPropertyChanged(); } }
 
         private string antiCapToken = "";
         /// <summary>The AntiCaptcha API Token.</summary>
