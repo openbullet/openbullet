@@ -83,56 +83,7 @@ namespace RuriLib
 
             data.Log(new LogEntry("Solving reCaptcha...", Colors.White));
 
-            string recapResponse = "";
-            CaptchaServices.CaptchaService service = null;
-
-            var cs = data.GlobalSettings.Captchas;
-            switch (cs.CurrentService)
-            {
-                case CaptchaService.ImageTypers:
-                    service = new ImageTyperz(cs.ImageTypToken, cs.Timeout);
-                    break;
-
-                case CaptchaService.AntiCaptcha:
-                    service = new AntiCaptcha(cs.AntiCapToken, cs.Timeout);
-                    break;
-
-                case CaptchaService.DBC:
-                    service = new DeathByCaptcha(cs.DBCUser, cs.DBCPass, cs.Timeout);
-                    break;
-
-                case CaptchaService.TwoCaptcha:
-                    service = new TwoCaptcha(cs.TwoCapToken, cs.Timeout);
-                    break;
-
-                case CaptchaService.RuCaptcha:
-                    service = new RuCaptcha(cs.RuCapToken, cs.Timeout);
-                    break;
-
-                case CaptchaService.DeCaptcher:
-                    service = new DeCaptcher(cs.DCUser, cs.DCPass, cs.Timeout);
-                    break;
-
-                case CaptchaService.AZCaptcha:
-                    service = new AZCaptcha(cs.AZCapToken, cs.Timeout);
-                    break;
-
-                case CaptchaService.SolveRecaptcha:
-                    service = new SolveReCaptcha(cs.SRUserId, cs.SRToken, cs.Timeout);
-                    break;
-
-                case CaptchaService.CaptchasIO:
-                    service = new CaptchasIO(cs.CIOToken, cs.Timeout);
-                    break;
-
-                case CaptchaService.CustomTwoCaptcha:
-                    service = new CustomTwoCaptcha(cs.CustomTwoCapToken, cs.CustomTwoCapDomain, cs.CustomTwoCapPort, cs.Timeout);
-                    break;
-
-                default:
-                    throw new Exception("This service cannot solve reCaptchas!");
-            }
-            recapResponse = service.SolveRecaptcha(siteKey, ReplaceValues(url, data));
+            string recapResponse = Service.Initialize(data.GlobalSettings.Captchas).SolveRecaptcha(siteKey, ReplaceValues(url, data));
 
             data.Log(recapResponse == "" ? new LogEntry("Couldn't get a reCaptcha response from the service", Colors.Tomato) : new LogEntry("Succesfully got the response: " + recapResponse, Colors.GreenYellow));
             if (VariableName != "")

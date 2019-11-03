@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Media;
+using RuriLib.Functions.Download;
 
 namespace RuriLib
 {
@@ -127,64 +128,21 @@ namespace RuriLib
             {
                 try
                 {
-                    DownloadRemoteImageFile(captchaFile, data, localUrl);
+                    Download.ImageToFile(captchaFile, data, localUrl, ReplaceValues(UserAgent, data));
                 }
                 catch (Exception ex) { data.Log(new LogEntry(ex.Message, Colors.Tomato)); throw; }
             }
 
             string response = "";
-            CaptchaServices.CaptchaService service = null;
+            
             var bitmap = new Bitmap(captchaFile);
             try
             {
-                var cs = data.GlobalSettings.Captchas;
-                switch (cs.CurrentService)
-                {
-                    case CaptchaService.ImageTypers:
-                        service = new ImageTyperz(cs.ImageTypToken, cs.Timeout);
-                        break;
-
-                    case CaptchaService.AntiCaptcha:
-                        service = new AntiCaptcha(cs.AntiCapToken, cs.Timeout);
-                        break;
-
-                    case CaptchaService.DBC:
-                        service = new DeathByCaptcha(cs.DBCUser, cs.DBCPass, cs.Timeout);
-                        break;
-
-                    case CaptchaService.TwoCaptcha:
-                        service = new TwoCaptcha(cs.TwoCapToken, cs.Timeout);
-                        break;
-
-                    case CaptchaService.RuCaptcha:
-                        service = new RuCaptcha(cs.RuCapToken, cs.Timeout);
-                        break;
-
-                    case CaptchaService.DeCaptcher:
-                        service = new DeCaptcher(cs.DCUser, cs.DCPass, cs.Timeout);
-                        break;
-
-                    case CaptchaService.AZCaptcha:
-                        service = new AZCaptcha(cs.AZCapToken, cs.Timeout);
-                        break;
-
-                    case CaptchaService.CaptchasIO:
-                        service = new CaptchasIO(cs.CIOToken, cs.Timeout);
-                        break;
-
-                    case CaptchaService.CustomTwoCaptcha:
-                        service = new CustomTwoCaptcha(cs.CustomTwoCapToken, cs.CustomTwoCapDomain, cs.CustomTwoCapPort, cs.Timeout);
-                        break;
-
-                    default:
-                        throw new Exception("This service cannot solve normal captchas!");
-                }
-                response = service.SolveCaptcha(bitmap);
+                response = Service.Initialize(data.GlobalSettings.Captchas).SolveCaptcha(bitmap);
             }
             catch(Exception ex) { data.Log(new LogEntry(ex.Message, Colors.Tomato)); throw; }
             finally { bitmap.Dispose(); }
 
-            data.CaptchaService = service;
             data.Log(response == "" ? new LogEntry("Couldn't get a response from the service", Colors.Tomato) : new LogEntry("Succesfully got the response: " + response, Colors.GreenYellow));
 
             if (VariableName != "")
@@ -192,48 +150,6 @@ namespace RuriLib
                 data.Log(new LogEntry("Response stored in variable: " + variableName, Colors.White));
                 data.Variables.Set(new CVar(variableName, response));
             }
-        }
-
-        private void DownloadRemoteImageFile(string fileName, BotData data, string localUrl)
-        {
-            HttpRequest request = new HttpRequest();
-
-            if (UserAgent != "") request.UserAgent = ReplaceValues(UserAgent, data);
-            request.Cookies = new CookieDictionary();
-            foreach (var cookie in data.Cookies)
-                request.Cookies.Add(cookie.Key, cookie.Value);
-
-            // Set proxy
-            if (data.UseProxies)
-            {
-                request.Proxy = data.Proxy.GetClient();
-
-                var timeout = data.GlobalSettings.General.RequestTimeout * 1000;
-                try
-                {
-                    request.Proxy.ReadWriteTimeout = timeout;
-                    request.Proxy.ConnectTimeout = timeout;
-                    request.Proxy.Username = data.Proxy.Username;
-                    request.Proxy.Password = data.Proxy.Password;
-                }
-                catch { }
-            }
-
-            HttpResponse response = request.Get(localUrl);
-            
-            using (Stream inputStream = response.ToMemoryStream())
-            using (Stream outputStream = File.OpenWrite(fileName))
-            {
-                byte[] buffer = new byte[4096];
-                int bytesRead;
-                do
-                {
-                    bytesRead = inputStream.Read(buffer, 0, buffer.Length);
-                    outputStream.Write(buffer, 0, bytesRead);
-                } while (bytesRead != 0);
-            }
-
-            data.Cookies = response.Cookies;
         }
     }
 }
