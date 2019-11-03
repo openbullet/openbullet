@@ -15,17 +15,17 @@ namespace RuriLib.Functions.Download
     public static class Download
     {
         /// <summary>
-        /// Downloads an image to a file.
+        /// Downloads a remote file.
         /// </summary>
-        /// <param name="fileName">The file where the image will be saved</param>
-        /// <param name="url">The URL of the image</param>
+        /// <param name="fileName">The destination file on disk</param>
+        /// <param name="url">The URL of the remote file</param>
         /// <param name="useProxies">Whether to use proxies for the request</param>
         /// <param name="proxy">The proxy, if needed</param>
         /// <param name="cookies">The cookies to use in the request</param>
         /// <param name="newCookies">The new cookie dictionary containing the new cookies too</param>
         /// <param name="timeout">The request timeout in milliseconds</param>
         /// <param name="userAgent">The user agent to use</param>
-        public static void ImageToFile(
+        public static void RemoteFile(
             string fileName, string url, bool useProxies, CProxy proxy, Dictionary<string, string> cookies, out Dictionary<string, string> newCookies, int timeout, string userAgent = "")
         {
             HttpRequest request = new HttpRequest();

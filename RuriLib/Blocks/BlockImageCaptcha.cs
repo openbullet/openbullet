@@ -129,7 +129,7 @@ namespace RuriLib
             {
                 try
                 {
-                    Download.ImageToFile(captchaFile, localUrl,
+                    Download.RemoteFile(captchaFile, localUrl,
                         data.UseProxies, data.Proxy, data.Cookies, out Dictionary<string, string> newCookies,
                         data.GlobalSettings.General.RequestTimeout * 1000, ReplaceValues(UserAgent, data));
                     data.Cookies = newCookies;
