@@ -1,4 +1,5 @@
 ﻿using RuriLib;
+using RuriLib.Functions.Files;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,11 +34,11 @@ namespace OpenBullet
             {
                 // Check if name is ok
                 if (nameTextbox.Text.Trim() == "") { MessageBox.Show("The name cannot be blank"); return; }
-                else if (nameTextbox.Text != BlockBase.MakeValidFileName(nameTextbox.Text)) { MessageBox.Show("The name contains invalid characters"); return; }
+                else if (nameTextbox.Text != Files.MakeValidFileName(nameTextbox.Text)) { MessageBox.Show("The name contains invalid characters"); return; }
 
                 // Check if category is ok
                 if (categoryCombobox.Text.Trim() == "") categoryCombobox.Text = "Default";
-                else if (categoryCombobox.Text != BlockBase.MakeValidFileName(categoryCombobox.Text)) { MessageBox.Show("The category contains invalid characters"); return; }
+                else if (categoryCombobox.Text != Files.MakeValidFileName(categoryCombobox.Text)) { MessageBox.Show("The category contains invalid characters"); return; }
 
                 ((ConfigManager)Caller).CreateConfig(nameTextbox.Text, categoryCombobox.Text, authorTextbox.Text);
             }

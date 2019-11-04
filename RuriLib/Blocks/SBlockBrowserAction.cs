@@ -2,6 +2,7 @@
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Interactions;
+using RuriLib.Functions.Files;
 using RuriLib.LS;
 using RuriLib.ViewModels;
 using System;
@@ -217,7 +218,7 @@ namespace RuriLib
 
                 case BrowserAction.Screenshot:
                     var image = data.Driver.GetScreenshot();
-                    SaveScreenshot(image, data);
+                    Files.SaveScreenshot(image, data);
                     break;
 
                 case BrowserAction.SwitchToTab:

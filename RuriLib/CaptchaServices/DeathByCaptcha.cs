@@ -1,5 +1,6 @@
 ﻿using Extreme.Net;
 using Newtonsoft.Json;
+using RuriLib.Functions.Requests;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -46,7 +47,7 @@ namespace RuriLib.CaptchaServices
             // Create task
             HttpRequest request = new HttpRequest();
             request.AddHeader(HttpHeader.Accept, "application/json");
-            var content = new Extreme.Net.MultipartContent(BlockRequest.GenerateMultipartBoundary());
+            var content = new Extreme.Net.MultipartContent(Request.GenerateMultipartBoundary());
             content.Add(new Extreme.Net.StringContent(User), "username");
             content.Add(new Extreme.Net.StringContent(Pass), "password");
             content.Add(new Extreme.Net.StringContent("4"), "type");
@@ -97,7 +98,7 @@ namespace RuriLib.CaptchaServices
             // Create task
             HttpRequest request = new HttpRequest();
             request.AddHeader(HttpHeader.Accept, "application/json");
-            Extreme.Net.MultipartContent content = new Extreme.Net.MultipartContent(BlockRequest.GenerateMultipartBoundary());
+            Extreme.Net.MultipartContent content = new Extreme.Net.MultipartContent(Request.GenerateMultipartBoundary());
             content.Add(new Extreme.Net.StringContent(User), "username");
             content.Add(new Extreme.Net.StringContent(Pass), "password");
             content.Add(new Extreme.Net.StringContent($"base64:{GetBase64(bitmap, ImageFormat.Jpeg)}"), "captchafile");

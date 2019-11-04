@@ -188,6 +188,7 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -216,6 +217,8 @@
     <Compile Include="Functions\Crypto\Crypto.cs" />
     <Compile Include="Functions\Download\Download.cs" />
     <Compile Include="Functions\Encoding\Encode.cs" />
+    <Compile Include="Functions\Files\Files.cs" />
+    <Compile Include="Functions\Requests\Request.cs" />
     <Compile Include="Functions\Time\Time.cs" />
     <Compile Include="GZip.cs" />
     <Compile Include="LoliScript\Exceptions\BlockProcessingException.cs" />

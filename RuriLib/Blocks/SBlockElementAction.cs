@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using RuriLib.Functions.Files;
 using RuriLib.LS;
 using System;
 using System.Collections.Generic;
@@ -299,7 +300,7 @@ namespace RuriLib
 
                     case ElementAction.Screenshot:
                         var image = GetElementScreenShot(data.Driver, element);
-                        SaveScreenshot(image, data);
+                        Files.SaveScreenshot(image, data);
                         break;
 
                     case ElementAction.SwitchToFrame:

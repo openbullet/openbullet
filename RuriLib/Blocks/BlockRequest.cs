@@ -10,6 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
+using RuriLib.Functions.Requests;
+using RuriLib.Functions.Files;
+using MultipartContent = RuriLib.Functions.Requests.MultipartContent;
 
 namespace RuriLib
 {
@@ -287,7 +290,7 @@ namespace RuriLib
                     break;
 
                 case RequestType.Standard:
-                    if (CanContainBody(method))
+                    if (Request.CanContainBody(method))
                     {
                         writer
                             .Token("CONTENT")
@@ -358,289 +361,86 @@ namespace RuriLib
         {
             base.Process(data);
 
-            #region Request
-            // Set base URL
-            var localUrl = ReplaceValues(url, data);
-            var cType = ReplaceValues(contentType, data);
-            var oldJar = data.Cookies;
+            // Setup
+            var request = new Request();
+            request.Setup(data.GlobalSettings, AutoRedirect, data.ConfigSettings.MaxRedirects, AcceptEncoding);
 
-            // Create request
-            HttpRequest request = new HttpRequest();
-
-            // Setup options
-            var timeout = data.GlobalSettings.General.RequestTimeout * 1000;
-            request.IgnoreProtocolErrors = true;
-            request.AllowAutoRedirect = autoRedirect;
-            request.EnableEncodingContent = acceptEncoding;
-            request.ReadWriteTimeout = timeout;
-            request.ConnectTimeout = timeout;
-            request.KeepAlive = true;
-            request.MaximumAutomaticRedirections = data.ConfigSettings.MaxRedirects;
-
-            // Check if it has GET parameters
-            if (ParseQuery && localUrl.Contains('?') && localUrl.Contains('='))
-            {
-                // Remove the query from the base URL
-                localUrl = ReplaceValues(url.Split('?')[0], data);
-                data.Log(new LogEntry($"Calling Base URL: {localUrl}", Colors.MediumTurquoise));
-
-                // Parse the GET parameters
-                var getParams = ReplaceValues(url.Split('?')[1], data);
-                var paramList = getParams.Split('&');
-
-                // Build the query, first replace variables in them and encode the parameters
-                foreach (var par in paramList)
-                {
-                    var split = par.Split('=');
-
-                    // Encode them if needed
-                    if (split[0].Contains('%')) split[0] = Uri.EscapeDataString(split[0]);
-                    if (split[1].Contains('%')) split[1] = Uri.EscapeDataString(split[1]);
-
-                    // Add them to the query
-                    request.AddUrlParam(split[0], split[1]);
-
-                    data.Log(new LogEntry($"Added Query Parameter: {split[0]} = {split[1]}", Colors.MediumTurquoise));
-                }
-            }
-            else
-            {
-                data.Log(new LogEntry($"Calling URL: {localUrl}", Colors.MediumTurquoise));
-            }
-
-            // Set up the Content and Content-Type
-            HttpContent content = null;
-            switch (requestType)
+            var localUrl = ReplaceValues(Url, data);
+            data.Log(new LogEntry($"Calling URL: {localUrl}", Colors.MediumTurquoise));
+            
+            // Set content
+            switch (RequestType)
             {
                 case RequestType.Standard:
-                    var pData = ReplaceValues(Regex.Replace(postData, @"(?<!\\)\\n", Environment.NewLine).Replace(@"\\n", @"\n"), data);
+                    request.SetStandardContent(ReplaceValues(PostData, data), ReplaceValues(ContentType, data), Method, EncodeContent, data.LogBuffer);
+                    break;
 
-                    if (CanContainBody(method))
-                    {
-                        if (encodeContent)
-                        {
-                            // Very dirty but it works
-                            var nonce = data.Random.Next(1000000, 9999999);
-                            pData = pData.Replace("&", $"{nonce}&{nonce}").Replace("=", $"{nonce}={nonce}");
-                            pData = string.Join("", BlockFunction.SplitInChunks(pData, 2080)
-                                .Select(s => Uri.EscapeDataString(s)))
-                                .Replace($"{nonce}%26{nonce}", "&").Replace($"{nonce}%3D{nonce}", "=");
-                        }
-
-                        content = new StringContent(pData);
-                        content.ContentType = cType;
-                        data.Log(new LogEntry($"Post Data: {pData}", Colors.MediumTurquoise));
-                    }
+                case RequestType.BasicAuth:
+                    request.SetBasicAuth(ReplaceValues(AuthUser, data), ReplaceValues(AuthPass, data));
                     break;
 
                 case RequestType.Multipart:
-                    var bdry = multipartBoundary != "" ? ReplaceValues(multipartBoundary, data) : GenerateMultipartBoundary();
-                    content = new Extreme.Net.MultipartContent(bdry);
-                    var mContent = content as Extreme.Net.MultipartContent;
-                    data.Log(new LogEntry($"Content-Type: multipart/form-data; boundary={bdry}", Colors.MediumTurquoise));
-                    data.Log(new LogEntry("Multipart Data:", Colors.MediumTurquoise));
-                    data.Log(new LogEntry(bdry, Colors.MediumTurquoise));
-                    foreach (var c in MultipartContents)
-                    {
-                        var rValue = ReplaceValues(c.Value, data);
-                        var rName = ReplaceValues(c.Name, data);
-                        var rContentType = ReplaceValues(c.ContentType, data);
-
-                        if (c.Type == MultipartContentType.String)
+                    var contents = MultipartContents.Select(m =>
+                        new MultipartContent()
                         {
-                            mContent.Add(new StringContent(rValue), rName);
-                            data.Log(new LogEntry($"Content-Disposition: form-data; name=\"{rName}\"{Environment.NewLine}{Environment.NewLine}{rValue}", Colors.MediumTurquoise));
-                        }
-                        else if (c.Type == MultipartContentType.File)
-                        {
-                            mContent.Add(new FileContent(rValue), rName, rValue, rContentType);
-                            data.Log(new LogEntry($"Content-Disposition: form-data; name=\"{rName}\"; filename=\"{rValue}\"{Environment.NewLine}Content-Type: {rContentType}{Environment.NewLine}{Environment.NewLine}[FILE CONTENT OMITTED]", Colors.MediumTurquoise));
-                        }
-                        data.Log(new LogEntry(bdry, Colors.MediumTurquoise));
-                    }
-                    break;
-
-                default:
+                            Name = ReplaceValues(m.Name, data),
+                            Value = ReplaceValues(m.Value, data),
+                            ContentType = ReplaceValues(m.Value, data),
+                            Type = m.Type
+                        });
+                    request.SetMultipartContent(contents, ReplaceValues(MultipartBoundary, data), data.LogBuffer);
                     break;
             }
 
             // Set proxy
             if (data.UseProxies)
             {
-                request.Proxy = data.Proxy.GetClient();
-
-                try
-                {
-                    request.Proxy.ReadWriteTimeout = timeout;
-                    request.Proxy.ConnectTimeout = timeout;
-                    request.Proxy.Username = data.Proxy.Username;
-                    request.Proxy.Password = data.Proxy.Password;
-                }
-                catch { }
+                request.SetProxy(data.Proxy);
             }
 
             // Set headers
             data.Log(new LogEntry("Sent Headers:", Colors.DarkTurquoise));
-            // var fixedNames = Enum.GetNames(typeof(HttpHeader)).Select(n => n.ToLower());
-            foreach (var header in CustomHeaders)
-            {
-                try
-                {
-                    var key = ReplaceValues(header.Key, data);
-                    var replacedKey = key.Replace("-", "").ToLower(); // Used to compare with the HttpHeader enum
-                    var val = ReplaceValues(header.Value, data);
+            var headers = CustomHeaders.Select( h =>
+                    new KeyValuePair<string, string> (ReplaceValues(h.Key, data), ReplaceValues(h.Value, data))
+                ).ToDictionary(h => h.Key, h => h.Value);
+            request.SetHeaders(CustomHeaders, AcceptEncoding, data.LogBuffer);
 
-                    if (replacedKey == "contenttype" && content != null) { continue; } // Disregard additional Content-Type headers
-                    if (replacedKey == "acceptencoding" && acceptEncoding) { continue; } // Disregard additional Accept-Encoding headers
-                    // else if (fixedNames.Contains(replacedKey)) request.AddHeader((HttpHeader)Enum.Parse(typeof(HttpHeader), replacedKey, true), val);
-                    else request.AddHeader(key, val);
+            // Set cookies
+            data.Log(new LogEntry("Sent Cookies:", Colors.MediumTurquoise));
 
-                    data.Log(new LogEntry(key + ": " + val, Colors.MediumTurquoise));
-                }
-                catch { }
-            }
-
-            // Add the authorization header on a Basic Auth request
-            if (requestType == RequestType.BasicAuth)
-            {
-                var usr = ReplaceValues(authUser, data);
-                var pwd = ReplaceValues(authPass, data);
-                var auth = "Basic " + (usr + ":" + pwd).ToBase64();
-                request.AddHeader("Authorization", auth);
-                data.Log(new LogEntry($"Authorization: {auth}", Colors.MediumTurquoise));
-            }
-
-            // Add the content-type header
-            if (CanContainBody(method) && content != null && requestType == RequestType.Standard)
-            {
-                data.Log(new LogEntry($"Content-Type: {cType}", Colors.MediumTurquoise));
-            }
-
-            // Add new user-defined custom cookies to the bot's cookie jar
-            request.Cookies = new CookieDictionary();
-            foreach (var cookie in CustomCookies)
+            foreach (var cookie in CustomCookies) // Add new user-defined custom cookies to the bot's cookie jar
                 data.Cookies[ReplaceValues(cookie.Key, data)] = ReplaceValues(cookie.Value, data);
 
-            // Set cookies from the bot's cookie jar to the request's CookieDictionary
-            data.Log(new LogEntry("Sent Cookies:", Colors.MediumTurquoise));
-            foreach (var cookie in data.Cookies)
-            {
-                request.Cookies.Add(cookie.Key, cookie.Value);
-                data.Log(new LogEntry($"{cookie.Key}: {cookie.Value}", Colors.MediumTurquoise));
-            }
+            request.SetCookies(data.Cookies, data.LogBuffer);
 
+            // End the request part
             data.LogNewLine();
-            #endregion
 
-            #region Response
-            // Create the response
-            HttpResponse response = null;
-            
-            try
+            // Perform the request
+            (data.Address, data.ResponseCode, data.ResponseHeaders, data.Cookies) = request.Perform(localUrl, Method, data.ConfigSettings.IgnoreResponseErrors, data.LogBuffer);
+
+            // Save the response content
+            switch (ResponseType)
             {
-                // Get response
-                response = request.Raw(method, localUrl, content);
-                var responseString = "";
+                case ResponseType.String:
+                    data.ResponseSource = request.SaveString(ReadResponseSource, data.ResponseHeaders, data.LogBuffer);
+                    break;
 
-                // Get address
-                data.Address = response.Address.ToString();
-                data.Log(new LogEntry("Address: " + data.Address, Colors.Cyan));
-
-                // Get code
-                data.ResponseCode = ((int)response.StatusCode).ToString();
-                data.Log(new LogEntry($"Response code: {data.ResponseCode} ({response.StatusCode})", Colors.Cyan));
-
-                // Get headers
-                data.Log(new LogEntry("Received headers:", Colors.DeepPink));
-                var headerList = new List<KeyValuePair<string, string>>();
-                var receivedHeaders = response.EnumerateHeaders();
-                data.ResponseHeaders.Clear();
-                while (receivedHeaders.MoveNext())
-                {
-                    var header = receivedHeaders.Current;
-                    data.ResponseHeaders.Add(header.Key, header.Value);
-                    data.Log(new LogEntry($"{header.Key}: {header.Value}", Colors.LightPink));
-                }
-                if (!response.ContainsHeader(HttpHeader.ContentLength) && ResponseType != ResponseType.File)
-                {
-                    responseString = response.ToString(); // Read the stream
-
-                    if (data.ResponseHeaders.ContainsKey("Content-Encoding") && data.ResponseHeaders["Content-Encoding"].Contains("gzip"))
+                case ResponseType.File:
+                    if (SaveAsScreenshot)
                     {
-                        data.ResponseHeaders["Content-Length"] = GZip.Zip(responseString).Length.ToString();
+                        Files.SaveScreenshot(request.GetResponseStream(), data); // Read the stream
+                        data.Log(new LogEntry("File saved as screenshot", Colors.Green));
                     }
                     else
                     {
-                        data.ResponseHeaders["Content-Length"] = responseString.Length.ToString();
+                        request.SaveFile(ReplaceValues(DownloadPath, data), data.LogBuffer);
                     }
+                    break;
 
-                    data.Log(new LogEntry($"Content-Length: {data.ResponseHeaders["Content-Length"]}", Colors.LightPink));
-                }
-
-                // Get cookies
-                data.Log(new LogEntry("Received cookies:", Colors.Goldenrod));
-                data.Cookies = response.Cookies;
-                foreach (var cookie in response.Cookies)
-                {
-                    // If the cookie was already present before, don't log it
-                    if (oldJar.ContainsKey(cookie.Key) && oldJar[cookie.Key] == cookie.Value) continue;
-
-                    data.Log(new LogEntry($"{cookie.Key}: {cookie.Value}", Colors.LightGoldenrodYellow));
-                }
-
-                // Save the response content
-                switch (responseType)
-                {
-                    case ResponseType.String:
-                        data.Log(new LogEntry("Response Source:", Colors.Green));
-                        if (readResponseSource)
-                        {
-                            if (responseString == "") responseString = response.ToString(); // Read the stream if you didn't already read it
-                            data.ResponseSource = responseString;
-                            data.Log(new LogEntry(data.ResponseSource, Colors.GreenYellow));
-                        }
-                        else
-                        {
-                            data.ResponseSource = "";
-                            data.Log(new LogEntry("[SKIPPED]", Colors.GreenYellow));
-                        }
-                        break;
-
-                    case ResponseType.File:
-                        if (SaveAsScreenshot)
-                        {
-                            SaveScreenshot(response.ToMemoryStream(), data); // Read the stream
-                            data.Log(new LogEntry("File saved as screenshot", Colors.Green));
-                        }
-                        else
-                        {
-                            var filePath = ReplaceValues(downloadPath, data);
-                            var dirName = Path.GetDirectoryName(filePath);
-                            if (dirName != "") dirName += Path.DirectorySeparatorChar.ToString();
-                            var fileName = Path.GetFileNameWithoutExtension(filePath);
-                            var fileExtension = Path.GetExtension(filePath);
-                            var sanitizedPath = $"{dirName}{MakeValidFileName(fileName)}{fileExtension}";
-                            using (var stream = File.Create(sanitizedPath)) { response.ToMemoryStream().CopyTo(stream); } // Read the stream
-                            data.Log(new LogEntry("File saved as " + sanitizedPath, Colors.Green));
-                        }
-                        break;
-
-                    default:
-                        break;
-                }
+                default:
+                    break;
             }
-            catch (Exception ex)
-            {
-                data.Log(new LogEntry(ex.Message, Colors.White));
-                if (ex.GetType() == typeof(HttpException))
-                {
-                    data.ResponseCode = ((HttpException)ex).HttpStatusCode.ToString();
-                    data.Log(new LogEntry("Status code: " + data.ResponseCode, Colors.Cyan));
-                }
-
-                if (!data.ConfigSettings.IgnoreResponseErrors) throw;
-            }
-            #endregion
         }
 
         #region Custom Cookies, Headers and Multipart Contents
@@ -746,45 +546,5 @@ namespace RuriLib
         }
 
         #endregion
-
-        /// <summary>
-        /// Generates a random string to be used for boundary.
-        /// </summary>
-        /// <returns>The random 16-character string</returns>
-        internal static string GenerateMultipartBoundary()
-        {
-            StringBuilder builder = new StringBuilder();
-            Random random = new Random();
-            char ch;
-            for (int i = 0; i < 16; i++)
-            {
-                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
-                builder.Append(ch);
-            }
-            return $"------WebKitFormBoundary{builder.ToString().ToLower()}";
-        }
-
-        private static bool CanContainBody(HttpMethod method)
-        {
-            return method == HttpMethod.POST || method == HttpMethod.PUT || method == HttpMethod.DELETE;
-        }
-    }
-
-    /// <summary>
-    /// Represents a Multipart Content
-    /// </summary>
-    public class MultipartContent
-    {
-        /// <summary>The type of multipart content.</summary>
-        public MultipartContentType Type { get; set; } = MultipartContentType.String;
-
-        /// <summary>The name of the multipart content.</summary>
-        public string Name { get; set; } = "";
-
-        /// <summary>The value of the multipart content (a string value or a file path).</summary>
-        public string Value { get; set; } = "";
-
-        /// <summary>The Content-Type of the file content.</summary>
-        public string ContentType { get; set; } = "";
     }
 }
