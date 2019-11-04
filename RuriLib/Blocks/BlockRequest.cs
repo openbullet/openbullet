@@ -109,10 +109,6 @@ namespace RuriLib
         /// <summary>Whether to read the stream of data from the HTTP response. Set to false if only the headers are needed, in order to speed up the process.</summary>
         public bool ReadResponseSource { get { return readResponseSource; } set { readResponseSource = value; OnPropertyChanged(); } }
 
-        private bool parseQuery = false;
-        /// <summary>Whether to parse the GET parameters manually (fixes Extreme.NET issues on some websites).</summary>
-        public bool ParseQuery { get { return parseQuery; } set { parseQuery = value; OnPropertyChanged(); } }
-
         private bool encodeContent = false;
         /// <summary>Whether to URL encode the content before sending it.</summary>
         public bool EncodeContent { get { return encodeContent; } set { encodeContent = value; OnPropertyChanged(); } }
@@ -273,7 +269,6 @@ namespace RuriLib
                 .Boolean(AcceptEncoding, "AcceptEncoding")
                 .Boolean(AutoRedirect, "AutoRedirect")
                 .Boolean(ReadResponseSource, "ReadResponseSource")
-                .Boolean(ParseQuery, "ParseQuery")
                 .Boolean(EncodeContent, "EncodeContent")
                 .Token(RequestType, "RequestType")
                 .Indent();
