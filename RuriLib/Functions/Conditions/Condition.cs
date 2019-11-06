@@ -47,25 +47,25 @@ namespace RuriLib.Functions.Conditions
     public static class Condition
     {
         /// <summary>
-        /// Verifies if a condition is true or false.
+        /// Replaces the values and verifies if a condition is true or false.
         /// </summary>
         /// <param name="left">The left term</param>
         /// <param name="comparer">The comparison operator</param>
         /// <param name="right">The right term</param>
         /// <param name="data">The BotData used for variable replacement</param>
         /// <returns>Whether the comparison is verified or not.</returns>
-        public static bool Verify(string left, Comparer comparer, string right, BotData data)
+        public static bool ReplaceAndVerify(string left, Comparer comparer, string right, BotData data)
         {
-            return Verify(new KeycheckCondition() { Left = left, Comparer = comparer, Right = right }, data);
+            return ReplaceAndVerify(new KeycheckCondition() { Left = left, Comparer = comparer, Right = right }, data);
         }
 
         /// <summary>
-        /// Verifies if a condition is true or false.
+        /// Replaces the values and verifies if a condition is true or false.
         /// </summary>
         /// <param name="kcCond">The keycheck condition struct</param>
         /// <param name="data">The BotData used for variable replacement</param>
         /// <returns>Whether the comparison is verified or not.</returns>
-        public static bool Verify(KeycheckCondition kcCond, BotData data)
+        public static bool ReplaceAndVerify(KeycheckCondition kcCond, BotData data)
         {
             var style = NumberStyles.Number | NumberStyles.AllowCurrencySymbol; // Needed when comparing values with a currency symbol
             var provider = new CultureInfo("en-US");
@@ -81,10 +81,10 @@ namespace RuriLib.Functions.Conditions
                     return L.Any(l => l != r);
 
                 case Comparer.GreaterThan:
-                    return L.Any(l => decimal.Parse(l.Replace(',', '.'), style, provider) > decimal.Parse(r, style, provider));
+                    return L.Any(l => decimal.Parse(l.Replace(',', '.'), style, provider) > decimal.Parse(r.Replace(',', '.'), style, provider));
 
                 case Comparer.LessThan:
-                    return L.Any(l => decimal.Parse(l.Replace(',', '.'), style, provider) < decimal.Parse(r, style, provider));
+                    return L.Any(l => decimal.Parse(l.Replace(',', '.'), style, provider) < decimal.Parse(r.Replace(',', '.'), style, provider));
 
                 case Comparer.Contains:
                     return L.Any(l => l.Contains(r));
@@ -110,25 +110,90 @@ namespace RuriLib.Functions.Conditions
         }
 
         /// <summary>
-        /// Verifies if all the provided conditions are true.
+        /// Verifies if a condition is true or false (without replacing the values).
+        /// </summary>
+        /// <param name="kcCond">The keycheck condition struct</param>
+        /// <returns>Whether the comparison is verified or not.</returns>
+        public static bool Verify(KeycheckCondition kcCond)
+        {
+            var style = NumberStyles.Number | NumberStyles.AllowCurrencySymbol; // Needed when comparing values with a currency symbol
+            var provider = new CultureInfo("en-US");
+
+            switch (kcCond.Comparer)
+            {
+                case Comparer.EqualTo:
+                    return kcCond.Left == kcCond.Right;
+
+                case Comparer.NotEqualTo:
+                    return kcCond.Left != kcCond.Right;
+
+                case Comparer.GreaterThan:
+                    return decimal.Parse(kcCond.Left.Replace(',', '.'), style, provider) > decimal.Parse(kcCond.Right.Replace(',', '.'), style, provider);
+
+                case Comparer.LessThan:
+                    return decimal.Parse(kcCond.Left.Replace(',', '.'), style, provider) < decimal.Parse(kcCond.Right.Replace(',', '.'), style, provider);
+
+                case Comparer.Contains:
+                    return kcCond.Left.Contains(kcCond.Right);
+
+                case Comparer.DoesNotContain:
+                    return !kcCond.Left.Contains(kcCond.Right);
+
+                case Comparer.Exists:
+                case Comparer.DoesNotExist:
+                    throw new NotSupportedException("Exists and DoesNotExist operators are only supported in the ReplaceAndVerify method.");
+
+                case Comparer.MatchesRegex:
+                    return Regex.Match(kcCond.Left, kcCond.Right).Success;
+
+                case Comparer.DoesNotMatchRegex:
+                    return !Regex.Match(kcCond.Left, kcCond.Right).Success;
+
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Verifies if all the provided conditions are true (after replacing).
         /// </summary>
         /// <param name="conditions">The keycheck conditions</param>
         /// <param name="data">The BotData used for variable replacement</param>
         /// <returns>True if all the conditions are verified.</returns>
-        public static bool VerifyAll(KeycheckCondition[] conditions, BotData data)
+        public static bool ReplaceAndVerifyAll(KeycheckCondition[] conditions, BotData data)
         {
-            return conditions.All(c => Verify(c, data));
+            return conditions.All(c => ReplaceAndVerify(c, data));
         }
 
         /// <summary>
-        /// Verifies if at least one of the provided conditions is true.
+        /// Verifies if all the provided conditions are true (without replacing).
+        /// </summary>
+        /// <param name="conditions">The keycheck conditions</param>
+        /// <returns>True if all the conditions are verified.</returns>
+        public static bool VerifyAll(KeycheckCondition[] conditions)
+        {
+            return conditions.All(c => Verify(c));
+        }
+
+        /// <summary>
+        /// Verifies if at least one of the provided conditions is true (after replacing).
         /// </summary>
         /// <param name="conditions">The keycheck conditions</param>
         /// <param name="data">The BotData used for variable replacement</param>
         /// <returns>True if any condition is verified.</returns>
-        public static bool VerifyAny(KeycheckCondition[] conditions, BotData data)
+        public static bool ReplaceAndVerifyAny(KeycheckCondition[] conditions, BotData data)
         {
-            return conditions.Any(c => Verify(c, data));
+            return conditions.Any(c => ReplaceAndVerify(c, data));
+        }
+
+        /// <summary>
+        /// Verifies if at least one of the provided conditions is true (without replacing).
+        /// </summary>
+        /// <param name="conditions">The keycheck conditions</param>
+        /// <returns>True if any condition is verified.</returns>
+        public static bool VerifyAny(KeycheckCondition[] conditions)
+        {
+            return conditions.Any(c => Verify(c));
         }
     }
 

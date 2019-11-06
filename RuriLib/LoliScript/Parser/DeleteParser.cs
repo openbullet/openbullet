@@ -35,7 +35,7 @@ namespace RuriLib.LS
                         for (int i=0; i<data.Cookies.Count; i++)
                         {
                             var curr = data.Cookies.ToList()[i].Key;
-                            if (Condition.Verify(curr, comparer, name, data)) data.Cookies.Remove(curr);
+                            if (Condition.ReplaceAndVerify(curr, comparer, name, data)) data.Cookies.Remove(curr);
                         }
                         break;
 

@@ -29,7 +29,7 @@ namespace RuriLib.Models
         {
             try
             {
-                return Condition.Verify(LeftTerm, Comparer, RightTerm, data);
+                return Condition.ReplaceAndVerify(LeftTerm, Comparer, RightTerm, data);
             }
             catch { return false; } // Return false if e.g. we can't parse the number for a LessThan/GreaterThan comparison.
         }

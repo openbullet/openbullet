@@ -450,7 +450,7 @@ namespace RuriLib.LS
             var second = "";
             if (Comparer != Comparer.Exists && Comparer != Comparer.DoesNotExist)
                 second = LineParser.ParseLiteral(ref cfLine, "STRING");
-            return (Condition.Verify(first, Comparer, second, data));
+            return (Condition.ReplaceAndVerify(first, Comparer, second, data));
         }
 
         /// <summary>

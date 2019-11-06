@@ -174,7 +174,7 @@ namespace RuriLib.Models
         /// <param name="data">The BotData object used for variable replacement</param>
         public void Remove(Comparer comparer, string name, BotData data)
         {
-            All.RemoveAll(v => Condition.Verify(v.Name, comparer, name, data) && !v.Hidden);
+            All.RemoveAll(v => Condition.ReplaceAndVerify(v.Name, comparer, name, data) && !v.Hidden);
         }
 
         /// <summary>
