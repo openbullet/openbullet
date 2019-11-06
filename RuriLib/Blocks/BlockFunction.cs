@@ -516,7 +516,7 @@ namespace RuriLib
                         .Literal(RsaKey)
                         .Literal(RsaMod)
                         .Literal(RsaExp)
-                        .Boolean(RsaOAEP, "RSAOAEP");
+                        .Boolean(RsaOAEP, "RsaOAEP");
                     break;
 
                 case Function.AESDecrypt:
