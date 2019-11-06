@@ -386,7 +386,8 @@ namespace RuriLib
                     RsaKey = LineParser.ParseLiteral(ref input, "Private Key");
                     RsaMod = LineParser.ParseLiteral(ref input, "Public Key Modulus");
                     RsaExp = LineParser.ParseLiteral(ref input, "Public Key Exponent");
-                    LineParser.SetBool(ref input, this);
+                    if (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                        LineParser.SetBool(ref input, this);
                     break;
 
                 case Function.AESDecrypt:
