@@ -173,7 +173,7 @@ namespace RuriLib.Functions.Requests
             foreach (var cookie in cookies)
             {
                 request.Cookies.Add(cookie.Key, cookie.Value);
-                log.Add(new LogEntry($"{cookie.Key}: {cookie.Value}", Colors.MediumTurquoise));
+                if (log != null) log.Add(new LogEntry($"{cookie.Key}: {cookie.Value}", Colors.MediumTurquoise));
             }
 
             return this;
@@ -215,7 +215,7 @@ namespace RuriLib.Functions.Requests
             // Add the content-type header
             if (contentType != "")
             {
-                log.Add(new LogEntry($"Content-Type: {contentType}", Colors.MediumTurquoise));
+                if (log != null) log.Add(new LogEntry($"Content-Type: {contentType}", Colors.MediumTurquoise));
             }
 
             return this;
@@ -240,7 +240,7 @@ namespace RuriLib.Functions.Requests
             try
             {
                 // Get response
-                HttpResponse response = request.Raw(method, url, content);
+                response = request.Raw(method, url, content);
 
                 // Get address
                 address = response.Address.ToString();

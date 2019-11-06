@@ -229,6 +229,9 @@ namespace RuriLib.Runner
 
         /// <summary>The Global Cookies list that are set in all bots when they start.</summary>
         public CookieDictionary GlobalCookies { get; set; } = new CookieDictionary();
+
+        /// <summary>If not null, bots will perform this action instead of the default behaviour.</summary>
+        public Action<BotData> CustomAction { get; set; }
         #endregion
 
         #region Results
@@ -406,6 +409,9 @@ namespace RuriLib.Runner
         // Main job of the Master Worker
         private void Run(object sender, DoWorkEventArgs e)
         {
+            // If a custom action was defined, set a default config to avoid Null Pointer Exceptions
+            if (CustomAction != null) Config = new Config(new ConfigSettings(), "");
+
             if (Config == null) throw new Exception("No Config loaded!");
             if (Wordlist == null) throw new Exception("No Wordlist loaded!");
 
@@ -415,7 +421,7 @@ namespace RuriLib.Runner
 
             if (DataPool.Size == 0) throw new Exception("No data to process!");
             if (StartingPoint > DataPool.Size) throw new Exception("Illegal Starting Point!");
-            if (Config.BlocksAmount == 0) throw new Exception("The Config has zero blocks!");
+            if (CustomAction == null && Config.BlocksAmount == 0) throw new Exception("The Config has zero blocks!");
 
             // Reset the stats
             NoProxyWarningSent = false;
@@ -705,6 +711,7 @@ namespace RuriLib.Runner
                     // Assign the proxy to the bot's displayed fields
                     bot.Proxy = currentProxy.Proxy;
                 }
+                var proxyUsedText = currentProxy == null ? "NONE" : $"{currentProxy.Proxy} ({currentProxy.Type})";
 
                 // Initialize the Bot Data
                 BotData botData = new BotData(Settings, Config.Settings, currentData, currentProxy, UseProxies, Random, bot.Id, false);
@@ -734,17 +741,28 @@ namespace RuriLib.Runner
                     botData.Cookies["__cfduid"] = botData.Proxy.Cfduid;
                 }
 
-                // Initialize the LoliScript
-                LoliScript loli = new LoliScript(Config.Script);
-                loli.Reset();
+                // Print the start message
+                BotLog.Add(new LogEntry($"===== LOG FOR BOT #{bot.Id} WITH DATA {botData.Data.Data} AND PROXY {proxyUsedText} ====={Environment.NewLine}", Colors.White));
+
+                if (CustomAction != null)
+                {
+                    RaiseMessageArrived(LogLevel.Info, $"[{bot.Id}] Executing custom action", false);
+                    try
+                    {
+                        CustomAction.Invoke(botData);
+                    }
+                    catch (Exception ex) { RaiseMessageArrived(LogLevel.Info, $"[{bot.Id}] CUSTOM ACTION EXCEPTION: {ex.ToString()}", false); throw; }
+                    goto FINISH;
+                }
 
                 /* =================
                  * SCRIPT PROCESSING *
                    ================= */
 
-                // Print the start message
-                var proxyUsedText = botData.Proxy == null ? "NONE" : $"{botData.Proxy.Proxy} ({botData.Proxy.Type})";
-                BotLog.Add(new LogEntry($"===== LOG FOR BOT #{bot.Id} WITH DATA {botData.Data.Data} AND PROXY {proxyUsedText} ====={Environment.NewLine}", Colors.White));
+                // Initialize the LoliScript
+                LoliScript loli = new LoliScript(Config.Script);
+                loli.Reset();
+
                 if (!Settings.General.EnableBotLog) BotLog.Add(new LogEntry("The Bot Logging is disabled in General Settings", Colors.Tomato));
 
                 // Open browser if Always Open
@@ -792,6 +810,8 @@ namespace RuriLib.Runner
                     }
                 }
                 while (loli.CanProceed); // Do this while the LoliScript has stuff to process
+
+                FINISH:
 
                 // Print the end message
                 BotLog.Add(new LogEntry($"===== BOT TERMINATED WITH RESULT: {botData.StatusString} =====", Colors.White));
