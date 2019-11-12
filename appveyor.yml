@@ -1,4 +1,4 @@
-version: 1.1.4#{build}
+version: 1.1.5#{build}
 image: Visual Studio 2017
 platform: Any CPU
 skip_tags: true
@@ -22,7 +22,7 @@ artifacts:
 deploy:  
   - provider: GitHub
     artifact: /.*\.zip/
-    tag: 1.1.4#$(REV)
+    tag: 1.1.5#$(REV)
     force_update: true
     auth_token:
         secure: ggc65D/J7litzhVL38h+ek4STOytVbOmx2UP3xYFEZVg0Py8ajPGHlklknuFI6Bj
