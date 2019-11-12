@@ -398,7 +398,7 @@ namespace RuriLib
             var headers = CustomHeaders.Select( h =>
                     new KeyValuePair<string, string> (ReplaceValues(h.Key, data), ReplaceValues(h.Value, data))
                 ).ToDictionary(h => h.Key, h => h.Value);
-            request.SetHeaders(CustomHeaders, AcceptEncoding, data.LogBuffer);
+            request.SetHeaders(headers, AcceptEncoding, data.LogBuffer);
 
             // Set cookies
             data.Log(new LogEntry("Sent Cookies:", Colors.MediumTurquoise));
