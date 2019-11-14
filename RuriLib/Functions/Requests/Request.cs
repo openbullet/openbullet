@@ -318,13 +318,20 @@ namespace RuriLib.Functions.Requests
 
             if (!hasContentLength && headers != null)
             {
-                if (isGZipped)
+                if (responseString.Length == 0)
                 {
-                    headers["Content-Length"] = GZip.Zip(responseString).Length.ToString();
+                    headers["Content-Length"] = "0";
                 }
                 else
                 {
-                    headers["Content-Length"] = responseString.Length.ToString();
+                    if (isGZipped)
+                    {
+                        headers["Content-Length"] = GZip.Zip(responseString).Length.ToString();
+                    }
+                    else
+                    {
+                        headers["Content-Length"] = responseString.Length.ToString();
+                    }
                 }
 
                 if (log != null) log.Add(new LogEntry($"Calculated header: Content-Length: {headers["Content-Length"]}", Colors.LightPink));
