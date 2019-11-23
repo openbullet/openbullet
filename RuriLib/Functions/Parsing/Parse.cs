@@ -211,12 +211,12 @@ namespace RuriLib.Utils.Parsing
                     if (input.Trim().StartsWith("["))
                     {
                         JArray json = JArray.Parse(input);
-                        list.Add(json.SelectToken(field, false).First().ToString());
+                        list.Add(json.SelectToken(field, false).ToString());
                     }
                     else
                     {
                         JObject json = JObject.Parse(input);
-                        list.Add(json.SelectTokens(field, false).First().ToString());
+                        list.Add(json.SelectToken(field, false).ToString());
                     }
                 }
             }
