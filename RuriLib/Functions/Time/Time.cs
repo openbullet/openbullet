@@ -17,9 +17,9 @@ namespace RuriLib.Functions.Time
         /// </summary>
         /// <param name="dateTime">The DateTime to convert</param>
         /// <returns>The seconds that passed since Jan 1st 1970.</returns>
-        public static double ToUnixTimeSeconds(this DateTime dateTime)
+        public static long ToUnixTimeSeconds(this DateTime dateTime)
         {
-            return dateTime.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            return (long)dateTime.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
         }
 
         /// <summary>
@@ -27,9 +27,9 @@ namespace RuriLib.Functions.Time
         /// </summary>
         /// <param name="dateTime">The DateTime to convert</param>
         /// <returns>The milliseconds that passed since Jan 1st 1970.</returns>
-        public static double ToUnixTimeMilliseconds(this DateTime dateTime)
+        public static long ToUnixTimeMilliseconds(this DateTime dateTime)
         {
-            return dateTime.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+            return (long)dateTime.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
         }
 
         /// <summary>
