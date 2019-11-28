@@ -15,7 +15,12 @@ before_build:
 build:
   verbosity: normal
 after_build:
-- cmd: 7z a OpenBullet.zip %APPVEYOR_BUILD_FOLDER%\openbullet\bin\release\
+- cmd: >-
+    move %APPVEYOR_BUILD_FOLDER%\openbullet\bin\release\chromedriver.exe %APPVEYOR_BUILD_FOLDER%\openbullet\bin\release\bin\
+
+    move %APPVEYOR_BUILD_FOLDER%\openbullet\bin\release\geckodriver.exe %APPVEYOR_BUILD_FOLDER%\openbullet\bin\release\bin\
+
+    7z a OpenBullet.zip %APPVEYOR_BUILD_FOLDER%\openbullet\bin\release\
 artifacts:
 - path: OpenBullet.zip
   name: OpenBullet
