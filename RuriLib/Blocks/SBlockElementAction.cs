@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using RuriLib.Functions.Files;
 using RuriLib.LS;
 using System;
@@ -54,6 +55,15 @@ namespace RuriLib
 
         /// <summary>Submits a form element.</summary>
         Submit,
+
+        /// <summary>Selects an option from a select element by visible text.</summary>
+        SelectOptionByText,
+
+        /// <summary>Selects an option from a select element by index.</summary>
+        SelectOptionByIndex,
+
+        /// <summary>Selects an option from a select element by value.</summary>
+        SelectOptionByValue,
 
         /// <summary>Gets the text inside an element.</summary>
         GetText,
@@ -258,6 +268,18 @@ namespace RuriLib
                     case ElementAction.Submit:
                         element.Submit();
                         UpdateSeleniumData(data);
+                        break;
+
+                    case ElementAction.SelectOptionByText:
+                        new SelectElement(element).SelectByText(ReplaceValues(input, data));
+                        break;
+
+                    case ElementAction.SelectOptionByIndex:
+                        new SelectElement(element).SelectByIndex(int.Parse(ReplaceValues(input, data)));
+                        break;
+
+                    case ElementAction.SelectOptionByValue:
+                        new SelectElement(element).SelectByValue(ReplaceValues(input, data));
                         break;
 
                     case ElementAction.GetText:
