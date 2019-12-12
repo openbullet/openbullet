@@ -10,8 +10,19 @@
       Title="PageSBlockExecuteJS">
 
     <Grid>
-        <avalonEdit:TextEditor  x:Name="javascriptCodeEditor"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <avalonEdit:TextEditor Grid.Row="0"  x:Name="javascriptCodeEditor"
     FontFamily="Consolas"
     FontSize="10pt" Background="{DynamicResource BackgroundSecondary}" LostFocus="javascriptCodeEditor_LostFocus" />
+        <StackPanel Grid.Row="1">
+            <DockPanel Margin="0 5 0 0">
+                <Label Content="Output Variable"/>
+                <TextBox Text="{Binding OutputVariable, UpdateSourceTrigger=PropertyChanged}"/>
+            </DockPanel>
+            <CheckBox Content="Is Capture" IsChecked="{Binding IsCapture}" VerticalContentAlignment="Center"/>
+        </StackPanel>
     </Grid>
 </Page>
