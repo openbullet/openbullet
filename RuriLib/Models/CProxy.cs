@@ -176,52 +176,63 @@ namespace RuriLib.Models
         {
             if (HasNext)
             {
-                ChainProxyClient cpc = new ChainProxyClient();
-                var current = this;
-                while (current != null)
-                {
-                    switch (current.Type)
-                    {
-                        case ProxyType.Http:
-                            cpc.AddHttpProxy(current.Proxy);
-                            break;
-
-                        case ProxyType.Socks4:
-                            cpc.AddSocks4Proxy(current.Proxy);
-                            break;
-
-                        case ProxyType.Socks4a:
-                            cpc.AddSocks4aProxy(current.Proxy);
-                            break;
-
-                        case ProxyType.Socks5:
-                            cpc.AddSocks5Proxy(current.Proxy);
-                            break;
-                    }
-                    current = current.Next;
-                }
-                return cpc;
+                return GetChainClient();
             }
             else
             {
-                switch (Type)
-                {
-                    case ProxyType.Http:
-                        return HttpProxyClient.Parse(Proxy);
-
-                    case ProxyType.Socks4:
-                        return Socks4ProxyClient.Parse(Proxy);
-
-                    case ProxyType.Socks4a:
-                        return Socks4aProxyClient.Parse(Proxy);
-
-                    case ProxyType.Socks5:
-                        return Socks5ProxyClient.Parse(Proxy);
-
-                    default:
-                        return null;
-                }
+                return GetStandardClient();
             }
+        }
+
+        /// <summary>
+        /// Gets the standard ProxyClient related to the specific proxy type.
+        /// </summary>
+        /// <returns>The standard ProxyClient (not chained)</returns>
+        private ProxyClient GetStandardClient()
+        {
+            ProxyClient pc;
+
+            switch (Type)
+            {
+                case ProxyType.Http:
+                    pc = HttpProxyClient.Parse(Proxy);
+                    break;
+
+                case ProxyType.Socks4:
+                    pc = Socks4ProxyClient.Parse(Proxy);
+                    break;
+
+                case ProxyType.Socks4a:
+                    pc = Socks4aProxyClient.Parse(Proxy);
+                    break;
+
+                case ProxyType.Socks5:
+                    pc = Socks5ProxyClient.Parse(Proxy);
+                    break;
+
+                default:
+                    return null;
+            }
+
+            pc.Username = Username;
+            pc.Password = Password;
+
+            return pc;
+        }
+
+        private ChainProxyClient GetChainClient()
+        {
+            ChainProxyClient cpc = new ChainProxyClient();
+
+            var current = this;
+            
+            while (current != null)
+            {
+                cpc.AddProxy(current.GetStandardClient());
+                current = current.Next;
+            }
+            
+            return cpc;
         }
 
         /// <summary>The Host string parsed from the proxy.</summary>
