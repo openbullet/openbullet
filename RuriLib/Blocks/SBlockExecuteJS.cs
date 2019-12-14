@@ -1,5 +1,6 @@
 ﻿using RuriLib.LS;
 using System;
+using System.Collections.Generic;
 using System.Windows.Media;
 
 namespace RuriLib
@@ -12,6 +13,14 @@ namespace RuriLib
         private string javascriptCode = "alert('henlo');";
         /// <summary>The javascript code.</summary>
         public string JavascriptCode { get { return javascriptCode; } set { javascriptCode = value; OnPropertyChanged(); } }
+
+        private string outputVariable = "";
+        /// <summary>The name of the output variable.</summary>
+        public string OutputVariable { get { return outputVariable; } set { outputVariable = value; OnPropertyChanged(); } }
+
+        private bool isCapture = false;
+        /// <summary>Whether the output variable should be marked for Capture.</summary>
+        public bool IsCapture { get { return isCapture; } set { isCapture = value; OnPropertyChanged(); } }
 
         /// <summary>
         /// Creates an ExecuteJS block.
@@ -38,6 +47,23 @@ namespace RuriLib
 
             JavascriptCode = LineParser.ParseLiteral(ref input, "SCRIPT");
 
+            // Try to parse the arrow, otherwise just return the block as is with default var name and var / cap choice
+            if (LineParser.ParseToken(ref input, TokenType.Arrow, false) == "")
+                return this;
+
+            // Parse the VAR / CAP
+            try
+            {
+                var varType = LineParser.ParseToken(ref input, TokenType.Parameter, true);
+                if (varType.ToUpper() == "VAR" || varType.ToUpper() == "CAP")
+                    IsCapture = varType.ToUpper() == "CAP";
+            }
+            catch { throw new ArgumentException("Invalid or missing variable type"); }
+
+            // Parse the variable/capture name
+            try { OutputVariable = LineParser.ParseToken(ref input, TokenType.Literal, true); }
+            catch { throw new ArgumentException("Variable name not specified"); }
+
             return this;
         }
 
@@ -49,6 +75,15 @@ namespace RuriLib
                 .Label(Label)
                 .Token("EXECUTEJS")
                 .Literal(JavascriptCode.Replace("\r\n", " ").Replace("\n", " "));
+
+            if (!writer.CheckDefault(OutputVariable, "OutputVariable"))
+            {
+                writer
+                    .Arrow()
+                    .Token(IsCapture ? "CAP" : "VAR")
+                    .Literal(OutputVariable);
+            }
+
             return writer.ToString();
         }
 
@@ -64,7 +99,20 @@ namespace RuriLib
             }
 
             data.Log(new LogEntry("Executing JS code!", Colors.White));
-            data.Driver.ExecuteScript(ReplaceValues(javascriptCode, data));
+            var returned = data.Driver.ExecuteScript(ReplaceValues(javascriptCode, data));
+
+            if (returned != null)
+            {
+                try
+                {
+                    InsertVariables(data, isCapture, false, new List<string>() { returned.ToString() }, outputVariable, "", "", false, true);
+                }
+                catch
+                {
+                    throw new Exception($"Failed to convert the returned value to a string");
+                }
+            }
+
             data.Log(new LogEntry("... executed!", Colors.White));
 
             UpdateSeleniumData(data);

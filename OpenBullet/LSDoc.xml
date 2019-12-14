@@ -413,10 +413,10 @@ ELEMENTACTION CLASS "testclass" Recursive=True GETTEXT -> CAP "ITEMS"
 This will spawn and execute an ExecuteJS block
 
 Syntax:
-EXECUTEJS "SCRIPT"
+EXECUTEJS "SCRIPT" [-> VAR/CAP "NAME"]
 
 Examples:
-EXECUTEJS "alert('hi');"
+EXECUTEJS "alert('hi'); return 'hello';" -> VAR "GREETING"
     </item>
   </section>
   <section name="Flow Control">
