@@ -13,15 +13,10 @@ namespace RuriLib.Interfaces
     public interface IConfigManager
     {
         /// <summary>
-        /// Adds a config to the collection.
+        /// Adds a new config.
         /// </summary>
         /// <param name="config">The config to add</param>
         void Add(ConfigViewModel config);
-
-        /// <summary>
-        /// Saves the currently selected config.
-        /// </summary>
-        void Save();
 
         /// <summary>
         /// Rescans local folders for an updated list of configs.
@@ -34,14 +29,15 @@ namespace RuriLib.Interfaces
         IEnumerable<ConfigViewModel> Configs { get; }
 
         /// <summary>
-        /// The currently selected config.
+        /// Removes a config.
         /// </summary>
-        ConfigViewModel CurrentConfig { get; set; }
+        /// <param name="config">The config to remove</param>
+        void Remove(ConfigViewModel config);
 
         /// <summary>
-        /// Deletes a config from both the collection and the disk.
+        /// Updates a config.
         /// </summary>
-        /// <param name="config">The config to delete</param>
-        void Delete(ConfigViewModel config);
+        /// <param name="config">The config to update</param>
+        void Update(ConfigViewModel config);
     }
 }

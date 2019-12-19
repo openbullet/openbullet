@@ -23,13 +23,31 @@ namespace RuriLib.Interfaces
         void StopAll();
 
         /// <summary>
-        /// Clears the list of runners.
-        /// </summary>
-        void Clear();
-
-        /// <summary>
         /// The list of managed runners.
         /// </summary>
         IEnumerable<IRunner> Runners { get; }
+
+        /// <summary>
+        /// Adds a new runner to the manager.
+        /// </summary>
+        /// <param name="runner">The runner to add</param>
+        void Add(IRunner runner);
+
+        /// <summary>
+        /// Creates a new runner and adds it to the manager.
+        /// </summary>
+        /// <returns>The newly created runner</returns>
+        IRunner Create();
+
+        /// <summary>
+        /// Removes a runner from the manager.
+        /// </summary>
+        /// <param name="runner">The runner to remove</param>
+        void Remove(IRunner runner);
+
+        /// <summary>
+        /// Clears the list of runners.
+        /// </summary>
+        void Clear();
     }
 }

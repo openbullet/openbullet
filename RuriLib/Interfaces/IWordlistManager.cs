@@ -24,10 +24,16 @@ namespace RuriLib.Interfaces
         IEnumerable<Wordlist> Wordlists { get; }
 
         /// <summary>
-        /// Deletes a given wordlist from the collection.
+        /// Updates a wordlist.
         /// </summary>
-        /// <param name="wordlist">The wordlist to delete</param>
-        void Delete(Wordlist wordlist);
+        /// <param name="wordlist">The updated wordlist</param>
+        void Update(Wordlist wordlist);
+
+        /// <summary>
+        /// Removes a given wordlist from the collection.
+        /// </summary>
+        /// <param name="wordlist">The wordlist to remove</param>
+        void Remove(Wordlist wordlist);
 
         /// <summary>
         /// Deletes wordlists that reference a missing file from the collection.

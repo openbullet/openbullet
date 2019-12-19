@@ -10,7 +10,7 @@ using RuriLib.Models.Stats;
 namespace RuriLib.Interfaces
 {
     /// <summary>
-    /// Interface for a class that manages a pool of proxies.
+    /// Interface for a class that manages a collection of proxies.
     /// </summary>
     public interface IProxyManager
     {
@@ -27,45 +27,51 @@ namespace RuriLib.Interfaces
         bool IsBusy { get; }
 
         /// <summary>
-        /// Adds a proxy to the pool.
+        /// Adds a proxy to the collection.
         /// </summary>
         /// <param name="proxy">The proxy to add</param>
         void Add(CProxy proxy);
 
         /// <summary>
-        /// Adds multiple proxies to the pool.
+        /// Adds multiple proxies to the collection.
         /// </summary>
         /// <param name="proxies">The collection of proxies to add</param>
         void AddRange(IEnumerable<CProxy> proxies);
 
         /// <summary>
-        /// The pool of proxies.
+        /// The collection of proxies.
         /// </summary>
-        IEnumerable<CProxy> Pool { get; }
+        IEnumerable<CProxy> Proxies { get; }
 
         /// <summary>
-        /// Deletes a proxy from the pool.
+        /// Removes a proxy from the collection.
         /// </summary>
-        /// <param name="proxy">The proxy to delete</param>
-        void Delete(CProxy proxy);
+        /// <param name="proxy">The proxy to remove</param>
+        void Remove(CProxy proxy);
 
         /// <summary>
-        /// Deletes all proxies from the pool.
+        /// Updates a proxy in the collection.
+        /// </summary>
+        /// <param name="proxy">The proxy to update</param>
+        void Update(CProxy proxy);
+
+        /// <summary>
+        /// Deletes all proxies from the collection.
         /// </summary>
         void DeleteAll();
 
         /// <summary>
-        /// Deletes not working proxies from the pool.
+        /// Deletes not working proxies from the collection.
         /// </summary>
         void DeleteNotWorking();
 
         /// <summary>
-        /// Deletes duplicate proxies from the pool.
+        /// Deletes duplicate proxies from the collection.
         /// </summary>
         void DeleteDuplicates();
 
         /// <summary>
-        /// Deletes all untested proxies from the pool.
+        /// Deletes all untested proxies from the collection.
         /// </summary>
         void DeleteUntested();
 
