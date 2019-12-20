@@ -221,6 +221,17 @@
     <Compile Include="Functions\Requests\Request.cs" />
     <Compile Include="Functions\Time\Time.cs" />
     <Compile Include="GZip.cs" />
+    <Compile Include="Interfaces\IAlert.cs" />
+    <Compile Include="Interfaces\IApplication.cs" />
+    <Compile Include="Interfaces\IConfigManager.cs" />
+    <Compile Include="Interfaces\IGlobals.cs" />
+    <Compile Include="Interfaces\IHitsDB.cs" />
+    <Compile Include="Interfaces\ILogger.cs" />
+    <Compile Include="Interfaces\IProxyManager.cs" />
+    <Compile Include="Interfaces\IRepository.cs" />
+    <Compile Include="Interfaces\IRunner.cs" />
+    <Compile Include="Interfaces\IRunnerManager.cs" />
+    <Compile Include="Interfaces\IWordlistManager.cs" />
     <Compile Include="LoliScript\Exceptions\BlockProcessingException.cs" />
     <Compile Include="LoliScript\LoliScript.cs" />
     <Compile Include="LoliScript\Parser\BlockParser.cs" />
@@ -228,8 +239,13 @@
     <Compile Include="LoliScript\Parser\MouseActionParser.cs" />
     <Compile Include="LoliScript\Writer\BlockWriter.cs" />
     <Compile Include="Models\DataPool.cs" />
+    <Compile Include="Models\Persistable.cs" />
+    <Compile Include="Models\Stats\ProxyManagerStats.cs" />
     <Compile Include="Models\ProxyPool.cs" />
     <Compile Include="Models\RemoteProxySource.cs" />
+    <Compile Include="Models\Stats\RunnerStats.cs" />
+    <Compile Include="Models\Stats\RunnerStatsProxies.cs" />
+    <Compile Include="Models\Stats\RunnerStatsData.cs" />
     <Compile Include="Models\WebhookFormat.cs" />
     <Compile Include="Runner\AbortableBackgroundWorker.cs">
       <SubType>Component</SubType>
@@ -302,6 +318,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

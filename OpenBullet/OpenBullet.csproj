@@ -368,6 +368,8 @@
     <Compile Include="Pages\Main\Tools\ToolsSeleniumTools.xaml.cs">
       <DependentUpon>ToolsSeleniumTools.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Repositories\ConfigRepository.cs" />
+    <Compile Include="Repositories\LiteDBRepository.cs" />
     <Compile Include="ViewModels\OBSettingsViewModel.cs" />
     <Compile Include="Snowflake.xaml.cs">
       <DependentUpon>Snowflake.xaml</DependentUpon>
