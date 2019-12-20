@@ -222,8 +222,8 @@
       <DependentUpon>DialogSelectWordlist.xaml</DependentUpon>
     </Compile>
     <Compile Include="HugeFileSort.cs" />
-    <Compile Include="Views\Dialogs\AddBlockDialog.xaml.cs">
-      <DependentUpon>AddBlockDialog.xaml</DependentUpon>
+    <Compile Include="Views\Dialogs\DialogAddBlock.xaml.cs">
+      <DependentUpon>DialogAddBlock.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialogs\DialogCustomInput.xaml.cs">
       <DependentUpon>DialogCustomInput.xaml</DependentUpon>
@@ -438,7 +438,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Dialogs\AddBlockDialog.xaml">
+    <Page Include="Views\Dialogs\DialogAddBlock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
