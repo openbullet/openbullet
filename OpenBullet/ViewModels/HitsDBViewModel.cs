@@ -19,31 +19,72 @@ namespace OpenBullet.ViewModels
         public LiteDBRepository<Hit> _repo;
         public ObservableCollection<Hit> HitsCollection { get; private set; }
 
-        public List<string> ConfigsList => HitsCollection.Select(x => x.ConfigName).Distinct().ToList();
-
         public int Total => HitsCollection.Count;
-
-        private string searchString = "";
-        public string SearchString { get { return searchString; } set { searchString = value; OnPropertyChanged("SearchString"); CollectionViewSource.GetDefaultView(HitsCollection).Refresh(); OnPropertyChanged("FilteredCount"); } }
-
-        private string typeFilter = "SUCCESS";
-        public string TypeFilter { get { return typeFilter; } set { typeFilter = value; OnPropertyChanged("TypeFilter"); CollectionViewSource.GetDefaultView(HitsCollection).Refresh(); OnPropertyChanged("FilteredCount"); } }
-
-        private string configFilter = "All";
-        public string ConfigFilter { get { return configFilter; } set { configFilter = value; OnPropertyChanged("ConfigFilter"); CollectionViewSource.GetDefaultView(HitsCollection).Refresh(); OnPropertyChanged("FilteredCount"); } }
-
-        public int FilteredCount => HitsCollection.Where(h => HitsFilter(h)).Count();
 
         public IEnumerable<Hit> Hits => HitsCollection;
 
         public HitsDBViewModel()
         {
-            _repo = new LiteDBRepository<Hit>("hits");
+            _repo = new LiteDBRepository<Hit>(Globals.dataBaseFile, "hits");
             HitsCollection = new ObservableCollection<Hit>();
 
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(HitsCollection);
             HookFilters();
         }
+
+        #region Filters
+        public static readonly string defaultFilter = "All";
+
+        public List<string> ConfigsList => HitsCollection.Select(x => x.ConfigName).Distinct().ToList();
+
+        private string searchString = "";
+        public string SearchString
+        {
+            get
+            {
+                return searchString;
+            }
+            set
+            {
+                searchString = value;
+                OnPropertyChanged();
+                CollectionViewSource.GetDefaultView(HitsCollection).Refresh();
+                OnPropertyChanged(nameof(Filtered));
+            }
+        }
+
+        private string typeFilter = "SUCCESS";
+        public string TypeFilter
+        {
+            get
+            {
+                return typeFilter;
+            }
+            set
+            {
+                typeFilter = value;
+                OnPropertyChanged();
+                CollectionViewSource.GetDefaultView(HitsCollection).Refresh();
+                OnPropertyChanged(nameof(Filtered));
+            }
+        }
+
+        private string configFilter = defaultFilter;
+        public string ConfigFilter
+        {
+            get
+            {
+                return configFilter;
+            }
+            set
+            {
+                configFilter = value;
+                OnPropertyChanged();
+                CollectionViewSource.GetDefaultView(HitsCollection).Refresh();
+                OnPropertyChanged(nameof(Filtered));
+            }
+        }
+
+        public int Filtered => HitsCollection.Count(h => HitsFilter(h));
 
         public void HookFilters()
         {
@@ -56,7 +97,7 @@ namespace OpenBullet.ViewModels
             if ((item as Hit).Type != TypeFilter)
                 return false;
 
-            if (ConfigFilter != "All" && (item as Hit).ConfigName != ConfigFilter)
+            if (ConfigFilter != defaultFilter && (item as Hit).ConfigName != ConfigFilter)
                 return false;
             
             if(!string.IsNullOrEmpty(SearchString))
@@ -64,49 +105,65 @@ namespace OpenBullet.ViewModels
 
             return true;
         }
+        #endregion
 
+        #region CRUD Operations
+        // Create
+        public void Add(Hit hit)
+        {
+            HitsCollection.Add(hit);
+            _repo.Add(hit);
+        }
+
+        // Read
         public void RefreshList()
         {
             HitsCollection = new ObservableCollection<Hit>(_repo.Get());
 
             HookFilters();
 
-            OnPropertyChanged("Total");
-            OnPropertyChanged("HitsCount");
+            OnPropertyChanged(nameof(Total));
+        }
+
+        // Update
+        public void Update(Hit hit)
+        {
+            _repo.Update(hit);
+        }
+
+        // Delete
+        public void Remove(Hit hit)
+        {
+            HitsCollection.Remove(hit);
+            _repo.Remove(hit);
+        }
+
+        public void Remove(IEnumerable<Hit> hits)
+        {
+            foreach (var hit in hits)
+            {
+                HitsCollection.Remove(hit);
+            }
+
+            _repo.Remove(hits);
         }
 
         public void RemoveAll()
         {
-            _repo.RemoveAll();
             HitsCollection.Clear();
+            _repo.RemoveAll();
         }
+        #endregion
 
-        public void Remove(Hit hit)
-        {
-            _repo.Remove(hit);
-            HitsCollection.Remove(hit);
-        }
-
+        #region Delete methods
         public void DeleteDuplicates()
         {
-            var groups = _repo.Get()
+            var duplicates = _repo.Get()
                     .GroupBy(h => h.GetHashCode())
                     .Where(g => g.Count() > 1)
-                    .Select(g => g.OrderBy(h => h.Date).Reverse().Skip(1));
+                    .SelectMany(g => g.OrderBy(h => h.Date).Reverse().Skip(1));
 
-            foreach (var group in groups)
-            {
-                var list = group.ToList();
-                Hit curr = null;
-                while ((curr = list.FirstOrDefault()) != null)
-                {
-                    _repo.Remove(curr);
-
-                    // Remove the actual reference to the hit (curr is from a cloned list, generated via Select LINQ method)
-                    HitsCollection.Remove(HitsCollection.First(h => h.Id == curr.Id)); 
-                    list.RemoveAt(0); // Remove from list of items to delete
-                }
-            }
+            Remove(duplicates);
         }
 
         public void DeleteFiltered()
@@ -121,16 +178,6 @@ namespace OpenBullet.ViewModels
                 Remove(hit);
             }
         }
-
-        public void Update(Hit hit)
-        {
-            _repo.Update(hit);
-        }
-
-        public void Add(Hit hit)
-        {
-            HitsCollection.Add(hit);
-            _repo.Add(hit);
-        }
+        #endregion
     }
 }

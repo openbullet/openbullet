@@ -10,21 +10,23 @@ using RuriLib.Models;
 namespace OpenBullet.Repositories
 {
     public class LiteDBRepository<T> : IRepository<T, Guid> where T : Persistable<Guid>
-    {
+    { 
         private LiteDatabase _db;
         private LiteCollection<T> _coll;
 
-        public string Name { get; set; }
+        public string ConnectionString { get; set; }
+        public string Collection { get; set; }
 
-        public LiteDBRepository(string name)
+        public LiteDBRepository(string connectionString, string collection)
         {
-            Name = name;
+            ConnectionString = connectionString;
+            Collection = collection;
         }
 
         private void Connect()
         {
-            _db = new LiteDatabase(Globals.dataBaseFile);
-            _coll = _db.GetCollection<T>(Name);
+            _db = new LiteDatabase(ConnectionString);
+            _coll = _db.GetCollection<T>(Collection);
         }
 
         private void Disconnect()
@@ -85,7 +87,7 @@ namespace OpenBullet.Repositories
         public void RemoveAll()
         {
             Connect();
-            _db.DropCollection(Name);
+            _db.DropCollection(Collection);
             Disconnect();
         }
 
