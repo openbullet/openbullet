@@ -43,7 +43,10 @@ namespace OpenBullet.Repositories
 
         public void Remove(ConfigViewModel entity)
         {
-            throw new NotImplementedException();
+            if (File.Exists(entity.Path))
+            {
+                File.Delete(entity.Path);
+            }
         }
 
         public void RemoveAll()
@@ -61,6 +64,21 @@ namespace OpenBullet.Repositories
             {
                 throw new IOException("File not found");
             }
+        }
+
+        public void Add(IEnumerable<ConfigViewModel> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Remove(IEnumerable<ConfigViewModel> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(IEnumerable<ConfigViewModel> entities)
+        {
+            throw new NotImplementedException();
         }
     }
 }
