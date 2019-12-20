@@ -31,6 +31,19 @@ namespace OpenBullet.Views.Main
             vm.RefreshList();
         }
 
+        public void AddWordlist(Wordlist wordlist)
+        {
+            try
+            {
+                vm.Add(wordlist);
+            }
+            catch (Exception e)
+            {
+                Globals.LogError(Components.WordlistManager, e.Message);
+            }
+        }
+
+        #region Buttons
         private void addButton_Click(object sender, RoutedEventArgs e)
         {
             (new MainDialog(new DialogAddWordlist(this), "Add Wordlist")).ShowDialog();
@@ -46,7 +59,6 @@ namespace OpenBullet.Views.Main
             Globals.LogInfo(Components.WordlistManager, "Successfully deleted the wordlist references from the DB");
         }
 
-        
         private void deleteAllButton_Click(object sender, RoutedEventArgs e)
         {
             Globals.LogWarning(Components.WordlistManager, "Purge selected, prompting warning");
@@ -65,19 +77,9 @@ namespace OpenBullet.Views.Main
             Globals.LogWarning(Components.WordlistManager, "Deleting wordlists with missing files.");
             vm.DeleteNotFound();
         }
+        #endregion
 
-        public void AddWordlist(Wordlist wordlist)
-        {
-            try
-            {
-                vm.Add(wordlist);
-            }
-            catch(Exception e)
-            {
-                Globals.LogError(Components.WordlistManager, e.Message);
-            }
-        }
-
+        #region ListView
         private void listViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             GridViewColumnHeader column = (sender as GridViewColumnHeader);
@@ -126,5 +128,6 @@ namespace OpenBullet.Views.Main
                 }
             }
         }
+        #endregion
     }
 }
