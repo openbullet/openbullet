@@ -1,4 +1,7 @@
 ﻿using OpenBullet.ViewModels;
+using OpenBullet.Views.Main;
+using OpenBullet.Views.Main.Settings;
+using OpenBullet.Views.Main.Runner;
 using RuriLib;
 using RuriLib.ViewModels;
 using System;
@@ -31,12 +34,12 @@ namespace OpenBullet
         public Runner CurrentRunnerPage { get; set; }
         public ProxyManager ProxyManagerPage { get; set; }
         public WordlistManager WordlistManagerPage { get; set; }
-        public Configs ConfigsPage { get; set; }
+        public ConfigsSection ConfigsPage { get; set; }
         public HitsDB HitsDBPage { get; set; }
         public Settings OBSettingsPage { get; set; }
-        public Tools ToolsPage { get; set; }
+        public ToolsSection ToolsPage { get; set; }
         public About AboutPage { get; set; }
-        public System.Drawing.Rectangle Bounds { get; private set; }
+        public Rectangle Bounds { get; private set; }
 
         private string title = $"OpenBullet {Globals.obVersion}";
         private bool maximized = false;
@@ -150,13 +153,13 @@ namespace OpenBullet
             Globals.LogInfo(Components.Main, "Initialized ProxyManager");
             WordlistManagerPage = new WordlistManager();
             Globals.LogInfo(Components.Main, "Initialized WordlistManager");
-            ConfigsPage = new Configs();
+            ConfigsPage = new ConfigsSection();
             Globals.LogInfo(Components.Main, "Initialized ConfigManager");
             HitsDBPage = new HitsDB();
             Globals.LogInfo(Components.Main, "Initialized HitsDB");
             OBSettingsPage = new Settings();
             Globals.LogInfo(Components.Main, "Initialized Settings");
-            ToolsPage = new Tools();
+            ToolsPage = new ToolsSection();
             Globals.LogInfo(Components.Main, "Initialized Tools");
             AboutPage = new About();
 
