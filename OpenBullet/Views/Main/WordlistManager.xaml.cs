@@ -41,7 +41,7 @@ namespace OpenBullet.Views.Main
             Globals.LogInfo(Components.WordlistManager, $"Deleting {wordlistListView.SelectedItems.Count} references from the DB");
             foreach (var wordlist in wordlistListView.SelectedItems.Cast<Wordlist>().ToList())
             {
-                vm.Delete(wordlist);
+                vm.Remove(wordlist);
             }
             Globals.LogInfo(Components.WordlistManager, "Successfully deleted the wordlist references from the DB");
         }
@@ -54,7 +54,7 @@ namespace OpenBullet.Views.Main
             if (MessageBox.Show("This will purge the WHOLE Wordlists DB, are you sure you want to continue?", "WARNING", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
                 Globals.LogInfo(Components.WordlistManager, "Purge initiated");
-                vm.DeleteAll();
+                vm.RemoveAll();
                 Globals.LogInfo(Components.WordlistManager, "Purge finished");
             }
             else { Globals.LogInfo(Components.WordlistManager, "Purge dismissed"); }

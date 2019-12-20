@@ -41,8 +41,8 @@ namespace RuriLib.Interfaces
         void DeleteNotFound();
 
         /// <summary>
-        /// Deletes all wordlists from the collection.
+        /// Removes all wordlists from the collection.
         /// </summary>
-        void DeleteAll();
+        void RemoveAll();
     }
 }

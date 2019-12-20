@@ -31,6 +31,8 @@ namespace OpenBullet.ViewModels
             return WordlistsCollection.Where(x => x.Name == name).First();
         }
 
+        #region CRUD Operations
+        // Create
         public void Add(Wordlist wordlist)
         {
             if (WordlistsCollection.Any(w => w.Path == wordlist.Path))
@@ -42,12 +44,33 @@ namespace OpenBullet.ViewModels
             _repo.Add(wordlist);
         }
 
-        public void Delete(Wordlist wordlist)
+        // Read
+        public void RefreshList()
+        {
+            WordlistsCollection = new ObservableCollection<Wordlist>(_repo.Get());
+        }
+
+        // Update
+        public void Update(Wordlist wordlist)
+        {
+            _repo.Update(wordlist);
+        }
+
+        // Delete
+        public void Remove(Wordlist wordlist)
         {
             WordlistsCollection.Remove(wordlist);
             _repo.Remove(wordlist);
         }
 
+        public void RemoveAll()
+        {
+            WordlistsCollection.Clear();
+            _repo.RemoveAll();
+        }
+        #endregion
+
+        #region Delete methods
         public void DeleteNotFound()
         {
             foreach (var wordlist in WordlistsCollection)
@@ -58,26 +81,6 @@ namespace OpenBullet.ViewModels
                 }
             }
         }
-
-        public void DeleteAll()
-        {
-            WordlistsCollection.Clear();
-            _repo.RemoveAll();
-        }
-
-        public void RefreshList()
-        {
-            WordlistsCollection = new ObservableCollection<Wordlist>(_repo.Get());
-        }
-
-        public void Update(Wordlist wordlist)
-        {
-            _repo.Update(wordlist);
-        }
-
-        public void Remove(Wordlist wordlist)
-        {
-            _repo.Remove(wordlist);
-        }
+        #endregion
     }
 }
