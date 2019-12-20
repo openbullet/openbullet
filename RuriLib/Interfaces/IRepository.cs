@@ -33,10 +33,27 @@ namespace RuriLib.Interfaces
         void Add(TEntity entity);
 
         /// <summary>
+        /// Adds multiple entities to the storage.
+        /// </summary>
+        /// <param name="entities">The entities that need to be added</param>
+        void Add(IEnumerable<TEntity> entities);
+
+        /// <summary>
         /// Removes an entity from the storage.
         /// </summary>
         /// <param name="entity">The entity to remove</param>
         void Remove(TEntity entity);
+
+        /// <summary>
+        /// Removes multiple entities from the storage.
+        /// </summary>
+        /// <param name="entities">The entities that need to be removed</param>
+        void Remove(IEnumerable<TEntity> entities);
+
+        /// <summary>
+        /// Clears the storage.
+        /// </summary>
+        void RemoveAll();
 
         /// <summary>
         /// Updates an entity in the storage.
@@ -45,8 +62,9 @@ namespace RuriLib.Interfaces
         void Update(TEntity entity);
 
         /// <summary>
-        /// Clears the storage.
+        /// Updates multiple entities in the storage.
         /// </summary>
-        void RemoveAll();
+        /// <param name="entities">The entities that need to be updated</param>
+        void Update(IEnumerable<TEntity> entities);
     }
 }
