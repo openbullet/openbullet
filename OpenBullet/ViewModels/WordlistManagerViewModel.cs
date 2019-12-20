@@ -22,7 +22,7 @@ namespace OpenBullet.ViewModels
 
         public WordlistManagerViewModel()
         {
-            _repo = new LiteDBRepository<Wordlist>("wordlists");
+            _repo = new LiteDBRepository<Wordlist>(Globals.dataBaseFile, "wordlists");
             WordlistsCollection = new ObservableCollection<Wordlist>();
         }
 
