@@ -10,7 +10,8 @@ namespace RuriLib.Interfaces
     /// Generic interface repository for performing CRUD operations on a persistent storage.
     /// </summary>
     /// <typeparam name="TEntity">The returned entity type</typeparam>
-    public interface IRepository<TEntity> where TEntity : class
+    /// <typeparam name="TId">The type of id</typeparam>
+    public interface IRepository<TEntity, in TId> where TEntity : class
     {
         /// <summary>
         /// Retrieves all entities from the storage.
@@ -23,7 +24,7 @@ namespace RuriLib.Interfaces
         /// </summary>
         /// <param name="id">The unique entity id</param>
         /// <returns>The found entity.</returns>
-        TEntity Get(Guid id);
+        TEntity Get(TId id);
 
         /// <summary>
         /// Adds an entity to the storage.
@@ -34,7 +35,7 @@ namespace RuriLib.Interfaces
         /// <summary>
         /// Removes an entity from the storage.
         /// </summary>
-        /// <param name="entity">The entity that needs to be removed</param>
+        /// <param name="entity">The entity to remove</param>
         void Remove(TEntity entity);
 
         /// <summary>
