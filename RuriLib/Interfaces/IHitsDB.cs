@@ -34,6 +34,12 @@ namespace RuriLib.Interfaces
         void Remove(Hit hit);
 
         /// <summary>
+        /// Removes multiple hits from the database.
+        /// </summary>
+        /// <param name="hits">The hits to remove</param>
+        void Remove(IEnumerable<Hit> hits);
+
+        /// <summary>
         /// Updates a hit in the database.
         /// </summary>
         /// <param name="hit">The hit to update</param>

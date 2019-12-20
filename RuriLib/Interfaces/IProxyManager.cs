@@ -50,30 +50,36 @@ namespace RuriLib.Interfaces
         void Remove(CProxy proxy);
 
         /// <summary>
+        /// Removes multiple proxies from the collection.
+        /// </summary>
+        /// <param name="proxies">The proxies to remove</param>
+        void Remove(IEnumerable<CProxy> proxies);
+
+        /// <summary>
         /// Updates a proxy in the collection.
         /// </summary>
         /// <param name="proxy">The proxy to update</param>
         void Update(CProxy proxy);
 
         /// <summary>
-        /// Deletes all proxies from the collection.
+        /// Removes all proxies from the collection.
         /// </summary>
-        void DeleteAll();
+        void RemoveAll();
 
         /// <summary>
-        /// Deletes not working proxies from the collection.
+        /// Removes not working proxies from the collection.
         /// </summary>
-        void DeleteNotWorking();
+        void RemoveNotWorking();
 
         /// <summary>
-        /// Deletes duplicate proxies from the collection.
+        /// Removes duplicate proxies from the collection.
         /// </summary>
-        void DeleteDuplicates();
+        void RemoveDuplicates();
 
         /// <summary>
-        /// Deletes all untested proxies from the collection.
+        /// Removes all untested proxies from the collection.
         /// </summary>
-        void DeleteUntested();
+        void RemoveUntested();
 
         /// <summary>
         /// Retrieves the proxy manager's statistics.
@@ -103,6 +109,6 @@ namespace RuriLib.Interfaces
         /// <summary>
         /// The amount of parallel threads to use for the check.
         /// </summary>
-        int Bots { get; set; }
+        int BotsAmount { get; set; }
     }
 }
