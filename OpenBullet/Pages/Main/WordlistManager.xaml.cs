@@ -19,7 +19,7 @@ namespace OpenBullet
     /// </summary>
     public partial class WordlistManager : Page
     {
-        WordlistManagerViewModel vm = new WordlistManagerViewModel();
+        private WordlistManagerViewModel vm = new WordlistManagerViewModel();
         private GridViewColumnHeader listViewSortCol = null;
         private SortAdorner listViewSortAdorner = null;
 
@@ -35,19 +35,13 @@ namespace OpenBullet
         {
             (new MainDialog(new DialogAddWordlist(this), "Add Wordlist")).ShowDialog();
         }
-
         
         private void deleteButton_Click(object sender, RoutedEventArgs e)
         {
             Globals.LogInfo(Components.WordlistManager, $"Deleting {wordlistListView.SelectedItems.Count} references from the DB");
-            using (var db = new LiteDatabase(Globals.dataBaseFile))
+            foreach (var wordlist in wordlistListView.SelectedItems.Cast<Wordlist>().ToList())
             {
-                var list = wordlistListView.SelectedItems.Cast<Wordlist>();
-                while (list.Count() > 0)
-                {
-                    db.GetCollection<Wordlist>("wordlists").Delete(list.First().Id);
-                    vm.WordlistList.Remove(list.First());
-                }   
+                vm.Delete(wordlist);
             }
             Globals.LogInfo(Components.WordlistManager, "Successfully deleted the wordlist references from the DB");
         }
@@ -60,11 +54,7 @@ namespace OpenBullet
             if (MessageBox.Show("This will purge the WHOLE Wordlists DB, are you sure you want to continue?", "WARNING", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
                 Globals.LogInfo(Components.WordlistManager, "Purge initiated");
-                using (var db = new LiteDatabase(Globals.dataBaseFile))
-                {
-                    db.DropCollection("wordlists");
-                }
-                vm.WordlistList.Clear();
+                vm.DeleteAll();
                 Globals.LogInfo(Components.WordlistManager, "Purge finished");
             }
             else { Globals.LogInfo(Components.WordlistManager, "Purge dismissed"); }
@@ -72,50 +62,20 @@ namespace OpenBullet
 
         private void deleteNotFoundWordlistsButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.LogWarning(Components.WordlistManager, "Rescan process of wordlists availability.");
-            using (var db = new LiteDatabase(Globals.dataBaseFile))
-            {
-                foreach (var wordlist in wordlistListView.Items.Cast<Wordlist>().ToList())
-                {
-                    if (!File.Exists(wordlist.Path))
-                    {
-                        db.GetCollection<Wordlist>("wordlists").Delete(wordlist.Id);
-                        vm.WordlistList.Remove(wordlist);
-                    }
-                }
-            }
+            Globals.LogWarning(Components.WordlistManager, "Deleting wordlists with missing files.");
+            vm.DeleteNotFound();
         }
 
         public void AddWordlist(Wordlist wordlist)
         {
-            if (vm.WordlistList.Any(w => w.Path == wordlist.Path))
+            try
             {
-                Globals.LogError(Components.WordlistManager, $"Wordlist already present: {wordlist.Path}");
-                return;
+                vm.Add(wordlist);
             }
-
-            vm.WordlistList.Add(wordlist);
-            AddWordlistToDB(wordlist);
-        }
-
-        public void AddWordlistToDB(Wordlist wordlist)
-        {
-            // Add it to the DB
-            Globals.LogInfo(Components.WordlistManager, "Adding Wordlist '" + wordlist.Name + " at position '" + wordlist.Path + "' with type '" + wordlist.Type + "' and purpose '" + wordlist.Purpose + "' to the DB");
-            using (var db = new LiteDatabase(Globals.dataBaseFile))
+            catch(Exception e)
             {
-                db.GetCollection<Wordlist>("wordlists").Insert(wordlist);
+                Globals.LogError(Components.WordlistManager, e.Message);
             }
-        }
-
-        public List<Wordlist> GetLists()
-        {
-            return vm.WordlistList.ToList();
-        }
-
-        public Wordlist GetList(string name)
-        {
-            return vm.WordlistList.Where(x => x.Name == name).First();
         }
 
         private void listViewColumnHeader_Click(object sender, RoutedEventArgs e)
