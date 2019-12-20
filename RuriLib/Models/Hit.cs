@@ -82,5 +82,14 @@ namespace RuriLib.Models
 
             return sb.ToString();
         }
+
+        /// <summary>
+        /// Gets a unique hash of the hit.
+        /// </summary>
+        /// <returns>The hash code</returns>
+        public override int GetHashCode()
+        {
+            return (Data + ConfigName + WordlistName).GetHashCode();
+        }
     }
 }

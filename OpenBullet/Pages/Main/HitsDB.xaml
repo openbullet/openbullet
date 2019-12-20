@@ -76,7 +76,7 @@
         </Grid>
         
         <!-- Proxies List View -->
-        <ListView x:Name="hitsListView" Grid.Row="1" Foreground="{DynamicResource ForegroundMain}" Background="Transparent" ItemsSource="{Binding Path=HitsList}" SelectionMode="Extended" BorderThickness="1" VirtualizingPanel.IsVirtualizing="True">
+        <ListView x:Name="hitsListView" Grid.Row="1" Foreground="{DynamicResource ForegroundMain}" Background="Transparent" ItemsSource="{Binding Path=HitsCollection}" SelectionMode="Extended" BorderThickness="1" VirtualizingPanel.IsVirtualizing="True">
 
             <!-- Show Headers by overriding the default style -->
             <ListView.Style>

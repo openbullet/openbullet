@@ -18,9 +18,9 @@ namespace RuriLib.Interfaces
         void DeleteDuplicates();
 
         /// <summary>
-        /// Deletes all hits from the database.
+        /// Removes all hits from the database.
         /// </summary>
-        void Purge();
+        void RemoveAll();
 
         /// <summary>
         /// The collection of hits.

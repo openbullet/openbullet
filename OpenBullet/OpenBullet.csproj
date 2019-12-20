@@ -186,6 +186,7 @@
     <Compile Include="Converters\BooleanBrushConverter.cs" />
     <Compile Include="Converters\EnumBooleanConverter.cs" />
     <Compile Include="Converters\KeychainBrushConverter.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Models\Source.cs" />
     <Compile Include="OBIOManager.cs" />
     <Compile Include="OBLog.cs" />

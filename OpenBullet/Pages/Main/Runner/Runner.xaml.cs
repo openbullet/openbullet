@@ -109,7 +109,7 @@ namespace OpenBullet
                 {
                     App.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        Globals.mainWindow.HitsDBPage.vm.HitsList.Add(hit);
+                        Globals.mainWindow.HitsDBPage.vm.Add(hit);
                         Globals.mainWindow.HitsDBPage.AddConfigToFilter(vm.ConfigName);
                     }));
                     db.GetCollection<Hit>("hits").Insert(hit);

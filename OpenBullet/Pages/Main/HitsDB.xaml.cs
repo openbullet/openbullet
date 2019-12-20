@@ -6,6 +6,7 @@ using RuriLib.Functions.Crypto;
 using RuriLib.Models;
 using RuriLib.Runner;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -24,6 +25,23 @@ namespace OpenBullet
         public HitsDBViewModel vm = new HitsDBViewModel();
         private GridViewColumnHeader listViewSortCol = null;
         private SortAdorner listViewSortAdorner = null;
+
+        private IEnumerable<Hit> Selected => hitsListView.SelectedItems.Cast<Hit>();
+
+        #region Mappings
+        Func<Hit, string> mappingCapture = new Func<Hit, string>(hit => $"{hit.Data} | {hit.CapturedData}");
+
+        Func<Hit, string> mappingFull = new Func<Hit, string>(hit =>
+        {
+            return "Data = " + hit.Data +
+                    " | Type = " + hit.Type +
+                    " | Config = " + hit.ConfigName +
+                    " | Wordlist = " + hit.WordlistName +
+                    " | Proxy = " + hit.Proxy +
+                    " | Date = " + hit.Date.ToLongDateString() +
+                    " | CapturedData = " + hit.CapturedData.ToCaptureString();
+        });
+        #endregion
 
         public HitsDB()
         {
@@ -67,29 +85,22 @@ namespace OpenBullet
 
         public void AddConfigToFilter(string name)
         {
-            var alreadyThere = false;
-            foreach(string item in configFilterCombobox.Items)
+            if (!configFilterCombobox.Items.Cast<string>().Any(i => i == name))
             {
-                if (item == name) alreadyThere = true;
+                configFilterCombobox.Items.Add(name);
             }
-
-            if (!alreadyThere) configFilterCombobox.Items.Add(name);
         }
 
         private void configFilterCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try
-            {
-                vm.ConfigFilter = configFilterCombobox.SelectedValue.ToString();
-            }
-            catch { }
-            Globals.LogInfo(Components.HitsDB, "Changed config filter to "+vm.ConfigFilter+", found "+vm.HitsList.Count+" hits");
+            vm.ConfigFilter = configFilterCombobox.SelectedValue.ToString();
+            Globals.LogInfo(Components.HitsDB, $"Changed config filter to {vm.ConfigFilter}, found {vm.Total} hits");
         }
 
         private void typeFilterCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             vm.TypeFilter = (string)typeFilterCombobox.SelectedValue;
-            Globals.LogInfo(Components.HitsDB, $"Changed type filter to {vm.TypeFilter}, found {vm.HitsList.Count} hits");
+            Globals.LogInfo(Components.HitsDB, $"Changed type filter to {vm.TypeFilter}, found {vm.Total} hits");
         }
 
         private void purgeButton_Click(object sender, RoutedEventArgs e)
@@ -100,12 +111,7 @@ namespace OpenBullet
             {
                 Globals.LogInfo(Components.HitsDB, "Purge initiated");
 
-                using (var db = new LiteDatabase(Globals.dataBaseFile))
-                {
-                    db.DropCollection("hits");
-                }
-
-                vm.HitsList.Clear();
+                vm.RemoveAll();
 
                 Globals.LogInfo(Components.HitsDB, "Purge finished");
             }
@@ -146,175 +152,128 @@ namespace OpenBullet
             return sfd.FileName;
         }
 
+        #region Copy
         private void copySelectedData_Click(object sender, RoutedEventArgs e)
         {
-            var clipboardText = "";
             try
             {
-                foreach (Hit selected in hitsListView.SelectedItems)
-                    clipboardText += selected.Data + Environment.NewLine;
-
-                Globals.LogInfo(Components.HitsDB, $"Copied {hitsListView.SelectedItems.Count} hits");
-                Clipboard.SetText(clipboardText);
+                Selected.CopyToClipboard(hit => hit.Data);
             }
-            catch (Exception ex) { Globals.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}"); }
-        }
-
-        private void saveSelectedData_Click(object sender, RoutedEventArgs e)
-        {
-            var file = GetSaveFile();
-            if (file == "") return;
-
-            try
+            catch (Exception ex)
             {
-                StreamWriter SaveFile = new StreamWriter(file);
-                foreach (Hit selected in hitsListView.SelectedItems)
-                {
-                    SaveFile.WriteLine(selected.Data);
-                }
-
-                SaveFile.Close();
-                
-                Globals.LogInfo(Components.HitsDB, $"Saved {hitsListView.SelectedItems.Count} hits");
+                Globals.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}");
             }
-            catch (Exception ex) { Globals.LogError(Components.HitsDB, $"Exception while saving hits - {ex.Message}"); }
         }
 
         private void copySelectedCapture_Click(object sender, RoutedEventArgs e)
         {
-            var clipboardText = "";
             try
             {
-                foreach (Hit selected in hitsListView.SelectedItems)
-                    clipboardText += selected.Data + " | " + selected.CapturedData.ToCaptureString() + Environment.NewLine;
-
-                Globals.LogInfo(Components.HitsDB, $"Copied {hitsListView.SelectedItems.Count} hits with capture");
-                Clipboard.SetText(clipboardText);
+                Selected.CopyToClipboard(mappingCapture);
             }
-            catch (Exception ex) { Globals.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}"); }
+            catch (Exception ex)
+            {
+                Globals.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}");
+            }
+        }
+
+        private void copySelectedFull_Click(object sender, RoutedEventArgs e)
+        {
+            try 
+            {
+                Selected.CopyToClipboard(mappingFull);
+            }
+            catch (Exception ex)
+            { 
+                Globals.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}"); 
+            }
+        }
+
+        private void copySelectedCustom_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Selected.CopyToClipboard(hit => hit.ToFormattedString((sender as MenuItem).Header.ToString().Replace(@"\r\n", "\r\n").Replace(@"\n", "\n")));
+            }
+            catch (Exception ex)
+            {
+                Globals.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}");
+            }
+        }
+        #endregion
+
+        #region Save
+        private void saveSelectedData_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Selected.SaveToFile(GetSaveFile(), hit => hit.Data);
+            }
+            catch (Exception ex) 
+            { 
+                Globals.LogError(Components.HitsDB, $"Exception while saving hits - {ex.Message}"); 
+            }
         }
 
         private void saveSelectedCapture_Click(object sender, RoutedEventArgs e)
         {
-            var file = GetSaveFile();
-            if (file == "") return;
-
             try
             {
-                StreamWriter SaveFile = new StreamWriter(file);
-                foreach (Hit selected in hitsListView.SelectedItems)
-                {
-                    SaveFile.WriteLine(selected.Data + " | " + selected.CapturedData.ToCaptureString());
-                }
-
-                SaveFile.Close();
-
-                Globals.LogInfo(Components.HitsDB, $"Saved {hitsListView.SelectedItems.Count} hits");
+                Selected.SaveToFile(GetSaveFile(), mappingCapture);
             }
-            catch (Exception ex) { Globals.LogError(Components.HitsDB, $"Exception while saving hits - {ex.Message}"); }
+            catch (Exception ex)
+            {
+                Globals.LogError(Components.HitsDB, $"Exception while saving hits - {ex.Message}");
+            }
         }
+
+        private void saveSelectedFull_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Selected.SaveToFile(GetSaveFile(), mappingFull);
+            }
+            catch (Exception ex)
+            {
+                Globals.LogError(Components.HitsDB, $"Exception while saving hits - {ex.Message}");
+            }
+        }
+
+        private void saveSelectedCustom_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Selected.SaveToFile(GetSaveFile(), hit => hit.ToFormattedString((sender as MenuItem).Header.ToString().Replace(@"\r\n", "\r\n").Replace(@"\n", "\n")));
+            }
+            catch (Exception ex)
+            {
+                Globals.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}");
+            }
+        }
+        #endregion
 
         private void selectAll_Click(object sender, RoutedEventArgs e)
         {
             hitsListView.SelectAll();
         }
 
-        private void copySelectedFull_Click(object sender, RoutedEventArgs e)
-        {
-            var clipboardText = "";
-            try
-            {
-                foreach (Hit selected in hitsListView.SelectedItems)
-                    clipboardText +=
-                            "Data = " + selected.Data +
-                            " | Type = " + selected.Type +
-                            " | Config = " + selected.ConfigName +
-                            " | Wordlist = " + selected.WordlistName +
-                            " | Proxy = " + selected.Proxy +
-                            " | Date = " + selected.Date.ToLongDateString() +
-                            " | CapturedData = " + selected.CapturedData.ToCaptureString() +
-                            Environment.NewLine;
-
-                Globals.LogInfo(Components.HitsDB, $"Copied {hitsListView.SelectedItems.Count} hits (full)");
-                Clipboard.SetText(clipboardText);
-            }
-            catch (Exception ex) { Globals.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}"); }
-        }
-
-        private void saveSelectedFull_Click(object sender, RoutedEventArgs e)
-        {
-            var file = GetSaveFile();
-            if (file == "") return;
-
-            try
-            {
-                StreamWriter SaveFile = new StreamWriter(file);
-                foreach (Hit selected in hitsListView.SelectedItems)
-                {
-                    SaveFile.WriteLine(
-                            "Data = " + selected.Data +
-                            " | Type = " + selected.Type +
-                            " | Config = " + selected.ConfigName +
-                            " | Wordlist = " + selected.WordlistName +
-                            " | Proxy = " + selected.Proxy +
-                            " | Date = " + selected.Date.ToLongDateString() +
-                            " | CapturedData = " + selected.CapturedData.ToCaptureString()
-                            );
-                }
-
-                SaveFile.Close();
-
-                Globals.LogInfo(Components.HitsDB, $"Saved {hitsListView.SelectedItems.Count} hits");
-            }
-            catch (Exception ex) { Globals.LogError(Components.HitsDB, $"Exception while saving hits - {ex.Message}"); }
-        }
-
-        private void copySelectedCustom_Click(object sender, RoutedEventArgs e)
-        {
-            var clipboardText = "";
-            try
-            {
-                foreach (Hit selected in hitsListView.SelectedItems)
-                    clipboardText += selected.ToFormattedString((sender as MenuItem).Header.ToString().Replace(@"\r\n", "\r\n")) + Environment.NewLine;
-
-                Globals.LogInfo(Components.HitsDB, $"Copied {hitsListView.SelectedItems.Count} hits (full)");
-                Clipboard.SetText(clipboardText);
-            }
-            catch (Exception ex) { Globals.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}"); }
-        }
-
-        private void saveSelectedCustom_Click(object sender, RoutedEventArgs e)
-        {
-            var file = GetSaveFile();
-            if (file == "") return;
-
-            try
-            {
-                StreamWriter SaveFile = new StreamWriter(file);
-                foreach (Hit selected in hitsListView.SelectedItems)
-                    SaveFile.WriteLine(selected.ToFormattedString((sender as MenuItem).Header.ToString().Replace(@"\r\n", "\r\n")) + Environment.NewLine);
-                
-                SaveFile.Close();
-
-                Globals.LogInfo(Components.HitsDB, $"Saved {hitsListView.SelectedItems.Count} hits");
-            }
-            catch (Exception ex) { Globals.LogError(Components.HitsDB, $"Exception while saving hits - {ex.Message}"); }
-        }
-
         private void copySelectedProxy_Click(object sender, RoutedEventArgs e)
         {
-            try {
+            try 
+            {
                 var hit = (Hit)hitsListView.SelectedItem;
-                Clipboard.SetText(hit.Proxy);
-                Globals.LogInfo(Components.HitsDB, $"Copied the selected proxy {hit.Proxy}");
-            } catch (Exception ex) { Globals.LogError(Components.HitsDB, $"Failed to copy selected proxy - {ex.Message}"); }
+                Clipboard.SetText(hit.Proxy);    
+            } 
+            catch (Exception ex) 
+            {
+                Globals.LogError(Components.HitsDB, $"Failed to copy selected proxy - {ex.Message}"); 
+            }
         }
-
         
         private void searchButton_Click(object sender, RoutedEventArgs e)
         {
             vm.SearchString = searchBar.Text;
-            Globals.LogInfo(Components.HitsDB, "Changed capture filter to '"+ vm.SearchString + $"', found {vm.HitsList.Count} hits");
+            Globals.LogInfo(Components.HitsDB, "Changed capture filter to '"+ vm.SearchString + $"', found {vm.Total} hits");
         }
 
         private void sendToRecheck_Click(object sender, RoutedEventArgs e)
@@ -349,15 +308,9 @@ namespace OpenBullet
         {
             Globals.LogInfo(Components.HitsDB, $"Deleting {hitsListView.SelectedItems.Count} hits");
 
-            using (var db = new LiteDatabase(Globals.dataBaseFile))
+            foreach (var hit in Selected.ToList())
             {
-                var list = hitsListView.SelectedItems.Cast<Hit>();
-                Hit curr = null;
-                while ((curr = list.FirstOrDefault()) != null)
-                {
-                    db.GetCollection<Hit>("hits").Delete(curr.Id);
-                    vm.HitsList.Remove(curr);
-                }
+                vm.Remove(hit);
             }
 
             Globals.LogInfo(Components.HitsDB, "Succesfully sent the delete query and refreshed the list");
@@ -365,34 +318,8 @@ namespace OpenBullet
 
         private void removeDuplicatesButton_Click(object sender, RoutedEventArgs e)
         {
-            using (var db = new LiteDatabase(Globals.dataBaseFile))
-            {
-                var coll = db.GetCollection<Hit>("hits");
-                var groups = coll
-                    .FindAll()
-                    .GroupBy(h => GetHitChecksum(h))
-                    .Where(g => g.Count() > 1)
-                    .Select(g => g.OrderBy(h => h.Date).Reverse().Skip(1));
-
-                Globals.LogInfo(Components.HitsDB, $"Deleting {groups.Select(g => g.Count()).Sum()} duplicate hits");
-
-                foreach (var group in groups)
-                {
-                    var list = group.ToList();
-                    Hit curr = null;
-                    while ((curr = list.FirstOrDefault()) != null)
-                    {
-                        db.GetCollection<Hit>("hits").Delete(curr.Id); // Delete in the DB
-                        vm.HitsList.Remove(vm.HitsList.First(h => h.Id == curr.Id)); // Remove the actual reference to the hit (curr is from a cloned list, generated via Select LINQ method)
-                        list.RemoveAt(0); // Remove from list of items to delete
-                    }
-                }
-            }
-        }
-
-        private string GetHitChecksum(Hit hit)
-        {
-            return BlockFunction.GetHash(hit.Data + hit.ConfigName + hit.WordlistName, Hash.MD5);
+            vm.DeleteDuplicates();
+            Globals.LogInfo(Components.HitsDB, "Deleted duplicate hits");
         }
 
         private void deleteFilteredButton_Click(object sender, RoutedEventArgs e)
@@ -402,25 +329,9 @@ namespace OpenBullet
             if (MessageBox.Show("This will delete all the hits that are currently being displayed, are you sure you want to continue?", "WARNING", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
                 return;
 
-            var deleted = 0;
-            using (var db = new LiteDatabase(Globals.dataBaseFile))
-            {
-                var list = vm.HitsList.Where(h =>
-                    (string.IsNullOrEmpty(vm.SearchString) ? true : h.CapturedString.ToLower().Contains(vm.SearchString.ToLower())) &&
-                    (vm.ConfigFilter == "All" ? true : h.ConfigName == vm.ConfigFilter) &&
-                    h.Type == vm.TypeFilter).ToList();
+            vm.DeleteFiltered();
 
-                Hit curr = null;
-                while ((curr = list.FirstOrDefault()) != null)
-                {
-                    db.GetCollection<Hit>("hits").Delete(curr.Id);
-                    vm.HitsList.Remove(curr);
-                    list.Remove(curr);
-                    deleted++;
-                }
-            }
-
-            Globals.LogInfo(Components.HitsDB, $"Deleted {deleted} hits");
+            Globals.LogInfo(Components.HitsDB, "Deleted filtered hits");
         }
     }
 }
