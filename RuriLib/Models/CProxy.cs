@@ -42,11 +42,8 @@ namespace RuriLib.Models
     /// <summary>
     /// A proxy that supports http(s) and socks4/4a/5 protocols, authorization and chaining.
     /// </summary>
-    public class CProxy
+    public class CProxy : Persistable<Guid>
     {
-        /// <summary>Needed for NoSQL storage.</summary>
-        public Guid Id { get; set; }
-
         /// <summary>The unparsed proxy string.</summary>
         public string Proxy { get; set; } = "";
 

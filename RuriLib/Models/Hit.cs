@@ -10,11 +10,8 @@ namespace RuriLib.Models
     /// <summary>
     /// Represents the outcome of a successful check, used as Data Type in a Database.
     /// </summary>
-    public class Hit
+    public class Hit : Persistable<Guid>
     {
-        /// <summary>Needed for NoSQL storage.</summary>
-        public Guid Id { get; set; }
-
         /// <summary>The data line that was used.</summary>
         public string Data { get; set; }
 
