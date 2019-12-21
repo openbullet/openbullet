@@ -227,6 +227,7 @@
     <Compile Include="Interfaces\IGlobals.cs" />
     <Compile Include="Interfaces\IHitsDB.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
+    <Compile Include="Interfaces\IProxyChecker.cs" />
     <Compile Include="Interfaces\IProxyManager.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Interfaces\IRunner.cs" />
@@ -238,8 +239,10 @@
     <Compile Include="LoliScript\Parser\CommandParser.cs" />
     <Compile Include="LoliScript\Parser\MouseActionParser.cs" />
     <Compile Include="LoliScript\Writer\BlockWriter.cs" />
+    <Compile Include="Models\CheckResult.cs" />
     <Compile Include="Models\DataPool.cs" />
     <Compile Include="Models\Persistable.cs" />
+    <Compile Include="Models\ProxyResult.cs" />
     <Compile Include="Models\Stats\ProxyManagerStats.cs" />
     <Compile Include="Models\ProxyPool.cs" />
     <Compile Include="Models\RemoteProxySource.cs" />
