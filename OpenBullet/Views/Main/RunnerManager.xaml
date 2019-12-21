@@ -48,7 +48,7 @@
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <ItemsControl x:Name="runnersControl" ItemsSource="{Binding Runners}">
+            <ItemsControl x:Name="runnersControl" ItemsSource="{Binding RunnersCollection}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Vertical" Margin="0 10"/>
