@@ -15,7 +15,7 @@
         </Grid.RowDefinitions>
 
         <!-- Wordlists List View -->
-        <ListView x:Name="wordlistsListView" Grid.Row="0" Foreground="{DynamicResource ForegroundMain}" Background="Transparent" ItemsSource="{Binding Path=WordlistList}" SelectionMode="Extended" BorderThickness="1" VirtualizingPanel.IsVirtualizing="True">
+        <ListView x:Name="wordlistsListView" Grid.Row="0" Foreground="{DynamicResource ForegroundMain}" Background="Transparent" ItemsSource="{Binding Path=WordlistsCollection}" SelectionMode="Extended" BorderThickness="1" VirtualizingPanel.IsVirtualizing="True">
 
             <!-- Show Headers by overriding the default style -->
             <ListView.Style>
