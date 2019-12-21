@@ -66,6 +66,9 @@ namespace OpenBullet.Views.Main
                         {
                             var result = check.result;
                             var proxy = result.proxy;
+
+                            proxy.LastChecked = DateTime.Now;
+
                             if (check.success)
                             {
                                 // Set all the changed proxy fields
