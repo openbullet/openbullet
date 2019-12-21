@@ -39,7 +39,7 @@ namespace OpenBullet.Views.Main
             }
             catch (Exception e)
             {
-                Globals.LogError(Components.WordlistManager, e.Message);
+                Globals.logger.LogError(Components.WordlistManager, e.Message);
             }
         }
 
@@ -51,30 +51,30 @@ namespace OpenBullet.Views.Main
         
         private void deleteButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.LogInfo(Components.WordlistManager, $"Deleting {wordlistListView.SelectedItems.Count} references from the DB");
+            Globals.logger.LogInfo(Components.WordlistManager, $"Deleting {wordlistListView.SelectedItems.Count} references from the DB");
             foreach (var wordlist in wordlistListView.SelectedItems.Cast<Wordlist>().ToList())
             {
                 vm.Remove(wordlist);
             }
-            Globals.LogInfo(Components.WordlistManager, "Successfully deleted the wordlist references from the DB");
+            Globals.logger.LogInfo(Components.WordlistManager, "Successfully deleted the wordlist references from the DB");
         }
 
         private void deleteAllButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.LogWarning(Components.WordlistManager, "Purge selected, prompting warning");
+            Globals.logger.LogWarning(Components.WordlistManager, "Purge selected, prompting warning");
 
             if (MessageBox.Show("This will purge the WHOLE Wordlists DB, are you sure you want to continue?", "WARNING", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                Globals.LogInfo(Components.WordlistManager, "Purge initiated");
+                Globals.logger.LogInfo(Components.WordlistManager, "Purge initiated");
                 vm.RemoveAll();
-                Globals.LogInfo(Components.WordlistManager, "Purge finished");
+                Globals.logger.LogInfo(Components.WordlistManager, "Purge finished");
             }
-            else { Globals.LogInfo(Components.WordlistManager, "Purge dismissed"); }
+            else { Globals.logger.LogInfo(Components.WordlistManager, "Purge dismissed"); }
         }
 
         private void deleteNotFoundWordlistsButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.LogWarning(Components.WordlistManager, "Deleting wordlists with missing files.");
+            Globals.logger.LogWarning(Components.WordlistManager, "Deleting wordlists with missing files.");
             vm.DeleteNotFound();
         }
         #endregion

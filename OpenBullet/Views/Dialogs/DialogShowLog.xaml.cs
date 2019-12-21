@@ -33,7 +33,7 @@ namespace OpenBullet
 
         private void searchButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.LogInfo(Components.Stacker, $"Seaching for {vm.SearchString}");
+            Globals.logger.LogInfo(Components.Stacker, $"Seaching for {vm.SearchString}");
 
             // Reset all highlights
             logRTB.SelectAll();
@@ -65,7 +65,7 @@ namespace OpenBullet
             logRTB.SelectionLength = 0;
             logRTB.SelectionColor = System.Drawing.Color.Black;
 
-            Globals.LogInfo(Components.Stacker, $"Found {vm.Indexes.Count} matches", true);
+            Globals.logger.LogInfo(Components.Stacker, $"Found {vm.Indexes.Count} matches", true);
 
             if (vm.Indexes.Count > 0)
                 vm.CurrentSearchMatch = 1;

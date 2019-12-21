@@ -189,7 +189,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Models\Source.cs" />
     <Compile Include="OBIOManager.cs" />
-    <Compile Include="OBLog.cs" />
+    <Compile Include="LoggerViewModel.cs" />
     <Compile Include="LogWindow.xaml.cs">
       <DependentUpon>LogWindow.xaml</DependentUpon>
     </Compile>

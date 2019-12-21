@@ -13,7 +13,7 @@ namespace OpenBullet
         public LogWindow()
         {
             InitializeComponent();
-            DataContext = Globals.log;
+            DataContext = Globals.logger;
             Closing += LogWindowClosing;
         }
 
@@ -51,14 +51,14 @@ namespace OpenBullet
         {
             try
             {
-                Globals.log.List.Clear();
+                Globals.logger.EntriesCollection.Clear();
             }
             catch { }
         }
         
         private void searchButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.log.Refresh();
+            Globals.logger.Refresh();
         }
     }
 }

@@ -99,7 +99,7 @@ namespace OpenBullet.ViewModels
             foreach(var file in Directory.EnumerateFiles(Globals.configFolder).Where(file => file.EndsWith(".loli")))
             {
                 try { models.Add(new ConfigViewModel(file, "Default", IOManager.LoadConfig(file))); }
-                catch { Globals.LogError(Components.ConfigManager, "Could not load file: " + file); }
+                catch { Globals.logger.LogError(Components.ConfigManager, "Could not load file: " + file); }
             }
 
             // Load the configs in the subfolders
@@ -108,7 +108,7 @@ namespace OpenBullet.ViewModels
                 foreach(var file in Directory.EnumerateFiles(categoryFolder).Where(file => file.EndsWith(".loli")))
                 {
                     try { models.Add(new ConfigViewModel(file, Path.GetFileName(categoryFolder), IOManager.LoadConfig(file))); }
-                    catch { Globals.LogError(Components.ConfigManager, "Could not load file: " + file); }
+                    catch { Globals.logger.LogError(Components.ConfigManager, "Could not load file: " + file); }
                 }
             }
 

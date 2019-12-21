@@ -56,7 +56,7 @@ namespace OpenBullet.Views.Main.Runner
 
             if (Globals.obSettings.General.ChangeRunnerInterface)
             {
-                Globals.LogInfo(Components.About, "Changed the Runner interface");
+                Globals.logger.LogInfo(Components.About, "Changed the Runner interface");
                 Grid.SetColumn(rightGrid, 0);
                 Grid.SetRow(rightGrid, 1);
                 Grid.SetColumn(bottomLeftGrid, 2);
@@ -70,7 +70,7 @@ namespace OpenBullet.Views.Main.Runner
         #region Events
         private void LogRunnerData(IRunnerMessaging sender, LogLevel level, string message, bool prompt, int timeout)
         {
-            Globals.Log(Components.Runner, level, message, prompt, timeout);
+            Globals.logger.Log(Components.Runner, level, message, prompt, timeout);
         }
 
         private void LogWorkerStatus(IRunnerMessaging sender)
@@ -102,7 +102,7 @@ namespace OpenBullet.Views.Main.Runner
 
         private void RegisterHit(IRunnerMessaging sender, Hit hit)
         {
-            Globals.LogInfo(Components.Runner, $"Adding {hit.Type} hit " + hit.Data + " to the DB");
+            Globals.logger.LogInfo(Components.Runner, $"Adding {hit.Type} hit " + hit.Data + " to the DB");
             try
             {
                 using (var db = new LiteDatabase(Globals.dataBaseFile))
@@ -115,7 +115,7 @@ namespace OpenBullet.Views.Main.Runner
                     db.GetCollection<Hit>("hits").Insert(hit);
                 }
             }
-            catch (Exception ex) { Globals.LogError(Components.Runner, $"Failed to add {hit.Type} hit " + hit.Data + $" to the DB - {ex.Message}"); }
+            catch (Exception ex) { Globals.logger.LogError(Components.Runner, $"Failed to add {hit.Type} hit " + hit.Data + $" to the DB - {ex.Message}"); }
         }
 
         private void PlayHitSound(IRunnerMessaging sender, Hit hit)
@@ -185,7 +185,7 @@ namespace OpenBullet.Views.Main.Runner
                 vm.CustomInputs = new List<KeyValuePair<string, string>>();
                 foreach (var input in vm.Config.Settings.CustomInputs)
                 {
-                    Globals.LogInfo(Components.Runner, $"Asking for input {input.Description}");
+                    Globals.logger.LogInfo(Components.Runner, $"Asking for input {input.Description}");
                     (new MainDialog(new DialogCustomInput(this, input.VariableName, input.Description), "Custom Input")).ShowDialog();
                 }
                 vm.CustomInputsInitialized = true;
@@ -232,7 +232,7 @@ namespace OpenBullet.Views.Main.Runner
             var reloadSound = $"Sounds/{Globals.obSettings.Sounds.OnReloadSound}";
             if (File.Exists(hitSound)) hitPlayer = new SoundPlayer(hitSound);
             if (File.Exists(reloadSound)) reloadPlayer = new SoundPlayer(reloadSound);
-            Globals.LogInfo(Components.Runner, "Set up sound players");
+            Globals.logger.LogInfo(Components.Runner, "Set up sound players");
         }
         #endregion
 
@@ -274,21 +274,21 @@ namespace OpenBullet.Views.Main.Runner
         private void hitsFilterButton_Click(object sender, RoutedEventArgs e)
         {
             vm.ResultsFilter = BotStatus.SUCCESS;
-            Globals.LogInfo(Components.Runner, $"Changed valid filter to {vm.ResultsFilter}");
+            Globals.logger.LogInfo(Components.Runner, $"Changed valid filter to {vm.ResultsFilter}");
             RefreshListView();
         }
 
         private void customFilterButton_Click(object sender, RoutedEventArgs e)
         {
             vm.ResultsFilter = BotStatus.CUSTOM;
-            Globals.LogInfo(Components.Runner, $"Changed valid filter to {vm.ResultsFilter}");
+            Globals.logger.LogInfo(Components.Runner, $"Changed valid filter to {vm.ResultsFilter}");
             RefreshListView();
         }
 
         private void toCheckFilterButton_Click(object sender, RoutedEventArgs e)
         {
             vm.ResultsFilter = BotStatus.NONE;
-            Globals.LogInfo(Components.Runner, $"Changed valid filter to {vm.ResultsFilter}");
+            Globals.logger.LogInfo(Components.Runner, $"Changed valid filter to {vm.ResultsFilter}");
             RefreshListView();
         }
 
@@ -334,12 +334,12 @@ namespace OpenBullet.Views.Main.Runner
                 if (record != null)
                 {
                     vm.StartingPoint = record.Checkpoint;
-                    Globals.LogInfo(Components.Runner, "Retrieved record from the DB for wordlist '" + vm.Wordlist.Name + "' and config '" + vm.ConfigName + $"' (set {vm.StartingPoint} as starting point)");
+                    Globals.logger.LogInfo(Components.Runner, "Retrieved record from the DB for wordlist '" + vm.Wordlist.Name + "' and config '" + vm.ConfigName + $"' (set {vm.StartingPoint} as starting point)");
                 }
                 else
                 {
                     vm.StartingPoint = 1;
-                    Globals.LogInfo(Components.Runner, "No record found in the DB for wordlist '" + vm.Wordlist.Name + "' and config '" + vm.ConfigName + "'");
+                    Globals.logger.LogInfo(Components.Runner, "No record found in the DB for wordlist '" + vm.Wordlist.Name + "' and config '" + vm.ConfigName + "'");
                 }
             }
         }
@@ -370,9 +370,9 @@ namespace OpenBullet.Views.Main.Runner
             {
                 File.WriteAllText("source.html", ((ValidData)GetCurrentListView().SelectedItem).Source);
                 System.Diagnostics.Process.Start("source.html");
-                Globals.LogInfo(Components.Runner, "Saved the html to source.html and opened it with the default viewer");
+                Globals.logger.LogInfo(Components.Runner, "Saved the html to source.html and opened it with the default viewer");
             }
-            catch (Exception ex) { Globals.LogError(Components.Runner, $"Couldn't show the HTML - {ex.Message}", true); }
+            catch (Exception ex) { Globals.logger.LogError(Components.Runner, $"Couldn't show the HTML - {ex.Message}", true); }
         }
 
         private void showLog_Click(object sender, RoutedEventArgs e)
@@ -380,7 +380,7 @@ namespace OpenBullet.Views.Main.Runner
             try
             {
                 (new MainDialog(new DialogShowLog(((ValidData)GetCurrentListView().SelectedItem).Log), "Complete Log")).Show();
-                Globals.LogInfo(Components.Runner, "Opened the log for the hit "+ ((ValidData)GetCurrentListView().SelectedItem).Data);
+                Globals.logger.LogInfo(Components.Runner, "Opened the log for the hit "+ ((ValidData)GetCurrentListView().SelectedItem).Data);
             }
             catch { MessageBox.Show("FAILED"); }
         }
@@ -393,10 +393,10 @@ namespace OpenBullet.Views.Main.Runner
                 foreach (ValidData selected in GetCurrentListView().SelectedItems)
                     clipboardText += selected.Data + Environment.NewLine;
 
-                Globals.LogInfo(Components.Runner, $"Copied {GetCurrentListView().SelectedItems.Count} data");
+                Globals.logger.LogInfo(Components.Runner, $"Copied {GetCurrentListView().SelectedItems.Count} data");
                 Clipboard.SetText(clipboardText);
             }
-            catch (Exception ex) { Globals.LogError(Components.Runner, $"Exception while copying data - {ex.Message}"); }
+            catch (Exception ex) { Globals.logger.LogError(Components.Runner, $"Exception while copying data - {ex.Message}"); }
         }
 
         private void copySelectedCapture_Click(object sender, RoutedEventArgs e)
@@ -407,10 +407,10 @@ namespace OpenBullet.Views.Main.Runner
                 foreach (ValidData selected in GetCurrentListView().SelectedItems)
                     clipboardText += selected.Data + " | " + selected.CapturedData + Environment.NewLine;
 
-                Globals.LogInfo(Components.Runner, $"Copied {GetCurrentListView().SelectedItems.Count} data");
+                Globals.logger.LogInfo(Components.Runner, $"Copied {GetCurrentListView().SelectedItems.Count} data");
                 Clipboard.SetText(clipboardText);
             }
-            catch (Exception ex) { Globals.LogError(Components.Runner, $"Exception while copying data - {ex.Message}"); }
+            catch (Exception ex) { Globals.logger.LogError(Components.Runner, $"Exception while copying data - {ex.Message}"); }
         }
 
         private void selectAll_Click(object sender, RoutedEventArgs e)
@@ -423,9 +423,9 @@ namespace OpenBullet.Views.Main.Runner
             try
             {
                 Clipboard.SetText(((ValidData)GetCurrentListView().SelectedItem).Proxy);
-                Globals.LogInfo(Components.Runner, "Copied the proxy " + ((ValidData)GetCurrentListView().SelectedItem).Proxy);
+                Globals.logger.LogInfo(Components.Runner, "Copied the proxy " + ((ValidData)GetCurrentListView().SelectedItem).Proxy);
             }
-            catch (Exception ex) { Globals.LogError(Components.Runner, $"Couldn't copy the proxy for the selected hit - {ex.Message}"); }
+            catch (Exception ex) { Globals.logger.LogError(Components.Runner, $"Couldn't copy the proxy for the selected hit - {ex.Message}"); }
         }
 
         private void sendToDebugger_Click(object sender, RoutedEventArgs e)
@@ -440,9 +440,9 @@ namespace OpenBullet.Views.Main.Runner
                 stacker.TestProxy = current.Proxy;
                 stacker.ProxyType = current.ProxyType;
                 
-                Globals.LogInfo(Components.Runner, $"Sent to the debugger");
+                Globals.logger.LogInfo(Components.Runner, $"Sent to the debugger");
             }
-            catch (Exception ex) { Globals.LogError(Components.Runner, $"Could not send data and proxy to the debugger - {ex.Message}"); }
+            catch (Exception ex) { Globals.logger.LogError(Components.Runner, $"Could not send data and proxy to the debugger - {ex.Message}"); }
         }
         #endregion
     }

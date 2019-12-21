@@ -96,27 +96,27 @@ namespace OpenBullet
             if (!File.Exists(Globals.rlSettingsFile))
             {
                 MessageBox.Show("RuriLib Settings file not found, generating a default one");
-                Globals.LogWarning(Components.Main, "RuriLib Settings file not found, generating a default one");
+                Globals.logger.LogWarning(Components.Main, "RuriLib Settings file not found, generating a default one");
                 IOManager.SaveSettings(Globals.rlSettingsFile, Globals.rlSettings);
-                Globals.LogInfo(Components.Main, $"Created the default RuriLib Settings file {Globals.rlSettingsFile}");
+                Globals.logger.LogInfo(Components.Main, $"Created the default RuriLib Settings file {Globals.rlSettingsFile}");
             }
             else
             {
                 Globals.rlSettings = IOManager.LoadSettings(Globals.rlSettingsFile);
-                Globals.LogInfo(Components.Main, "Loaded the existing RuriLib Settings file");
+                Globals.logger.LogInfo(Components.Main, "Loaded the existing RuriLib Settings file");
             }
 
             if (!File.Exists(Globals.obSettingsFile))
             {
                 MessageBox.Show("OpenBullet Settings file not found, generating a default one");
-                Globals.LogWarning(Components.Main, "OpenBullet Settings file not found, generating a default one");
+                Globals.logger.LogWarning(Components.Main, "OpenBullet Settings file not found, generating a default one");
                 OBIOManager.SaveSettings(Globals.obSettingsFile, Globals.obSettings);
-                Globals.LogInfo(Components.Main, $"Created the default OpenBullet Settings file {Globals.obSettingsFile}");
+                Globals.logger.LogInfo(Components.Main, $"Created the default OpenBullet Settings file {Globals.obSettingsFile}");
             }
             else
             {
                 Globals.obSettings = OBIOManager.LoadSettings(Globals.obSettingsFile);
-                Globals.LogInfo(Components.Main, "Loaded the existing OpenBullet Settings file");
+                Globals.logger.LogInfo(Components.Main, "Loaded the existing OpenBullet Settings file");
             }
 
             // If there is no DB backup or if it's more than 1 day old, back up the DB
@@ -135,12 +135,12 @@ namespace OpenBullet
                     // Delete the old file and copy over the new one
                     File.Delete(Globals.dataBaseBackupFile);
                     File.Copy(Globals.dataBaseFile, Globals.dataBaseBackupFile);
-                    Globals.LogInfo(Components.Main, "Backed up the DB");
+                    Globals.logger.LogInfo(Components.Main, "Backed up the DB");
                 }
             }
             catch (Exception ex)
             {
-                Globals.LogError(Components.Main, $"Could not backup the DB: {ex.Message}");
+                Globals.logger.LogError(Components.Main, $"Could not backup the DB: {ex.Message}");
             }
 
             Topmost = Globals.obSettings.General.AlwaysOnTop;
@@ -148,19 +148,19 @@ namespace OpenBullet
             RunnerManagerPage = new RunnerManager(Globals.obSettings.General.AutoCreateRunner);
             if (Globals.obSettings.General.AutoCreateRunner)
                 CurrentRunnerPage = RunnerManagerPage.vm.Runners.FirstOrDefault().Page;
-            Globals.LogInfo(Components.Main, "Initialized RunnerManager");
+            Globals.logger.LogInfo(Components.Main, "Initialized RunnerManager");
             ProxyManagerPage = new ProxyManager();
-            Globals.LogInfo(Components.Main, "Initialized ProxyManager");
+            Globals.logger.LogInfo(Components.Main, "Initialized ProxyManager");
             WordlistManagerPage = new WordlistManager();
-            Globals.LogInfo(Components.Main, "Initialized WordlistManager");
+            Globals.logger.LogInfo(Components.Main, "Initialized WordlistManager");
             ConfigsPage = new ConfigsSection();
-            Globals.LogInfo(Components.Main, "Initialized ConfigManager");
+            Globals.logger.LogInfo(Components.Main, "Initialized ConfigManager");
             HitsDBPage = new HitsDB();
-            Globals.LogInfo(Components.Main, "Initialized HitsDB");
+            Globals.logger.LogInfo(Components.Main, "Initialized HitsDB");
             OBSettingsPage = new Settings();
-            Globals.LogInfo(Components.Main, "Initialized Settings");
+            Globals.logger.LogInfo(Components.Main, "Initialized Settings");
             ToolsPage = new ToolsSection();
-            Globals.LogInfo(Components.Main, "Initialized Tools");
+            Globals.logger.LogInfo(Components.Main, "Initialized Tools");
             AboutPage = new About();
 
             menuOptionRunner_MouseDown(this, null);
@@ -328,7 +328,7 @@ namespace OpenBullet
             var active = RunnerManagerPage.vm.Runners.Count(r => r.Runner.Busy);
             if (!Globals.obSettings.General.DisableQuitWarning || active > 0)
             {
-                Globals.LogWarning(Components.Main, "Prompting quit confirmation");
+                Globals.logger.LogWarning(Components.Main, "Prompting quit confirmation");
 
                 if (active == 0)
                 {
@@ -346,12 +346,12 @@ namespace OpenBullet
 
             if (!Globals.obSettings.General.DisableNotSavedWarning && !Globals.mainWindow.ConfigsPage.ConfigManagerPage.CheckSaved())
             {
-                Globals.LogWarning(Components.Main, "Config not saved, prompting quit confirmation");
+                Globals.logger.LogWarning(Components.Main, "Config not saved, prompting quit confirmation");
                 if (MessageBox.Show("The Config in Stacker wasn't saved.\nAre you sure you want to quit?",
                     "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                     return false;
             }
-            Globals.LogInfo(Components.Main, "Quit sequence initiated");
+            Globals.logger.LogInfo(Components.Main, "Quit sequence initiated");
             return true;
         }
 
@@ -472,7 +472,7 @@ namespace OpenBullet
             var bitmap = CopyScreen((int)Width, (int)Height, (int)Top, (int)Left);
             Clipboard.SetImage(bitmap);
             GetBitmap(bitmap).Save("screenshot.jpg", ImageFormat.Jpeg);
-            Globals.LogInfo(Components.Main, "Acquired screenshot");
+            Globals.logger.LogInfo(Components.Main, "Acquired screenshot");
         }
 
         private static BitmapSource CopyScreen(int width, int height, int top, int left)

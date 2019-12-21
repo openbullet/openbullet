@@ -20,7 +20,7 @@ namespace OpenBullet.Views.Main
             InitializeComponent();
 
             ConfigManagerPage = new ConfigManager();
-            Globals.LogInfo(Components.ConfigManager, "Initialized Manager Page");
+            Globals.logger.LogInfo(Components.ConfigManager, "Initialized Manager Page");
 
             menuOptionManager_MouseDown(this, null);
         }
@@ -41,7 +41,7 @@ namespace OpenBullet.Views.Main
             }
             else
             {
-                Globals.LogError(Components.ConfigManager, "Cannot switch to stacker since no config is loaded or the loaded config isn't public");
+                Globals.logger.LogError(Components.ConfigManager, "Cannot switch to stacker since no config is loaded or the loaded config isn't public");
             }
         }
 
@@ -57,7 +57,7 @@ namespace OpenBullet.Views.Main
             }
             else
             {
-                Globals.LogError(Components.ConfigManager, "Cannot switch to other options since no config is loaded");
+                Globals.logger.LogError(Components.ConfigManager, "Cannot switch to other options since no config is loaded");
             }
         }
 

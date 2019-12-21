@@ -52,12 +52,12 @@ namespace OpenBullet
                     case 0:
                         if (fileName != "")
                         {
-                            Globals.LogInfo(Components.ProxyManager, $"Trying to load from file {fileName}");
+                            Globals.logger.LogInfo(Components.ProxyManager, $"Trying to load from file {fileName}");
                             lines.AddRange(File.ReadAllLines(fileName).ToList());
                         }
                         else
                         {
-                            Globals.LogError(Components.ProxyManager, "No file specified!", true);
+                            Globals.logger.LogError(Components.ProxyManager, "No file specified!", true);
                             return;
                         }
                         break;
@@ -69,7 +69,7 @@ namespace OpenBullet
                         }
                         else
                         {
-                            Globals.LogError(Components.ProxyManager, "The box is empty!", true);
+                            Globals.logger.LogError(Components.ProxyManager, "The box is empty!", true);
                             return;
                         }
                         break;
@@ -83,7 +83,7 @@ namespace OpenBullet
                         }
                         else
                         {
-                            Globals.LogError(Components.ProxyManager, "No URL specified!", true);
+                            Globals.logger.LogError(Components.ProxyManager, "No URL specified!", true);
                             return;
                         }
                         break;
@@ -91,7 +91,7 @@ namespace OpenBullet
             }
             catch (Exception ex)
             {
-                Globals.LogError(Components.ProxyManager, $"There was an error: {ex.Message}");
+                Globals.logger.LogError(Components.ProxyManager, $"There was an error: {ex.Message}");
                 return;
             }
 

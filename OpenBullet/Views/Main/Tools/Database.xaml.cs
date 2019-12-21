@@ -31,7 +31,7 @@ namespace OpenBullet.Views.Main.Tools
         {
             if (Globals.mainWindow.RunnerManagerPage.vm.Runners.Any(r => r.Runner.Master.IsBusy))
             {
-                Globals.LogWarning(Components.Database, "Please stop all active runners before shrinking the database!", true);
+                Globals.logger.LogWarning(Components.Database, "Please stop all active runners before shrinking the database!", true);
                 return;
             }
 
@@ -42,12 +42,12 @@ namespace OpenBullet.Views.Main.Tools
                     var previousSize = (int)(new FileInfo(Globals.dataBaseFile).Length / 1000);
                     db.Shrink();
                     var newSize = (int)(new FileInfo(Globals.dataBaseFile).Length / 1000);
-                    Globals.LogInfo(Components.Database, $"Database successfully shrinked from {previousSize} KB to {newSize} KB", true);
+                    Globals.logger.LogInfo(Components.Database, $"Database successfully shrinked from {previousSize} KB to {newSize} KB", true);
                 }
             }
             catch (Exception ex)
             {
-                Globals.LogError(Components.Database, $"Shrink failed! Error: {ex.Message}");
+                Globals.logger.LogError(Components.Database, $"Shrink failed! Error: {ex.Message}");
             }
         }
     }

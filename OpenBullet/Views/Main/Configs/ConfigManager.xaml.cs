@@ -53,7 +53,7 @@ namespace OpenBullet.Views.Main.Configs
         {
             if (!CheckSaved())
             {
-                Globals.LogWarning(Components.Stacker, "Config not saved, prompting quit confirmation");
+                Globals.logger.LogWarning(Components.Stacker, "Config not saved, prompting quit confirmation");
                 if (MessageBox.Show("The Config in Stacker wasn't saved.\nAre you sure you want to load another config?",
                     "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                     return;
@@ -66,12 +66,12 @@ namespace OpenBullet.Views.Main.Configs
             {
                 if (Current.Remote)
                 {
-                    Globals.LogError(Components.ConfigManager, "The config was pulled from a remote source and cannot be edited!", true);
+                    Globals.logger.LogError(Components.ConfigManager, "The config was pulled from a remote source and cannot be edited!", true);
                     Current = null;
                     return;
                 }
 
-                Globals.LogInfo(Components.ConfigManager, "Loading config: " + Current.Name);
+                Globals.logger.LogInfo(Components.ConfigManager, "Loading config: " + Current.Name);
 
                 Globals.mainWindow.ConfigsPage.menuOptionStacker.IsEnabled = true;
                 Globals.mainWindow.ConfigsPage.menuOptionOtherOptions.IsEnabled = true;
@@ -83,9 +83,9 @@ namespace OpenBullet.Views.Main.Configs
                     newStacker.vm.ProxyType = Globals.mainWindow.ConfigsPage.StackerPage.vm.ProxyType;
                 }
                 Globals.mainWindow.ConfigsPage.StackerPage = newStacker; // Create a Stacker instance
-                Globals.LogInfo(Components.ConfigManager, "Created and assigned a new Stacker instance");
+                Globals.logger.LogInfo(Components.ConfigManager, "Created and assigned a new Stacker instance");
                 Globals.mainWindow.ConfigsPage.OtherOptionsPage = new ConfigOtherOptions(); // Create an Other Options instance
-                Globals.LogInfo(Components.ConfigManager, "Created and assigned a new Other Options instance");
+                Globals.logger.LogInfo(Components.ConfigManager, "Created and assigned a new Other Options instance");
                 Globals.mainWindow.ConfigsPage.menuOptionStacker_MouseDown(this, null); // Switch to Stacker
 
                 // Save the last state of the config
@@ -94,7 +94,7 @@ namespace OpenBullet.Views.Main.Configs
             }
             else
             {
-                Globals.LogError(Components.ConfigManager, "No config selected for loading", true);
+                Globals.logger.LogError(Components.ConfigManager, "No config selected for loading", true);
             }
         }
 
@@ -103,7 +103,7 @@ namespace OpenBullet.Views.Main.Configs
         {
             if (Current == null)
             {
-                Globals.LogError(Components.ConfigManager, "No config selected for saving!");
+                Globals.logger.LogError(Components.ConfigManager, "No config selected for saving!");
                 return;
             }
 
@@ -117,18 +117,18 @@ namespace OpenBullet.Views.Main.Configs
                 Globals.mainWindow.ConfigsPage.StackerPage == null ||
                 Globals.mainWindow.ConfigsPage.OtherOptionsPage == null)
             {
-                Globals.LogError(Components.ConfigManager, "No config eligible for saving!", true);
+                Globals.logger.LogError(Components.ConfigManager, "No config eligible for saving!", true);
                 return;
             }
 
             if (Current.Remote)
             {
-                Globals.LogError(Components.ConfigManager, "The config was pulled from a remote source and cannot be saved!", true);
+                Globals.logger.LogError(Components.ConfigManager, "The config was pulled from a remote source and cannot be saved!", true);
                 return;
             }
 
             if (vm.CurrentConfigName == "") {
-                Globals.LogError(Components.ConfigManager, "Empty config name, cannot save", true);
+                Globals.logger.LogError(Components.ConfigManager, "Empty config name, cannot save", true);
                 return;
             }
 
@@ -140,28 +140,28 @@ namespace OpenBullet.Views.Main.Configs
 
             Current.Config.Script = stacker.LS.Script;
 
-            Globals.LogInfo(Components.ConfigManager, $"Saving config {vm.CurrentConfigName}");
+            Globals.logger.LogInfo(Components.ConfigManager, $"Saving config {vm.CurrentConfigName}");
 
             Current.Config.Settings.LastModified = DateTime.Now;
             Current.Config.Settings.Version = Globals.obVersion;
-            Globals.LogInfo(Components.ConfigManager, "Converted the unbinded observables and set the Last Modified date");
+            Globals.logger.LogInfo(Components.ConfigManager, "Converted the unbinded observables and set the Last Modified date");
             
             // Save to file            
             if (!IOManager.SaveConfig(Current.Config, Current.Path)) {
-                Globals.LogError(Components.ConfigManager, "Failed to save the config to file.", true);
+                Globals.logger.LogError(Components.ConfigManager, "Failed to save the config to file.", true);
                 return;
             };
 
             // Save the last state of the config
             SaveState();
 
-            Globals.LogInfo(Components.ConfigManager, "Refreshing the list");
+            Globals.logger.LogInfo(Components.ConfigManager, "Refreshing the list");
             vm.RefreshList(false);
         }
         
         private void deleteConfigsButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.LogWarning(Components.ConfigManager, "Deletion initiated, prompting warning");
+            Globals.logger.LogWarning(Components.ConfigManager, "Deletion initiated, prompting warning");
             if (MessageBox.Show("This will delete the physical files from your disk! Are you sure you want to continue?", "WARNING", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
                 foreach(ConfigViewModel config in configsListView.SelectedItems)
@@ -170,15 +170,15 @@ namespace OpenBullet.Views.Main.Configs
                     {
                         File.Delete(config.Path);
                     }
-                    catch { Globals.LogError(Components.ConfigManager, "Could not delete file: " + config.Path); }
+                    catch { Globals.logger.LogError(Components.ConfigManager, "Could not delete file: " + config.Path); }
                 }
 
-                Globals.LogInfo(Components.ConfigManager, $"Deleted {configsListView.SelectedItems.Count} configs");
+                Globals.logger.LogInfo(Components.ConfigManager, $"Deleted {configsListView.SelectedItems.Count} configs");
                 vm.RefreshList(false);
             }
             else
             {
-                Globals.LogInfo(Components.ConfigManager, "Deletion cancelled");
+                Globals.logger.LogInfo(Components.ConfigManager, "Deletion cancelled");
             }
         }
 
@@ -191,7 +191,7 @@ namespace OpenBullet.Views.Main.Configs
         {
             if (!CheckSaved())
             {
-                Globals.LogWarning(Components.Stacker, "Config not saved, prompting quit confirmation");
+                Globals.logger.LogWarning(Components.Stacker, "Config not saved, prompting quit confirmation");
                 if (MessageBox.Show("The Config in Stacker wasn't saved.\nAre you sure you want to create a new config?",
                     "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                     return;
@@ -217,7 +217,7 @@ namespace OpenBullet.Views.Main.Configs
             var settings = new ConfigSettings();
             settings.Name = name;
             settings.Author = author;
-            Globals.LogInfo(Components.ConfigManager, "Setting up the new Config object, with path '" + path + "'");
+            Globals.logger.LogInfo(Components.ConfigManager, "Setting up the new Config object, with path '" + path + "'");
             Current = new ConfigViewModel(path, category, new Config(settings, ""));
 
             var newStacker = new Stacker(Current);
@@ -228,9 +228,9 @@ namespace OpenBullet.Views.Main.Configs
                 newStacker.vm.ProxyType = Globals.mainWindow.ConfigsPage.StackerPage.vm.ProxyType;
             }
             Globals.mainWindow.ConfigsPage.StackerPage = newStacker; // Create a Stacker instance
-            Globals.LogInfo(Components.ConfigManager, "Created and assigned a new Stacker instance");
+            Globals.logger.LogInfo(Components.ConfigManager, "Created and assigned a new Stacker instance");
             Globals.mainWindow.ConfigsPage.OtherOptionsPage = new ConfigOtherOptions(); // Create an Other Options instance
-            Globals.LogInfo(Components.ConfigManager, "Created and assigned a new Other Options instance");
+            Globals.logger.LogInfo(Components.ConfigManager, "Created and assigned a new Other Options instance");
             Globals.mainWindow.ConfigsPage.menuOptionStacker_MouseDown(this, null); // Switch to Stacker
 
             // Save to disk
@@ -287,7 +287,7 @@ namespace OpenBullet.Views.Main.Configs
             {
                 System.Diagnostics.Process.Start(System.IO.Path.Combine(Directory.GetCurrentDirectory(), Globals.configFolder));
             }
-            catch { Globals.LogError(Components.ConfigManager, "No config folder found!", true); }
+            catch { Globals.logger.LogError(Components.ConfigManager, "No config folder found!", true); }
         }
 
         private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
