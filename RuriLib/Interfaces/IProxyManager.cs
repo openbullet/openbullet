@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using RuriLib.Models;
 using RuriLib.Models.Stats;
 
@@ -14,18 +9,6 @@ namespace RuriLib.Interfaces
     /// </summary>
     public interface IProxyManager
     {
-        /// <summary>
-        /// Checks all the proxies asynchronously and returns statistics.
-        /// </summary>
-        /// <param name="cancellationToken">The token that allows to abort execution</param>
-        /// <param name="progress">The delegate that gets called when the progress changes</param>
-        void CheckAll(CancellationToken cancellationToken, IProgress<float> progress = null);
-
-        /// <summary>
-        /// Whether the proxy checker is already busy.
-        /// </summary>
-        bool IsBusy { get; }
-
         /// <summary>
         /// Adds a proxy to the collection.
         /// </summary>
@@ -85,30 +68,5 @@ namespace RuriLib.Interfaces
         /// Retrieves the proxy manager's statistics.
         /// </summary>
         ProxyManagerStats Stats { get; }
-
-        /// <summary>
-        /// The site proxies are tested against.
-        /// </summary>
-        string TestSite { get; set; }
-
-        /// <summary>
-        /// The success key that can be found in the source of the test site when a proxy works correctly.
-        /// </summary>
-        string SuccessKey { get; set; }
-
-        /// <summary>
-        /// Whether to only check untested proxies.
-        /// </summary>
-        bool OnlyUntested { get; set; }
-
-        /// <summary>
-        /// The maximum proxy timeout in seconds.
-        /// </summary>
-        int Timeout { get; set; }
-
-        /// <summary>
-        /// The amount of parallel threads to use for the check.
-        /// </summary>
-        int BotsAmount { get; set; }
     }
 }
