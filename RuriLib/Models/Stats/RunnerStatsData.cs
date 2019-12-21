@@ -14,32 +14,32 @@ namespace RuriLib.Models.Stats
         /// <summary>
         /// The total amount of checked data.
         /// </summary>
-        public int Total { get; }
+        public int total;
 
         /// <summary>
         /// The amount of hits.
         /// </summary>
-        public int Hits { get; }
+        public int hits;
 
         /// <summary>
         /// The amount of custom results.
         /// </summary>
-        public int Custom { get; }
+        public int custom;
 
         /// <summary>
         /// The amount of bad results.
         /// </summary>
-        public int Bad { get; }
+        public int bad;
 
         /// <summary>
         /// The amount of retries due to a RETRY or BAN status.
         /// </summary>
-        public int Retries { get; }
+        public int retries;
 
         /// <summary>
         /// The amount of results that need to be furtherly checked.
         /// </summary>
-        public int ToCheck { get; }
+        public int toCheck;
 
         /// <summary>
         /// Reports data-related statistics.
@@ -52,12 +52,12 @@ namespace RuriLib.Models.Stats
         /// <param name="toCheck">The amount of results that need to be furtherly checked</param>
         public RunnerStatsData(int total, int hits, int custom, int bad, int retries, int toCheck)
         {
-            Total = total;
-            Hits = hits;
-            Custom = custom;
-            Bad = bad;
-            Retries = retries;
-            ToCheck = toCheck;
+            this.total = total;
+            this.hits = hits;
+            this.custom = custom;
+            this.bad = bad;
+            this.retries = retries;
+            this.toCheck = toCheck;
         }
     }
 }

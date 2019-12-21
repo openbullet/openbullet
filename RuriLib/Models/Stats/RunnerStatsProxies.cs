@@ -14,22 +14,22 @@ namespace RuriLib.Models.Stats
         /// <summary>
         /// The total amount of loaded proxies.
         /// </summary>
-        public int Total { get; }
+        public int total;
 
         /// <summary>
         /// The amount of proxies that are alive.
         /// </summary>
-        public int Alive { get; }
+        public int alive;
 
         /// <summary>
         /// The amount of banned proxies.
         /// </summary>
-        public int Banned { get; }
+        public int banned;
 
         /// <summary>
         /// The amount of bad proxies.
         /// </summary>
-        public int Bad { get; }
+        public int bad;
 
         /// <summary>
         /// Reports proxy-related statistics.
@@ -40,10 +40,10 @@ namespace RuriLib.Models.Stats
         /// <param name="bad">The amount of bad proxies</param>
         public RunnerStatsProxies(int total, int alive, int banned, int bad)
         {
-            Total = total;
-            Alive = alive;
-            Banned = banned;
-            Bad = bad;
+            this.total = total;
+            this.alive = alive;
+            this.banned = banned;
+            this.bad = bad;
         }
     }
 }
