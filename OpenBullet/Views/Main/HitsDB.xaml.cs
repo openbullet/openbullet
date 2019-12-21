@@ -288,7 +288,7 @@ namespace OpenBullet.Views.Main
             // Try to select the config referring to the first selected hit
             try
             {
-                var cfg = Globals.mainWindow.ConfigsPage.ConfigManagerPage.vm.ConfigsList.First(c => c.Name == first.ConfigName).Config;
+                var cfg = Globals.mainWindow.ConfigsPage.ConfigManagerPage.vm.ConfigsCollection.First(c => c.Name == first.ConfigName).Config;
                 runner.vm.SetConfig(cfg, false);
                 runner.vm.BotsAmount = Math.Min(cfg.Settings.SuggestedBots, hitsListView.SelectedItems.Count);
             }

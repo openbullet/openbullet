@@ -1,4 +1,5 @@
-﻿using OpenBullet.Views.Main.Configs;
+﻿using OpenBullet.Repositories;
+using OpenBullet.Views.Main.Configs;
 using RuriLib;
 using RuriLib.Functions.Files;
 using System.Linq;
@@ -22,8 +23,8 @@ namespace OpenBullet
             authorTextbox.Text = Globals.obSettings.General.DefaultAuthor;
             nameTextbox.Focus();
 
-            categoryCombobox.Items.Add("Default");
-            foreach(var category in Globals.mainWindow.ConfigsPage.ConfigManagerPage.vm.ConfigsList.Select(c => c.Category).Distinct())
+            categoryCombobox.Items.Add(ConfigRepository.defaultCategory);
+            foreach(var category in Globals.mainWindow.ConfigsPage.ConfigManagerPage.vm.ConfigsCollection.Select(c => c.Category).Distinct())
                 categoryCombobox.Items.Add(category);
             
             categoryCombobox.SelectedIndex = 0;
@@ -38,7 +39,7 @@ namespace OpenBullet
                 else if (nameTextbox.Text != Files.MakeValidFileName(nameTextbox.Text)) { MessageBox.Show("The name contains invalid characters"); return; }
 
                 // Check if category is ok
-                if (categoryCombobox.Text.Trim() == "") categoryCombobox.Text = "Default";
+                if (string.IsNullOrWhiteSpace(categoryCombobox.Text)) categoryCombobox.Text = ConfigRepository.defaultCategory;
                 else if (categoryCombobox.Text != Files.MakeValidFileName(categoryCombobox.Text)) { MessageBox.Show("The category contains invalid characters"); return; }
 
                 ((ConfigManager)Caller).CreateConfig(nameTextbox.Text, categoryCombobox.Text, authorTextbox.Text);

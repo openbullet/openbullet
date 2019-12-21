@@ -1,7 +1,9 @@
 ﻿using Extreme.Net;
 using OpenBullet.Models;
+using OpenBullet.Repositories;
 using RuriLib;
 using RuriLib.Functions.Formats;
+using RuriLib.Interfaces;
 using RuriLib.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -13,117 +15,123 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Windows;
+using System.Windows.Data;
 
 namespace OpenBullet.ViewModels
 {
-    public class ConfigManagerViewModel : ViewModelBase
+    public class ConfigManagerViewModel : ViewModelBase, IConfigManager
     {
-        private List<ConfigViewModel> cachedConfigs = new List<ConfigViewModel>();
+        private ConfigRepository _diskRepo;
 
-        private ObservableCollection<ConfigViewModel> configsList;
-        public ObservableCollection<ConfigViewModel> ConfigsList {
-            get {
-                return
-                    SearchString == "" ?
-                    configsList :
-                    new ObservableCollection<ConfigViewModel>(configsList.Where(c => c.Name.ToLower().Contains(SearchString.ToLower())));
-            }
-            set { configsList = value; OnPropertyChanged("ConfigsList"); OnPropertyChanged("Total"); } }
-        public int Total { get { return ConfigsList.Count; } }
-
-        public string SavedConfig { get; set; }
-
-        public Config moreInfoConfig;
-        public Config MoreInfoConfig { get { return moreInfoConfig; } set { moreInfoConfig = value; OnPropertyChanged("MoreInfoConfig"); } }
-
-        public string CurrentConfigName 
+        private ObservableCollection<ConfigViewModel> configsCollection;
+        public ObservableCollection<ConfigViewModel> ConfigsCollection 
         { 
-            get 
-            { 
-                if (Globals.mainWindow.ConfigsPage.CurrentConfig != null)
-                {
-                    return Globals.mainWindow.ConfigsPage.CurrentConfig.Name;
-                }
-                else
-                {
-                    return "None";
-                }
+            get => configsCollection;
+            private set
+            {
+                configsCollection = value;
+                OnPropertyChanged(); // We need to raise this when we create a new collection or it will not show up!
+            }
+        }
+
+        public IEnumerable<ConfigViewModel> Configs => ConfigsCollection;
+
+        public int Total => ConfigsCollection.Count;
+
+        public int SavedHash { get; set; } = 0;
+
+        private Config hoveredConfig;
+        public Config HoveredConfig { get => hoveredConfig; set { hoveredConfig = value; OnPropertyChanged(); } }
+
+        private ConfigViewModel currentConfig;
+        public ConfigViewModel CurrentConfig 
+        { 
+            get => currentConfig;
+            set 
+            {
+                currentConfig = value;
+                OnPropertyChanged(nameof(CurrentConfigName));
             } 
         }
 
-        private string searchString = "";
-        public string SearchString { get { return searchString; } set { searchString = value; OnPropertyChanged("SearchString"); OnPropertyChanged("ConfigsList"); OnPropertyChanged("Total"); } }
+        public string CurrentConfigName => CurrentConfig == null ? "None" : CurrentConfig.Name;
 
         public ConfigManagerViewModel()
         {
-            configsList = new ObservableCollection<ConfigViewModel>();            
-            RefreshList(true);
+            _diskRepo = new ConfigRepository(Globals.configFolder);
+            Rescan();
         }
 
-        public bool NameTaken(string name)
+        #region Filters
+        private string searchString = "";
+        public string SearchString 
         {
-            return ConfigsList.Any(x => x.Name == name);
-        }
-
-        public void RefreshCurrent()
-        {
-            OnPropertyChanged("CurrentConfigName");
-        }
-
-        public void RefreshList(bool pullSources)
-        {
-            // Scan the directory and the sources for configs
-            if (pullSources)
-            {
-                ConfigsList = new ObservableCollection<ConfigViewModel>(
-                GetConfigsFromSources()
-                .Concat(GetConfigsFromDisk(true))
-                );
+            get => searchString;
+            set 
+            { 
+                searchString = value;
+                OnPropertyChanged();
+                CollectionViewSource.GetDefaultView(ConfigsCollection).Refresh();
+                OnPropertyChanged(nameof(Total)); 
             }
-            else
-            {
-                ConfigsList = new ObservableCollection<ConfigViewModel>(
-                cachedConfigs
-                .Concat(GetConfigsFromDisk(true))
-                );
-            }
-
-            OnPropertyChanged("Total");
         }
 
-        public List<ConfigViewModel> GetConfigsFromDisk(bool sort = false)
+        public void HookFilters()
         {
-            List<ConfigViewModel> models = new List<ConfigViewModel>();
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ConfigsCollection);
+            view.Filter = ConfigsFilter;
+        }
 
-            // Load the configs in the root folder
-            foreach(var file in Directory.EnumerateFiles(Globals.configFolder).Where(file => file.EndsWith(".loli")))
-            {
-                try { models.Add(new ConfigViewModel(file, "Default", IOManager.LoadConfig(file))); }
-                catch { Globals.logger.LogError(Components.ConfigManager, "Could not load file: " + file); }
-            }
+        private bool ConfigsFilter(object item)
+        {
+            return (item as ConfigViewModel).Name.ToLower().Contains(searchString.ToLower());
+        }
+        #endregion
 
-            // Load the configs in the subfolders
-            foreach(var categoryFolder in Directory.EnumerateDirectories(Globals.configFolder))
+        #region Get from disk
+        public List<ConfigViewModel> GetConfigsFromDisk(bool sort = false, bool reverse = false)
+        {
+            var configs = _diskRepo.Get().ToList();
+
+            if (sort)
             {
-                foreach(var file in Directory.EnumerateFiles(categoryFolder).Where(file => file.EndsWith(".loli")))
+                configs.Sort((m1, m2) => m1.Config.Settings.LastModified.CompareTo(m2.Config.Settings.LastModified));
+
+                if (reverse)
                 {
-                    try { models.Add(new ConfigViewModel(file, Path.GetFileName(categoryFolder), IOManager.LoadConfig(file))); }
-                    catch { Globals.logger.LogError(Components.ConfigManager, "Could not load file: " + file); }
+                    configs.Reverse();
+                }
+            }
+            return configs;
+        }
+        #endregion
+
+        #region Get from sources
+        public IEnumerable<ConfigViewModel> GetConfigsFromSources()
+        {
+            var configs = new List<ConfigViewModel>();
+
+            foreach (var source in Globals.obSettings.Sources.Sources)
+            {
+                try
+                {
+                    configs.AddRange(PullSource(source));
+                }
+                catch (Exception ex)
+                {
+                    Globals.logger.LogError(Components.ConfigManager, $"Error with API {source.ApiUrl}\r\nReason: {ex.Message}", true);
                 }
             }
 
-            if (sort) { models.Sort((m1, m2) => m1.Config.Settings.LastModified.CompareTo(m2.Config.Settings.LastModified)); }
-            return models;
+            return configs;
         }
 
-        public List<ConfigViewModel> GetConfigsFromSources()
+        public IEnumerable<ConfigViewModel> PullSource(Source source)
         {
-            var list = new List<ConfigViewModel>();
-            cachedConfigs = new List<ConfigViewModel>();
-
-            foreach(var source in Globals.obSettings.Sources.Sources)
+            using (var wc = new WebClient())
             {
-                WebClient wc = new WebClient();
+                var configs = new List<ConfigViewModel>();
+
                 switch (source.Auth)
                 {
                     case Source.AuthMode.ApiKey:
@@ -140,21 +148,12 @@ namespace OpenBullet.ViewModels
                 }
 
                 byte[] file = new byte[] { };
-                try
-                {
-                    file = wc.DownloadData(source.ApiUrl);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Could not contact API {source.ApiUrl}\r\nReason: {ex.Message}");
-                    continue;
-                }
+                file = wc.DownloadData(source.ApiUrl);
 
                 var status = wc.ResponseHeaders["Result"];
                 if (status != null && status == "Error")
                 {
-                    MessageBox.Show($"Error from API {source.ApiUrl}\r\nThe server says: {Encoding.ASCII.GetString(file)}");
-                    continue;
+                    throw new Exception($"The server says: {Encoding.ASCII.GetString(file)}");
                 }
 
                 try
@@ -171,17 +170,67 @@ namespace OpenBullet.ViewModels
                                 {
                                     var text = tr.ReadToEnd();
                                     var cfg = IOManager.DeserializeConfig(text);
-                                    list.Add(new ConfigViewModel("", category, cfg, true));
-                                    cachedConfigs.Add(new ConfigViewModel("", category, cfg, true));
+                                    configs.Add(new ConfigViewModel("", category, cfg, true));
                                 }
                             }
                         }
                     }
                 }
                 catch { }
+
+                return configs;
+            }
+        }
+        #endregion
+
+        #region CRUD Operations
+        // Create
+        public void Add(ConfigViewModel config)
+        {
+            _diskRepo.Add(config);
+            ConfigsCollection.Add(config);
+        }
+
+        // Read
+        public void Rescan()
+        {
+            ConfigsCollection = new ObservableCollection<ConfigViewModel>(
+                GetConfigsFromDisk(true, true)
+                .Concat(GetConfigsFromSources()));
+
+            HookFilters();
+
+            OnPropertyChanged(nameof(Total));
+        }
+
+        // Update
+        public void Update(ConfigViewModel config)
+        {
+            _diskRepo.Update(config);
+        }
+
+        public void SaveCurrent()
+        {
+            Update(CurrentConfig);
+        }
+
+        // Delete
+        public void Remove(ConfigViewModel config)
+        {
+            _diskRepo.Remove(config);
+            ConfigsCollection.Remove(config);
+        }
+
+        public void Remove(IEnumerable<ConfigViewModel> configs)
+        {
+            var toRemove = configs.ToArray();
+            foreach (var config in toRemove)
+            {
+                ConfigsCollection.Remove(config);
             }
 
-            return list;
+            _diskRepo.Remove(toRemove);
         }
+        #endregion
     }
 }

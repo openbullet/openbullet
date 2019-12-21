@@ -59,22 +59,20 @@ namespace OpenBullet
             configsListView.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
         }
 
-        private void ListViewItem_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             selectButton_Click(this, null);
         }
 
-        private void ListViewItem_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void ListViewItem_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Enter)
+            if (e.Key == Key.Enter)
                 selectButton_Click(this, null);
         }
 
         private void searchButton_Click(object sender, RoutedEventArgs e)
         {
             vm.SearchString = filterTextbox.Text;
-            if (vm.SearchString == "")
-                vm.RefreshList(false);
         }
 
         private void filterTextbox_KeyDown(object sender, KeyEventArgs e)

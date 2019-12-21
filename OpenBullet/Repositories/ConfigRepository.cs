@@ -10,8 +10,10 @@ using RuriLib.ViewModels;
 
 namespace OpenBullet.Repositories
 {
-    public class ConfigRepository : IRepository<ConfigViewModel, string>
+    // The ID is a tuple containing the category and the filename without extension (they are enough to uniquely identify a config in the repo)
+    public class ConfigRepository : IRepository<ConfigViewModel, (string, string)>
     {
+        public static string defaultCategory = "Default";
         public string BaseFolder { get; set; }
 
         public ConfigRepository(string baseFolder)
@@ -21,44 +23,98 @@ namespace OpenBullet.Repositories
 
         public void Add(ConfigViewModel entity)
         {
-            if (!File.Exists(entity.Path))
+            var path = GetPath(entity);
+
+            // Create the category folder if it doesn't exist
+            if (entity.Category != defaultCategory && !Directory.Exists(entity.Category))
             {
-                IOManager.SaveConfig(entity.Config, entity.Path);
+                Directory.CreateDirectory(Path.Combine(BaseFolder, entity.Category));
+            }
+
+
+            if (!File.Exists(path))
+            {
+                IOManager.SaveConfig(entity.Config, path);
             }
             else
             {
-                throw new IOException("A file with the same name already exists");
+                throw new IOException("A config with the same name and category already exists");
             }
         }
 
         public IEnumerable<ConfigViewModel> Get()
         {
-            throw new NotImplementedException();
+            List<ConfigViewModel> configs = new List<ConfigViewModel>();
+
+            // Load the configs in the root folder
+            foreach (var file in Directory.EnumerateFiles(Globals.configFolder).Where(file => file.EndsWith(".loli")))
+            {
+                try 
+                {
+                    configs.Add(new ConfigViewModel(
+                        Path.GetFileNameWithoutExtension(file),
+                        defaultCategory,
+                        IOManager.LoadConfig(file)));
+                }
+                catch { }
+            }
+
+            // Load the configs in the subfolders
+            foreach (var categoryFolder in Directory.EnumerateDirectories(Globals.configFolder))
+            {
+                foreach (var file in Directory.EnumerateFiles(categoryFolder).Where(file => file.EndsWith(".loli")))
+                {
+                    try 
+                    {
+                        configs.Add(new ConfigViewModel(
+                            Path.GetFileNameWithoutExtension(file),
+                            Path.GetFileName(categoryFolder),
+                            IOManager.LoadConfig(file))); 
+                    }
+                    catch { }
+                }
+            }
+
+            return configs;
         }
 
-        public ConfigViewModel Get(string id)
+        public ConfigViewModel Get((string, string) id)
         {
-            throw new NotImplementedException();
+            var category = id.Item1;
+            var fileName = id.Item2;
+            
+            var path = GetPath(category, fileName);
+
+            return new ConfigViewModel(fileName, category, IOManager.LoadConfig(path));
         }
 
         public void Remove(ConfigViewModel entity)
         {
-            if (File.Exists(entity.Path))
+            var path = GetPath(entity);
+
+            if (File.Exists(path))
             {
-                File.Delete(entity.Path);
+                File.Delete(path);
+            }
+            else
+            {
+                throw new IOException("File not found");
             }
         }
 
         public void RemoveAll()
         {
-            throw new NotImplementedException();
+            Directory.Delete(BaseFolder, true);
+            Directory.CreateDirectory(BaseFolder);
         }
 
         public void Update(ConfigViewModel entity)
         {
-            if (File.Exists(entity.Path))
+            var path = GetPath(entity);
+
+            if (File.Exists(path))
             {
-                IOManager.SaveConfig(entity.Config, entity.Path);
+                IOManager.SaveConfig(entity.Config, path);
             }
             else
             {
@@ -68,17 +124,45 @@ namespace OpenBullet.Repositories
 
         public void Add(IEnumerable<ConfigViewModel> entities)
         {
-            throw new NotImplementedException();
+            foreach (var entity in entities)
+            {
+                Add(entity);
+            }
         }
 
         public void Remove(IEnumerable<ConfigViewModel> entities)
         {
-            throw new NotImplementedException();
+            foreach (var entity in entities)
+            {
+                Remove(entity);
+            }
         }
 
         public void Update(IEnumerable<ConfigViewModel> entities)
         {
-            throw new NotImplementedException();
+            foreach (var entity in entities)
+            {
+                Update(entity);
+            }
+        }
+
+        private string GetPath(ConfigViewModel config)
+        {
+            return GetPath(config.Category, config.FileName);
+        }
+
+        private string GetPath(string category, string fileName)
+        {
+            var file = $"{fileName}.loli";
+
+            if (category != defaultCategory)
+            {
+                return Path.Combine(BaseFolder, category, file);
+            }
+            else
+            {
+                return Path.Combine(BaseFolder, file);
+            }
         }
     }
 }

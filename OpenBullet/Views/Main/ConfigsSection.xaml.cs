@@ -13,7 +13,8 @@ namespace OpenBullet.Views.Main
         public ConfigManager ConfigManagerPage;
         public Stacker StackerPage;
         public ConfigOtherOptions OtherOptionsPage;
-        public ConfigViewModel CurrentConfig { get; set; }
+
+        public ConfigViewModel CurrentConfig => ConfigManagerPage.vm.CurrentConfig;
 
         public ConfigsSection()
         {

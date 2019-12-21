@@ -35,6 +35,12 @@ namespace RuriLib.Interfaces
         void Remove(ConfigViewModel config);
 
         /// <summary>
+        /// Removes multiple configs.
+        /// </summary>
+        /// <param name="configs">The configs to remove</param>
+        void Remove(IEnumerable<ConfigViewModel> configs);
+
+        /// <summary>
         /// Updates a config.
         /// </summary>
         /// <param name="config">The config to update</param>

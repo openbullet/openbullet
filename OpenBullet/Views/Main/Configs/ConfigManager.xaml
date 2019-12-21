@@ -94,7 +94,7 @@
         </Grid>
 
         <!-- Proxies List View -->
-        <ListView x:Name="configsListView" Grid.Row="2" Foreground="{DynamicResource ForegroundMain}" Background="Transparent" ItemsSource="{Binding Path=ConfigsList}" SelectionMode="Extended" BorderThickness="1" VirtualizingPanel.IsVirtualizing="True" SelectionChanged="configsListView_SelectionChanged">
+        <ListView x:Name="configsListView" Grid.Row="2" Foreground="{DynamicResource ForegroundMain}" Background="Transparent" ItemsSource="{Binding Path=ConfigsCollection}" SelectionMode="Extended" BorderThickness="1" VirtualizingPanel.IsVirtualizing="True" SelectionChanged="configsListView_SelectionChanged">
 
             <!-- Show Headers by overriding the default style -->
             <ListView.Style>
@@ -256,37 +256,37 @@
 
             <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
                 <Label Content="Allowed Wordlists:"/>
-                <Label Content="{Binding MoreInfoConfig.AllowedWordlists}"/>
+                <Label Content="{Binding HoveredConfig.AllowedWordlists}"/>
             </StackPanel>
 
             <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
                 <Label Content="Blocks Amount:"/>
-                <Label Content="{Binding MoreInfoConfig.BlocksAmount}"/>
+                <Label Content="{Binding HoveredConfig.BlocksAmount}"/>
             </StackPanel>
 
             <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal">
                 <Label Content="Additional Info:"/>
-                <Label Content="{Binding MoreInfoConfig.Settings.AdditionalInfo}"/>
+                <Label Content="{Binding HoveredConfig.Settings.AdditionalInfo}"/>
             </StackPanel>
 
             <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
                 <Label Content="Last Modified:"/>
-                <Label Content="{Binding MoreInfoConfig.LastModifiedString}"/>
+                <Label Content="{Binding HoveredConfig.LastModifiedString}"/>
             </StackPanel>
 
             <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
                 <Label Content="Suggested Bots:"/>
-                <Label Content="{Binding MoreInfoConfig.Settings.SuggestedBots}"/>
+                <Label Content="{Binding HoveredConfig.Settings.SuggestedBots}"/>
             </StackPanel>
 
             <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal">
                 <Label Content="Built with version:"/>
-                <Label Content="{Binding MoreInfoConfig.Settings.Version}"/>
+                <Label Content="{Binding HoveredConfig.Settings.Version}"/>
             </StackPanel>
 
             <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal">
                 <Label Content="Author:" Foreground="{DynamicResource ForegroundRetry}"/>
-                <Label Content="{Binding MoreInfoConfig.Settings.Author}" Foreground="{DynamicResource ForegroundRetry}"/>
+                <Label Content="{Binding HoveredConfig.Settings.Author}" Foreground="{DynamicResource ForegroundRetry}"/>
             </StackPanel>
         </Grid>
     </Grid>
