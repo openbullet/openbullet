@@ -1,5 +1,6 @@
 ﻿using Extreme.Net;
 using LiteDB;
+using Newtonsoft.Json.Linq;
 using OpenBullet.Repositories;
 using RuriLib.Interfaces;
 using RuriLib.Models;
@@ -9,12 +10,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenBullet.ViewModels
 {
-    public class ProxyManagerViewModel : ViewModelBase, IProxyManager
+    public class ProxyManagerViewModel : ViewModelBase, IProxyManager, IProxyChecker
     {
         private LiteDBRepository<CProxy> _repo;
 
@@ -33,6 +36,14 @@ namespace OpenBullet.ViewModels
         }
 
         public int Total => ProxiesCollection.Count;
+
+        public IEnumerable<CProxy> Proxies => ProxiesCollection;
+
+        public ProxyManagerViewModel()
+        {
+            _repo = new LiteDBRepository<CProxy>(Globals.dataBaseFile, "proxies");
+            ProxiesCollection = new ObservableCollection<CProxy>();
+        }
 
         #region Statistics
         public int Tested => ProxiesCollection.Count(x => x.Working != ProxyWorking.UNTESTED);
@@ -55,23 +66,12 @@ namespace OpenBullet.ViewModels
             OnPropertyChanged(nameof(Chain));
             OnPropertyChanged(nameof(Working));
             OnPropertyChanged(nameof(NotWorking));
-            OnPropertyChanged(nameof(Progress));
         }
 
         public ProxyManagerStats Stats => new ProxyManagerStats(Total, Tested, Working, Http, Socks4, Socks4a, Socks5);
         #endregion
 
-        #region Checking
-        public int Progress
-        {
-            get
-            {
-                var ret = 0;
-                try { ret = (Tested * 100) / Total; } catch { } // If Size is 0 this will throw an Exception
-                return ret;
-            }
-        }
-
+        #region Checker
         private int botsAmount = 1;
         public int BotsAmount { get { return botsAmount; } set { botsAmount = value; OnPropertyChanged(); } }
 
@@ -87,21 +87,128 @@ namespace OpenBullet.ViewModels
         private int timeout = 2;
         public int Timeout { get { return timeout; } set { timeout = value; OnPropertyChanged(); } }
 
-        public bool IsBusy => throw new NotImplementedException();
+        public static readonly int maximumBots = 200;
 
-        public void CheckAll(CancellationToken cancellationToken, IProgress<float> progress = null)
+        public async Task CheckAllAsync(IEnumerable<CProxy> proxies, CancellationToken cancellationToken, Action<CheckResult<ProxyResult>> onResult = null, IProgress<float> progress = null)
         {
-            throw new NotImplementedException();
+            using (var ss = new SemaphoreSlim(BotsAmount, BotsAmount))
+            {
+                var total = proxies.Count();
+                var current = 0;
+
+                // Build the task list
+                var tasks = proxies.Select(async proxy =>
+                {
+                    // Wait for the semaphore
+                    await ss.WaitAsync();
+
+                    CheckResult<ProxyResult> checkResult = default;
+                    ProxyResult proxyResult = default;
+                    proxyResult.proxy = proxy;
+                    
+                    // Check the proxy
+                    try
+                    {
+                        proxyResult = await CheckProxy(proxy);
+                        checkResult = new CheckResult<ProxyResult>(true, proxyResult);
+                    }
+                    // Catch and log any errors
+                    catch (Exception ex)
+                    {
+                        checkResult = new CheckResult<ProxyResult>(false, proxyResult, ex.Message);
+                    }
+                    // Report the progress and release the semaphore slot
+                    finally
+                    {
+                        onResult?.Invoke(checkResult);
+                        progress?.Report((float)++current / total);
+                        ss.Release();
+                    }
+                });
+
+                await Task.WhenAny(Task.WhenAll(tasks), AsTask(cancellationToken));
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+        }
+
+        public async Task<ProxyResult> CheckAsync(CProxy proxy, CancellationToken cancellationToken)
+        {
+            var task = CheckProxy(proxy);
+            await Task.WhenAny(task, AsTask(cancellationToken));
+
+            cancellationToken.ThrowIfCancellationRequested();
+            return task.Result;
+        }
+
+        private async Task<ProxyResult> CheckProxy(CProxy proxy)
+        {
+            ProxyResult result = new ProxyResult();
+            result.proxy = proxy;
+            
+            var sw = new Stopwatch();
+            sw.Start();
+
+            result.working = await CheckWorking(proxy);
+
+            sw.Stop();
+            
+            result.ping = (int)sw.ElapsedMilliseconds;
+
+            // Try to check the country (it's not essential)
+            try
+            {
+                result.country = await CheckCountry(proxy);
+            }
+            catch { }
+
+            return result;
+        }
+
+        private async Task<bool> CheckWorking(CProxy proxy)
+        {
+            var timeout = Timeout * 1000;
+            using (var request = new HttpRequest())
+            {
+                request.Proxy = proxy.GetClient();
+                request.Proxy.ConnectTimeout = timeout;
+                request.Proxy.ReadWriteTimeout = timeout;
+                request.ConnectTimeout = timeout;
+                request.KeepAliveTimeout = timeout;
+                request.ReadWriteTimeout = timeout;
+                var response = await request.GetAsync(TestSite);
+                var source = response.ToString();
+
+                return source.Contains(SuccessKey);
+            }
+        }
+
+        private async Task<string> CheckCountry(CProxy proxy)
+        {
+            using (var request = new HttpRequest())
+            {
+                request.ConnectTimeout = Timeout;
+                var response = await request.GetAsync("http://ip-api.com/json/" + proxy.Host);
+                var json = JObject.Parse(response.ToString());
+                var status = json.Value<string>("status");
+
+                if (status == "success")
+                {
+                    return json.Value<string>("country");
+                }
+                else
+                {
+                    return "Unknown";
+                }
+            }
+        }
+
+        public static Task AsTask(CancellationToken cancellationToken)
+        {
+            var tcs = new TaskCompletionSource<object>();
+            cancellationToken.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: false);
+            return tcs.Task;
         }
         #endregion
-
-        public IEnumerable<CProxy> Proxies => ProxiesCollection;
-
-        public ProxyManagerViewModel()
-        {
-            _repo = new LiteDBRepository<CProxy>(Globals.dataBaseFile, "proxies");
-            ProxiesCollection = new ObservableCollection<CProxy>();
-        }
 
         #region CRUD Operations
         // Create

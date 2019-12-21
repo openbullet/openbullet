@@ -41,7 +41,7 @@
 
             <Label Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Content="Progress:" />
             <Label Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Content="Test On:" />
-            <ProgressBar Grid.Column="1" Grid.Row="0" Value="{Binding Progress, Mode=OneWay}" Margin="5" />
+            <ProgressBar x:Name="progressBar" Grid.Column="1" Grid.Row="0" Minimum="0" Maximum="1" Margin="5" />
             <TextBox Grid.Column="1" Grid.Row="1" Margin="5" Text="{Binding TestSite}" VerticalContentAlignment="Center"/>
             <DockPanel Grid.Column="2" Grid.Row="0" VerticalAlignment="Center">
                 <Label Content="Bots: " />
