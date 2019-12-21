@@ -22,7 +22,6 @@ namespace RuriLib.Functions.Requests
         private HttpContent content = null;
         private Dictionary<string, string> oldCookies = new Dictionary<string, string>();
         private int timeout = 60000;
-        private string url = "";
         private string contentType = "";
         private string authorization = "";
 
