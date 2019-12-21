@@ -51,7 +51,7 @@ namespace OpenBullet.Views.Main
                     botsSlider.IsEnabled = false;
                     Status = WorkerStatus.Running;
 
-                    var items = vm.OnlyUntested ? vm.Proxies : vm.Proxies.Where(p => p.Working == ProxyWorking.UNTESTED);
+                    var items = vm.OnlyUntested ? vm.Proxies.Where(p => p.Working == ProxyWorking.UNTESTED) : vm.Proxies;
 
                     // Setup the progress bar
                     progressBar.Value = 0;
