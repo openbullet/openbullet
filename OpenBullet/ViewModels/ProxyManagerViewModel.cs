@@ -102,8 +102,8 @@ namespace OpenBullet.ViewModels
                     // Wait for the semaphore
                     await ss.WaitAsync();
 
-                    CheckResult<ProxyResult> checkResult = default;
-                    ProxyResult proxyResult = default;
+                    CheckResult<ProxyResult> checkResult = new CheckResult<ProxyResult>();
+                    ProxyResult proxyResult = new ProxyResult();
                     proxyResult.proxy = proxy;
                     
                     // Check the proxy
