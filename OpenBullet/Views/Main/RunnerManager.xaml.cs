@@ -30,35 +30,39 @@ namespace OpenBullet.Views.Main
             DataContext = vm;
 
             if (createFirst)
+            {
                 addRunnerButton_Click(this, null);
+            }
         }
 
+        #region Buttons
         private void addRunnerButton_Click(object sender, RoutedEventArgs e)
         {
-            vm.CreateRunner();
+            vm.Create();
             helpMessageLabel.Visibility = Visibility.Collapsed;
         }
 
         private void removeRunnerButton_Click(object sender, RoutedEventArgs e)
         {
             var id = (int)((Button)e.OriginalSource).Tag;
-            if (vm.GetRunnerById(id).Runner.Master.Status != WorkerStatus.Idle)
+            if (vm.Get(id).Runner.Master.Status != WorkerStatus.Idle)
             {
                 MessageBox.Show("The Runner is active! Please stop it before removing it.");
                 return;
             }
-            vm.RemoveRunnerById(id);
+            vm.Remove(id);
         }
 
         private void startRunnerButton_Click(object sender, RoutedEventArgs e)
         {
             var id = (int)((Button)e.OriginalSource).Tag;
-            var runner = vm.GetRunnerById(id);
+            var runner = vm.Get(id);
 
             StartRunner += runner.Page.OnStartRunner;
             OnStartRunner();
             StartRunner -= runner.Page.OnStartRunner;
         }
+        #endregion
 
         private void runnerInstanceGrid_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -71,15 +75,24 @@ namespace OpenBullet.Views.Main
             if (sender.GetType() == typeof(Grid))
             {
                 var id = (int)(sender as Grid).Tag;
-                Globals.mainWindow.ShowRunner(vm.GetRunnerById(id).Page);
+                Globals.mainWindow.ShowRunner(vm.Get(id).Page);
             }
         }
 
         #region Quick Access Setters
+        private static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+            if (parentObject == null) return null;
+            T parent = parentObject as T;
+            if (parent != null) return parent;
+            else return FindParent<T>(parentObject);
+        }
+
         private void selectConfig_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var id = (int)(FindParent<Grid>(sender as DependencyObject)).Tag;
-            var runner = Globals.mainWindow.RunnerManagerPage.vm.GetRunnerById(id);
+            var runner = Globals.mainWindow.RunnerManagerPage.vm.Get(id);
 
             if (!runner.Runner.Busy)
             {
@@ -91,7 +104,7 @@ namespace OpenBullet.Views.Main
         private void selectWordlist_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var id = (int)(FindParent<Grid>(sender as DependencyObject)).Tag;
-            var runner = Globals.mainWindow.RunnerManagerPage.vm.GetRunnerById(id);
+            var runner = Globals.mainWindow.RunnerManagerPage.vm.Get(id);
 
             if (!runner.Runner.Busy)
             {
@@ -103,7 +116,7 @@ namespace OpenBullet.Views.Main
         private void selectProxies_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var id = (int)(FindParent<Grid>(sender as DependencyObject)).Tag;
-            var runner = Globals.mainWindow.RunnerManagerPage.vm.GetRunnerById(id);
+            var runner = Globals.mainWindow.RunnerManagerPage.vm.Get(id);
 
             if (!runner.Runner.Busy)
             {
@@ -115,7 +128,7 @@ namespace OpenBullet.Views.Main
         private void selectBots_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var id = (int)(FindParent<Grid>(sender as DependencyObject)).Tag;
-            var runner = Globals.mainWindow.RunnerManagerPage.vm.GetRunnerById(id);
+            var runner = Globals.mainWindow.RunnerManagerPage.vm.Get(id);
 
             if (!runner.Runner.Busy)
             {
@@ -125,18 +138,9 @@ namespace OpenBullet.Views.Main
         }
         #endregion
 
-        public static T FindParent<T>(DependencyObject child) where T : DependencyObject
-        {
-            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
-            if (parentObject == null) return null;
-            T parent = parentObject as T;
-            if (parent != null) return parent;
-            else return FindParent<T>(parentObject);
-        }
-
         private void stopAllRunnersButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var runner in vm.Runners.Where(r => r.Runner.Busy))
+            foreach (var runner in vm.RunnersCollection.Where(r => r.Runner.Busy))
             {
                 StartRunner += runner.Page.OnStartRunner;
                 OnStartRunner();
@@ -149,17 +153,17 @@ namespace OpenBullet.Views.Main
             if (MessageBox.Show($"Are you sure you want to remove all Runners?", 
                 "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                var list = vm.Runners.Where(r => !r.Runner.Busy).ToList();
+                var list = vm.RunnersCollection.Where(r => !r.Runner.Busy).ToList();
                 for (int i = list.Count - 1; i >= 0; i--)
                 {
-                    vm.Runners.Remove(list[i]);
+                    vm.RunnersCollection.Remove(list[i]);
                 }
             }
         }
 
         private void startAllRunnersButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var runner in vm.Runners.Where(r => !r.Runner.Busy))
+            foreach (var runner in vm.RunnersCollection.Where(r => !r.Runner.Busy))
             {
                 StartRunner += runner.Page.OnStartRunner;
                 OnStartRunner();

@@ -1,4 +1,5 @@
 ﻿using OpenBullet.Views.Main.Runner;
+using RuriLib.Interfaces;
 using RuriLib.Runner;
 using RuriLib.ViewModels;
 using System;
@@ -8,32 +9,53 @@ using System.Linq;
 
 namespace OpenBullet.ViewModels
 {
-    public class RunnerManagerViewModel : ViewModelBase
+    public class RunnerManagerViewModel : ViewModelBase, IRunnerManager
     {
-        public ObservableCollection<RunnerInstanceViewModel> Runners { get; set; } = new ObservableCollection<RunnerInstanceViewModel>();
+        public ObservableCollection<RunnerInstance> RunnersCollection { get; set; } = new ObservableCollection<RunnerInstance>();
+
+        public IEnumerable<IRunner> Runners => RunnersCollection.Select(i => i.Runner);
+
         private Random rand = new Random();
-        
-        public void CreateRunner() {
-            Runners.Add(new RunnerInstanceViewModel() { Id = rand.Next() });
+
+        public RunnerInstance Get(int id)
+        {
+            return RunnersCollection.Where(r => r.Id == id).First();
         }
 
-        public RunnerInstanceViewModel GetRunnerById(int id)
+        public IRunner Create()
         {
-            return Runners.Where(r => r.Id == id).First();
+            var instance = new RunnerInstance(rand.Next());
+            RunnersCollection.Add(instance);
+            return instance.Runner;
         }
 
-        public void RemoveRunnerById(int id)
+        public void Remove(IRunner runner)
         {
-            Runners.Remove(GetRunnerById(id));
+            RunnersCollection.Remove(RunnersCollection.First(r => r.Runner == runner));
+        }
+
+        public void Remove(int id)
+        {
+            RunnersCollection.Remove(Get(id));
+        }
+
+        public void RemoveAll()
+        {
+            RunnersCollection.Clear();
         }
     }
 
-    public class RunnerInstanceViewModel : ViewModelBase
+    public class RunnerInstance
     {
-        public Runner Page { get; set; } = new Runner();
-        public RunnerViewModel Runner { get { return Page.vm; } }
+        public Runner Page { get; private set; }
+        public RunnerViewModel Runner => Page.vm;
 
-        private int id;
-        public int Id { get { return id; } set { id = value; OnPropertyChanged(); } }
+        public int Id { get; set; }
+
+        public RunnerInstance(int id)
+        {
+            Id = id;
+            Page = new Runner();
+        }
     }
 }

@@ -13,25 +13,9 @@ namespace RuriLib.Interfaces
     public interface IRunnerManager
     {
         /// <summary>
-        /// Starts all the runner.
-        /// </summary>
-        void StartAll();
-
-        /// <summary>
-        /// Stops all the running runners.
-        /// </summary>
-        void StopAll();
-
-        /// <summary>
         /// The list of managed runners.
         /// </summary>
         IEnumerable<IRunner> Runners { get; }
-
-        /// <summary>
-        /// Adds a new runner to the manager.
-        /// </summary>
-        /// <param name="runner">The runner to add</param>
-        void Add(IRunner runner);
 
         /// <summary>
         /// Creates a new runner and adds it to the manager.
@@ -48,6 +32,6 @@ namespace RuriLib.Interfaces
         /// <summary>
         /// Clears the list of runners.
         /// </summary>
-        void Clear();
+        void RemoveAll();
     }
 }

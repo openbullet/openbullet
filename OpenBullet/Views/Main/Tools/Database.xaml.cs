@@ -29,7 +29,7 @@ namespace OpenBullet.Views.Main.Tools
 
         private void shrinkButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Globals.mainWindow.RunnerManagerPage.vm.Runners.Any(r => r.Runner.Master.IsBusy))
+            if (Globals.mainWindow.RunnerManagerPage.vm.RunnersCollection.Any(r => r.Runner.Master.IsBusy))
             {
                 Globals.logger.LogWarning(Components.Database, "Please stop all active runners before shrinking the database!", true);
                 return;

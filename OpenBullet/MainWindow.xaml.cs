@@ -147,7 +147,7 @@ namespace OpenBullet
 
             RunnerManagerPage = new RunnerManager(Globals.obSettings.General.AutoCreateRunner);
             if (Globals.obSettings.General.AutoCreateRunner)
-                CurrentRunnerPage = RunnerManagerPage.vm.Runners.FirstOrDefault().Page;
+                CurrentRunnerPage = RunnerManagerPage.vm.RunnersCollection.FirstOrDefault().Page;
             Globals.logger.LogInfo(Components.Main, "Initialized RunnerManager");
             ProxyManagerPage = new ProxyManager();
             Globals.logger.LogInfo(Components.Main, "Initialized ProxyManager");
@@ -325,7 +325,7 @@ namespace OpenBullet
 
         private bool CheckOnQuit()
         {
-            var active = RunnerManagerPage.vm.Runners.Count(r => r.Runner.Busy);
+            var active = RunnerManagerPage.vm.RunnersCollection.Count(r => r.Runner.Busy);
             if (!Globals.obSettings.General.DisableQuitWarning || active > 0)
             {
                 Globals.logger.LogWarning(Components.Main, "Prompting quit confirmation");
