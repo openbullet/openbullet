@@ -23,39 +23,40 @@ namespace OpenBullet.Views.Main.Settings.RL
 
         public Proxies()
         {
-            InitializeComponent();
-            vm = Globals.rlSettings.Proxies;
+            vm = OB.Settings.RLSettings.Proxies;
             DataContext = vm;
+
+            InitializeComponent();
 
             foreach (string i in Enum.GetNames(typeof(ProxyType)))
                 if(i != "Chain") reloadTypeCombobox.Items.Add(i);
 
-            reloadTypeCombobox.SelectedIndex = (int)Globals.rlSettings.Proxies.ReloadType;
+            reloadTypeCombobox.SelectedIndex = (int)OB.Settings.RLSettings.Proxies.ReloadType;
 
             foreach (string s in Enum.GetNames(typeof(ProxyReloadSource)))
                 reloadSourceCombobox.Items.Add(s);
 
-            reloadSourceCombobox.SelectedIndex = (int)Globals.rlSettings.Proxies.ReloadSource;
+            reloadSourceCombobox.SelectedIndex = (int)OB.Settings.RLSettings.Proxies.ReloadSource;
 
-            globalBanKeysTextbox.AppendText(string.Join(Environment.NewLine, Globals.rlSettings.Proxies.GlobalBanKeys), Colors.White);
-            globalRetryKeysTextbox.AppendText(string.Join(Environment.NewLine, Globals.rlSettings.Proxies.GlobalRetryKeys), Colors.White);
+            globalBanKeysTextbox.AppendText(string.Join(Environment.NewLine, OB.Settings.RLSettings.Proxies.GlobalBanKeys), Colors.White);
+            globalRetryKeysTextbox.AppendText(string.Join(Environment.NewLine, OB.Settings.RLSettings.Proxies.GlobalRetryKeys), Colors.White);
         }
         
         private void globalBanKeysTextbox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Globals.rlSettings.Proxies.GlobalBanKeys = globalBanKeysTextbox.Lines();
+            OB.Settings.RLSettings.Proxies.GlobalBanKeys = globalBanKeysTextbox.Lines();
         }
 
         private void globalRetryKeysTextbox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Globals.rlSettings.Proxies.GlobalRetryKeys = globalRetryKeysTextbox.Lines();
+            OB.Settings.RLSettings.Proxies.GlobalRetryKeys = globalRetryKeysTextbox.Lines();
         }
 
         private void reloadSourceCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Globals.rlSettings.Proxies.ReloadSource = (ProxyReloadSource)reloadSourceCombobox.SelectedIndex;
+            OB.Settings.RLSettings.Proxies.ReloadSource = (ProxyReloadSource)reloadSourceCombobox.SelectedIndex;
 
-            switch (Globals.rlSettings.Proxies.ReloadSource)
+            switch (OB.Settings.RLSettings.Proxies.ReloadSource)
             {
                 case ProxyReloadSource.Manager:
                     reloadTabControl.SelectedIndex = 0;
@@ -82,7 +83,7 @@ namespace OpenBullet.Views.Main.Settings.RL
 
         private void reloadTypeCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Globals.rlSettings.Proxies.ReloadType = (ProxyType)reloadTypeCombobox.SelectedIndex;
+            OB.Settings.RLSettings.Proxies.ReloadType = (ProxyType)reloadTypeCombobox.SelectedIndex;
         }
 
         private void remoteProxyTypeCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)

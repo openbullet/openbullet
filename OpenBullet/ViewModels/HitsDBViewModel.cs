@@ -17,7 +17,17 @@ namespace OpenBullet.ViewModels
     public class HitsDBViewModel : ViewModelBase, IHitsDB
     {
         public LiteDBRepository<Hit> _repo;
-        public ObservableCollection<Hit> HitsCollection { get; private set; }
+
+        private ObservableCollection<Hit> hitsCollection;
+        public ObservableCollection<Hit> HitsCollection
+        {
+            get => hitsCollection;
+            private set
+            {
+                hitsCollection = value;
+                OnPropertyChanged();
+            }
+        }
 
         public int Total => HitsCollection.Count;
 
@@ -25,7 +35,7 @@ namespace OpenBullet.ViewModels
 
         public HitsDBViewModel()
         {
-            _repo = new LiteDBRepository<Hit>(Globals.dataBaseFile, "hits");
+            _repo = new LiteDBRepository<Hit>(OB.dataBaseFile, "hits");
             HitsCollection = new ObservableCollection<Hit>();
 
             HookFilters();

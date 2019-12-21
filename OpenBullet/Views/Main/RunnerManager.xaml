@@ -83,34 +83,34 @@
                                 <!--FIRST ROW-->
                                 <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
                                     <Label Content="Config: " FontWeight="Bold" MouseDown="selectConfig_MouseDown"/>
-                                    <Label Content="{Binding Runner.ConfigName}" MouseDown="selectConfig_MouseDown"/>
+                                    <Label Content="{Binding ViewModel.ConfigName}" MouseDown="selectConfig_MouseDown"/>
                                     <Label Content="Wordlist: " FontWeight="Bold" MouseDown="selectWordlist_MouseDown"/>
-                                    <Label Content="{Binding Runner.WordlistName}" MouseDown="selectWordlist_MouseDown"/>
+                                    <Label Content="{Binding ViewModel.WordlistName}" MouseDown="selectWordlist_MouseDown"/>
                                     <Label Content="Bots: " FontWeight="Bold" MouseDown="selectBots_MouseDown"/>
-                                    <Label Content="{Binding Runner.BotsAmount}" MouseDown="selectBots_MouseDown"/>
+                                    <Label Content="{Binding ViewModel.BotsAmount}" MouseDown="selectBots_MouseDown"/>
                                     <Label Content="Proxies: " FontWeight="Bold" MouseDown="selectProxies_MouseDown"/>
-                                    <Label Content="{Binding Runner.ProxyMode}" MouseDown="selectProxies_MouseDown"/>
+                                    <Label Content="{Binding ViewModel.ProxyMode}" MouseDown="selectProxies_MouseDown"/>
                                     <Label Content="STATUS: " FontWeight="Bold" Foreground="{DynamicResource ForegroundRetry}"/>
-                                    <Label Content="{Binding Runner.WorkerStatus}" Foreground="{DynamicResource ForegroundRetry}"/>
+                                    <Label Content="{Binding ViewModel.WorkerStatus}" Foreground="{DynamicResource ForegroundRetry}"/>
                                 </StackPanel>
 
                                 <!--SECOND ROW-->
                                 <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" >
                                     <Label Content="Hits: " FontWeight="Bold" Foreground="{DynamicResource ForegroundGood}"/>
-                                    <Label Content="{Binding Runner.HitCount}" Foreground="{DynamicResource ForegroundGood}"/>
+                                    <Label Content="{Binding ViewModel.HitCount}" Foreground="{DynamicResource ForegroundGood}"/>
                                     <Label Content="Custom: " FontWeight="Bold" Foreground="{DynamicResource ForegroundCustom}"/>
-                                    <Label Content="{Binding Runner.CustomCount}" Foreground="{DynamicResource ForegroundCustom}"/>
+                                    <Label Content="{Binding ViewModel.CustomCount}" Foreground="{DynamicResource ForegroundCustom}"/>
                                     <Label Content="ToCheck: " FontWeight="Bold" Foreground="{DynamicResource ForegroundToCheck}"/>
-                                    <Label Content="{Binding Runner.ToCheckCount}" Foreground="{DynamicResource ForegroundToCheck}"/>
+                                    <Label Content="{Binding ViewModel.ToCheckCount}" Foreground="{DynamicResource ForegroundToCheck}"/>
                                     <Label Content="Progress: " FontWeight="Bold"/>
-                                    <Label Content="{Binding Runner.ProgressCount}" />
+                                    <Label Content="{Binding ViewModel.ProgressCount}" />
                                     <Label Content="/" />
-                                    <Label Content="{Binding Runner.WordlistSize}"/>
+                                    <Label Content="{Binding ViewModel.WordlistSize}"/>
                                     <Label Content="("/>
-                                    <Label Content="{Binding Runner.Progress}"/>
+                                    <Label Content="{Binding ViewModel.Progress}"/>
                                     <Label Content="%)"/>
                                     <Label Content="CPM" FontWeight="Bold"/>
-                                    <Label Content="{Binding Runner.CPM}" />
+                                    <Label Content="{Binding ViewModel.CPM}" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">

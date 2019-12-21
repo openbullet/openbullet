@@ -14,7 +14,7 @@ namespace OpenBullet.Views.Main
     /// </summary>
     public partial class RunnerManager : Page
     {
-        public RunnerManagerViewModel vm = new RunnerManagerViewModel();
+        private RunnerManagerViewModel vm = null;
         private bool DelegateCalled { get; set; } = false;
 
         public delegate void StartRunnerEventHandler(object sender, EventArgs e);
@@ -26,8 +26,10 @@ namespace OpenBullet.Views.Main
 
         public RunnerManager(bool createFirst)
         {
-            InitializeComponent();
+            vm = OB.RunnerManager;
             DataContext = vm;
+
+            InitializeComponent();
 
             if (createFirst)
             {
@@ -45,7 +47,7 @@ namespace OpenBullet.Views.Main
         private void removeRunnerButton_Click(object sender, RoutedEventArgs e)
         {
             var id = (int)((Button)e.OriginalSource).Tag;
-            if (vm.Get(id).Runner.Master.Status != WorkerStatus.Idle)
+            if (vm.Get(id).ViewModel.Master.Status != WorkerStatus.Idle)
             {
                 MessageBox.Show("The Runner is active! Please stop it before removing it.");
                 return;
@@ -58,9 +60,9 @@ namespace OpenBullet.Views.Main
             var id = (int)((Button)e.OriginalSource).Tag;
             var runner = vm.Get(id);
 
-            StartRunner += runner.Page.OnStartRunner;
+            StartRunner += runner.View.OnStartRunner;
             OnStartRunner();
-            StartRunner -= runner.Page.OnStartRunner;
+            StartRunner -= runner.View.OnStartRunner;
         }
         #endregion
 
@@ -75,7 +77,7 @@ namespace OpenBullet.Views.Main
             if (sender.GetType() == typeof(Grid))
             {
                 var id = (int)(sender as Grid).Tag;
-                Globals.mainWindow.ShowRunner(vm.Get(id).Page);
+                OB.MainWindow.ShowRunner(vm.Get(id).View);
             }
         }
 
@@ -92,59 +94,59 @@ namespace OpenBullet.Views.Main
         private void selectConfig_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var id = (int)(FindParent<Grid>(sender as DependencyObject)).Tag;
-            var runner = Globals.mainWindow.RunnerManagerPage.vm.Get(id);
+            var runner = OB.MainWindow.RunnerManagerPage.vm.Get(id);
 
-            if (!runner.Runner.Busy)
+            if (!runner.ViewModel.Busy)
             {
                 DelegateCalled = true;
-                (new MainDialog(new DialogSelectConfig(runner.Page), "Select Config")).ShowDialog();
+                (new MainDialog(new DialogSelectConfig(runner.View), "Select Config")).ShowDialog();
             }
         }
 
         private void selectWordlist_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var id = (int)(FindParent<Grid>(sender as DependencyObject)).Tag;
-            var runner = Globals.mainWindow.RunnerManagerPage.vm.Get(id);
+            var runner = OB.MainWindow.RunnerManagerPage.vm.Get(id);
 
-            if (!runner.Runner.Busy)
+            if (!runner.ViewModel.Busy)
             {
                 DelegateCalled = true;
-                (new MainDialog(new DialogSelectWordlist(runner.Page), "Select Wordlist")).ShowDialog();
+                (new MainDialog(new DialogSelectWordlist(runner.View), "Select Wordlist")).ShowDialog();
             }
         }
 
         private void selectProxies_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var id = (int)(FindParent<Grid>(sender as DependencyObject)).Tag;
-            var runner = Globals.mainWindow.RunnerManagerPage.vm.Get(id);
+            var runner = OB.MainWindow.RunnerManagerPage.vm.Get(id);
 
-            if (!runner.Runner.Busy)
+            if (!runner.ViewModel.Busy)
             {
                 DelegateCalled = true;
-                (new MainDialog(new DialogSetProxies(runner.Page), "Set Proxies")).ShowDialog();
+                (new MainDialog(new DialogSetProxies(runner.ViewModel), "Set Proxies")).ShowDialog();
             }
         }
 
         private void selectBots_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var id = (int)(FindParent<Grid>(sender as DependencyObject)).Tag;
-            var runner = Globals.mainWindow.RunnerManagerPage.vm.Get(id);
+            var runner = OB.MainWindow.RunnerManagerPage.vm.Get(id);
 
-            if (!runner.Runner.Busy)
+            if (!runner.ViewModel.Busy)
             {
                 DelegateCalled = true;
-                (new MainDialog(new DialogSelectBots(runner.Page, runner.Runner.BotsAmount), "Select Bots Number")).ShowDialog();
+                (new MainDialog(new DialogSelectBots(runner.ViewModel, runner.ViewModel.BotsAmount), "Select Bots Number")).ShowDialog();
             }
         }
         #endregion
 
         private void stopAllRunnersButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var runner in vm.RunnersCollection.Where(r => r.Runner.Busy))
+            foreach (var runner in vm.RunnersCollection.Where(r => r.ViewModel.Busy))
             {
-                StartRunner += runner.Page.OnStartRunner;
+                StartRunner += runner.View.OnStartRunner;
                 OnStartRunner();
-                StartRunner -= runner.Page.OnStartRunner;
+                StartRunner -= runner.View.OnStartRunner;
             }
         }
 
@@ -153,7 +155,7 @@ namespace OpenBullet.Views.Main
             if (MessageBox.Show($"Are you sure you want to remove all Runners?", 
                 "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                var list = vm.RunnersCollection.Where(r => !r.Runner.Busy).ToList();
+                var list = vm.RunnersCollection.Where(r => !r.ViewModel.Busy).ToList();
                 for (int i = list.Count - 1; i >= 0; i--)
                 {
                     vm.RunnersCollection.Remove(list[i]);
@@ -163,11 +165,11 @@ namespace OpenBullet.Views.Main
 
         private void startAllRunnersButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var runner in vm.RunnersCollection.Where(r => !r.Runner.Busy))
+            foreach (var runner in vm.RunnersCollection.Where(r => !r.ViewModel.Busy))
             {
-                StartRunner += runner.Page.OnStartRunner;
+                StartRunner += runner.View.OnStartRunner;
                 OnStartRunner();
-                StartRunner -= runner.Page.OnStartRunner;
+                StartRunner -= runner.View.OnStartRunner;
             }
         }
     }

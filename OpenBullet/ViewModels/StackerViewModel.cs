@@ -131,7 +131,7 @@ namespace OpenBullet.ViewModels
         private bool useProxy = false;
         public bool UseProxy { get { return useProxy; } set { useProxy = value; OnPropertyChanged(); OnPropertyChanged("UseProxyString"); OnPropertyChanged("UseProxyColor"); } }
         public string UseProxyString { get { return UseProxy ? "ON" : "OFF"; } }
-        public SolidColorBrush UseProxyColor { get { return UseProxy ? Globals.GetBrush("ForegroundGood") : Globals.GetBrush("ForegroundBad"); } }
+        public SolidColorBrush UseProxyColor { get { return UseProxy ? Utils.GetBrush("ForegroundGood") : Utils.GetBrush("ForegroundBad"); } }
 
         private bool sbs = false;
         public bool SBS { get { return sbs; } set { sbs = value; OnPropertyChanged(); } }

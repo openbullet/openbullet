@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using RuriLib;
+using System.Windows.Controls;
 
 namespace OpenBullet.Views.Main.Configs.OtherOptions
 {
@@ -10,7 +11,7 @@ namespace OpenBullet.Views.Main.Configs.OtherOptions
         public Selenium()
         {
             InitializeComponent();
-            DataContext = Globals.mainWindow.ConfigsPage.CurrentConfig.Config.Settings;
+            DataContext = OB.ConfigManager.CurrentConfig.Config.Settings;
         }
     }
 }

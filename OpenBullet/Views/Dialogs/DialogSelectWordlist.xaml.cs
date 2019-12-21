@@ -24,9 +24,8 @@ namespace OpenBullet
         {
             InitializeComponent();
             Caller = caller;
-            DataContext = Globals.mainWindow.WordlistManagerPage.DataContext;
+            DataContext = OB.WordlistManager;
         }
-
         
         private void selectButton_Click(object sender, RoutedEventArgs e)
         {
@@ -37,7 +36,6 @@ namespace OpenBullet
             ((MainDialog)Parent).Close();
         }
 
-        
         private void listViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             GridViewColumnHeader column = (sender as GridViewColumnHeader);
@@ -78,13 +76,13 @@ namespace OpenBullet
             try
             {
                 // Build the wordlist object
-                var wordlist = new Wordlist(Path.GetFileNameWithoutExtension(ofd.FileName), ofd.FileName, Globals.environment.WordlistTypes.First().Name, "");
+                var wordlist = new Wordlist(Path.GetFileNameWithoutExtension(ofd.FileName), ofd.FileName, OB.Settings.Environment.WordlistTypes.First().Name, "");
 
                 // Get the first line
                 var first = File.ReadLines(wordlist.Path).First();
 
                 // Set the correct wordlist type
-                wordlist.Type = Globals.environment.RecognizeWordlistType(first);
+                wordlist.Type = OB.Settings.Environment.RecognizeWordlistType(first);
 
                 // Add the wordlist to the runner
                 ((Runner)Caller).SetWordlist(wordlist);

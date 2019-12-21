@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RuriLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,7 @@ namespace OpenBullet.Views.Main.Configs.OtherOptions
         public Requests()
         {
             InitializeComponent();
-            DataContext = Globals.mainWindow.ConfigsPage.CurrentConfig.Config.Settings;
+            DataContext = OB.ConfigManager.CurrentConfig.Config.Settings;
         }
     }
 }

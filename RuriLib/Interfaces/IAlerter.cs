@@ -9,7 +9,7 @@ namespace RuriLib.Interfaces
     /// <summary>
     /// Interface for requesting user interaction (e.g. confirmations).
     /// </summary>
-    public interface IAlert
+    public interface IAlerter
     {
         /// <summary>
         /// Asks a yes or no question to the user.

@@ -58,7 +58,7 @@ namespace OpenBullet.ViewModels
 
         public ConfigManagerViewModel()
         {
-            _diskRepo = new ConfigRepository(Globals.configFolder);
+            _diskRepo = new ConfigRepository(OB.configFolder);
             Rescan();
         }
 
@@ -111,7 +111,7 @@ namespace OpenBullet.ViewModels
         {
             var configs = new List<ConfigViewModel>();
 
-            foreach (var source in Globals.obSettings.Sources.Sources)
+            foreach (var source in OB.OBSettings.Sources.Sources)
             {
                 try
                 {
@@ -119,7 +119,7 @@ namespace OpenBullet.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    Globals.logger.LogError(Components.ConfigManager, $"Error with API {source.ApiUrl}\r\nReason: {ex.Message}", true);
+                    OB.Logger.LogError(Components.ConfigManager, $"Error with API {source.ApiUrl}\r\nReason: {ex.Message}", true);
                 }
             }
 

@@ -1,4 +1,5 @@
 ﻿using OpenBullet.Views.Main.Runner;
+using RuriLib.Runner;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -23,9 +24,9 @@ namespace OpenBullet
             int bots = 1;
             int.TryParse(botsNumberTextbox.Text, out bots);
 
-            if (Caller.GetType() == typeof(Runner))
+            if (Caller.GetType() == typeof(RunnerViewModel))
             {
-                (Caller as Runner).vm.BotsAmount = bots;
+                (Caller as RunnerViewModel).BotsAmount = bots;
             }
             ((MainDialog)Parent).Close();
         }

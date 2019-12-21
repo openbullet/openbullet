@@ -22,10 +22,11 @@ namespace OpenBullet
 
         public DialogSelectConfig(object caller)
         {
-            InitializeComponent();
             Caller = caller;
-            DataContext = Globals.mainWindow.ConfigsPage.ConfigManagerPage.DataContext;
-            vm = Globals.mainWindow.ConfigsPage.ConfigManagerPage.vm;
+            vm = OB.ConfigManager;
+            DataContext = vm;
+
+            InitializeComponent();
         }
         
         private void selectButton_Click(object sender, RoutedEventArgs e)
@@ -33,7 +34,7 @@ namespace OpenBullet
             if (configsListView.SelectedItems.Count == 0) return;
             if(Caller.GetType() == typeof(Runner))
             {
-                if (Globals.obSettings.General.LiveConfigUpdates) ((Runner)Caller).SetConfig(((ConfigViewModel)configsListView.SelectedItem).Config);
+                if (OB.OBSettings.General.LiveConfigUpdates) ((Runner)Caller).SetConfig(((ConfigViewModel)configsListView.SelectedItem).Config);
                 else ((Runner)Caller).SetConfig(IOManager.CloneConfig(((ConfigViewModel)configsListView.SelectedItem).Config));
             }
             ((MainDialog)Parent).Close();

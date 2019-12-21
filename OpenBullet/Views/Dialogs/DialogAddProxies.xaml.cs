@@ -52,12 +52,12 @@ namespace OpenBullet
                     case 0:
                         if (fileName != "")
                         {
-                            Globals.logger.LogInfo(Components.ProxyManager, $"Trying to load from file {fileName}");
+                            OB.Logger.LogInfo(Components.ProxyManager, $"Trying to load from file {fileName}");
                             lines.AddRange(File.ReadAllLines(fileName).ToList());
                         }
                         else
                         {
-                            Globals.logger.LogError(Components.ProxyManager, "No file specified!", true);
+                            OB.Logger.LogError(Components.ProxyManager, "No file specified!", true);
                             return;
                         }
                         break;
@@ -69,7 +69,7 @@ namespace OpenBullet
                         }
                         else
                         {
-                            Globals.logger.LogError(Components.ProxyManager, "The box is empty!", true);
+                            OB.Logger.LogError(Components.ProxyManager, "The box is empty!", true);
                             return;
                         }
                         break;
@@ -83,7 +83,7 @@ namespace OpenBullet
                         }
                         else
                         {
-                            Globals.logger.LogError(Components.ProxyManager, "No URL specified!", true);
+                            OB.Logger.LogError(Components.ProxyManager, "No URL specified!", true);
                             return;
                         }
                         break;
@@ -91,7 +91,7 @@ namespace OpenBullet
             }
             catch (Exception ex)
             {
-                Globals.logger.LogError(Components.ProxyManager, $"There was an error: {ex.Message}");
+                OB.Logger.LogError(Components.ProxyManager, $"There was an error: {ex.Message}");
                 return;
             }
 
@@ -104,25 +104,25 @@ namespace OpenBullet
 
         private void FileMode_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            fileMode.Foreground = Globals.GetBrush("ForegroundMenuSelected");
-            pasteMode.Foreground = Globals.GetBrush("ForegroundMain");
-            apiMode.Foreground = Globals.GetBrush("ForegroundMain");
+            fileMode.Foreground = Utils.GetBrush("ForegroundMenuSelected");
+            pasteMode.Foreground = Utils.GetBrush("ForegroundMain");
+            apiMode.Foreground = Utils.GetBrush("ForegroundMain");
             modeTabControl.SelectedIndex = 0;
         }
 
         private void PasteMode_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            fileMode.Foreground = Globals.GetBrush("ForegroundMain");
-            pasteMode.Foreground = Globals.GetBrush("ForegroundMenuSelected");
-            apiMode.Foreground = Globals.GetBrush("ForegroundMain");
+            fileMode.Foreground = Utils.GetBrush("ForegroundMain");
+            pasteMode.Foreground = Utils.GetBrush("ForegroundMenuSelected");
+            apiMode.Foreground = Utils.GetBrush("ForegroundMain");
             modeTabControl.SelectedIndex = 1;
         }
 
         private void ApiMode_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            fileMode.Foreground = Globals.GetBrush("ForegroundMain");
-            pasteMode.Foreground = Globals.GetBrush("ForegroundMain");
-            apiMode.Foreground = Globals.GetBrush("ForegroundMenuSelected");
+            fileMode.Foreground = Utils.GetBrush("ForegroundMain");
+            pasteMode.Foreground = Utils.GetBrush("ForegroundMain");
+            apiMode.Foreground = Utils.GetBrush("ForegroundMenuSelected");
             modeTabControl.SelectedIndex = 2;
         }
     }

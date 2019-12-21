@@ -24,13 +24,11 @@ namespace OpenBullet.ViewModels
         private ObservableCollection<CProxy> _proxiesCollection;
         public ObservableCollection<CProxy> ProxiesCollection 
         { 
-            get
-            { 
-                return _proxiesCollection;
-            } 
+            get => _proxiesCollection;
             private set 
             { 
                 _proxiesCollection = value;
+                OnPropertyChanged();
                 UpdateProperties(); 
             }
         }
@@ -41,7 +39,7 @@ namespace OpenBullet.ViewModels
 
         public ProxyManagerViewModel()
         {
-            _repo = new LiteDBRepository<CProxy>(Globals.dataBaseFile, "proxies");
+            _repo = new LiteDBRepository<CProxy>(OB.dataBaseFile, "proxies");
             ProxiesCollection = new ObservableCollection<CProxy>();
         }
 

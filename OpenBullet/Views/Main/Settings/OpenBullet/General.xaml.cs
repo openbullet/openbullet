@@ -2,7 +2,7 @@
 using System;
 using System.Windows.Controls;
 
-namespace OpenBullet.Views.Main.Settings.OB
+namespace OpenBullet.Views.Main.Settings.OpenBullet
 {
     /// <summary>
     /// Logica di interazione per General.xaml
@@ -12,7 +12,7 @@ namespace OpenBullet.Views.Main.Settings.OB
         public General()
         {
             InitializeComponent();
-            DataContext = Globals.obSettings.General;
+            DataContext = OB.OBSettings.General;
         }
     }
 }

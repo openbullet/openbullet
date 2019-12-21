@@ -14,14 +14,14 @@ namespace OpenBullet.Views.Main
         public Stacker StackerPage;
         public ConfigOtherOptions OtherOptionsPage;
 
-        public ConfigViewModel CurrentConfig => ConfigManagerPage.vm.CurrentConfig;
+        public ConfigViewModel CurrentConfig => OB.ConfigManager.CurrentConfig;
 
         public ConfigsSection()
         {
             InitializeComponent();
 
             ConfigManagerPage = new ConfigManager();
-            Globals.logger.LogInfo(Components.ConfigManager, "Initialized Manager Page");
+            OB.Logger.LogInfo(Components.ConfigManager, "Initialized Manager Page");
 
             menuOptionManager_MouseDown(this, null);
         }
@@ -42,7 +42,7 @@ namespace OpenBullet.Views.Main
             }
             else
             {
-                Globals.logger.LogError(Components.ConfigManager, "Cannot switch to stacker since no config is loaded or the loaded config isn't public");
+                OB.Logger.LogError(Components.ConfigManager, "Cannot switch to stacker since no config is loaded or the loaded config isn't public");
             }
         }
 
@@ -58,7 +58,7 @@ namespace OpenBullet.Views.Main
             }
             else
             {
-                Globals.logger.LogError(Components.ConfigManager, "Cannot switch to other options since no config is loaded");
+                OB.Logger.LogError(Components.ConfigManager, "Cannot switch to other options since no config is loaded");
             }
         }
 
@@ -70,11 +70,11 @@ namespace OpenBullet.Views.Main
                 {
                     //var a = "";
                     var c = (Label)child;
-                    c.Foreground = Globals.GetBrush("ForegroundMain");
+                    c.Foreground = Utils.GetBrush("ForegroundMain");
                 }
                 catch { }
             }
-            ((Label)sender).Foreground = Globals.GetBrush("ForegroundCustom");
+            ((Label)sender).Foreground = Utils.GetBrush("ForegroundCustom");
         }
         #endregion
 

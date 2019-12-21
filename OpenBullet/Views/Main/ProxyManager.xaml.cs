@@ -22,7 +22,7 @@ namespace OpenBullet.Views.Main
     /// </summary>
     public partial class ProxyManager : Page
     {
-        public ProxyManagerViewModel vm = new ProxyManagerViewModel();
+        private ProxyManagerViewModel vm = null;
         private GridViewColumnHeader listViewSortCol = null;
         private SortAdorner listViewSortAdorner = null;
         private WorkerStatus Status = WorkerStatus.Idle;
@@ -32,9 +32,10 @@ namespace OpenBullet.Views.Main
 
         public ProxyManager()
         {
-            InitializeComponent();
+            vm = OB.ProxyManager;
             DataContext = vm;
 
+            InitializeComponent();
             botsSlider.Maximum = ProxyManagerViewModel.maximumBots;
             vm.RefreshList();
             vm.UpdateProperties();
@@ -46,7 +47,7 @@ namespace OpenBullet.Views.Main
             switch (Status)
             {
                 case WorkerStatus.Idle:
-                    Globals.logger.LogInfo(Components.ProxyManager, "Disabling the UI and starting the checker");
+                    OB.Logger.LogInfo(Components.ProxyManager, "Disabling the UI and starting the checker");
                     checkButton.Content = "ABORT";
                     botsSlider.IsEnabled = false;
                     Status = WorkerStatus.Running;
@@ -77,7 +78,7 @@ namespace OpenBullet.Views.Main
                                 proxy.Country = result.country;
 
                                 var infoLog = $"[{DateTime.Now.ToLongTimeString()}] Check for proxy {proxy.Proxy} succeeded in {result.ping} milliseconds.";
-                                Globals.logger.LogInfo(Components.ProxyManager, infoLog);
+                                OB.Logger.LogInfo(Components.ProxyManager, infoLog);
                             }
                             else
                             {
@@ -85,7 +86,7 @@ namespace OpenBullet.Views.Main
                                 proxy.Ping = 0;
 
                                 var errorLog = $"[{DateTime.Now.ToLongTimeString()}] Check for proxy {proxy.Proxy} failed with error: {check.error}";
-                                Globals.logger.LogError(Components.ProxyManager, errorLog);
+                                OB.Logger.LogError(Components.ProxyManager, errorLog);
                             }
 
                             // Update the proxy in the database
@@ -99,7 +100,7 @@ namespace OpenBullet.Views.Main
                     }
                     catch
                     {
-                        Globals.logger.LogWarning(Components.ProxyManager, "Abort signal received");
+                        OB.Logger.LogWarning(Components.ProxyManager, "Abort signal received");
                     }
                     // Restore the GUI status
                     finally
@@ -120,7 +121,7 @@ namespace OpenBullet.Views.Main
         // TODO: Refactor this function, it shouldn't belong in a view!
         public void AddProxies(IEnumerable<string> raw, ProxyType defaultType = ProxyType.Http, string defaultUsername = "", string defaultPassword = "")
         {
-            Globals.logger.LogInfo(Components.ProxyManager, $"Adding {raw.Count()} {defaultType} proxies to the database");
+            OB.Logger.LogInfo(Components.ProxyManager, $"Adding {raw.Count()} {defaultType} proxies to the database");
 
             // Check if they're valid
             var proxies = new List<CProxy>();
@@ -161,35 +162,35 @@ namespace OpenBullet.Views.Main
             {
                 if (Selected.Count() > 0)
                 {
-                    Globals.logger.LogInfo(Components.ProxyManager, $"Exporting {proxiesListView.Items.Count} proxies");
+                    OB.Logger.LogInfo(Components.ProxyManager, $"Exporting {proxiesListView.Items.Count} proxies");
                     Selected.SaveToFile(sfd.FileName, p => p.Proxy);
                 }
                 else
                 {
                     MessageBox.Show("No proxies selected!");
-                    Globals.logger.LogWarning(Components.ProxyManager, "No proxies selected");
+                    OB.Logger.LogWarning(Components.ProxyManager, "No proxies selected");
                 }
             }
         }
 
         private void deleteButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.logger.LogInfo(Components.ProxyManager, $"Deleting {proxiesListView.SelectedItems.Count} proxies");
+            OB.Logger.LogInfo(Components.ProxyManager, $"Deleting {proxiesListView.SelectedItems.Count} proxies");
             vm.Remove(Selected);
             vm.UpdateProperties();
-            Globals.logger.LogInfo(Components.ProxyManager, "Proxies deleted successfully");
+            OB.Logger.LogInfo(Components.ProxyManager, "Proxies deleted successfully");
         }
 
         private void deleteAllButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.logger.LogWarning(Components.ProxyManager, "Purging all proxies");
+            OB.Logger.LogWarning(Components.ProxyManager, "Purging all proxies");
             vm.RemoveAll();
             vm.UpdateProperties();
         }
 
         private void deleteNotWorkingButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.logger.LogInfo(Components.ProxyManager, "Deleting all non working proxies");
+            OB.Logger.LogInfo(Components.ProxyManager, "Deleting all non working proxies");
 
             vm.RemoveNotWorking();
             vm.UpdateProperties();
@@ -202,7 +203,7 @@ namespace OpenBullet.Views.Main
 
         private void deleteDuplicatesButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.logger.LogInfo(Components.ProxyManager, "Deleting duplicate proxies");
+            OB.Logger.LogInfo(Components.ProxyManager, "Deleting duplicate proxies");
 
             vm.RemoveDuplicates();
             vm.UpdateProperties();
@@ -210,7 +211,7 @@ namespace OpenBullet.Views.Main
 
         private void DeleteUntestedButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.logger.LogInfo(Components.ProxyManager, "Deleting all untested proxies");
+            OB.Logger.LogInfo(Components.ProxyManager, "Deleting all untested proxies");
 
             vm.RemoveUntested();
             vm.UpdateProperties();
@@ -247,13 +248,13 @@ namespace OpenBullet.Views.Main
                         }
                         else
                         {
-                            Globals.logger.LogError(Components.ProxyManager, "Failed to parse proxies type from file name, defaulting to HTTP");
+                            OB.Logger.LogError(Components.ProxyManager, "Failed to parse proxies type from file name, defaulting to HTTP");
                             AddProxies(lines);
                         }
                     }
                     catch (Exception ex)
                     {
-                        Globals.logger.LogError(Components.ProxyManager, $"Failed to open file {file} - {ex.Message}");
+                        OB.Logger.LogError(Components.ProxyManager, $"Failed to open file {file} - {ex.Message}");
                     }
                 }
             }
@@ -264,11 +265,11 @@ namespace OpenBullet.Views.Main
             try
             {
                 Selected.CopyToClipboard(p => p.Proxy);
-                Globals.logger.LogInfo(Components.ProxyManager, $"Copied {Selected.Count()} proxies");
+                OB.Logger.LogInfo(Components.ProxyManager, $"Copied {Selected.Count()} proxies");
             }
             catch (Exception ex)
             {
-                Globals.logger.LogError(Components.ProxyManager, $"Failed to copy proxies - {ex.Message}");
+                OB.Logger.LogError(Components.ProxyManager, $"Failed to copy proxies - {ex.Message}");
             }
         }
 

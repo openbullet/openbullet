@@ -35,7 +35,7 @@ namespace OpenBullet.Views.Main.Configs
     public partial class Stacker : Page
     {
         private Stopwatch timer;
-        public StackerViewModel vm;
+        private StackerViewModel vm = null;
         private AbortableBackgroundWorker debugger = new AbortableBackgroundWorker();
         XmlNodeList syntaxHelperItems;
         TextEditor toolTipEditor;
@@ -47,11 +47,12 @@ namespace OpenBullet.Views.Main.Configs
             SaveConfig?.Invoke(this, EventArgs.Empty);
         }
 
-        public Stacker(ConfigViewModel config)
+        public Stacker()
         {
-            InitializeComponent();
-            vm = new StackerViewModel(config);
+            vm = OB.Stacker;
             DataContext = vm;
+
+            InitializeComponent();
 
             // Style the LoliScript editor
             loliScriptEditor.ShowLineNumbers = true;
@@ -77,7 +78,7 @@ namespace OpenBullet.Views.Main.Configs
 
             // Make the Avalon Editor for Syntax Helper and style it
             toolTipEditor = new TextEditor();
-            toolTipEditor.TextArea.Foreground = Globals.GetBrush("ForegroundMain");
+            toolTipEditor.TextArea.Foreground = Utils.GetBrush("ForegroundMain");
             toolTipEditor.Background = new SolidColorBrush(Color.FromArgb(22, 22, 22, 50));
             toolTipEditor.TextArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Colors.DodgerBlue);
             toolTipEditor.FontSize = 11;
@@ -93,11 +94,11 @@ namespace OpenBullet.Views.Main.Configs
             loliScriptEditor.ToolTip = toolTip;
 
             // Load the script
-            vm.LS = new LoliScript(config.Config.Script);
+            vm.LS = new LoliScript(OB.ConfigManager.CurrentConfig.Config.Script);
             loliScriptEditor.Text = vm.LS.Script;
 
             // If the user prefers Stack view, switch to it
-            if (!Globals.obSettings.General.DisplayLoliScriptOnLoad)
+            if (!OB.OBSettings.General.DisplayLoliScriptOnLoad)
             {
                 stackButton_Click(this, null);
             }
@@ -120,7 +121,7 @@ namespace OpenBullet.Views.Main.Configs
 
             proxyTypeCombobox.SelectedIndex = 0;
 
-            foreach (var t in Globals.environment.GetWordlistTypeNames())
+            foreach (var t in OB.Settings.Environment.GetWordlistTypeNames())
                 testDataTypeCombobox.Items.Add(t);
 
             testDataTypeCombobox.SelectedIndex = 0;
@@ -131,7 +132,7 @@ namespace OpenBullet.Views.Main.Configs
             debugger.DoWork += new DoWorkEventHandler(debuggerCheck);
             debugger.RunWorkerCompleted += new RunWorkerCompletedEventHandler(debuggerCompleted);
 
-            this.SaveConfig += Globals.mainWindow.ConfigsPage.ConfigManagerPage.OnSaveConfig;
+            this.SaveConfig += OB.MainWindow.ConfigsPage.ConfigManagerPage.OnSaveConfig;
         }
 
         private void ClearDebuggerLog(object sender, EventArgs e)
@@ -170,7 +171,7 @@ namespace OpenBullet.Views.Main.Configs
 
         public void AddBlock(BlockBase block)
         {
-            Globals.logger.LogInfo(Components.Stacker, $"Added a block of type {block.GetType()} in position {vm.Stack.Count}");
+            OB.Logger.LogInfo(Components.Stacker, $"Added a block of type {block.GetType()} in position {vm.Stack.Count}");
             vm.AddBlock(block, -1);
         }
 
@@ -225,26 +226,26 @@ namespace OpenBullet.Views.Main.Configs
                         if (vm.LastDeletedBlock != null)
                         {
                             vm.AddBlock(vm.LastDeletedBlock, vm.LastDeletedIndex);
-                            Globals.logger.LogInfo(Components.Stacker, $"Readded block of type {vm.LastDeletedBlock.GetType()} in position {vm.LastDeletedIndex}");
+                            OB.Logger.LogInfo(Components.Stacker, $"Readded block of type {vm.LastDeletedBlock.GetType()} in position {vm.LastDeletedIndex}");
                             vm.LastDeletedBlock = null;
                         }
-                        else Globals.logger.LogError(Components.Stacker, "Nothing to undo");
+                        else OB.Logger.LogError(Components.Stacker, "Nothing to undo");
                         break;
 
                     case System.Windows.Input.Key.C:
-                        if (Globals.obSettings.General.DisableCopyPasteBlocks) return;
+                        if (OB.OBSettings.General.DisableCopyPasteBlocks) return;
                         try { Clipboard.SetText(IOManager.SerializeBlocks(vm.SelectedBlocks.Select(b => b.Block).ToList())); }
-                        catch { Globals.logger.LogError(Components.Stacker, "Exception while copying blocks"); }
+                        catch { OB.Logger.LogError(Components.Stacker, "Exception while copying blocks"); }
                         break;
 
                     case System.Windows.Input.Key.V:
-                        if (Globals.obSettings.General.DisableCopyPasteBlocks) return;
+                        if (OB.OBSettings.General.DisableCopyPasteBlocks) return;
                         try
                         {
                             foreach (var block in IOManager.DeserializeBlocks(Clipboard.GetText()))
                                 vm.AddBlock(block);
                         }
-                        catch { Globals.logger.LogError(Components.Stacker, "Exception while pasting blocks"); }
+                        catch { OB.Logger.LogError(Components.Stacker, "Exception while pasting blocks"); }
                         break;
 
                     case System.Windows.Input.Key.S:
@@ -274,16 +275,16 @@ namespace OpenBullet.Views.Main.Configs
                     if (debuggerTabControl.SelectedIndex == 1)
                         logRTB.Focus();
                     vm.ControlsEnabled = false;
-                    if (!Globals.obSettings.General.PersistDebuggerLog)
+                    if (!OB.OBSettings.General.PersistDebuggerLog)
                         logRTB.Clear();
                     dataRTB.Document.Blocks.Clear();
 
                     if (!debugger.IsBusy)
                     {
                         debugger.RunWorkerAsync();
-                        Globals.logger.LogInfo(Components.Stacker, "Started the debugger");
+                        OB.Logger.LogInfo(Components.Stacker, "Started the debugger");
                     }
-                    else { Globals.logger.LogError(Components.Stacker, "Cannot start the debugger (busy)"); }
+                    else { OB.Logger.LogError(Components.Stacker, "Cannot start the debugger (busy)"); }
 
                     startDebuggerButton.Content = "Abort";
                     debugger.Status = WorkerStatus.Running;
@@ -293,7 +294,7 @@ namespace OpenBullet.Views.Main.Configs
                     if (debugger.IsBusy)
                     {
                         debugger.CancelAsync();
-                        Globals.logger.LogInfo(Components.Stacker, "Sent Cancellation Request to the debugger");
+                        OB.Logger.LogInfo(Components.Stacker, "Sent Cancellation Request to the debugger");
                     }
                         
                     startDebuggerButton.Content = "Force";
@@ -302,7 +303,7 @@ namespace OpenBullet.Views.Main.Configs
 
                 case WorkerStatus.Stopping:
                     debugger.Abort();
-                    Globals.logger.LogInfo(Components.Stacker, "Hard aborted the debugger");
+                    OB.Logger.LogInfo(Components.Stacker, "Hard aborted the debugger");
                     startDebuggerButton.Content = "Start";
                     debugger.Status = WorkerStatus.Idle;
                     vm.ControlsEnabled = true;
@@ -317,23 +318,23 @@ namespace OpenBullet.Views.Main.Configs
             {
                 if (vm.BotData.BrowserOpen)
                 {
-                    Globals.logger.LogInfo(Components.Stacker, "Quitting the previously opened browser");
+                    OB.Logger.LogInfo(Components.Stacker, "Quitting the previously opened browser");
                     vm.BotData.Driver.Quit();
-                    Globals.logger.LogInfo(Components.Stacker, "Quitted correctly");
+                    OB.Logger.LogInfo(Components.Stacker, "Quitted correctly");
                 }
             }
 
             // Convert Observables
-            Globals.logger.LogInfo(Components.Stacker, "Converting Observables");
+            OB.Logger.LogInfo(Components.Stacker, "Converting Observables");
             vm.ConvertKeychains();
 
             // Initialize Request Data
-            Globals.logger.LogInfo(Components.Stacker, "Initializing the request data");
+            OB.Logger.LogInfo(Components.Stacker, "Initializing the request data");
             CProxy proxy = null;
             if (vm.TestProxy.StartsWith("(")) // Parse in advanced mode
             {
                 try { proxy = (new CProxy()).Parse(vm.TestProxy); }
-                catch { Globals.logger.LogError(Components.Stacker, "Invalid Proxy Syntax", true); }
+                catch { OB.Logger.LogError(Components.Stacker, "Invalid Proxy Syntax", true); }
             }
             else // Parse in standard mode
             {
@@ -341,23 +342,23 @@ namespace OpenBullet.Views.Main.Configs
             }
 
             // Initialize BotData and Reset LS
-            var cData = new CData(vm.TestData, Globals.environment.GetWordlistType(vm.TestDataType));
+            var cData = new CData(vm.TestData, OB.Settings.Environment.GetWordlistType(vm.TestDataType));
 
-            vm.BotData = new BotData(Globals.rlSettings, vm.Config.Config.Settings, cData, proxy, vm.UseProxy, Globals.random);
+            vm.BotData = new BotData(OB.Settings.RLSettings, vm.Config.Config.Settings, cData, proxy, vm.UseProxy, OB.Random);
             vm.LS.Reset();
 
             // Ask for user input
             foreach (var input in vm.BotData.ConfigSettings.CustomInputs)
             {
-                Globals.logger.LogInfo(Components.Stacker, $"Asking for user input: {input.Description}");
+                OB.Logger.LogInfo(Components.Stacker, $"Asking for user input: {input.Description}");
                 App.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    (new MainDialog(new DialogCustomInput(this, input.VariableName, input.Description), "Custom Input")).ShowDialog();
+                    (new MainDialog(new DialogCustomInput(vm, input.VariableName, input.Description), "Custom Input")).ShowDialog();
                 }));
             }
 
             // Set start block
-            Globals.logger.LogInfo(Components.Stacker, "Setting the first block as the current block");
+            OB.Logger.LogInfo(Components.Stacker, "Setting the first block as the current block");
 
             // Print start line
             var proxyEnabledText = vm.UseProxy ? "ENABLED" : "DISABLED";
@@ -369,7 +370,7 @@ namespace OpenBullet.Views.Main.Configs
             // Open browser if Always Open
             if (vm.Config.Config.Settings.AlwaysOpen)
             {
-                Globals.logger.LogInfo(Components.Stacker, "Opening the Browser");
+                OB.Logger.LogInfo(Components.Stacker, "Opening the Browser");
                 SBlockBrowserAction.OpenBrowser(vm.BotData);
             }
 
@@ -382,7 +383,7 @@ namespace OpenBullet.Views.Main.Configs
                     Thread.Sleep(100);
 
                     if (debugger.CancellationPending) {
-                        Globals.logger.LogInfo(Components.Stacker, "Found cancellation pending, aborting debugger");
+                        OB.Logger.LogInfo(Components.Stacker, "Found cancellation pending, aborting debugger");
                         return;
                     }
 
@@ -390,7 +391,7 @@ namespace OpenBullet.Views.Main.Configs
                     {
                         vm.SBSEnabled = false;
                         Process();
-                        Globals.logger.LogInfo(Components.Stacker, $"Block processed in SBS mode, can proceed: {vm.LS.CanProceed}");
+                        OB.Logger.LogInfo(Components.Stacker, $"Block processed in SBS mode, can proceed: {vm.LS.CanProceed}");
                         vm.SBSEnabled = true;
                         vm.SBSClear = false;
                     }
@@ -405,7 +406,7 @@ namespace OpenBullet.Views.Main.Configs
                 {
                     if (debugger.CancellationPending)
                     {
-                        Globals.logger.LogInfo(Components.Stacker, "Found cancellation pending, aborting debugger");
+                        OB.Logger.LogInfo(Components.Stacker, "Found cancellation pending, aborting debugger");
                         return;
                     }
 
@@ -420,9 +421,9 @@ namespace OpenBullet.Views.Main.Configs
                 try {
                     vm.BotData.Driver.Quit();
                     vm.BotData.BrowserOpen = false;
-                    Globals.logger.LogInfo(Components.Stacker, "Successfully quit the browser");
+                    OB.Logger.LogInfo(Components.Stacker, "Successfully quit the browser");
                 }
-                catch (Exception ex) { Globals.logger.LogError(Components.Stacker, $"Cannot quit the browser - {ex.Message}"); }
+                catch (Exception ex) { OB.Logger.LogError(Components.Stacker, $"Cannot quit the browser - {ex.Message}"); }
             }
         }
         
@@ -430,10 +431,10 @@ namespace OpenBullet.Views.Main.Configs
         {
             try {
                 vm.LS.TakeStep(vm.BotData);
-                Globals.logger.LogInfo(Components.Stacker, $"Processed {BlockBase.TruncatePretty(vm.LS.CurrentLine, 20)}");
+                OB.Logger.LogInfo(Components.Stacker, $"Processed {BlockBase.TruncatePretty(vm.LS.CurrentLine, 20)}");
             }
             catch (Exception ex) {
-                Globals.logger.LogError(Components.Stacker, $"Processing of line {BlockBase.TruncatePretty(vm.LS.CurrentLine, 20)} failed, exception: {ex.Message}");
+                OB.Logger.LogError(Components.Stacker, $"Processing of line {BlockBase.TruncatePretty(vm.LS.CurrentLine, 20)} failed, exception: {ex.Message}");
             }
             
             PrintBotData();
@@ -467,7 +468,7 @@ namespace OpenBullet.Views.Main.Configs
                 dataRTB.AppendText(Environment.NewLine);
                 dataRTB.AppendText($"BOT STATUS: {vm.BotData.StatusString}"+Environment.NewLine, Colors.White);
                 dataRTB.AppendText("VARIABLES:" + Environment.NewLine, Colors.Yellow);
-                if (Globals.obSettings.General.DisplayCapturesLast)
+                if (OB.OBSettings.General.DisplayCapturesLast)
                 {
                     foreach (var variable in vm.BotData.Variables.All.Where(v => !v.Hidden && !v.IsCapture))
                         dataRTB.AppendText(variable.Name + $" ({variable.Type}) = " + variable.ToString() + Environment.NewLine, Colors.Yellow);
@@ -485,7 +486,7 @@ namespace OpenBullet.Views.Main.Configs
         
         private void DisplayHTML()
         {
-            if (Globals.obSettings.General.DisableHTMLView) return;
+            if (OB.OBSettings.General.DisableHTMLView) return;
             App.Current.Dispatcher.Invoke(new Action(() => {
                 if (vm.BotData.ResponseSource != "")
                 {
@@ -527,7 +528,7 @@ namespace OpenBullet.Views.Main.Configs
 
             vm.BotData.LogBuffer.Add(new LogEntry($"===== DEBUGGER ENDED AFTER {timer.ElapsedMilliseconds / 1000.0} SECOND(S) WITH STATUS: {vm.BotData.StatusString} =====", Colors.White));
             PrintLogBuffer();
-            Globals.logger.LogInfo(Components.Stacker, "Debugger completed");
+            OB.Logger.LogInfo(Components.Stacker, "Debugger completed");
         }
 
         private void nextStepButton_Click(object sender, RoutedEventArgs e)
@@ -542,7 +543,7 @@ namespace OpenBullet.Views.Main.Configs
         
         private void searchButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.logger.LogInfo(Components.Stacker, $"Seaching for {vm.SearchString}");
+            OB.Logger.LogInfo(Components.Stacker, $"Seaching for {vm.SearchString}");
 
             // Reset all highlights
             logRTB.SelectAll();
@@ -574,7 +575,7 @@ namespace OpenBullet.Views.Main.Configs
             logRTB.SelectionLength = 0;
             logRTB.SelectionColor = System.Drawing.Color.Black;
 
-            Globals.logger.LogInfo(Components.Stacker, $"Found {vm.Indexes.Count} matches", true);
+            OB.Logger.LogInfo(Components.Stacker, $"Found {vm.Indexes.Count} matches", true);
 
             if (vm.Indexes.Count > 0)
                 vm.CurrentSearchMatch = 1;
@@ -758,7 +759,7 @@ namespace OpenBullet.Views.Main.Configs
                 OnSaveConfig();
             }
 
-            if (Globals.obSettings.General.DisableSyntaxHelper) return;
+            if (OB.OBSettings.General.DisableSyntaxHelper) return;
 
             DocumentLine line = loliScriptEditor.Document.GetLineByOffset(loliScriptEditor.CaretOffset);
             var blockLine = loliScriptEditor.Document.GetText(line.Offset, line.Length);

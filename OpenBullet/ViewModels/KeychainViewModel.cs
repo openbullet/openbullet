@@ -42,7 +42,7 @@ namespace OpenBullet.ViewModels
                         break;
 
                     case KeyChain.KeychainType.Custom:
-                        color = Globals.environment.GetCustomKeychain(CustomType).Color;
+                        color = OB.Settings.Environment.GetCustomKeychain(CustomType).Color;
                         break;
 
                     case KeyChain.KeychainType.Ban:

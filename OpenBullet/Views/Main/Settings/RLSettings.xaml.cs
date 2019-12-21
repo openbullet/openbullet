@@ -66,23 +66,23 @@ namespace OpenBullet.Views.Main.Settings
                 try
                 {
                     var c = (Label)child;
-                    c.Foreground = Globals.GetBrush("ForegroundMain");
+                    c.Foreground = Utils.GetBrush("ForegroundMain");
                 }
                 catch { }
             }
-            ((Label)sender).Foreground = Globals.GetBrush("ForegroundGood");
+            ((Label)sender).Foreground = Utils.GetBrush("ForegroundGood");
         }
         #endregion
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
-            IOManager.SaveSettings(Globals.rlSettingsFile, Globals.rlSettings);
+            IOManager.SaveSettings(OB.rlSettingsFile, OB.Settings.RLSettings);
         }
 
         private void resetButton_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Are you sure you want to reset all your RuriLib settings?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                Globals.rlSettings.Reset();
+                OB.Settings.RLSettings.Reset();
         }
     }
 }

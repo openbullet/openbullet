@@ -50,11 +50,11 @@ namespace OpenBullet.Views.Main
                 try
                 {
                     var c = (Label)child;
-                    c.Foreground = Globals.GetBrush("ForegroundMain");
+                    c.Foreground = Utils.GetBrush("ForegroundMain");
                 }
                 catch { }
             }
-            ((Label)sender).Foreground = Globals.GetBrush("ForegroundCustom");
+            ((Label)sender).Foreground = Utils.GetBrush("ForegroundCustom");
         }
         #endregion
     }

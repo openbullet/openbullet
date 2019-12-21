@@ -1,6 +1,8 @@
-﻿using OpenBullet.Views.Main.Configs;
+﻿using OpenBullet.ViewModels;
+using OpenBullet.Views.Main.Configs;
 using OpenBullet.Views.Main.Runner;
 using RuriLib.Models;
+using RuriLib.Runner;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,13 +27,13 @@ namespace OpenBullet
         
         private void acceptButton_Click(object sender, RoutedEventArgs e)
         {
-            if(Caller.GetType() == typeof(Stacker))
+            if(Caller.GetType() == typeof(StackerViewModel))
             {
-                ((Stacker)Caller).vm.BotData.Variables.Set(new CVar(VariableName, answerTextbox.Text));
+                ((StackerViewModel)Caller).BotData.Variables.Set(new CVar(VariableName, answerTextbox.Text));
             }
-            else if(Caller.GetType() == typeof(Runner))
+            else if(Caller.GetType() == typeof(RunnerViewModel))
             {
-                ((Runner)Caller).vm.CustomInputs.Add(new KeyValuePair<string, string>(VariableName, answerTextbox.Text));
+                ((RunnerViewModel)Caller).CustomInputs.Add(new KeyValuePair<string, string>(VariableName, answerTextbox.Text));
             }
             ((MainDialog)Parent).Close();
         }

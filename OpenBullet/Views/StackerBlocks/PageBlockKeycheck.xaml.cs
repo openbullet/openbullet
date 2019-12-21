@@ -62,7 +62,7 @@ namespace OpenBullet.Pages.StackerBlocks
                 return;
 
             kc.CustomTypeInitialized = true;
-            foreach (var k in Globals.environment.GetCustomKeychainNames())
+            foreach (var k in OB.Settings.Environment.GetCustomKeychainNames())
                 ((ComboBox)e.OriginalSource).Items.Add(k);
 
             ((ComboBox)e.OriginalSource).SelectedValue = kc.CustomType;

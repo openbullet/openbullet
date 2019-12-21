@@ -183,16 +183,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Alerter.cs" />
     <Compile Include="Converters\BooleanBrushConverter.cs" />
     <Compile Include="Converters\EnumBooleanConverter.cs" />
     <Compile Include="Converters\KeychainBrushConverter.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Models\Source.cs" />
+    <Compile Include="OB.cs" />
     <Compile Include="OBIOManager.cs" />
     <Compile Include="LoggerViewModel.cs" />
     <Compile Include="LogWindow.xaml.cs">
       <DependentUpon>LogWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OpenBulletApp.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="Views\Dialogs\DialogLSDoc.xaml.cs">
       <DependentUpon>DialogLSDoc.xaml</DependentUpon>
     </Compile>
@@ -267,31 +271,31 @@
     <Compile Include="Views\Main\Settings\OBSettings.xaml.cs">
       <DependentUpon>OBSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Main\Settings\OB\General.xaml.cs">
+    <Compile Include="Views\Main\Settings\OpenBullet\General.xaml.cs">
       <DependentUpon>General.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Main\Settings\OB\Sources.xaml.cs">
+    <Compile Include="Views\Main\Settings\OpenBullet\Sources.xaml.cs">
       <DependentUpon>Sources.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Main\Settings\OB\Themes.xaml.cs">
+    <Compile Include="Views\Main\Settings\OpenBullet\Themes.xaml.cs">
       <DependentUpon>Themes.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Main\Settings\OB\Sounds.xaml.cs">
+    <Compile Include="Views\Main\Settings\OpenBullet\Sounds.xaml.cs">
       <DependentUpon>Sounds.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Main\Settings\RLSettings.xaml.cs">
       <DependentUpon>RLSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Main\Settings\RL\Selenium.xaml.cs">
+    <Compile Include="Views\Main\Settings\RuriLib\Selenium.xaml.cs">
       <DependentUpon>Selenium.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Main\Settings\RL\Captchas.xaml.cs">
+    <Compile Include="Views\Main\Settings\RuriLib\Captchas.xaml.cs">
       <DependentUpon>Captchas.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Main\Settings\RL\Proxies.xaml.cs">
+    <Compile Include="Views\Main\Settings\RuriLib\Proxies.xaml.cs">
       <DependentUpon>Proxies.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Main\Settings\RL\General.xaml.cs">
+    <Compile Include="Views\Main\Settings\RuriLib\General.xaml.cs">
       <DependentUpon>General.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Main\Settings.xaml.cs">
@@ -303,7 +307,7 @@
     <Compile Include="Views\Dialogs\DialogAddProxies.xaml.cs">
       <DependentUpon>DialogAddProxies.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Globals.cs" />
+    <Compile Include="GlobalSettings.cs" />
     <Compile Include="MainDialog.xaml.cs">
       <DependentUpon>MainDialog.xaml</DependentUpon>
     </Compile>
@@ -498,19 +502,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Main\Settings\OB\General.xaml">
+    <Page Include="Views\Main\Settings\OpenBullet\General.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Main\Settings\OB\Sources.xaml">
+    <Page Include="Views\Main\Settings\OpenBullet\Sources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Main\Settings\OB\Themes.xaml">
+    <Page Include="Views\Main\Settings\OpenBullet\Themes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Main\Settings\OB\Sounds.xaml">
+    <Page Include="Views\Main\Settings\OpenBullet\Sounds.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -518,19 +522,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Main\Settings\RL\Selenium.xaml">
+    <Page Include="Views\Main\Settings\RuriLib\Selenium.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Main\Settings\RL\Captchas.xaml">
+    <Page Include="Views\Main\Settings\RuriLib\Captchas.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Main\Settings\RL\Proxies.xaml">
+    <Page Include="Views\Main\Settings\RuriLib\Proxies.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Main\Settings\RL\General.xaml">
+    <Page Include="Views\Main\Settings\RuriLib\General.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

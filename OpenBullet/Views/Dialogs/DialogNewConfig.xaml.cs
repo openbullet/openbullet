@@ -20,11 +20,11 @@ namespace OpenBullet
         {
             InitializeComponent();
             Caller = caller;
-            authorTextbox.Text = Globals.obSettings.General.DefaultAuthor;
+            authorTextbox.Text = OB.OBSettings.General.DefaultAuthor;
             nameTextbox.Focus();
 
             categoryCombobox.Items.Add(ConfigRepository.defaultCategory);
-            foreach(var category in Globals.mainWindow.ConfigsPage.ConfigManagerPage.vm.ConfigsCollection.Select(c => c.Category).Distinct())
+            foreach(var category in OB.ConfigManager.ConfigsCollection.Select(c => c.Category).Distinct())
                 categoryCombobox.Items.Add(category);
             
             categoryCombobox.SelectedIndex = 0;

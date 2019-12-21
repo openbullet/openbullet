@@ -11,17 +11,19 @@ namespace OpenBullet.Views.Main.Configs.OtherOptions
     /// </summary>
     public partial class Data : Page
     {
-        private ConfigSettings vm = Globals.mainWindow.ConfigsPage.CurrentConfig.Config.Settings;
+        private ConfigSettings vm = null;
         Random rand = new Random();
 
         public Data()
         {
-            InitializeComponent();
+            vm = OB.ConfigManager.CurrentConfig.Config.Settings;
             DataContext = vm;
+            
+            InitializeComponent();
 
             // Allowed Wordlist 1
             allowedWordlist1Combobox.Items.Add("");
-            foreach (string i in Globals.environment.GetWordlistTypeNames())
+            foreach (string i in OB.Settings.Environment.GetWordlistTypeNames())
                 allowedWordlist1Combobox.Items.Add(i);
 
             try { allowedWordlist1Combobox.Text = vm.AllowedWordlist1; }
@@ -29,7 +31,7 @@ namespace OpenBullet.Views.Main.Configs.OtherOptions
 
             // Allowed Wordlist 2
             allowedWordlist2Combobox.Items.Add("");
-            foreach (string i in Globals.environment.GetWordlistTypeNames())
+            foreach (string i in OB.Settings.Environment.GetWordlistTypeNames())
                 allowedWordlist2Combobox.Items.Add(i);
 
             try { allowedWordlist2Combobox.Text = vm.AllowedWordlist2; }

@@ -9,9 +9,9 @@ namespace OpenBullet.Views.Main.Configs
     /// </summary>
     public partial class ConfigOtherOptions : Page
     {
-        public OtherOptions.General GeneralPage = new OtherOptions.General();
+        public General GeneralPage = new General();
         public Requests RequestsPage = new Requests();
-        public OtherOptions.Proxies ProxiesPage = new OtherOptions.Proxies();
+        public Proxies ProxiesPage = new Proxies();
         public Inputs InputsPage = new Inputs();
         public Data DataPage = new Data();
         public Selenium SeleniumPage = new Selenium();
@@ -67,11 +67,11 @@ namespace OpenBullet.Views.Main.Configs
                 try
                 {
                     var c = (Label)child;
-                    c.Foreground = Globals.GetBrush("ForegroundMain");
+                    c.Foreground = Utils.GetBrush("ForegroundMain");
                 }
                 catch { }
             }
-            ((Label)sender).Foreground = Globals.GetBrush("ForegroundGood");
+            ((Label)sender).Foreground = Utils.GetBrush("ForegroundGood");
         }
 
 

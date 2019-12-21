@@ -17,7 +17,7 @@ namespace OpenBullet.Views.Main
     /// </summary>
     public partial class HitsDB : Page
     {
-        public HitsDBViewModel vm = new HitsDBViewModel();
+        private HitsDBViewModel vm = null;
         private GridViewColumnHeader listViewSortCol = null;
         private SortAdorner listViewSortAdorner = null;
 
@@ -40,14 +40,14 @@ namespace OpenBullet.Views.Main
 
         public HitsDB()
         {
-            InitializeComponent();
-
+            vm = OB.HitsDB;
             DataContext = vm;
 
+            InitializeComponent();
             vm.RefreshList();
 
             var defaults = new string[] { "SUCCESS", "NONE" };
-            foreach (string i in defaults.Concat(Globals.environment.GetCustomKeychainNames()))
+            foreach (string i in defaults.Concat(OB.Settings.Environment.GetCustomKeychainNames()))
                 typeFilterCombobox.Items.Add(i);
 
             typeFilterCombobox.SelectedIndex = 0;
@@ -61,7 +61,7 @@ namespace OpenBullet.Views.Main
             var menu = (ContextMenu)Resources["ItemContextMenu"];
             var copyMenu = (MenuItem)menu.Items[0];
             var saveMenu = (MenuItem)menu.Items[1];
-            foreach (var f in Globals.environment.ExportFormats)
+            foreach (var f in OB.Settings.Environment.ExportFormats)
             {
                 MenuItem i = new MenuItem();
                 i.Header = f.Format;
@@ -69,7 +69,7 @@ namespace OpenBullet.Views.Main
                 ((MenuItem)copyMenu.Items[4]).Items.Add(i); // Here the 4 is hardcoded, it's bad but it works
             }
 
-            foreach (var f in Globals.environment.ExportFormats)
+            foreach (var f in OB.Settings.Environment.ExportFormats)
             {
                 MenuItem i = new MenuItem();
                 i.Header = f.Format;
@@ -89,28 +89,28 @@ namespace OpenBullet.Views.Main
         private void configFilterCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             vm.ConfigFilter = configFilterCombobox.SelectedValue.ToString();
-            Globals.logger.LogInfo(Components.HitsDB, $"Changed config filter to {vm.ConfigFilter}, found {vm.Total} hits");
+            OB.Logger.LogInfo(Components.HitsDB, $"Changed config filter to {vm.ConfigFilter}, found {vm.Total} hits");
         }
 
         private void typeFilterCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             vm.TypeFilter = (string)typeFilterCombobox.SelectedValue;
-            Globals.logger.LogInfo(Components.HitsDB, $"Changed type filter to {vm.TypeFilter}, found {vm.Total} hits");
+            OB.Logger.LogInfo(Components.HitsDB, $"Changed type filter to {vm.TypeFilter}, found {vm.Total} hits");
         }
 
         private void purgeButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.logger.LogWarning(Components.HitsDB, "Purge selected, prompting warning");
+            OB.Logger.LogWarning(Components.HitsDB, "Purge selected, prompting warning");
 
             if (MessageBox.Show("This will purge the WHOLE Hits DB, are you sure you want to continue?", "WARNING", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                Globals.logger.LogInfo(Components.HitsDB, "Purge initiated");
+                OB.Logger.LogInfo(Components.HitsDB, "Purge initiated");
 
                 vm.RemoveAll();
 
-                Globals.logger.LogInfo(Components.HitsDB, "Purge finished");
+                OB.Logger.LogInfo(Components.HitsDB, "Purge finished");
             }
-            else { Globals.logger.LogInfo(Components.HitsDB, "Purge dismissed"); }
+            else { OB.Logger.LogInfo(Components.HitsDB, "Purge dismissed"); }
         }
 
         private void listViewColumnHeader_Click(object sender, RoutedEventArgs e)
@@ -156,7 +156,7 @@ namespace OpenBullet.Views.Main
             }
             catch (Exception ex)
             {
-                Globals.logger.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}");
+                OB.Logger.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}");
             }
         }
 
@@ -168,7 +168,7 @@ namespace OpenBullet.Views.Main
             }
             catch (Exception ex)
             {
-                Globals.logger.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}");
+                OB.Logger.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}");
             }
         }
 
@@ -180,7 +180,7 @@ namespace OpenBullet.Views.Main
             }
             catch (Exception ex)
             { 
-                Globals.logger.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}"); 
+                OB.Logger.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}"); 
             }
         }
 
@@ -192,7 +192,7 @@ namespace OpenBullet.Views.Main
             }
             catch (Exception ex)
             {
-                Globals.logger.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}");
+                OB.Logger.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}");
             }
         }
         #endregion
@@ -206,7 +206,7 @@ namespace OpenBullet.Views.Main
             }
             catch (Exception ex) 
             { 
-                Globals.logger.LogError(Components.HitsDB, $"Exception while saving hits - {ex.Message}"); 
+                OB.Logger.LogError(Components.HitsDB, $"Exception while saving hits - {ex.Message}"); 
             }
         }
 
@@ -218,7 +218,7 @@ namespace OpenBullet.Views.Main
             }
             catch (Exception ex)
             {
-                Globals.logger.LogError(Components.HitsDB, $"Exception while saving hits - {ex.Message}");
+                OB.Logger.LogError(Components.HitsDB, $"Exception while saving hits - {ex.Message}");
             }
         }
 
@@ -230,7 +230,7 @@ namespace OpenBullet.Views.Main
             }
             catch (Exception ex)
             {
-                Globals.logger.LogError(Components.HitsDB, $"Exception while saving hits - {ex.Message}");
+                OB.Logger.LogError(Components.HitsDB, $"Exception while saving hits - {ex.Message}");
             }
         }
 
@@ -242,7 +242,7 @@ namespace OpenBullet.Views.Main
             }
             catch (Exception ex)
             {
-                Globals.logger.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}");
+                OB.Logger.LogError(Components.HitsDB, $"Exception while copying hits - {ex.Message}");
             }
         }
         #endregion
@@ -261,71 +261,72 @@ namespace OpenBullet.Views.Main
             } 
             catch (Exception ex) 
             {
-                Globals.logger.LogError(Components.HitsDB, $"Failed to copy selected proxy - {ex.Message}"); 
+                OB.Logger.LogError(Components.HitsDB, $"Failed to copy selected proxy - {ex.Message}"); 
             }
         }
         
         private void searchButton_Click(object sender, RoutedEventArgs e)
         {
             vm.SearchString = searchBar.Text;
-            Globals.logger.LogInfo(Components.HitsDB, "Changed capture filter to '"+ vm.SearchString + $"', found {vm.Total} hits");
+            OB.Logger.LogInfo(Components.HitsDB, "Changed capture filter to '"+ vm.SearchString + $"', found {vm.Total} hits");
         }
 
         private void sendToRecheck_Click(object sender, RoutedEventArgs e)
         {
-            if (hitsListView.SelectedItems.Count == 0) { Globals.logger.LogError(Components.HitsDB, "No hits selected!", true); return; }
+            if (hitsListView.SelectedItems.Count == 0) { OB.Logger.LogError(Components.HitsDB, "No hits selected!", true); return; }
             var first = (Hit)hitsListView.SelectedItem;
             var partialName = "Recheck-" + first.ConfigName;
-            var wordlist = new Wordlist(partialName, "NULL", Globals.environment.RecognizeWordlistType(first.Data), "", true, true);
+            var wordlist = new Wordlist(partialName, "NULL", OB.Settings.Environment.RecognizeWordlistType(first.Data), "", true, true);
 
-            var manager = Globals.mainWindow.RunnerManagerPage.vm;
-            var runner = manager.RunnersCollection.Last().Page;
-            Globals.mainWindow.ShowRunner(runner);
+            var manager = OB.RunnerManager;
+            var page = manager.RunnersCollection.Last().View;
+            var runner = manager.RunnersCollection.Last().ViewModel;
+            OB.MainWindow.ShowRunner(page);
 
-            runner.vm.SetWordlist(wordlist);
-            runner.vm.DataPool = new DataPool (hitsListView.SelectedItems.Cast<Hit>().Select(h => h.Data).ToList());
+            runner.SetWordlist(wordlist);
+            runner.DataPool = new DataPool (hitsListView.SelectedItems.Cast<Hit>().Select(h => h.Data).ToList());
 
             // Try to select the config referring to the first selected hit
             try
             {
-                var cfg = Globals.mainWindow.ConfigsPage.ConfigManagerPage.vm.ConfigsCollection.First(c => c.Name == first.ConfigName).Config;
-                runner.vm.SetConfig(cfg, false);
-                runner.vm.BotsAmount = Math.Min(cfg.Settings.SuggestedBots, hitsListView.SelectedItems.Count);
+                var cfg = OB.ConfigManager.ConfigsCollection.First(c => c.Name == first.ConfigName).Config;
+                runner.SetConfig(cfg, false);
+                runner.BotsAmount = Math.Min(cfg.Settings.SuggestedBots, hitsListView.SelectedItems.Count);
             }
             catch { }
 
             // Switch to Runner
-            Globals.mainWindow.menuOptionRunner_MouseDown(this, null);
+            OB.MainWindow.menuOptionRunner_MouseDown(this, null);
         }
 
         private void deleteSelected_Click(object sender, RoutedEventArgs e)
         {
-            Globals.logger.LogInfo(Components.HitsDB, $"Deleting {hitsListView.SelectedItems.Count} hits");
+            OB.Logger.LogInfo(Components.HitsDB, $"Deleting {hitsListView.SelectedItems.Count} hits");
 
             foreach (var hit in Selected.ToList())
             {
                 vm.Remove(hit);
             }
 
-            Globals.logger.LogInfo(Components.HitsDB, "Succesfully sent the delete query and refreshed the list");
+            OB.Logger.LogInfo(Components.HitsDB, "Succesfully sent the delete query and refreshed the list");
         }
 
         private void removeDuplicatesButton_Click(object sender, RoutedEventArgs e)
         {
             vm.DeleteDuplicates();
-            Globals.logger.LogInfo(Components.HitsDB, "Deleted duplicate hits");
+            OB.Logger.LogInfo(Components.HitsDB, "Deleted duplicate hits");
         }
 
         private void deleteFilteredButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.logger.LogWarning(Components.HitsDB, "Delete filtered selected, prompting warning");
+            OB.Logger.LogWarning(Components.HitsDB, "Delete filtered selected, prompting warning");
 
             if (MessageBox.Show("This will delete all the hits that are currently being displayed, are you sure you want to continue?", "WARNING", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
                 return;
 
             vm.DeleteFiltered();
 
-            Globals.logger.LogInfo(Components.HitsDB, "Deleted filtered hits");
+            OB.Logger.LogInfo(Components.HitsDB, "Deleted filtered hits");
         }
     }
 }

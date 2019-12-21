@@ -22,6 +22,11 @@ namespace RuriLib.Interfaces
         IProxyManager ProxyManager { get; }
 
         /// <summary>
+        /// The Proxy Checker.
+        /// </summary>
+        IProxyChecker ProxyChecker { get; }
+
+        /// <summary>
         /// The Wordlist Manager.
         /// </summary>
         IWordlistManager WordlistManager { get; }
@@ -39,7 +44,7 @@ namespace RuriLib.Interfaces
         /// <summary>
         /// The user interaction provider.
         /// </summary>
-        IAlert Alert { get; }
+        IAlerter Alerter { get; }
 
         /// <summary>
         /// The logging system.
@@ -49,6 +54,6 @@ namespace RuriLib.Interfaces
         /// <summary>
         /// The global settings.
         /// </summary>
-        IGlobals Globals { get; }
+        ISettings Settings { get; }
     }
 }

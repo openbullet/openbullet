@@ -11,10 +11,20 @@ using System.Linq;
 
 namespace OpenBullet.ViewModels
 {
-    class WordlistManagerViewModel : ViewModelBase, IWordlistManager
+    public class WordlistManagerViewModel : ViewModelBase, IWordlistManager
     {
         private LiteDBRepository<Wordlist> _repo;
-        public ObservableCollection<Wordlist> WordlistsCollection { get; private set; }
+
+        private ObservableCollection<Wordlist> wordlistsCollection;
+        public ObservableCollection<Wordlist> WordlistsCollection 
+        { 
+            get => wordlistsCollection;
+            private set
+            {
+                wordlistsCollection = value;
+                OnPropertyChanged();
+            }
+        }
 
         public int Total => WordlistsCollection.Count;
 
@@ -22,7 +32,7 @@ namespace OpenBullet.ViewModels
 
         public WordlistManagerViewModel()
         {
-            _repo = new LiteDBRepository<Wordlist>(Globals.dataBaseFile, "wordlists");
+            _repo = new LiteDBRepository<Wordlist>(OB.dataBaseFile, "wordlists");
             WordlistsCollection = new ObservableCollection<Wordlist>();
         }
 

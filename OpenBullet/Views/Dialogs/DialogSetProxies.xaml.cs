@@ -39,9 +39,9 @@ namespace OpenBullet
             else if ((bool)proxiesOnRadio.IsChecked) mode = ProxyMode.On;
             else if ((bool)proxiesOffRadio.IsChecked) mode = ProxyMode.Off;
 
-            if (Caller.GetType() == typeof(Runner))
+            if (Caller.GetType() == typeof(RunnerViewModel))
             {
-                (Caller as Runner).vm.ProxyMode = mode;
+                (Caller as RunnerViewModel).ProxyMode = mode;
             }
             ((MainDialog)Parent).Close();
         }

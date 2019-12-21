@@ -47,7 +47,7 @@ namespace OpenBullet.Repositories
             List<ConfigViewModel> configs = new List<ConfigViewModel>();
 
             // Load the configs in the root folder
-            foreach (var file in Directory.EnumerateFiles(Globals.configFolder).Where(file => file.EndsWith(".loli")))
+            foreach (var file in Directory.EnumerateFiles(OB.configFolder).Where(file => file.EndsWith(".loli")))
             {
                 try 
                 {
@@ -60,7 +60,7 @@ namespace OpenBullet.Repositories
             }
 
             // Load the configs in the subfolders
-            foreach (var categoryFolder in Directory.EnumerateDirectories(Globals.configFolder))
+            foreach (var categoryFolder in Directory.EnumerateDirectories(OB.configFolder))
             {
                 foreach (var file in Directory.EnumerateFiles(categoryFolder).Where(file => file.EndsWith(".loli")))
                 {

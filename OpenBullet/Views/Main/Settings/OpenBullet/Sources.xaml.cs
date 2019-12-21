@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace OpenBullet.Views.Main.Settings.OB
+namespace OpenBullet.Views.Main.Settings.OpenBullet
 {
     /// <summary>
     /// Logica di interazione per Sources.xaml
@@ -26,10 +26,10 @@ namespace OpenBullet.Views.Main.Settings.OB
 
         public Sources()
         {
-            InitializeComponent();
-
-            vm = Globals.obSettings.Sources;
+            vm = OB.OBSettings.Sources;
             DataContext = vm;
+
+            InitializeComponent();
         }
 
         private void authTypeCombobox_Loaded(object sender, RoutedEventArgs e)

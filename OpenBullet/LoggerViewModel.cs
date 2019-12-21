@@ -43,7 +43,7 @@ namespace OpenBullet
                 try
                 {
                     // The settings might be null
-                    return Globals.obSettings.General.EnableLogging;
+                    return OB.OBSettings.General.EnableLogging;
                 }
                 catch
                 {
@@ -59,7 +59,7 @@ namespace OpenBullet
                 try
                 {
                     // The settings might be null
-                    return Globals.obSettings.General.LogBufferSize;
+                    return OB.OBSettings.General.LogBufferSize;
                 }
                 catch
                 {
@@ -101,7 +101,7 @@ namespace OpenBullet
                     return false;
             }
 
-            if (!Globals.logger.OnlyErrors)
+            if (!OB.Logger.OnlyErrors)
                 return true;
 
             else
@@ -179,9 +179,9 @@ namespace OpenBullet
         {
             try
             {
-                if (Globals.obSettings.General.LogToFile)
+                if (OB.OBSettings.General.LogToFile)
                 {
-                    File.AppendAllText(Globals.logFile, $"[{entry.LogTime}] ({entry.LogLevel}) {entry.LogComponent} - " + entry.LogString + Environment.NewLine);
+                    File.AppendAllText(OB.logFile, $"[{entry.LogTime}] ({entry.LogLevel}) {entry.LogComponent} - " + entry.LogString + Environment.NewLine);
                 }
             }
             catch { }

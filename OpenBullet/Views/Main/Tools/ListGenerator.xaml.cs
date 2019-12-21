@@ -65,7 +65,7 @@ namespace OpenBullet.Views.Main.Tools
                 if (vm.AutoImport)
                 {
                     var wordlist = new Wordlist("Generated" + rand.Next(), sfd.FileName, "Default", "");
-                    Globals.mainWindow.WordlistManagerPage.AddWordlist(wordlist);
+                    OB.MainWindow.WordlistManagerPage.AddWordlist(wordlist);
                 }
             }
         }

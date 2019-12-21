@@ -221,10 +221,10 @@
     <Compile Include="Functions\Requests\Request.cs" />
     <Compile Include="Functions\Time\Time.cs" />
     <Compile Include="GZip.cs" />
-    <Compile Include="Interfaces\IAlert.cs" />
+    <Compile Include="Interfaces\IAlerter.cs" />
     <Compile Include="Interfaces\IApplication.cs" />
     <Compile Include="Interfaces\IConfigManager.cs" />
-    <Compile Include="Interfaces\IGlobals.cs" />
+    <Compile Include="Interfaces\ISettings.cs" />
     <Compile Include="Interfaces\IHitsDB.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IProxyChecker.cs" />

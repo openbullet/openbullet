@@ -14,13 +14,15 @@ namespace OpenBullet.Views.Main.Configs.OtherOptions
     /// </summary>
     public partial class Inputs : Page
     {
-        ConfigSettings vm = Globals.mainWindow.ConfigsPage.CurrentConfig.Config.Settings;
+        ConfigSettings vm = null;
         Random rand = new Random();
 
         public Inputs()
         {
-            InitializeComponent();
+            vm = OB.ConfigManager.CurrentConfig.Config.Settings;
             DataContext = vm;
+
+            InitializeComponent();
         }
 
         private void clearInputsButton_Click(object sender, RoutedEventArgs e)

@@ -19,14 +19,16 @@ namespace OpenBullet.Views.Main
     /// </summary>
     public partial class WordlistManager : Page
     {
-        private WordlistManagerViewModel vm = new WordlistManagerViewModel();
+        private WordlistManagerViewModel vm = null;
         private GridViewColumnHeader listViewSortCol = null;
         private SortAdorner listViewSortAdorner = null;
 
         public WordlistManager()
         {
-            InitializeComponent();
+            vm = OB.WordlistManager;
             DataContext = vm;
+
+            InitializeComponent();
 
             vm.RefreshList();
         }
@@ -39,7 +41,7 @@ namespace OpenBullet.Views.Main
             }
             catch (Exception e)
             {
-                Globals.logger.LogError(Components.WordlistManager, e.Message);
+                OB.Logger.LogError(Components.WordlistManager, e.Message);
             }
         }
 
@@ -51,30 +53,30 @@ namespace OpenBullet.Views.Main
         
         private void deleteButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.logger.LogInfo(Components.WordlistManager, $"Deleting {wordlistListView.SelectedItems.Count} references from the DB");
+            OB.Logger.LogInfo(Components.WordlistManager, $"Deleting {wordlistListView.SelectedItems.Count} references from the DB");
             foreach (var wordlist in wordlistListView.SelectedItems.Cast<Wordlist>().ToList())
             {
                 vm.Remove(wordlist);
             }
-            Globals.logger.LogInfo(Components.WordlistManager, "Successfully deleted the wordlist references from the DB");
+            OB.Logger.LogInfo(Components.WordlistManager, "Successfully deleted the wordlist references from the DB");
         }
 
         private void deleteAllButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.logger.LogWarning(Components.WordlistManager, "Purge selected, prompting warning");
+            OB.Logger.LogWarning(Components.WordlistManager, "Purge selected, prompting warning");
 
             if (MessageBox.Show("This will purge the WHOLE Wordlists DB, are you sure you want to continue?", "WARNING", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                Globals.logger.LogInfo(Components.WordlistManager, "Purge initiated");
+                OB.Logger.LogInfo(Components.WordlistManager, "Purge initiated");
                 vm.RemoveAll();
-                Globals.logger.LogInfo(Components.WordlistManager, "Purge finished");
+                OB.Logger.LogInfo(Components.WordlistManager, "Purge finished");
             }
-            else { Globals.logger.LogInfo(Components.WordlistManager, "Purge dismissed"); }
+            else { OB.Logger.LogInfo(Components.WordlistManager, "Purge dismissed"); }
         }
 
         private void deleteNotFoundWordlistsButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.logger.LogWarning(Components.WordlistManager, "Deleting wordlists with missing files.");
+            OB.Logger.LogWarning(Components.WordlistManager, "Deleting wordlists with missing files.");
             vm.DeleteNotFound();
         }
         #endregion
@@ -113,13 +115,13 @@ namespace OpenBullet.Views.Main
                         var path = file;
                         var cwd = Directory.GetCurrentDirectory();
                         if (path.StartsWith(cwd)) path = path.Substring(cwd.Length + 1);
-                        var wordlist = new Wordlist(Path.GetFileNameWithoutExtension(file), path, Globals.environment.WordlistTypes.First().Name, "");
+                        var wordlist = new Wordlist(Path.GetFileNameWithoutExtension(file), path, OB.Settings.Environment.WordlistTypes.First().Name, "");
 
                         // Get the first line
                         var first = File.ReadLines(wordlist.Path).First(l => !string.IsNullOrWhiteSpace(l));
 
                         // Set the correct wordlist type
-                        wordlist.Type = Globals.environment.RecognizeWordlistType(first);
+                        wordlist.Type = OB.Settings.Environment.RecognizeWordlistType(first);
 
                         // Add the wordlist to the manager
                         AddWordlist(wordlist);

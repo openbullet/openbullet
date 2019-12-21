@@ -13,7 +13,7 @@ namespace OpenBullet.ViewModels
     {
         public ObservableCollection<RunnerInstance> RunnersCollection { get; set; } = new ObservableCollection<RunnerInstance>();
 
-        public IEnumerable<IRunner> Runners => RunnersCollection.Select(i => i.Runner);
+        public IEnumerable<IRunner> Runners => RunnersCollection.Select(i => i.ViewModel);
 
         private Random rand = new Random();
 
@@ -26,12 +26,12 @@ namespace OpenBullet.ViewModels
         {
             var instance = new RunnerInstance(rand.Next());
             RunnersCollection.Add(instance);
-            return instance.Runner;
+            return instance.ViewModel;
         }
 
         public void Remove(IRunner runner)
         {
-            RunnersCollection.Remove(RunnersCollection.First(r => r.Runner == runner));
+            RunnersCollection.Remove(RunnersCollection.First(r => r.ViewModel == runner));
         }
 
         public void Remove(int id)
@@ -47,15 +47,16 @@ namespace OpenBullet.ViewModels
 
     public class RunnerInstance
     {
-        public Runner Page { get; private set; }
-        public RunnerViewModel Runner => Page.vm;
+        public Runner View { get; private set; }
+        public RunnerViewModel ViewModel { get; private set; }
 
         public int Id { get; set; }
 
         public RunnerInstance(int id)
         {
             Id = id;
-            Page = new Runner();
+            ViewModel = new RunnerViewModel(OB.Settings.Environment, OB.Settings.RLSettings, OB.Random);
+            View = new Runner(ViewModel);
         }
     }
 }

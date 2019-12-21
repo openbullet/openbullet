@@ -13,17 +13,17 @@ namespace OpenBullet.Views.Main.Settings.RL
         public General()
         {
             InitializeComponent();
-            DataContext = Globals.rlSettings.General;
+            DataContext = OB.Settings.RLSettings.General;
 
             foreach (string i in Enum.GetNames(typeof(BotsDisplayMode)))
                 botsDisplayModeCombobox.Items.Add(i);
 
-            botsDisplayModeCombobox.SelectedIndex = (int)Globals.rlSettings.General.BotsDisplayMode;
+            botsDisplayModeCombobox.SelectedIndex = (int)OB.Settings.RLSettings.General.BotsDisplayMode;
         }
 
         private void botsDisplayModeCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Globals.rlSettings.General.BotsDisplayMode = (BotsDisplayMode)botsDisplayModeCombobox.SelectedIndex;
+            OB.Settings.RLSettings.General.BotsDisplayMode = (BotsDisplayMode)botsDisplayModeCombobox.SelectedIndex;
         }
     }
 }

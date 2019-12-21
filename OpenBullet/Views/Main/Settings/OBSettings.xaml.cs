@@ -1,5 +1,4 @@
-﻿using OpenBullet.ViewModels;
-using OpenBullet.Views.Main.Settings.OB;
+﻿using OpenBullet.Views.Main.Settings.OpenBullet;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -54,23 +53,23 @@ namespace OpenBullet.Views.Main.Settings
                 try
                 {
                     var c = (Label)child;
-                    c.Foreground = Globals.GetBrush("ForegroundMain");
+                    c.Foreground = Utils.GetBrush("ForegroundMain");
                 }
                 catch { }
             }
-            ((Label)sender).Foreground = Globals.GetBrush("ForegroundGood");
+            ((Label)sender).Foreground = Utils.GetBrush("ForegroundGood");
         }
 #endregion
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
-            OBIOManager.SaveSettings(Globals.obSettingsFile, Globals.obSettings);
+            OBIOManager.SaveSettings(OB.obSettingsFile, OB.OBSettings);
         }
 
         private void resetButton_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Are you sure you want to reset all your OpenBullet settings?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                Globals.obSettings.Reset();
+                OB.OBSettings.Reset();
         }
     }
 }

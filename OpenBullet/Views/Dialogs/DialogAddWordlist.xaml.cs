@@ -22,7 +22,7 @@ namespace OpenBullet
 
             Caller = caller;
 
-            foreach (string i in Globals.environment.GetWordlistTypeNames())
+            foreach (string i in OB.Settings.Environment.GetWordlistTypeNames())
                 typeCombobox.Items.Add(i);
 
             typeCombobox.SelectedIndex = 0;
@@ -55,7 +55,7 @@ namespace OpenBullet
             try
             {
                 var first = File.ReadLines(ofd.FileName).First();
-                typeCombobox.Text = Globals.environment.RecognizeWordlistType(first);
+                typeCombobox.Text = OB.Settings.Environment.RecognizeWordlistType(first);
             }
             catch { }
         }

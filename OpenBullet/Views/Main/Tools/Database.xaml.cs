@@ -29,25 +29,25 @@ namespace OpenBullet.Views.Main.Tools
 
         private void shrinkButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Globals.mainWindow.RunnerManagerPage.vm.RunnersCollection.Any(r => r.Runner.Master.IsBusy))
+            if (OB.RunnerManager.RunnersCollection.Any(r => r.ViewModel.Master.IsBusy))
             {
-                Globals.logger.LogWarning(Components.Database, "Please stop all active runners before shrinking the database!", true);
+                OB.Logger.LogWarning(Components.Database, "Please stop all active runners before shrinking the database!", true);
                 return;
             }
 
             try
             {
-                using (var db = new LiteDatabase(Globals.dataBaseFile))
+                using (var db = new LiteDatabase(OB.dataBaseFile))
                 {
-                    var previousSize = (int)(new FileInfo(Globals.dataBaseFile).Length / 1000);
+                    var previousSize = (int)(new FileInfo(OB.dataBaseFile).Length / 1000);
                     db.Shrink();
-                    var newSize = (int)(new FileInfo(Globals.dataBaseFile).Length / 1000);
-                    Globals.logger.LogInfo(Components.Database, $"Database successfully shrinked from {previousSize} KB to {newSize} KB", true);
+                    var newSize = (int)(new FileInfo(OB.dataBaseFile).Length / 1000);
+                    OB.Logger.LogInfo(Components.Database, $"Database successfully shrinked from {previousSize} KB to {newSize} KB", true);
                 }
             }
             catch (Exception ex)
             {
-                Globals.logger.LogError(Components.Database, $"Shrink failed! Error: {ex.Message}");
+                OB.Logger.LogError(Components.Database, $"Shrink failed! Error: {ex.Message}");
             }
         }
     }

@@ -9,7 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Xceed.Wpf.Toolkit;
 
-namespace OpenBullet.Views.Main.Settings.OB
+namespace OpenBullet.Views.Main.Settings.OpenBullet
 {
 
     /// <summary>
@@ -20,29 +20,29 @@ namespace OpenBullet.Views.Main.Settings.OB
         public Themes()
         {
             InitializeComponent();
-            DataContext = Globals.obSettings.Themes;
+            DataContext = OB.OBSettings.Themes;
             
             // Load all the saved colors
             SetColors();
             SetColorPreviews();
             SetImagePreviews();
-            Globals.mainWindow.AllowsTransparency = Globals.obSettings.Themes.AllowTransparency;
+            OB.MainWindow.AllowsTransparency = OB.OBSettings.Themes.AllowTransparency;
         }
 
         public void SetColors()
         {
-            SetAppColor("BackgroundMain", Globals.obSettings.Themes.BackgroundMain);
-            SetAppColor("BackgroundSecondary", Globals.obSettings.Themes.BackgroundSecondary);
-            SetAppColor("ForegroundMain", Globals.obSettings.Themes.ForegroundMain);
-            SetAppColor("ForegroundGood", Globals.obSettings.Themes.ForegroundGood);
-            SetAppColor("ForegroundBad", Globals.obSettings.Themes.ForegroundBad);
-            SetAppColor("ForegroundCustom", Globals.obSettings.Themes.ForegroundCustom);
-            SetAppColor("ForegroundRetry", Globals.obSettings.Themes.ForegroundRetry);
-            SetAppColor("ForegroundToCheck", Globals.obSettings.Themes.ForegroundToCheck);
-            SetAppColor("ForegroundMenuSelected", Globals.obSettings.Themes.ForegroundMenuSelected);
+            SetAppColor("BackgroundMain", OB.OBSettings.Themes.BackgroundMain);
+            SetAppColor("BackgroundSecondary", OB.OBSettings.Themes.BackgroundSecondary);
+            SetAppColor("ForegroundMain", OB.OBSettings.Themes.ForegroundMain);
+            SetAppColor("ForegroundGood", OB.OBSettings.Themes.ForegroundGood);
+            SetAppColor("ForegroundBad", OB.OBSettings.Themes.ForegroundBad);
+            SetAppColor("ForegroundCustom", OB.OBSettings.Themes.ForegroundCustom);
+            SetAppColor("ForegroundRetry", OB.OBSettings.Themes.ForegroundRetry);
+            SetAppColor("ForegroundToCheck", OB.OBSettings.Themes.ForegroundToCheck);
+            SetAppColor("ForegroundMenuSelected", OB.OBSettings.Themes.ForegroundMenuSelected);
 
             // This sets the background for the mainwindow (alternatively solid or image)
-            Globals.mainWindow.SetStyle();
+            OB.MainWindow.SetStyle();
         }
 
         private void SetColorPreviews()
@@ -72,8 +72,8 @@ namespace OpenBullet.Views.Main.Settings.OB
         {
             try
             {
-                backgroundImagePreview.Source = GetImageBrush(Globals.obSettings.Themes.BackgroundImage);
-                backgroundLogoPreview.Source = GetImageBrush(Globals.obSettings.Themes.BackgroundLogo);
+                backgroundImagePreview.Source = GetImageBrush(OB.OBSettings.Themes.BackgroundImage);
+                backgroundLogoPreview.Source = GetImageBrush(OB.OBSettings.Themes.BackgroundLogo);
             }
             catch { }
         }
@@ -95,15 +95,15 @@ namespace OpenBullet.Views.Main.Settings.OB
 
         private void resetButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.obSettings.Themes.BackgroundMain = "#222";
-            Globals.obSettings.Themes.BackgroundSecondary = "#111";
-            Globals.obSettings.Themes.ForegroundMain = "#dcdcdc";
-            Globals.obSettings.Themes.ForegroundGood = "#adff2f";
-            Globals.obSettings.Themes.ForegroundBad = "#ff6347";
-            Globals.obSettings.Themes.ForegroundCustom = "#ff8c00";
-            Globals.obSettings.Themes.ForegroundRetry = "#ffff00";
-            Globals.obSettings.Themes.ForegroundToCheck = "#7fffd4";
-            Globals.obSettings.Themes.ForegroundMenuSelected = "#1e90ff";
+            OB.OBSettings.Themes.BackgroundMain = "#222";
+            OB.OBSettings.Themes.BackgroundSecondary = "#111";
+            OB.OBSettings.Themes.ForegroundMain = "#dcdcdc";
+            OB.OBSettings.Themes.ForegroundGood = "#adff2f";
+            OB.OBSettings.Themes.ForegroundBad = "#ff6347";
+            OB.OBSettings.Themes.ForegroundCustom = "#ff8c00";
+            OB.OBSettings.Themes.ForegroundRetry = "#ffff00";
+            OB.OBSettings.Themes.ForegroundToCheck = "#7fffd4";
+            OB.OBSettings.Themes.ForegroundMenuSelected = "#1e90ff";
 
             SetColors();
             SetColorPreviews();
@@ -117,7 +117,7 @@ namespace OpenBullet.Views.Main.Settings.OB
        + "All Graphics Types|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff";
             ofd.FilterIndex = 4;
             ofd.ShowDialog();
-            Globals.obSettings.Themes.BackgroundImage = ofd.FileName;
+            OB.OBSettings.Themes.BackgroundImage = ofd.FileName;
 
             SetColors();
             SetImagePreviews();
@@ -130,7 +130,7 @@ namespace OpenBullet.Views.Main.Settings.OB
        + "All Graphics Types|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff";
             ofd.FilterIndex = 4;
             ofd.ShowDialog();
-            Globals.obSettings.Themes.BackgroundLogo = ofd.FileName;
+            OB.OBSettings.Themes.BackgroundLogo = ofd.FileName;
 
             SetColors();
             SetImagePreviews();
@@ -139,7 +139,7 @@ namespace OpenBullet.Views.Main.Settings.OB
         private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
             if (e.NewValue.HasValue)
-                Globals.obSettings.Themes.GetType().GetProperty(((ColorPicker)sender).Name.ToString()).SetValue(Globals.obSettings.Themes, ColorToHtml(e.NewValue.Value), null);
+                OB.OBSettings.Themes.GetType().GetProperty(((ColorPicker)sender).Name.ToString()).SetValue(OB.OBSettings.Themes, ColorToHtml(e.NewValue.Value), null);
 
             SetColors();
         }
@@ -161,7 +161,7 @@ namespace OpenBullet.Views.Main.Settings.OB
 
         private void backgroundImageOpacityUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            Globals.mainWindow.SetStyle();
+            OB.MainWindow.SetStyle();
         }
     }
 }

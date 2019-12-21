@@ -19,7 +19,7 @@ namespace OpenBullet.Views.Main.Configs
 
     public partial class ConfigManager : Page
     {
-        public ConfigManagerViewModel vm = new ConfigManagerViewModel();
+        private ConfigManagerViewModel vm = null;
         private GridViewColumnHeader listViewSortCol = null;
         private SortAdorner listViewSortAdorner = null;
 
@@ -32,25 +32,27 @@ namespace OpenBullet.Views.Main.Configs
 
         public ConfigManager()
         {
-            InitializeComponent();
+            vm = OB.ConfigManager;
             DataContext = vm;
+
+            InitializeComponent();
         }
 
         #region State
         // Checks if the config's hash is the same as the saved one
         public bool CheckSaved()
         {
-            var stacker = Globals.mainWindow.ConfigsPage.StackerPage;
+            var stacker = OB.MainWindow.ConfigsPage.StackerPage;
             
             // If we don't have a config selected or we suppressed the warning or we don't have a Stacker open
-            if (vm.CurrentConfig == null || Globals.obSettings.General.DisableNotSavedWarning || stacker == null)
+            if (vm.CurrentConfig == null || OB.OBSettings.General.DisableNotSavedWarning || stacker == null)
             {
                 return true;
             }
 
             // Blocks to LS conversion because we are going to hash the LS
             stacker.SetScript();
-            var cvm = stacker.vm.Config;
+            var cvm = OB.Stacker.Config;
 
             // If we don't have a config loaded in Stacker
             if (cvm == null)
@@ -64,7 +66,7 @@ namespace OpenBullet.Views.Main.Configs
         // Saves a hash of the LS of the config in Stacker
         public void SaveState()
         {
-            var cvm = Globals.mainWindow.ConfigsPage.StackerPage.vm.Config;
+            var cvm = OB.Stacker.Config;
 
             if (cvm != null)
             {
@@ -78,7 +80,7 @@ namespace OpenBullet.Views.Main.Configs
         {
             if (!CheckSaved())
             {
-                Globals.logger.LogWarning(Components.Stacker, "Config not saved, prompting quit confirmation");
+                OB.Logger.LogWarning(Components.Stacker, "Config not saved, prompting quit confirmation");
                 if (MessageBox.Show("The Config in Stacker wasn't saved.\nAre you sure you want to load another config?",
                     "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                     return;
@@ -95,16 +97,16 @@ namespace OpenBullet.Views.Main.Configs
 
         private void deleteConfigsButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.logger.LogWarning(Components.ConfigManager, "Deletion initiated, prompting warning");
+            OB.Logger.LogWarning(Components.ConfigManager, "Deletion initiated, prompting warning");
             if (MessageBox.Show("This will delete the physical files from your disk! Are you sure you want to continue?", "WARNING", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
                 vm.Remove(Selected);
 
-                Globals.logger.LogInfo(Components.ConfigManager, "Deletion completed");
+                OB.Logger.LogInfo(Components.ConfigManager, "Deletion completed");
             }
             else
             {
-                Globals.logger.LogInfo(Components.ConfigManager, "Deletion cancelled");
+                OB.Logger.LogInfo(Components.ConfigManager, "Deletion cancelled");
             }
         }
 
@@ -117,7 +119,7 @@ namespace OpenBullet.Views.Main.Configs
         {
             if (!CheckSaved())
             {
-                Globals.logger.LogWarning(Components.Stacker, "Config not saved, prompting quit confirmation");
+                OB.Logger.LogWarning(Components.Stacker, "Config not saved, prompting quit confirmation");
                 if (MessageBox.Show("The Config in Stacker wasn't saved.\r\nAre you sure you want to create a new config?",
                     "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                     return;
@@ -141,9 +143,9 @@ namespace OpenBullet.Views.Main.Configs
         {
             try
             {
-                System.Diagnostics.Process.Start(System.IO.Path.Combine(Directory.GetCurrentDirectory(), Globals.configFolder));
+                System.Diagnostics.Process.Start(System.IO.Path.Combine(Directory.GetCurrentDirectory(), OB.configFolder));
             }
-            catch { Globals.logger.LogError(Components.ConfigManager, "No config folder found!", true); }
+            catch { OB.Logger.LogError(Components.ConfigManager, "No config folder found!", true); }
         }
         #endregion
 
@@ -151,25 +153,25 @@ namespace OpenBullet.Views.Main.Configs
         public void SaveConfig()
         {
             if (vm.CurrentConfig == null ||
-                Globals.mainWindow.ConfigsPage.StackerPage == null ||
-                Globals.mainWindow.ConfigsPage.OtherOptionsPage == null)
+                OB.MainWindow.ConfigsPage.StackerPage == null ||
+                OB.MainWindow.ConfigsPage.OtherOptionsPage == null)
             {
-                Globals.logger.LogError(Components.ConfigManager, "No config eligible for saving!", true);
+                OB.Logger.LogError(Components.ConfigManager, "No config eligible for saving!", true);
                 return;
             }
 
             if (vm.CurrentConfig.Remote)
             {
-                Globals.logger.LogError(Components.ConfigManager, "The config was pulled from a remote source and cannot be saved!", true);
+                OB.Logger.LogError(Components.ConfigManager, "The config was pulled from a remote source and cannot be saved!", true);
                 return;
             }
 
             if (vm.CurrentConfigName == "") {
-                Globals.logger.LogError(Components.ConfigManager, "Empty config name, cannot save", true);
+                OB.Logger.LogError(Components.ConfigManager, "Empty config name, cannot save", true);
                 return;
             }
 
-            var stacker = Globals.mainWindow.ConfigsPage.StackerPage.vm;
+            var stacker = OB.Stacker;
             stacker.ConvertKeychains();
 
             if (stacker.View == StackerView.Blocks)
@@ -177,11 +179,11 @@ namespace OpenBullet.Views.Main.Configs
 
             vm.CurrentConfig.Config.Script = stacker.LS.Script;
 
-            Globals.logger.LogInfo(Components.ConfigManager, $"Saving config {vm.CurrentConfigName}");
+            OB.Logger.LogInfo(Components.ConfigManager, $"Saving config {vm.CurrentConfigName}");
 
             vm.CurrentConfig.Config.Settings.LastModified = DateTime.Now;
-            vm.CurrentConfig.Config.Settings.Version = Globals.obVersion;
-            Globals.logger.LogInfo(Components.ConfigManager, "Converted the unbinded observables and set the Last Modified date");
+            vm.CurrentConfig.Config.Settings.Version = OB.Version;
+            OB.Logger.LogInfo(Components.ConfigManager, "Converted the unbinded observables and set the Last Modified date");
 
             // Save to file
             try
@@ -193,7 +195,7 @@ namespace OpenBullet.Views.Main.Configs
             }
             catch (Exception ex)
             {
-                Globals.logger.LogError(Components.ConfigManager, $"Failed to save the config. Reason: {ex.Message}", true);
+                OB.Logger.LogError(Components.ConfigManager, $"Failed to save the config. Reason: {ex.Message}", true);
             }
         }
 
@@ -201,7 +203,7 @@ namespace OpenBullet.Views.Main.Configs
         {
             if (config == null)
             {
-                Globals.logger.LogError(Components.ConfigManager, "The config to load cannot be null");
+                OB.Logger.LogError(Components.ConfigManager, "The config to load cannot be null");
             }
 
             // Set the config as current
@@ -209,34 +211,35 @@ namespace OpenBullet.Views.Main.Configs
 
             if (vm.CurrentConfig.Remote)
             {
-                Globals.logger.LogError(Components.ConfigManager, "The config was pulled from a remote source and cannot be edited!", true);
+                OB.Logger.LogError(Components.ConfigManager, "The config was pulled from a remote source and cannot be edited!", true);
                 vm.CurrentConfig = null;
                 return;
             }
 
-            Globals.logger.LogInfo(Components.ConfigManager, "Loading config: " + vm.CurrentConfig.Name);
+            OB.Logger.LogInfo(Components.ConfigManager, "Loading config: " + vm.CurrentConfig.Name);
 
-            Globals.mainWindow.ConfigsPage.menuOptionStacker.IsEnabled = true;
-            Globals.mainWindow.ConfigsPage.menuOptionOtherOptions.IsEnabled = true;
+            OB.MainWindow.ConfigsPage.menuOptionStacker.IsEnabled = true;
+            OB.MainWindow.ConfigsPage.menuOptionOtherOptions.IsEnabled = true;
 
-            var newStacker = new Stacker(vm.CurrentConfig);
+            var newStackerVM = new StackerViewModel(vm.CurrentConfig);
 
             // Preserve the old stacker test data and proxy
-            if (Globals.mainWindow.ConfigsPage.StackerPage != null)
+            if (OB.MainWindow.ConfigsPage.StackerPage != null)
             {
-                newStacker.vm.TestData = Globals.mainWindow.ConfigsPage.StackerPage.vm.TestData;
-                newStacker.vm.TestProxy = Globals.mainWindow.ConfigsPage.StackerPage.vm.TestProxy;
-                newStacker.vm.ProxyType = Globals.mainWindow.ConfigsPage.StackerPage.vm.ProxyType;
+                newStackerVM.TestData = OB.Stacker.TestData;
+                newStackerVM.TestProxy = OB.Stacker.TestProxy;
+                newStackerVM.ProxyType = OB.Stacker.ProxyType;
             }
 
-            Globals.mainWindow.ConfigsPage.StackerPage = newStacker; // Create a Stacker instance
-            Globals.logger.LogInfo(Components.ConfigManager, "Created and assigned a new Stacker instance");
-            Globals.mainWindow.ConfigsPage.OtherOptionsPage = new ConfigOtherOptions(); // Create an Other Options instance
-            Globals.logger.LogInfo(Components.ConfigManager, "Created and assigned a new Other Options instance");
-            Globals.mainWindow.ConfigsPage.menuOptionStacker_MouseDown(this, null); // Switch to Stacker
+            OB.Stacker = newStackerVM;
+            OB.MainWindow.ConfigsPage.StackerPage = new Stacker(); // Create a Stacker instance
+            OB.Logger.LogInfo(Components.ConfigManager, "Created and assigned a new Stacker instance");
+            OB.MainWindow.ConfigsPage.OtherOptionsPage = new ConfigOtherOptions(); // Create an Other Options instance
+            OB.Logger.LogInfo(Components.ConfigManager, "Created and assigned a new Other Options instance");
+            OB.MainWindow.ConfigsPage.menuOptionStacker_MouseDown(this, null); // Switch to Stacker
 
             // Save the last state of the config
-            Globals.mainWindow.ConfigsPage.StackerPage.SetScript();
+            OB.MainWindow.ConfigsPage.StackerPage.SetScript();
             SaveState();
         }
 
@@ -253,18 +256,19 @@ namespace OpenBullet.Views.Main.Configs
             vm.Add(newConfig);
 
             vm.CurrentConfig = newConfig;
-            var newStacker = new Stacker(vm.CurrentConfig);
-            if (Globals.mainWindow.ConfigsPage.StackerPage != null) // Maintain the previous stacker settings
+            var newStackerVM = new StackerViewModel(vm.CurrentConfig);
+            if (OB.MainWindow.ConfigsPage.StackerPage != null) // Maintain the previous stacker settings
             {
-                newStacker.vm.TestData = Globals.mainWindow.ConfigsPage.StackerPage.vm.TestData;
-                newStacker.vm.TestProxy = Globals.mainWindow.ConfigsPage.StackerPage.vm.TestProxy;
-                newStacker.vm.ProxyType = Globals.mainWindow.ConfigsPage.StackerPage.vm.ProxyType;
+                newStackerVM.TestData = OB.Stacker.TestData;
+                newStackerVM.TestProxy = OB.Stacker.TestProxy;
+                newStackerVM.ProxyType = OB.Stacker.ProxyType;
             }
-            Globals.mainWindow.ConfigsPage.StackerPage = newStacker; // Create a Stacker instance
-            Globals.logger.LogInfo(Components.ConfigManager, "Created and assigned a new Stacker instance");
-            Globals.mainWindow.ConfigsPage.OtherOptionsPage = new ConfigOtherOptions(); // Create an Other Options instance
-            Globals.logger.LogInfo(Components.ConfigManager, "Created and assigned a new Other Options instance");
-            Globals.mainWindow.ConfigsPage.menuOptionStacker_MouseDown(this, null); // Switch to Stacker
+            OB.Stacker = newStackerVM;
+            OB.MainWindow.ConfigsPage.StackerPage = new Stacker(); // Create a Stacker instance
+            OB.Logger.LogInfo(Components.ConfigManager, "Created and assigned a new Stacker instance");
+            OB.MainWindow.ConfigsPage.OtherOptionsPage = new ConfigOtherOptions(); // Create an Other Options instance
+            OB.Logger.LogInfo(Components.ConfigManager, "Created and assigned a new Other Options instance");
+            OB.MainWindow.ConfigsPage.menuOptionStacker_MouseDown(this, null); // Switch to Stacker
         }
         #endregion
 
