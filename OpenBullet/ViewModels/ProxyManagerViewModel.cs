@@ -249,12 +249,13 @@ namespace OpenBullet.ViewModels
 
         public void Remove(IEnumerable<CProxy> proxies)
         {
-            foreach (var proxy in proxies.ToArray())
+            var toRemove = proxies.ToArray();
+            foreach (var proxy in toRemove)
             {
                 ProxiesCollection.Remove(proxy);
             }
 
-            _repo.Remove(proxies);
+            _repo.Remove(toRemove);
         }
 
         public void RemoveAll()

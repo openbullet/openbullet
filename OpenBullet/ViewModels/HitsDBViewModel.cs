@@ -140,12 +140,13 @@ namespace OpenBullet.ViewModels
 
         public void Remove(IEnumerable<Hit> hits)
         {
-            foreach (var hit in hits.ToArray())
+            var toRemove = hits.ToArray();
+            foreach (var hit in toRemove)
             {
                 HitsCollection.Remove(hit);
             }
 
-            _repo.Remove(hits);
+            _repo.Remove(toRemove);
         }
 
         public void RemoveAll()
