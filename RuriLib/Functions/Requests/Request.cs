@@ -30,6 +30,15 @@ namespace RuriLib.Functions.Requests
         private bool isGZipped = false;
 
         /// <summary>
+        /// Disposes of the HttpRequest and HttpContent when destroyed.
+        /// </summary>
+        ~Request()
+        {
+            request?.Dispose();
+            content?.Dispose();
+        }
+
+        /// <summary>
         /// Sets up the request options.
         /// </summary>
         /// <param name="settings">The RuriLib settings</param>
