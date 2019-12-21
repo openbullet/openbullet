@@ -249,7 +249,7 @@ namespace OpenBullet.ViewModels
 
         public void Remove(IEnumerable<CProxy> proxies)
         {
-            foreach (var proxy in proxies)
+            foreach (var proxy in proxies.ToArray())
             {
                 ProxiesCollection.Remove(proxy);
             }
@@ -267,12 +267,12 @@ namespace OpenBullet.ViewModels
         #region Delete methods
         public void RemoveNotWorking()
         {
-            Remove(ProxiesCollection.Where(p => p.Working == ProxyWorking.NO));
+            Remove(Proxies.Where(p => p.Working == ProxyWorking.NO));
         }
 
         public void RemoveDuplicates()
         {
-            var duplicates = ProxiesCollection
+            var duplicates = Proxies
                 .GroupBy(p => p.Proxy)
                 .Where(g => g.Count() > 1)
                 .SelectMany(g => g.OrderBy(p => p.Proxy).Reverse().Skip(1));
@@ -282,7 +282,7 @@ namespace OpenBullet.ViewModels
 
         public void RemoveUntested()
         {
-            Remove(ProxiesCollection.Where(p => p.Working == ProxyWorking.UNTESTED));
+            Remove(Proxies.Where(p => p.Working == ProxyWorking.UNTESTED));
         }
         #endregion
     }
