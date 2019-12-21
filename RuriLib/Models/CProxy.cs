@@ -44,35 +44,44 @@ namespace RuriLib.Models
     /// </summary>
     public class CProxy : Persistable<Guid>
     {
+        private string proxy = "";
         /// <summary>The unparsed proxy string.</summary>
-        public string Proxy { get; set; } = "";
+        public string Proxy { get => proxy; set { proxy = value; OnPropertyChanged(); } }
 
+        private string username = "";
         /// <summary>The username used for authentication (empty if none).</summary>
-        public string Username { get; set; } = "";
+        public string Username { get => username; set { username = value; OnPropertyChanged(); } }
 
+        private string password = "";
         /// <summary>The password used for authentication (empty if none).</summary>
-        public string Password { get; set; } = "";
+        public string Password { get => password; set { password = value; OnPropertyChanged(); } }
 
+        private ProxyType type = ProxyType.Http;
         /// <summary>The type of proxy.</summary>
-        public ProxyType Type { get; set; } = ProxyType.Http;
+        public ProxyType Type { get => type; set { type = value; OnPropertyChanged(); } }
 
+        private string country = "";
         /// <summary>The country of the proxy's ip.</summary>
-        public string Country { get; set; } = "";
+        public string Country { get => country; set { country = value; OnPropertyChanged(); } }
 
+        private int ping = 0;
         /// <summary>The response delay of the proxy.</summary>
-        public int Ping { get; set; } = 0;
+        public int Ping { get => ping; set { ping = value; OnPropertyChanged(); } }
 
         /// <summary>The next proxy object in a Proxy Chain.</summary>
         public CProxy Next { get; set; } = null;
 
+        private DateTime lastUsed = new DateTime(1970, 1, 1);
         /// <summary>When the proxy was last used.</summary>
-        public DateTime LastUsed { get; set; } = new DateTime(1970, 1, 1);
+        public DateTime LastUsed { get => lastUsed; set { lastUsed = value; OnPropertyChanged(); } }
 
+        private DateTime lastChecked = new DateTime(1970, 1, 1);
         /// <summary>When the proxy was last checked.</summary>
-        public DateTime LastChecked { get; set; } = new DateTime(1970, 1, 1);
+        public DateTime LastChecked { get => lastChecked; set { lastChecked = value; OnPropertyChanged(); } }
 
+        private ProxyWorking working = ProxyWorking.UNTESTED;
         /// <summary>The Working Status of the proxy.</summary>
-        public ProxyWorking Working { get; set; } = ProxyWorking.UNTESTED;
+        public ProxyWorking Working { get => working; set { working = value; OnPropertyChanged(); } }
 
         /// <summary>Whether the proxy has a successor in the Proxy Chain.</summary>
         [BsonIgnore]
@@ -222,13 +231,13 @@ namespace RuriLib.Models
             ChainProxyClient cpc = new ChainProxyClient();
 
             var current = this;
-            
+
             while (current != null)
             {
                 cpc.AddProxy(current.GetStandardClient());
                 current = current.Next;
             }
-            
+
             return cpc;
         }
 
@@ -256,12 +265,14 @@ namespace RuriLib.Models
 
         /// <summary>Whether the proxy is a valid numeric proxy.</summary>
         [BsonIgnore]
-        public bool IsValidNumeric {
-            get {
+        public bool IsValidNumeric
+        {
+            get
+            {
                 return !(
-                    Host == "" || 
-                    Port == "" || 
-                    Port.Any(c => !char.IsDigit(c)) || 
+                    Host == "" ||
+                    Port == "" ||
+                    Port.Any(c => !char.IsDigit(c)) ||
                     Host.Split('.').Count() != 4 ||
                     !IsNumeric
                     );

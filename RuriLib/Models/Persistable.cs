@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RuriLib.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace RuriLib.Models
     /// <summary>
     /// Objects that can be saved on a persistent storage can inherit from this class.
     /// </summary>
-    public abstract class Persistable<T>
+    public abstract class Persistable<T> : ViewModelBase
     {
         /// <summary>
         /// The unique id.
