@@ -18,19 +18,27 @@ namespace RuriLib.Interfaces
         /// <summary>
         /// Starts the Runner.
         /// </summary>
-        /// <param name="cancellationToken">The token that allows to abort execution</param>
-        /// <param name="progress">The delegate that gets called when the progress changes</param>
-        void Start(CancellationToken cancellationToken, IProgress<float> progress = null);
+        void Start();
+
+        /// <summary>
+        /// Stops the Runner.
+        /// </summary>
+        void Stop();
 
         /// <summary>
         /// Whether the Runner is already busy.
         /// </summary>
-        bool IsBusy { get; }
+        bool Busy { get; }
 
         /// <summary>
-        /// The list of found hits.
+        /// The checking progress percentage (0 to 100).
         /// </summary>
-        IEnumerable<Hit> Hits { get; }
+        int Progress { get; }
+
+        /// <summary>
+        /// The collection of data that was checked with a positive outcome.
+        /// </summary>
+        IEnumerable<ValidData> Checked { get; }
 
         /// <summary>
         /// Progress and statistics.
@@ -40,17 +48,30 @@ namespace RuriLib.Interfaces
         /// <summary>
         /// The currently selected Config.
         /// </summary>
-        Config Config { get; set; }
+        Config Config { get; }
+
+        /// <summary>
+        /// Sets a Config in the IRunner.
+        /// </summary>
+        /// <param name="config">The Config to set</param>
+        /// <param name="setRecommended">Whether to automatically change the BotsAmount to the suggested value</param>
+        void SetConfig(Config config, bool setRecommended);
 
         /// <summary>
         /// The currently selected Wordlist.
         /// </summary>
-        Wordlist Wordlist { get; set; }
+        Wordlist Wordlist { get; }
+
+        /// <summary>
+        /// Sets a Wordlist in the IRunner.
+        /// </summary>
+        /// <param name="wordlist">The Wordlist to set</param>
+        void SetWordlist(Wordlist wordlist);
 
         /// <summary>
         /// The amount of concurrent Bots.
         /// </summary>
-        int Bots { get; set; }
+        int BotsAmount { get; set; }
 
         /// <summary>
         /// Whether to use proxies during the checking process.

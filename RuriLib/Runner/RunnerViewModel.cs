@@ -1,7 +1,9 @@
 ﻿using Extreme.Net;
 using Newtonsoft.Json;
+using RuriLib.Interfaces;
 using RuriLib.LS;
 using RuriLib.Models;
+using RuriLib.Models.Stats;
 using RuriLib.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -33,7 +35,7 @@ namespace RuriLib.Runner
     /// <summary>
     /// Main class that handles all the multi-threaded checking of a Wordlist given a Config.
     /// </summary>
-    public class RunnerViewModel : ViewModelBase, IRunnerMessaging
+    public class RunnerViewModel : ViewModelBase, IRunnerMessaging, IRunner
     {
         #region Constructor
         /// <summary>
@@ -69,14 +71,14 @@ namespace RuriLib.Runner
 
         #region Visible Properties and Components
         /// <summary>Whether the Master Worker is busy or idle.</summary>
-        public bool Busy { get { return Master.Status != WorkerStatus.Idle; } }
+        public bool Busy => Master.Status != WorkerStatus.Idle;
 
         /// <summary>Whether the user can set the properties (a.k.a. whether the Master Worker is idle).</summary>
-        public bool ControlsEnabled { get { return !Busy; } }
+        public bool ControlsEnabled => !Busy;
 
-        private int botsNumber = 1;
+        private int botsAmount = 1;
         /// <summary>The amount of bots to run simultaneously for multi-threaded checking.</summary>
-        public int BotsNumber { get { return botsNumber; } set { botsNumber = value; OnPropertyChanged(); } }
+        public int BotsAmount { get => botsAmount; set { botsAmount = value; OnPropertyChanged(); } }
 
         private int startingPoint = 1;
         /// <summary>How many data lines to skip before starting the checking process.</summary>
@@ -250,6 +252,9 @@ namespace RuriLib.Runner
         /// <summary>Auxiliary empty list.</summary>
         public ObservableCollection<ValidData> EmptyList { get; set; } = new ObservableCollection<ValidData>();
 
+        /// <summary>The collection of data that was checked with a positive outcome.</summary>
+        public IEnumerable<ValidData> Checked => (new IEnumerable<ValidData>[] { HitsList, CustomList, ToCheckList }).SelectMany(h => h).OrderBy(h => h.Time);
+
         /// <summary>Filter based on the Bot Status.</summary>
         public BotStatus ResultsFilter { get; set; } = BotStatus.SUCCESS;
 
@@ -271,6 +276,16 @@ namespace RuriLib.Runner
 
         /// <summary>Total amount of successfully tested data lines.</summary>
         public int TestedCount { get { return FailCount + HitCount + CustomCount + ToCheckCount; } }
+        #endregion
+
+        #region Stats
+        /// <summary>
+        /// Statistics of the checking process.
+        /// </summary>
+        public RunnerStats Stats => new RunnerStats(
+                new RunnerStatsData(TestedCount, HitCount, CustomCount, FailCount, RetryCount, ToCheckCount),
+                new RunnerStatsProxies(TotalProxiesCount, AliveProxiesCount, BannedProxiesCount, BadProxiesCount),
+                CPM, (decimal)Balance);
         #endregion
 
         #region Locks
@@ -331,7 +346,7 @@ namespace RuriLib.Runner
         public void SetConfig(Config config, bool setRecommended)
         {
             Config = config;
-            if (setRecommended) BotsNumber = Clamp(config.Settings.SuggestedBots, 1, 200);
+            if (setRecommended) BotsAmount = Clamp(config.Settings.SuggestedBots, 1, 200);
             OnPropertyChanged("ConfigName");
         }
 
@@ -458,7 +473,7 @@ namespace RuriLib.Runner
             RaiseDispatchAction(new Action(() => Bots.Clear()));
 
             // Create the given amount of bots and assign them their DoWork function
-            for (int i = 1; i <= BotsNumber; i++)
+            for (int i = 1; i <= BotsAmount; i++)
             {
                 RaiseMessageArrived(LogLevel.Info, $"Creating bot {i}", false);
                 var bot = new RunnerBotViewModel(i);
@@ -494,15 +509,15 @@ namespace RuriLib.Runner
                 UpdateCPM();
 
                 // If the amount of Bots was changed
-                if (BotsNumber != Bots.Count)
+                if (BotsAmount != Bots.Count)
                 {
-                    RaiseMessageArrived(LogLevel.Info, $"Bots Number was changed from {Bots.Count} to {BotsNumber}", false);
+                    RaiseMessageArrived(LogLevel.Info, $"Bots Number was changed from {Bots.Count} to {BotsAmount}", false);
 
                     // If it was increased
-                    if (BotsNumber > Bots.Count)
+                    if (BotsAmount > Bots.Count)
                     {
                         // Create the missing bots
-                        for (int b = Bots.Count + 1; b <= BotsNumber; b++)
+                        for (int b = Bots.Count + 1; b <= BotsAmount; b++)
                         {
                             RaiseMessageArrived(LogLevel.Info, $"Creating bot {b}", false);
                             try
@@ -521,7 +536,7 @@ namespace RuriLib.Runner
                     else
                     {
                         // Terminate the unnecessary bots
-                        for (int b = Bots.Count - 1; b >= BotsNumber; b--)
+                        for (int b = Bots.Count - 1; b >= BotsAmount; b--)
                         {
                             RaiseMessageArrived(LogLevel.Info, $"Removing bot {b}", false);
                             try
@@ -1019,7 +1034,7 @@ namespace RuriLib.Runner
         }
         #endregion
 
-        #region Interface Calls
+        #region Events
         /// <summary>
         /// Fired when a new message needs to be logged.
         /// </summary>
