@@ -205,7 +205,7 @@ namespace OpenBullet.Views.Main.Runner
             {
                 case WorkerStatus.Idle:
                     SetupSoundPlayers();
-                    ThreadPool.SetMinThreads(vm.BotsNumber * 2 + 1, vm.BotsNumber * 2 + 1);
+                    ThreadPool.SetMinThreads(vm.BotsAmount * 2 + 1, vm.BotsAmount * 2 + 1);
                     ServicePointManager.DefaultConnectionLimit = 10000; // This sets the default connection limit for requests on the whole application
                     startButton.Content = "STOP";
                     vm.Start();
@@ -253,7 +253,7 @@ namespace OpenBullet.Views.Main.Runner
         #region UI Elements
         private void botsSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            vm.BotsNumber = (int)e.NewValue;
+            vm.BotsAmount = (int)e.NewValue;
         }
 
         private void startingPointSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

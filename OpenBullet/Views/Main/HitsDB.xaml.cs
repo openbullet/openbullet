@@ -291,7 +291,7 @@ namespace OpenBullet.Views.Main
             {
                 var cfg = Globals.mainWindow.ConfigsPage.ConfigManagerPage.vm.ConfigsList.First(c => c.Name == first.ConfigName).Config;
                 runner.vm.SetConfig(cfg, false);
-                runner.vm.BotsNumber = Math.Min(cfg.Settings.SuggestedBots, hitsListView.SelectedItems.Count);
+                runner.vm.BotsAmount = Math.Min(cfg.Settings.SuggestedBots, hitsListView.SelectedItems.Count);
             }
             catch { }
 

@@ -92,7 +92,7 @@
 
                 <DockPanel Grid.Column="0" Grid.Row="0">
                     <Label DockPanel.Dock="Left" VerticalAlignment="Center" Content="Bots:" />
-                    <Label Width="35" DockPanel.Dock="Left" VerticalAlignment="Center" Content="{Binding BotsNumber}" />
+                    <Label Width="35" DockPanel.Dock="Left" VerticalAlignment="Center" Content="{Binding BotsAmount}" />
                     <Slider x:Name="botsSlider" VerticalAlignment="Center" TickFrequency="20" TickPlacement="Both" Minimum="1" Maximum="200" ValueChanged="botsSlider_ValueChanged" Value="{Binding BotsNumber, Mode=OneWay}" Margin="0 0 10 0" />
                 </DockPanel>
                 <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">

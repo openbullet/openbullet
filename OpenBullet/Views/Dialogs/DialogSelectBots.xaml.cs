@@ -25,7 +25,7 @@ namespace OpenBullet
 
             if (Caller.GetType() == typeof(Runner))
             {
-                (Caller as Runner).vm.BotsNumber = bots;
+                (Caller as Runner).vm.BotsAmount = bots;
             }
             ((MainDialog)Parent).Close();
         }

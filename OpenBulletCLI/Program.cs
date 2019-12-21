@@ -244,8 +244,8 @@ namespace OpenBulletCLI
             Runner.SetConfig(IOManager.LoadConfig(opts.ConfigFile), false);
             Runner.SetWordlist(new Wordlist(opts.WordlistFile, opts.WordlistFile, opts.WordlistType, ""));
             Runner.StartingPoint = opts.Skip;
-            if (opts.BotsNumber <= 0) Runner.BotsNumber = Runner.Config.Settings.SuggestedBots;
-            else Runner.BotsNumber = opts.BotsNumber;
+            if (opts.BotsNumber <= 0) Runner.BotsAmount = Runner.Config.Settings.SuggestedBots;
+            else Runner.BotsAmount = opts.BotsNumber;
 
             if (opts.ProxyFile != null && opts.UseProxies != null)
             {
@@ -265,7 +265,7 @@ namespace OpenBulletCLI
             Console.Title = $"OpenBulletCLI - {Runner.Master.Status} | " +
                 $"Config: {Runner.ConfigName} | " +
                 $"Wordlist {Runner.WordlistName} | " +
-                $"Bots {Runner.BotsNumber} | " +
+                $"Bots {Runner.BotsAmount} | " +
                 $"CPM: {Runner.CPM} | " +
                 $"Progress: {Runner.ProgressCount} / {Runner.WordlistSize} ({Runner.Progress}%) | " +
                 $"Hits: {Runner.HitCount} Custom: {Runner.CustomCount} ToCheck: {Runner.ToCheckCount} Fails: {Runner.FailCount} Retries: {Runner.RetryCount} | " +
