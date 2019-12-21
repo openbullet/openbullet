@@ -87,7 +87,7 @@
                                     <Label Content="Wordlist: " FontWeight="Bold" MouseDown="selectWordlist_MouseDown"/>
                                     <Label Content="{Binding Runner.WordlistName}" MouseDown="selectWordlist_MouseDown"/>
                                     <Label Content="Bots: " FontWeight="Bold" MouseDown="selectBots_MouseDown"/>
-                                    <Label Content="{Binding Runner.BotsNumber}" MouseDown="selectBots_MouseDown"/>
+                                    <Label Content="{Binding Runner.BotsAmount}" MouseDown="selectBots_MouseDown"/>
                                     <Label Content="Proxies: " FontWeight="Bold" MouseDown="selectProxies_MouseDown"/>
                                     <Label Content="{Binding Runner.ProxyMode}" MouseDown="selectProxies_MouseDown"/>
                                     <Label Content="STATUS: " FontWeight="Bold" Foreground="{DynamicResource ForegroundRetry}"/>
