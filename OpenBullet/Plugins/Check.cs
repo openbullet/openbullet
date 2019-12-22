@@ -68,12 +68,18 @@ namespace OpenBullet.Plugins
 
             // Get the first attribute
             var attribute = method.GetCustomAttribute<Button>();
+            var parameters = method.GetParameters();
 
-            // TEMPORARY!!!
-            // Check if it accepts an ILogger
-            if (!method.GetParameters().Any(p => p.ParameterType == typeof(ILogger)))
+            // Check if it accepts 0 or 1 parameters
+            if (parameters.Length > 1)
             {
-                throw new Exception("A Button method must support an ILogger");
+                return false;
+            }
+
+            // If the method accepts 1 parameter, check that its type is IApplication
+            if (parameters.Length == 1 && !parameters.Any(p => p.ParameterType == typeof(IApplication)))
+            {
+                return false;
             }
 
             return true;

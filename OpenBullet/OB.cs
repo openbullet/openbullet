@@ -47,5 +47,6 @@ namespace OpenBullet
         public static readonly string licenseFile = @"Settings/License.txt";
         public static readonly string logFile = @"Log.txt";
         public static readonly string configFolder = @"Configs";
+        public static readonly string pluginsFolder = @"Plugins";
     }
 }

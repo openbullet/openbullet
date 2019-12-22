@@ -17,8 +17,10 @@ namespace OpenBullet.Plugins
         /// </summary>
         /// <param name="folder">The folder where plugins are located</param>
         /// <returns>A collection of plugin controls.</returns>
-        public static IEnumerator<PluginControl> LoadPlugins(string folder)
+        public static IEnumerable<PluginControl> LoadPlugins(string folder)
         {
+            var plugins = new List<PluginControl>();
+
             foreach (var dll in Directory.GetFiles(folder, "*.dll"))
             {
                 var asm = Assembly.LoadFrom(dll);
@@ -39,10 +41,12 @@ namespace OpenBullet.Plugins
                     // If it implements the IPlugin interface
                     if (type.GetInterface("IPlugin") == typeof(IPlugin))
                     {
-                        yield return new PluginControl(type);
+                        plugins.Add(new PluginControl(type));
                     }
                 }
             }
+
+            return plugins;
         }
 
         /// <summary>

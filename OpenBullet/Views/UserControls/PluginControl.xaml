@@ -10,12 +10,9 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <Border Grid.RowSpan="3" BorderBrush="{DynamicResource ForegroundMain}" BorderThickness="2" />
-
-        <Label FontWeight="Bold" Content="{Binding Plugin.Name}" />
+        <Label Grid.Row="0" FontWeight="Bold" Content="{Binding Plugin.Name}" />
         <ItemsControl Grid.Row="1" ItemsSource="{Binding Controls}" Padding="5"/>
     </Grid>
 </UserControl>

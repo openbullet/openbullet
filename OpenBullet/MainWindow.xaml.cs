@@ -19,6 +19,9 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using OpenBullet.Plugins;
+using System.Collections.Generic;
+using OpenBullet.Views.UserControls;
 
 namespace OpenBullet
 {
@@ -38,6 +41,7 @@ namespace OpenBullet
         public HitsDB HitsDBPage { get; set; }
         public Settings OBSettingsPage { get; set; }
         public ToolsSection ToolsPage { get; set; }
+        public PluginsSection PluginsPage { get; set; }
         public About AboutPage { get; set; }
         public Rectangle Bounds { get; private set; }
 
@@ -59,8 +63,8 @@ namespace OpenBullet
             titleLabel.Content = title;
 
             // Make sure all folders are there or recreate them
-            var folders = new string[] { "Captchas", "ChromeExtensions", "Configs", "DB", "Screenshots", "Settings", "Sounds", "Wordlists" };
-            foreach (var folder in folders.Select(f => System.IO.Path.Combine(Directory.GetCurrentDirectory(), f)))
+            var folders = new string[] { "Captchas", "ChromeExtensions", "Configs", "DB", "Plugins", "Screenshots", "Settings", "Sounds", "Wordlists" };
+            foreach (var folder in folders.Select(f => Path.Combine(Directory.GetCurrentDirectory(), f)))
             {
                 if (!Directory.Exists(folder))
                     Directory.CreateDirectory(folder);
@@ -140,6 +144,9 @@ namespace OpenBullet
 
             Topmost = OB.OBSettings.General.AlwaysOnTop;
 
+            // Load Plugins
+            var plugins = Loader.LoadPlugins(OB.pluginsFolder);
+
             // ViewModels
             OB.RunnerManager = new RunnerManagerViewModel();
             OB.ProxyManager = new ProxyManagerViewModel();
@@ -164,6 +171,8 @@ namespace OpenBullet
             OB.Logger.LogInfo(Components.Main, "Initialized Settings");
             ToolsPage = new ToolsSection();
             OB.Logger.LogInfo(Components.Main, "Initialized Tools");
+            PluginsPage = new PluginsSection(plugins);
+            OB.Logger.LogInfo(Components.Main, "Initialized Plugins");
             AboutPage = new About();
 
             menuOptionRunner_MouseDown(this, null);
@@ -282,6 +291,12 @@ namespace OpenBullet
         {
             Main.Content = ToolsPage;
             menuOptionSelected(menuOptionTools);
+        }
+
+        private void menuOptionPlugins_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Main.Content = PluginsPage;
+            menuOptionSelected(menuOptionPlugins);
         }
 
         private void menuOptionSettings_MouseDown(object sender, MouseButtonEventArgs e)
