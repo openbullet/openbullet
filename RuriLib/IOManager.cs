@@ -139,14 +139,9 @@ namespace RuriLib
         /// <param name="config">The viewmodel of the config to save</param>
         /// <param name="fileName">The path of the file where the Config will be saved</param>
         /// <returns>Whether the file has been saved successfully</returns>
-        public static bool SaveConfig(Config config, string fileName)
+        public static void SaveConfig(Config config, string fileName)
         {
-            try
-            {
-                File.WriteAllText(fileName, SerializeConfig(config));
-                return true;
-            }
-            catch { return false; }
+            File.WriteAllText(fileName, SerializeConfig(config));
         }
 
         /// <summary>
