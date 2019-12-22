@@ -10,15 +10,23 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
             <RowDefinition Height="30" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel x:Name="topMenu" Orientation="Horizontal">
+        <TextBlock Grid.Row="0" Foreground="{DynamicResource ForegroundCustom}" Margin="0 0 0 10" >
+            <Span>Remember that some plugins might contain </Span>
+            <Span FontWeight="Bold" Foreground="{DynamicResource ForegroundBad}">MALICIOUS CODE</Span>
+            <Span>that runs even without clicking any buttons!</Span>
+            <Span TextDecorations="Underline" FontWeight="Bold">Only load plugins you can trust!</Span>
+        </TextBlock>
+
+        <StackPanel Grid.Row="1" x:Name="topMenu" Orientation="Horizontal">
             <Label Content="Selected Plugin:" />
             <ComboBox x:Name="pluginSelector" Width="200" Margin="5 0 0 0" SelectionChanged="pluginSelector_SelectionChanged" />
         </StackPanel>
 
-        <Frame Grid.Row="1" x:Name="Main" NavigationUIVisibility="Hidden" />
+        <Frame Grid.Row="2" x:Name="Main" NavigationUIVisibility="Hidden" />
     </Grid>
 </Page>
