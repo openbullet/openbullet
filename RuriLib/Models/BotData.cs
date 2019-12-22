@@ -205,6 +205,15 @@ namespace RuriLib
         }
 
         /// <summary>
+        /// Adds a new message to the LogBuffer with white text.
+        /// </summary>
+        /// <param name="message">The message to log</param>
+        public void Log(string message)
+        {
+            Log(new LogEntry(message, Colors.White));
+        }
+
+        /// <summary>
         /// Adds multiple new LogEntry objects to the LogBuffer.
         /// </summary>
         /// <param name="list">The list of log entries to add</param>

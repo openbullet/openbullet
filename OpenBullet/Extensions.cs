@@ -8,10 +8,25 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
+using PluginFramework;
+using RuriLib;
 using RuriLib.Models;
 
 namespace OpenBullet
 {
+    public static class BlocksExtensions
+    {
+        public static IEnumerable<BlockBase> OnlyPlugins(this IEnumerable<BlockBase> blocks)
+        {
+            return blocks.Where(b => b.IsPlugin());
+        }
+
+        public static bool IsPlugin(this BlockBase block)
+        {
+            return block.GetType().GetInterface(nameof(IBlockPlugin)) == typeof(IBlockPlugin);
+        }
+    }
+
     public static class EnumerableExtensions
     {
         public static void SaveToFile<T>(this IEnumerable<T> items, string fileName, Func<T, string> mapping)

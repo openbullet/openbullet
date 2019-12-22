@@ -3,7 +3,7 @@ using RuriLib;
 using System;
 using System.Windows.Controls;
 
-namespace OpenBullet.Pages.StackerBlocks
+namespace OpenBullet.Views.StackerBlocks
 {
     /// <summary>
     /// Logica di interazione per PageSBlockExecuteJS.xaml

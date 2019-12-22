@@ -17,7 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
 
-namespace OpenBullet.Pages.StackerBlocks
+namespace OpenBullet.Views.StackerBlocks
 {
     /// <summary>
     /// Logica di interazione per PageBlockLSCode.xaml

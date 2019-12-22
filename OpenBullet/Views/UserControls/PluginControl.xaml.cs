@@ -27,7 +27,7 @@ namespace OpenBullet.Views.UserControls
             Plugin = Activator.CreateInstance(type) as IPlugin;
 
             // For each valid property, add input field
-            foreach (var p in type.GetProperties().Where(p => Check.Property(Plugin, p)))
+            foreach (var p in type.GetProperties().Where(p => Check.InputProperty(p)))
             {
                 ValidProperties.Add(p);
                 Controls.Add(Build.InputField(Plugin, p));

@@ -33,6 +33,13 @@ namespace RuriLib
         /// <summary>Additional information on the Config usage.</summary>
         public string AdditionalInfo { get { return additionalInfo; } set { additionalInfo = value; OnPropertyChanged(); } }
 
+        private string[] requiredPlugins = new string[] { };
+        /// <summary>The plugins that are necessary in order for this config to run.</summary>
+        public string[] RequiredPlugins { get { return requiredPlugins; } set { requiredPlugins = value; OnPropertyChanged(); OnPropertyChanged(nameof(RequiredPluginsString)); } }
+
+        /// <summary>The required plugins list as a comma separated string.</summary>
+        public string RequiredPluginsString => string.Join(", ", RequiredPlugins);
+
         private string author = "";
         /// <summary>The name of the Author of the Config.</summary>
         public string Author { get { return author; } set { author = value; OnPropertyChanged(); } }

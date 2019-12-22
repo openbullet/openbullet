@@ -8,7 +8,7 @@ namespace OpenBullet.Plugins
 {
     public static class Build
     {
-        public static UserControlContainer InputField(IPlugin plugin, PropertyInfo property)
+        public static UserControlContainer InputField(object plugin, PropertyInfo property)
         {
             // Get the first attribute
             var attribute = property.GetCustomAttribute<InputField>();

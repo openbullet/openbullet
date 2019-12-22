@@ -173,6 +173,7 @@ namespace OpenBullet.Views.Main.Configs
 
             var stacker = OB.Stacker;
             stacker.ConvertKeychains();
+            stacker.ConvertPlugins();
 
             if (stacker.View == StackerView.Blocks)
                 stacker.LS.FromBlocks(stacker.GetList());
@@ -183,6 +184,7 @@ namespace OpenBullet.Views.Main.Configs
 
             vm.CurrentConfig.Config.Settings.LastModified = DateTime.Now;
             vm.CurrentConfig.Config.Settings.Version = OB.Version;
+            vm.CurrentConfig.Config.Settings.RequiredPlugins = vm.GetRequiredPlugins(vm.CurrentConfig).ToArray();
             OB.Logger.LogInfo(Components.ConfigManager, "Converted the unbinded observables and set the Last Modified date");
 
             // Save to file
@@ -203,7 +205,18 @@ namespace OpenBullet.Views.Main.Configs
         {
             if (config == null)
             {
-                OB.Logger.LogError(Components.ConfigManager, "The config to load cannot be null");
+                OB.Logger.LogError(Components.ConfigManager, "The config to load cannot be null", true);
+                return;
+            }
+
+            try
+            {
+                vm.CheckRequiredPlugins(OB.BlockPlugins.Select(b => b.Name), config);
+            }
+            catch (Exception ex)
+            {
+                OB.Logger.LogError(Components.ConfigManager, ex.Message, true);
+                return;
             }
 
             // Set the config as current

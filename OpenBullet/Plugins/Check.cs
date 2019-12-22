@@ -20,7 +20,7 @@ namespace OpenBullet.Plugins
             { typeof(Dropdown), typeof(string) }
         };
 
-        public static bool Property(IPlugin plugin, PropertyInfo property)
+        public static bool InputProperty(PropertyInfo property)
         {
             // Check if it has one and only one InputField
             if (property.GetCustomAttributes().Count(a => a is InputField) != 1)

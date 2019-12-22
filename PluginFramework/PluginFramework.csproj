@@ -49,6 +49,7 @@
     <Compile Include="Attributes\Numeric.cs" />
     <Compile Include="Attributes\Text.cs" />
     <Compile Include="Attributes\TextMulti.cs" />
+    <Compile Include="IBlockPlugin.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,12 +1,11 @@
 ﻿using OpenBullet.Views.UserControls;
 using PluginFramework;
+using RuriLib;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenBullet.Plugins
 {
@@ -16,17 +15,18 @@ namespace OpenBullet.Plugins
         /// Loads the plugins in a folder one by one.
         /// </summary>
         /// <param name="folder">The folder where plugins are located</param>
-        /// <returns>A collection of plugin controls.</returns>
-        public static IEnumerable<PluginControl> LoadPlugins(string folder)
+        /// <returns>A tuple with the collection of plugin controls and block plugin controls.</returns>
+        public static (IEnumerable<PluginControl>, IEnumerable<IBlockPlugin>) LoadPlugins(string folder)
         {
             var plugins = new List<PluginControl>();
+            var blockPlugins = new List<IBlockPlugin>();
 
             foreach (var dll in Directory.GetFiles(folder, "*.dll"))
             {
                 var asm = Assembly.LoadFrom(dll);
 
                 // Hook the dependency folder (a folder with the name of the DLL) if it exists
-                var depFolder = Path.GetFileNameWithoutExtension(dll);
+                var depFolder = Path.Combine(OB.pluginsFolder, Path.GetFileNameWithoutExtension(dll));
                 if (Directory.Exists(depFolder))
                 {
                     Hook(new string[] { depFolder });
@@ -39,14 +39,20 @@ namespace OpenBullet.Plugins
                 foreach (var type in asm.GetTypes())
                 {
                     // If it implements the IPlugin interface
-                    if (type.GetInterface("IPlugin") == typeof(IPlugin))
+                    if (type.GetInterface(nameof(IPlugin)) == typeof(IPlugin))
                     {
                         plugins.Add(new PluginControl(type));
+                    }
+                    // If it implements the IBlockPlugin interface and derives from BlockBase
+                    else if (type.GetInterface(nameof(IBlockPlugin)) == typeof(IBlockPlugin) 
+                        && type.GetTypeInfo().IsSubclassOf(typeof(BlockBase)))
+                    {
+                        blockPlugins.Add(Activator.CreateInstance(type) as IBlockPlugin);
                     }
                 }
             }
 
-            return plugins;
+            return (plugins, blockPlugins);
         }
 
         /// <summary>
@@ -58,12 +64,16 @@ namespace OpenBullet.Plugins
             foreach (var asm in assemblies)
             {
                 // Make sure we didn't load it yet
-                if (!AppDomain.CurrentDomain.GetAssemblies().Any(a => a.FullName == asm.FullName))
+                if (!AppDomain.CurrentDomain.GetAssemblies().Any(a => a.GetName().FullName == asm.FullName))
                 {
-                    AppDomain.CurrentDomain.Load(asm);
+                    try
+                    {
+                        AppDomain.CurrentDomain.Load(asm);
 
-                    // Load more dependencies recursively
-                    LoadDependencies(Assembly.Load(asm).GetReferencedAssemblies());
+                        // Load more dependencies recursively
+                        LoadDependencies(Assembly.Load(asm).GetReferencedAssemblies());
+                    }
+                    catch { }
                 }
             }
         }

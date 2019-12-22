@@ -317,7 +317,7 @@ namespace RuriLib
         public static void InsertVariables(BotData data, bool isCapture, bool recursive, List<string> values, string variableName, string prefix, string suffix, bool urlEncode, bool createEmpty)
         {
             var list = values.Select(v => ReplaceValues(prefix, data) + v.Trim() + ReplaceValues(suffix, data)).ToList();
-            if (urlEncode) list = list.Select(v => System.Uri.EscapeDataString(v)).ToList();
+            if (urlEncode) list = list.Select(v => Uri.EscapeDataString(v)).ToList();
 
             CVar variable = null;
             if (recursive)

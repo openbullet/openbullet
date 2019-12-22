@@ -102,7 +102,7 @@
       <HintPath>..\packages\DynamicLanguageRuntime.1.2.2\lib\net45\Microsoft.Scripting.Metadata.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="ProxySocket, Version=1.1.2.0, Culture=neutral, PublicKeyToken=966874d7118d1436, processorArchitecture=MSIL">
@@ -244,6 +244,9 @@
     </Compile>
     <Compile Include="Views\UserControls\ButtonContainer.xaml.cs">
       <DependentUpon>ButtonContainer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StackerBlocks\BlockPluginPage.xaml.cs">
+      <DependentUpon>BlockPluginPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UserControls\PluginControl.xaml.cs">
       <DependentUpon>PluginControl.xaml</DependentUpon>
@@ -743,6 +746,10 @@
     <Page Include="Views\UserControls\ButtonContainer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StackerBlocks\BlockPluginPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\UserControls\PluginControl.xaml">
       <SubType>Designer</SubType>
