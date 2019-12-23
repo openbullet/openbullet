@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\Button.cs" />
+    <Compile Include="Attributes\ConfigPicker.cs" />
+    <Compile Include="Attributes\WordlistPicker.cs" />
     <Compile Include="Attributes\Checkbox.cs" />
     <Compile Include="Attributes\Dropdown.cs" />
     <Compile Include="Attributes\FilePicker.cs" />

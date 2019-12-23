@@ -17,7 +17,9 @@ namespace OpenBullet.Plugins
             { typeof(Checkbox), typeof(bool) },
             { typeof(TextMulti), typeof(string[]) },
             { typeof(FilePicker), typeof(string) },
-            { typeof(Dropdown), typeof(string) }
+            { typeof(Dropdown), typeof(string) },
+            { typeof(WordlistPicker), typeof(RuriLib.Models.Wordlist) },
+            { typeof(ConfigPicker), typeof(RuriLib.ViewModels.ConfigViewModel) }
         };
 
         public static bool InputProperty(PropertyInfo property)

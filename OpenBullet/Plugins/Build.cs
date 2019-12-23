@@ -42,6 +42,14 @@ namespace OpenBullet.Plugins
                     control = new UserControlDropdown(defaultValue, a.options);
                     break;
 
+                case WordlistPicker a:
+                    control = new UserControlWordlist();
+                    break;
+
+                case ConfigPicker a:
+                    control = new UserControlConfig();
+                    break;
+
                 default:
                     throw new NotImplementedException();
             }
