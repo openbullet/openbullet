@@ -183,6 +183,8 @@ namespace RuriLib
             BrowserOpen = false;
             IsDebug = isDebug;
             BotNumber = botNumber;
+
+            CustomObjects = new Dictionary<string, object>();
         }
 
         /// <summary>
