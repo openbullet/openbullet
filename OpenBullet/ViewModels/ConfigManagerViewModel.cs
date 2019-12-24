@@ -70,7 +70,8 @@ namespace OpenBullet.ViewModels
                 .ToBlocks()
                 .OnlyPlugins()
                 .Cast<IBlockPlugin>()
-                .Select(p => p.Name);
+                .Select(p => p.Name)
+                .Distinct();
         }
 
         public void CheckRequiredPlugins(IEnumerable<string> available, ConfigViewModel config)
