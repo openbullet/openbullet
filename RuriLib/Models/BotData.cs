@@ -65,18 +65,9 @@ namespace RuriLib
 
         /// <summary>Whether the browser is open or not.</summary>
         public bool BrowserOpen { get; set; }
-        
-        /// <summary>The TCP Client used for TCP blocks.</summary>
-        public TcpClient TCPClient { get; set; }
 
-        /// <summary>The NET Stream used for TCP blocks with unencrypted connection.</summary>
-        public NetworkStream NETStream { get; set; }
-
-        /// <summary>The SSL Stream used for TCP blocks with encrypted connection.</summary>
-        public SslStream SSLStream { get; set; }
-
-        /// <summary>Whether to use SSL for the current TCPClient.</summary>
-        public bool TCPSSL { get; set; } = true;
+        /// <summary>A dictionary of object that can be used for keeping session-based objects through different blocks.</summary>
+        public Dictionary<string, object> CustomObjects { get; set; }
 
         /// <summary>The wrapped data line that needs to be checked.</summary>
         public CData Data { get; set; }
@@ -229,6 +220,16 @@ namespace RuriLib
         public void LogNewLine()
         {
             LogBuffer.Add(new LogEntry("", Colors.White));
+        }
+
+        /// <summary>
+        /// Retrieves a custom object from the 
+        /// </summary>
+        /// <param name="key">The key of the object in the dictionary</param>
+        /// <returns>The object or null if the key was not found</returns>
+        public object GetCustomObject(string key)
+        {
+            return CustomObjects.ContainsKey(key) ? CustomObjects[key] : null;
         }
     }
 }
