@@ -33,7 +33,10 @@ namespace OpenBullet.Views.UserControls
         private void Choose_Click(object sender, RoutedEventArgs e)
         {
             new MainDialog(new DialogSelectConfig(this), "Select a Config").ShowDialog();
-            ConfigName.Text = Config.Name;
+            if (Config != null)
+            {
+                ConfigName.Text = Config.Name;
+            }
         }
     }
 }

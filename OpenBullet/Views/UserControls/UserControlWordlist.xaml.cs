@@ -32,7 +32,10 @@ namespace OpenBullet.Views.UserControls
         private void Choose_Click(object sender, RoutedEventArgs e)
         {
             new MainDialog(new DialogSelectWordlist(this), "Select a Wordlist").ShowDialog();
-            WordlistName.Text = Wordlist.Name;
+            if (Wordlist != null)
+            {
+                WordlistName.Text = Wordlist.Name;
+            }
         }
     }
 }
