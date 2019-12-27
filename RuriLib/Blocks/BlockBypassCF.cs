@@ -120,6 +120,12 @@ namespace RuriLib
                     break;
             }
 
+            // Initialize the Cloudflare Solver
+            CloudflareSolver cf = new CloudflareSolver(provider, ReplaceValues(UserAgent, data));
+            cf.ClearanceDelay = 3000;
+            cf.MaxCaptchaTries = 1;
+            cf.MaxTries = 3;
+
             // Create the cookie container
             CookieContainer cookies = new CookieContainer();
             foreach (var cookie in data.Cookies)
@@ -127,8 +133,8 @@ namespace RuriLib
                 cookies.Add(new Cookie(cookie.Key, cookie.Value, "/", uri.Host));
             }
 
-            // Initialize the inner handler
-            HttpClientHandler innerHandler = new HttpClientHandler
+            // Initialize the http handler
+            HttpClientHandler handler = new HttpClientHandler
             {
                 AllowAutoRedirect = true,
                 CookieContainer = cookies,
@@ -143,41 +149,49 @@ namespace RuriLib
                     throw new Exception($"The proxy type {data.Proxy.Type} is not supported by this block yet");
                 }
 
-                innerHandler.Proxy = new WebProxy(data.Proxy.Proxy, false);
-                innerHandler.UseProxy = true;
+                handler.Proxy = new WebProxy(data.Proxy.Proxy, false);
+                handler.UseProxy = true;
 
                 if (!string.IsNullOrEmpty(data.Proxy.Username))
                 {
-                    innerHandler.DefaultProxyCredentials = new NetworkCredential(data.Proxy.Username, data.Proxy.Password);
+                    handler.DefaultProxyCredentials = new NetworkCredential(data.Proxy.Username, data.Proxy.Password);
                 }
             }
 
-            // Initialize the cloudflare handler
-            ClearanceHandler cfHandler = new ClearanceHandler(innerHandler, provider, ReplaceValues(UserAgent, data));
-            cfHandler.ClearanceDelay = 3000;
-            cfHandler.MaxCaptchaTries = 1;
-            cfHandler.MaxTries = 3;
-
             // Initialize the http client
-            HttpClient http = new HttpClient(cfHandler);
+            HttpClient http = new HttpClient(handler);
             http.Timeout = TimeSpan.FromMinutes(timeout);
-            http.DefaultRequestHeaders.Add("User-Agent", ReplaceValues(UserAgent, data)); // This should not be necessary
+            http.DefaultRequestHeaders.Add("User-Agent", ReplaceValues(UserAgent, data));
 
+            var result = cf.Solve(http, handler, uri, ReplaceValues(UserAgent, data)).Result;
+
+            if (result.Success)
+            {
+                data.Log(new LogEntry($"[Success] Protection bypassed: {result.DetectResult.Protection}", Colors.GreenYellow));
+            }
+            else if (result.DetectResult.Protection == CloudflareProtection.Unknown)
+            {
+                data.Log(new LogEntry($"Unknown protection, skipping the bypass!", Colors.Tomato));
+            }
+            else
+            {
+                throw new Exception($"CF Bypass Failed: {result.FailReason}");
+            }
+
+            // Now that we got the cookies, proceed with the normal request
             HttpResponseMessage response = null;
-
             try
             {
                 response = http.GetAsync(uri).Result;
-
-                if (ErrorOn302 && response.StatusCode == HttpStatusCode.Redirect)
-                {
-                    data.Log(new LogEntry($"Received 302 status code. Setting an ERROR status.", Colors.Tomato));
-                    data.Status = BotStatus.ERROR;
-                }
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+            finally
+            {
+                handler.Dispose();
+                http.Dispose();
             }
 
             var responseString = response.Content.ReadAsStringAsync().Result;
@@ -255,6 +269,12 @@ namespace RuriLib
             {
                 data.Log(new LogEntry("Response Source:", Colors.Green));
                 data.Log(new LogEntry(data.ResponseSource, Colors.GreenYellow));
+            }
+
+            // Error on 302 status
+            if (ErrorOn302 && response.StatusCode == HttpStatusCode.Redirect)
+            {
+                data.Status = BotStatus.ERROR;
             }
         }
     }
