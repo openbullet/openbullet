@@ -680,6 +680,7 @@ namespace RuriLib
                         break;
 
                     case Function.RandomString:
+                        outputString = localInputString;
                         lock (data.RandomLocker)
                         {
                             outputString = Regex.Replace(outputString, "\\?l", m => _lowercase[data.Random.Next(_lowercase.Length)].ToString());
