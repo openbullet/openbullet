@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
@@ -294,6 +293,18 @@ namespace RuriLib
         public Hash KdfAlgorithm { get { return kdfAlgorithm; } set { kdfAlgorithm = value; OnPropertyChanged(); } }
         #endregion
 
+        #region RandomString Properties
+        private static readonly string[] _reserved = new[] { "?l", "?u", "?d", "?s", "?h", "?a", "?m", "?i" };
+        private static readonly string _lowercase = "abcdefghijklmnopqrstuvwxyz";
+        private static readonly string _uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private static readonly string _digits = "0123456789";
+        private static readonly string _symbols = "\\!\"£$%&/()=?^'{}[]@#,;.:-_*+";
+        private static readonly string _hex = _digits + "abcdef";
+        private static readonly string _allChars = _lowercase + _uppercase + _digits + _symbols;
+        private static readonly string _udChars = _uppercase + _digits;
+        private static readonly string _ludChars = _lowercase + _uppercase + _digits;
+        #endregion
+
         /// <summary>
         /// Creates a Function block.
         /// </summary>
@@ -551,18 +562,18 @@ namespace RuriLib
             return writer.ToString();
         }
 
+        private static readonly NumberStyles _style = NumberStyles.Number | NumberStyles.AllowCurrencySymbol;
+        private static readonly IFormatProvider _provider = new CultureInfo("en-US");
+
         /// <inheritdoc />
         public override void Process(BotData data)
         {
             base.Process(data);
 
-            var style = NumberStyles.Number | NumberStyles.AllowCurrencySymbol;
-            var provider = new CultureInfo("en-US");
-
             var localInputStrings = ReplaceValuesRecursive(inputString, data);
             var outputs = new List<string>();
 
-            for(int i = 0; i < localInputStrings.Count; i++)
+            for (int i = 0; i < localInputStrings.Count; i++)
             {
                 var localInputString = localInputStrings[i];
                 var outputString = "";
@@ -635,11 +646,11 @@ namespace RuriLib
                     case Function.RegexMatch:
                         outputString = Regex.Match(localInputString, ReplaceValues(regexMatch, data)).Value;
                         break;
-                        
+
                     case Function.Unescape:
                         outputString = Regex.Unescape(localInputString);
-                        break;                        
-                   
+                        break;
+
                     case Function.URLEncode:
                         // The maximum allowed Uri size is 2083 characters, we use 2080 as a precaution
                         outputString = string.Join("", SplitInChunks(localInputString, 2080).Select(s => Uri.EscapeDataString(s)));
@@ -662,52 +673,36 @@ namespace RuriLib
                         break;
 
                     case Function.RandomNum:
-                        outputString = (data.Random.Next(randomMin, randomMax)).ToString();
+                        lock (data.RandomLocker)
+                        {
+                            outputString = data.Random.Next(randomMin, randomMax).ToString();
+                        }
                         break;
 
                     case Function.RandomString:
-                        var reserved = new string[] { "?l", "?u", "?d", "?s", "?h", "?a", "?m", "?i" };
-                        var lowercase = "abcdefghijklmnopqrstuvwxyz";
-                        var uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                        var digits = "0123456789";
-                        var symbols = "\\!\"£$%&/()=?^'{}[]@#,;.:-_*+";
-                        var hex = digits + "abcdef";
-                        var allchars = lowercase + uppercase + digits + symbols;
-                        var udchars = uppercase + digits;
-                        var ludchars = lowercase + uppercase + digits;
-
-                        outputString = localInputString;
-                        while (reserved.Any(r => outputString.Contains(r))){
-                            if (outputString.Contains("?l"))
-                                outputString = ReplaceFirst(outputString, "?l", lowercase[data.Random.Next(0, lowercase.Length)].ToString());
-                            else if (outputString.Contains("?u"))
-                                outputString = ReplaceFirst(outputString, "?u", uppercase[data.Random.Next(0, uppercase.Length)].ToString());
-                            else if (outputString.Contains("?d"))
-                                outputString = ReplaceFirst(outputString, "?d", digits[data.Random.Next(0, digits.Length)].ToString());
-                            else if (outputString.Contains("?s"))
-                                outputString = ReplaceFirst(outputString, "?s", symbols[data.Random.Next(0, symbols.Length)].ToString());
-                            else if (outputString.Contains("?h"))
-                                outputString = ReplaceFirst(outputString, "?h", hex[data.Random.Next(0, hex.Length)].ToString());
-                            else if (outputString.Contains("?a"))
-                                outputString = ReplaceFirst(outputString, "?a", allchars[data.Random.Next(0, allchars.Length)].ToString());
-                            else if (outputString.Contains("?m"))
-                                outputString = ReplaceFirst(outputString, "?m", udchars[data.Random.Next(0, udchars.Length)].ToString());
-                            else if (outputString.Contains("?i"))
-                                outputString = ReplaceFirst(outputString, "?i", ludchars[data.Random.Next(0, ludchars.Length)].ToString());
-                         
+                        lock (data.RandomLocker)
+                        {
+                            outputString = Regex.Replace(outputString, "\\?l", m => _lowercase[data.Random.Next(_lowercase.Length)].ToString());
+                            outputString = Regex.Replace(outputString, "\\?u", m => _uppercase[data.Random.Next(_uppercase.Length)].ToString());
+                            outputString = Regex.Replace(outputString, "\\?d", m => _digits[data.Random.Next(_digits.Length)].ToString());
+                            outputString = Regex.Replace(outputString, "\\?s", m => _symbols[data.Random.Next(_symbols.Length)].ToString());
+                            outputString = Regex.Replace(outputString, "\\?h", m => _hex[data.Random.Next(_hex.Length)].ToString());
+                            outputString = Regex.Replace(outputString, "\\?a", m => _allChars[data.Random.Next(_allChars.Length)].ToString());
+                            outputString = Regex.Replace(outputString, "\\?m", m => _udChars[data.Random.Next(_udChars.Length)].ToString());
+                            outputString = Regex.Replace(outputString, "\\?i", m => _ludChars[data.Random.Next(_ludChars.Length)].ToString());
                         }
                         break;
 
                     case Function.Ceil:
-                        outputString = Math.Ceiling(Decimal.Parse(localInputString, style, provider)).ToString();
+                        outputString = Math.Ceiling(Decimal.Parse(localInputString, _style, _provider)).ToString();
                         break;
 
                     case Function.Floor:
-                        outputString = Math.Floor(Decimal.Parse(localInputString, style, provider)).ToString();
+                        outputString = Math.Floor(Decimal.Parse(localInputString, _style, _provider)).ToString();
                         break;
 
                     case Function.Round:
-                        outputString = Math.Round(Decimal.Parse(localInputString, style, provider), 0, MidpointRounding.AwayFromZero).ToString();
+                        outputString = Math.Round(Decimal.Parse(localInputString, _style, _provider), 0, MidpointRounding.AwayFromZero).ToString();
                         break;
 
                     case Function.Compute:
@@ -751,7 +746,7 @@ namespace RuriLib
                         break;
 
                     case Function.Substring:
-                        outputString = localInputString.Substring(int.Parse(ReplaceValues(substringIndex, data)), int.Parse(ReplaceValues(substringLength,data)));
+                        outputString = localInputString.Substring(int.Parse(ReplaceValues(substringIndex, data)), int.Parse(ReplaceValues(substringLength, data)));
                         break;
 
                     case Function.ReverseString:
@@ -765,7 +760,10 @@ namespace RuriLib
                         break;
 
                     case Function.GetRandomUA:
-                        outputString = RandomUserAgent(data.Random);
+                        lock (data.RandomLocker)
+                        {
+                            outputString = RandomUserAgent(data.Random);
+                        }
                         break;
 
                     case Function.AESEncrypt:
@@ -780,7 +778,7 @@ namespace RuriLib
                         outputString = Crypto.PBKDF2PKCS5(localInputString, ReplaceValues(KdfSalt, data), KdfSaltSize, KdfIterations, KdfKeySize, KdfAlgorithm);
                         break;
                 }
-                
+
                 data.Log(new LogEntry(string.Format("Executed function {0} on input {1} with outcome {2}", functionType, localInputString, outputString), Colors.GreenYellow));
 
                 // Add to the outputs
@@ -911,18 +909,6 @@ namespace RuriLib
                 count++;
             }
             return count;
-        }
-        #endregion
-
-        #region RandomString
-        private string ReplaceFirst(string text, string search, string replace)
-        {
-            int pos = text.IndexOf(search);
-            if (pos < 0)
-            {
-                return text;
-            }
-            return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
         #endregion
 
