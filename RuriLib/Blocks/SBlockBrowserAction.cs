@@ -322,7 +322,7 @@ namespace RuriLib
                                     .Select(ext => Directory.GetCurrentDirectory() + "\\ChromeExtensions\\" + ext));
                             if (data.ConfigSettings.DisableNotifications) chromeop.AddArgument("--disable-notifications");
                             if (data.ConfigSettings.CustomCMDArgs != "") chromeop.AddArgument(data.ConfigSettings.CustomCMDArgs);
-                            if (data.ConfigSettings.RandomUA) chromeop.AddArgument("--user-agent=" + BlockFunction.RandomUserAgent(data.Random));
+                            if (data.ConfigSettings.RandomUA) lock (data.RandomLocker) { chromeop.AddArgument("--user-agent=" + BlockFunction.RandomUserAgent(data.Random)); }
                             else if (data.ConfigSettings.CustomUserAgent != "") chromeop.AddArgument("--user-agent=" + data.ConfigSettings.CustomUserAgent);
 
                             if (data.UseProxies) chromeop.AddArgument("--proxy-server=" + data.Proxy.Type.ToString().ToLower() + "://" + data.Proxy.Proxy);
@@ -347,7 +347,7 @@ namespace RuriLib
                             if (data.GlobalSettings.Selenium.Headless || data.ConfigSettings.ForceHeadless) fireop.AddArgument("--headless");
                             if (data.ConfigSettings.DisableNotifications) fireprofile.SetPreference("dom.webnotifications.enabled", false);
                             if (data.ConfigSettings.CustomCMDArgs != "") fireop.AddArgument(data.ConfigSettings.CustomCMDArgs);
-                            if (data.ConfigSettings.RandomUA) fireprofile.SetPreference("general.useragent.override", BlockFunction.RandomUserAgent(data.Random));
+                            if (data.ConfigSettings.RandomUA) lock (data.RandomLocker) { fireprofile.SetPreference("general.useragent.override", BlockFunction.RandomUserAgent(data.Random)); }
                             else if (data.ConfigSettings.CustomUserAgent != "") fireprofile.SetPreference("general.useragent.override", data.ConfigSettings.CustomUserAgent);
 
                             if (data.UseProxies)
