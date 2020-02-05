@@ -90,7 +90,7 @@ namespace RuriLib.LS
                     if (lines[j].StartsWith("#")) label = LineParser.ParseLabel(ref line);
                     var blockName = LineParser.ParseToken(ref line, TokenType.Parameter, false, false);
 
-                    if (label != "") return $"{blockName} ({label})";
+                    if (label != string.Empty) return $"{blockName} ({label})";
                     else return blockName;
                 }
                 return "";
@@ -375,7 +375,7 @@ namespace RuriLib.LS
 
                                     try
                                     {
-                                        if (otherScript != "") RunScript(otherScript, language, outputs, data);
+                                        if (otherScript != string.Empty) RunScript(otherScript, language, outputs, data);
                                     }
                                     catch (Exception ex) { data.LogBuffer.Add(new LogEntry($"The script failed to be executed: {ex.Message}", Colors.Tomato)); }
                                     break;
@@ -400,7 +400,7 @@ namespace RuriLib.LS
         /// <returns>Whether the line needs to be skipped</returns>
         private static bool IsEmptyOrCommentOrDisabled(string line)
         {
-            try { return line.Trim() == "" || line.StartsWith("##") || line.StartsWith("!"); }
+            try { return line.Trim() == string.Empty || line.StartsWith("##") || line.StartsWith("!"); }
             catch { return true; }
         }
 
@@ -469,7 +469,7 @@ namespace RuriLib.LS
 
             // Parse variables to get out
             List<string> outVarList = new List<string>();
-            if (outputs != "")
+            if (outputs != string.Empty)
             {
                 try { outVarList = outputs.Split(',').Select(x => x.Trim()).ToList(); }
                 catch { }

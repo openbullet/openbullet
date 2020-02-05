@@ -132,7 +132,7 @@ namespace RuriLib
 
             Action = (BrowserAction)LineParser.ParseEnum(ref input, "ACTION", typeof(BrowserAction));
 
-            if (input != "") Input = LineParser.ParseLiteral(ref input, "INPUT");
+            if (input != string.Empty) Input = LineParser.ParseLiteral(ref input, "INPUT");
 
             return this;
         }
@@ -321,9 +321,9 @@ namespace RuriLib
                                     .Where(ext => ext.EndsWith(".crx"))
                                     .Select(ext => Directory.GetCurrentDirectory() + "\\ChromeExtensions\\" + ext));
                             if (data.ConfigSettings.DisableNotifications) chromeop.AddArgument("--disable-notifications");
-                            if (data.ConfigSettings.CustomCMDArgs != "") chromeop.AddArgument(data.ConfigSettings.CustomCMDArgs);
+                            if (data.ConfigSettings.CustomCMDArgs != string.Empty) chromeop.AddArgument(data.ConfigSettings.CustomCMDArgs);
                             if (data.ConfigSettings.RandomUA) lock (data.RandomLocker) { chromeop.AddArgument("--user-agent=" + BlockFunction.RandomUserAgent(data.Random)); }
-                            else if (data.ConfigSettings.CustomUserAgent != "") chromeop.AddArgument("--user-agent=" + data.ConfigSettings.CustomUserAgent);
+                            else if (data.ConfigSettings.CustomUserAgent != string.Empty) chromeop.AddArgument("--user-agent=" + data.ConfigSettings.CustomUserAgent);
 
                             if (data.UseProxies) chromeop.AddArgument("--proxy-server=" + data.Proxy.Type.ToString().ToLower() + "://" + data.Proxy.Proxy);
 
@@ -346,9 +346,9 @@ namespace RuriLib
                             fireop.BrowserExecutableLocation = data.GlobalSettings.Selenium.FirefoxBinaryLocation;
                             if (data.GlobalSettings.Selenium.Headless || data.ConfigSettings.ForceHeadless) fireop.AddArgument("--headless");
                             if (data.ConfigSettings.DisableNotifications) fireprofile.SetPreference("dom.webnotifications.enabled", false);
-                            if (data.ConfigSettings.CustomCMDArgs != "") fireop.AddArgument(data.ConfigSettings.CustomCMDArgs);
+                            if (data.ConfigSettings.CustomCMDArgs != string.Empty) fireop.AddArgument(data.ConfigSettings.CustomCMDArgs);
                             if (data.ConfigSettings.RandomUA) lock (data.RandomLocker) { fireprofile.SetPreference("general.useragent.override", BlockFunction.RandomUserAgent(data.Random)); }
-                            else if (data.ConfigSettings.CustomUserAgent != "") fireprofile.SetPreference("general.useragent.override", data.ConfigSettings.CustomUserAgent);
+                            else if (data.ConfigSettings.CustomUserAgent != string.Empty) fireprofile.SetPreference("general.useragent.override", data.ConfigSettings.CustomUserAgent);
 
                             if (data.UseProxies)
                             {

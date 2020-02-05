@@ -270,8 +270,8 @@ namespace RuriLib.Models
             get
             {
                 return !(
-                    Host == "" ||
-                    Port == "" ||
+                    Host == string.Empty ||
+                    Port == string.Empty ||
                     Port.Any(c => !char.IsDigit(c)) ||
                     Host.Split('.').Count() != 4 ||
                     !IsNumeric

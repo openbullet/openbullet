@@ -166,7 +166,7 @@ namespace OpenBullet.Views.Main.Configs
                 return;
             }
 
-            if (vm.CurrentConfigName == "") {
+            if (vm.CurrentConfigName == string.Empty) {
                 OB.Logger.LogError(Components.ConfigManager, "Empty config name, cannot save", true);
                 return;
             }

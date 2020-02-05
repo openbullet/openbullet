@@ -23,7 +23,7 @@ namespace OpenBullet.Pages.StackerBlocks
 
         private void autoSiteKey_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.Url == "") { MessageBox.Show("You cannot use auto without setting a page where the reCaptcha is shown first!"); return; }
+            if (vm.Url == string.Empty) { MessageBox.Show("You cannot use auto without setting a page where the reCaptcha is shown first!"); return; }
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(vm.Url);

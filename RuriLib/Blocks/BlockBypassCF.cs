@@ -58,12 +58,12 @@ namespace RuriLib
 
             Url = LineParser.ParseLiteral(ref input, "URL");
 
-            if (input != "" && LineParser.Lookahead(ref input) == TokenType.Literal)
+            if (input != string.Empty && LineParser.Lookahead(ref input) == TokenType.Literal)
             {
                 UserAgent = LineParser.ParseLiteral(ref input, "UA");
             }
 
-            while (input != "")
+            while (input != string.Empty)
             {
                 LineParser.SetBool(ref input, this);
             }
@@ -93,7 +93,7 @@ namespace RuriLib
             // If the clearance info is already set and we're not getting it fresh each time, skip
             if (data.UseProxies)
             {
-                if (data.Proxy.Clearance != "" && !data.GlobalSettings.Proxies.AlwaysGetClearance)
+                if (data.Proxy.Clearance != string.Empty && !data.GlobalSettings.Proxies.AlwaysGetClearance)
                 {
                     data.Log(new LogEntry("Skipping CF Bypass because there is already a valid cookie", Colors.White));
                     data.Cookies["cf_clearance"] = data.Proxy.Clearance;
@@ -147,7 +147,7 @@ namespace RuriLib
             request.UserAgent = ReplaceValues(userAgent, data);
 
             var cs = data.GlobalSettings.Captchas;
-            if (cs.TwoCapToken != "")
+            if (cs.TwoCapToken != string.Empty)
             {
                 request.CaptchaSolver = new TwoCaptchaSolver() { ApiKey = cs.TwoCapToken };
             }
@@ -174,7 +174,7 @@ namespace RuriLib
                 data.Proxy.Cfduid = cfduid;
             }
 
-            if (clearance != "")
+            if (clearance != string.Empty)
             {
                 data.Log(new LogEntry("Got Cloudflare clearance!", Colors.GreenYellow));
                 data.Log(new LogEntry(clearance + Environment.NewLine + cfduid + Environment.NewLine, Colors.White));

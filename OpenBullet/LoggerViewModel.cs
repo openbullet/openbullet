@@ -95,7 +95,7 @@ namespace OpenBullet
         private bool ErrorFilter(object item)
         {
             // If search box not empty, filter out all the stuff that's not needed
-            if (SearchString != "")
+            if (SearchString != string.Empty)
             {
                 if (!(item as LogEntry).LogString.ToLower().Contains(SearchString.ToLower()))
                     return false;

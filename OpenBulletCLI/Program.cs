@@ -174,7 +174,7 @@ namespace OpenBulletCLI
             Console.WriteLine($"[{DateTime.Now}][{hit.Type}][{hit.Proxy}] {hit.Data}", Color.GreenYellow);
 
             // If an output file was specified, print them to the output file as well
-            if (outFile != "")
+            if (outFile != string.Empty)
             {
                 File.AppendAllText(outFile, $"[{ DateTime.Now}][{hit.Type}][{hit.Proxy}] {hit.Data}{Environment.NewLine}");
             }
@@ -202,7 +202,7 @@ namespace OpenBulletCLI
             LoadOptions(opts);
 
             // Create the hits file
-            if (opts.OutputFile != "")
+            if (opts.OutputFile != string.Empty)
             {
                 File.Create(outFile);
                 Console.WriteLine($"The hits file is {outFile}", Color.Aquamarine);

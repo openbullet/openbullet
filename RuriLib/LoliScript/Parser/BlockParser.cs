@@ -91,7 +91,7 @@ namespace RuriLib.LS
             var input = line.Trim();
 
             // Return an exception if the line is empty
-            if (input == "") throw new ArgumentNullException();
+            if (input == string.Empty) throw new ArgumentNullException();
 
             // Parse if disabled or not
             var disabled = input.StartsWith("!");
@@ -167,7 +167,7 @@ namespace RuriLib.LS
             if (block != null) block.Disabled = disabled;
 
             // Set the label
-            if (block != null && label != "") block.Label = label.Replace("#", "");
+            if (block != null && label != string.Empty) block.Label = label.Replace("#", "");
 
             return block;
         }

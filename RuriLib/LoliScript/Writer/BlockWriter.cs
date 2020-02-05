@@ -40,7 +40,7 @@ namespace RuriLib.LS
         /// <returns>The BlockWriter itself</returns>
         public BlockWriter Token(dynamic token, string property = "")
         {
-            if (property != "" && CheckDefault(token, property)) return this;
+            if (property != string.Empty && CheckDefault(token, property)) return this;
             Write($"{token.ToString()} ");
             return this;
         }
@@ -53,7 +53,7 @@ namespace RuriLib.LS
         /// <returns>The BlockWriter itself</returns>
         public BlockWriter Integer(int integer, string property = "")
         {
-            if (property != "" && CheckDefault(integer, property)) return this;
+            if (property != string.Empty && CheckDefault(integer, property)) return this;
             Write($"{integer} ");
             return this;
         }
@@ -66,7 +66,7 @@ namespace RuriLib.LS
         /// <returns>The BlockWriter itself</returns>
         public BlockWriter Literal(string literal, string property = "")
         {
-            if (property != "" && CheckDefault(literal, property)) return this;
+            if (property != string.Empty && CheckDefault(literal, property)) return this;
             Write($"\"{literal.Replace("\\", "\\\\").Replace("\"", "\\\"")}\" ");
             return this;
         }        
@@ -101,7 +101,7 @@ namespace RuriLib.LS
         /// <returns></returns>
         public BlockWriter Boolean(bool boolean, string property)
         {
-            if (property != "" && CheckDefault(boolean, property)) return this;
+            if (property != string.Empty && CheckDefault(boolean, property)) return this;
             Write($"{property}={boolean.ToString().ToUpper()} ");
             return this;
         }

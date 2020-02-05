@@ -158,7 +158,7 @@ namespace OpenBullet.Views.Main
             sfd.Title = "Export proxies";
             sfd.ShowDialog();
 
-            if (sfd.FileName != "")
+            if (sfd.FileName != string.Empty)
             {
                 if (Selected.Count() > 0)
                 {

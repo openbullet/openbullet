@@ -83,7 +83,7 @@ namespace RuriLib.CaptchaServices
                 CreateTaskResponse gtrr = JsonConvert.DeserializeObject<CreateTaskResponse>(resp);
                 if (gtrr == null) continue;
                 if (!gtrr.is_correct) throw new Exception("No answer could be found");
-                if (gtrr.text != "")
+                if (gtrr.text != string.Empty)
                 {
                     Status = CaptchaStatus.Completed;
                     return gtrr.text;
@@ -133,7 +133,7 @@ namespace RuriLib.CaptchaServices
                 CreateTaskResponse gtrr = JsonConvert.DeserializeObject<CreateTaskResponse>(resp);
                 if (gtrr == null) continue;
                 if (!gtrr.is_correct) throw new Exception("No answer could be found");
-                if (gtrr.text != "")
+                if (gtrr.text != string.Empty)
                 {
                     Status = CaptchaStatus.Completed;
                     return gtrr.text;

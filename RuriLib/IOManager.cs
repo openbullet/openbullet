@@ -210,7 +210,7 @@ namespace RuriLib
                     {
                         line = lines[j];
                         if (line.StartsWith("[")) break;
-                        else if (line.Trim() == "" || line.StartsWith("#")) continue;
+                        else if (line.Trim() == string.Empty || line.StartsWith("#")) continue;
                         else parameters.Add(line);
                     }
 

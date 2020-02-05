@@ -50,7 +50,7 @@ namespace RuriLib.LS
             IWebElement elem1 = null;
             IWebElement elem2 = null;
             Line newLine = null;
-            while (input != "")
+            while (input != string.Empty)
             {
                 var parsed = LineParser.ParseToken(ref input, TokenType.Parameter, true).ToUpper();
                 switch (parsed)

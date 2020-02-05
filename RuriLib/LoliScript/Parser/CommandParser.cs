@@ -51,7 +51,7 @@ namespace RuriLib.LS
             var input = line.Trim();
 
             // Return an exception if the line is empty
-            if (input == "") throw new ArgumentNullException();
+            if (input == string.Empty) throw new ArgumentNullException();
 
             var label = LineParser.ParseToken(ref input, TokenType.Label, false);
 
