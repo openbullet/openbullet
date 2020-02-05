@@ -294,7 +294,6 @@ namespace RuriLib
         #endregion
 
         #region RandomString Properties
-        private static readonly string[] _reserved = new[] { "?l", "?u", "?d", "?s", "?h", "?a", "?m", "?i" };
         private static readonly string _lowercase = "abcdefghijklmnopqrstuvwxyz";
         private static readonly string _uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         private static readonly string _digits = "0123456789";
@@ -683,14 +682,14 @@ namespace RuriLib
                         outputString = localInputString;
                         lock (data.RandomLocker)
                         {
-                            outputString = Regex.Replace(outputString, "\\?l", m => _lowercase[data.Random.Next(_lowercase.Length)].ToString());
-                            outputString = Regex.Replace(outputString, "\\?u", m => _uppercase[data.Random.Next(_uppercase.Length)].ToString());
-                            outputString = Regex.Replace(outputString, "\\?d", m => _digits[data.Random.Next(_digits.Length)].ToString());
-                            outputString = Regex.Replace(outputString, "\\?s", m => _symbols[data.Random.Next(_symbols.Length)].ToString());
-                            outputString = Regex.Replace(outputString, "\\?h", m => _hex[data.Random.Next(_hex.Length)].ToString());
-                            outputString = Regex.Replace(outputString, "\\?a", m => _allChars[data.Random.Next(_allChars.Length)].ToString());
-                            outputString = Regex.Replace(outputString, "\\?m", m => _udChars[data.Random.Next(_udChars.Length)].ToString());
-                            outputString = Regex.Replace(outputString, "\\?i", m => _ludChars[data.Random.Next(_ludChars.Length)].ToString());
+                            outputString = Regex.Replace(outputString, @"\?l", m => _lowercase[data.Random.Next(_lowercase.Length)].ToString());
+                            outputString = Regex.Replace(outputString, @"\?u", m => _uppercase[data.Random.Next(_uppercase.Length)].ToString());
+                            outputString = Regex.Replace(outputString, @"\?d", m => _digits[data.Random.Next(_digits.Length)].ToString());
+                            outputString = Regex.Replace(outputString, @"\?s", m => _symbols[data.Random.Next(_symbols.Length)].ToString());
+                            outputString = Regex.Replace(outputString, @"\?h", m => _hex[data.Random.Next(_hex.Length)].ToString());
+                            outputString = Regex.Replace(outputString, @"\?a", m => _allChars[data.Random.Next(_allChars.Length)].ToString());
+                            outputString = Regex.Replace(outputString, @"\?m", m => _udChars[data.Random.Next(_udChars.Length)].ToString());
+                            outputString = Regex.Replace(outputString, @"\?i", m => _ludChars[data.Random.Next(_ludChars.Length)].ToString());
                         }
                         break;
 
