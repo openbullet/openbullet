@@ -163,7 +163,7 @@ namespace OpenBullet.ViewModels
                         foreach (var entry in zip.Entries)
                         {
                             var subCategory = Path.GetDirectoryName(entry.FullName).Replace("\\", " - ");
-                            var category = subCategory == "" ? "Remote" : $"Remote - {subCategory}";
+                            var category = subCategory == string.Empty ? "Remote" : $"Remote - {subCategory}";
                             using (var stream = entry.Open())
                             {
                                 using (TextReader tr = new StreamReader(stream))

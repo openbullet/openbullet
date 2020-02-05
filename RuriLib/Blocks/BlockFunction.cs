@@ -348,7 +348,7 @@ namespace RuriLib
                     if (LineParser.Lookahead(ref input) == TokenType.Boolean)
                         LineParser.SetBool(ref input, this);
                     TranslationDictionary = new Dictionary<string, string>();
-                    while (input != "" && LineParser.Lookahead(ref input) == TokenType.Parameter)
+                    while (input != string.Empty && LineParser.Lookahead(ref input) == TokenType.Parameter)
                     {
                         LineParser.EnsureIdentifier(ref input, "KEY");
                         var k = LineParser.ParseLiteral(ref input, "Key");
@@ -425,7 +425,7 @@ namespace RuriLib
                 InputString = LineParser.ParseLiteral(ref input, "INPUT");
 
             // Try to parse the arrow, otherwise just return the block as is with default var name and var / cap choice
-            if (LineParser.ParseToken(ref input, TokenType.Arrow, false) == "")
+            if (LineParser.ParseToken(ref input, TokenType.Arrow, false) == string.Empty)
                 return this;
 
             // Parse the VAR / CAP
@@ -540,7 +540,7 @@ namespace RuriLib
                     break;
 
                 case Function.PBKDF2PKCS5:
-                    if (KdfSalt != "") writer.Literal(KdfSalt);
+                    if (KdfSalt != string.Empty) writer.Literal(KdfSalt);
                     else writer.Integer(KdfSaltSize);
                     writer
                         .Integer(KdfIterations)

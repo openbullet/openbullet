@@ -488,7 +488,7 @@ namespace OpenBullet.Views.Main.Configs
         {
             if (OB.OBSettings.General.DisableHTMLView) return;
             App.Current.Dispatcher.Invoke(new Action(() => {
-                if (vm.BotData.ResponseSource != "")
+                if (vm.BotData.ResponseSource != string.Empty)
                 {
                     htmlViewBrowser.DocumentText = vm.BotData.ResponseSource.Replace("alert(", "(");
                 }

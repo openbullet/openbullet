@@ -328,7 +328,7 @@ namespace RuriLib.Functions.Crypto
         /// <returns>The generated key as a base64 string.</returns>
         public static string PBKDF2PKCS5(string password, string salt, int saltSize = 8, int iterations = 1, int keyLength = 16, Hash type = Hash.SHA1)
         {
-            if (salt != "")
+            if (salt != string.Empty)
             {
                 using (var deriveBytes = new Rfc2898DeriveBytes(password, Convert.FromBase64String(salt), iterations, type.ToHashAlgorithmName()))
                 {
@@ -401,7 +401,7 @@ namespace RuriLib.Functions.Crypto
             SHA256 sha2 = new SHA256CryptoServiceProvider();
 
             byte[] rawKey = Convert.FromBase64String(key);
-            byte[] rawIV = iv != "" ? Convert.FromBase64String(iv) : Convert.FromBase64String(key);
+            byte[] rawIV = iv != string.Empty ? Convert.FromBase64String(iv) : Convert.FromBase64String(key);
 
             byte[] hashKey = sha2.ComputeHash(rawKey);
             byte[] hashIV = sha2.ComputeHash(rawIV);

@@ -49,7 +49,7 @@ namespace RuriLib
             Url = LineParser.ParseLiteral(ref input, "URL");
             SiteKey = LineParser.ParseLiteral(ref input, "SITEKEY");
 
-            if (LineParser.ParseToken(ref input, TokenType.Arrow, false) == "")
+            if (LineParser.ParseToken(ref input, TokenType.Arrow, false) == string.Empty)
                 return this;
 
             LineParser.EnsureIdentifier(ref input, "VAR");
@@ -85,8 +85,8 @@ namespace RuriLib
 
             string recapResponse = Service.Initialize(data.GlobalSettings.Captchas).SolveRecaptcha(siteKey, ReplaceValues(url, data));
 
-            data.Log(recapResponse == "" ? new LogEntry("Couldn't get a reCaptcha response from the service", Colors.Tomato) : new LogEntry("Succesfully got the response: " + recapResponse, Colors.GreenYellow));
-            if (VariableName != "")
+            data.Log(recapResponse == string.Empty ? new LogEntry("Couldn't get a reCaptcha response from the service", Colors.Tomato) : new LogEntry("Succesfully got the response: " + recapResponse, Colors.GreenYellow));
+            if (VariableName != string.Empty)
             {
                 data.Log(new LogEntry("Response stored in variable: " + variableName, Colors.White));
                 data.Variables.Set(new CVar(variableName, recapResponse));

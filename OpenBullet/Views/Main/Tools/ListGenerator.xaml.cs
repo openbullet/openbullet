@@ -53,7 +53,7 @@ namespace OpenBullet.Views.Main.Tools
             sfd.Filter = "Text File |*.txt";
             sfd.Title = "Save Output List";
             sfd.ShowDialog();
-            if(sfd.FileName != "")
+            if(sfd.FileName != string.Empty)
             {
                 sw = new StreamWriter(sfd.FileName);
 

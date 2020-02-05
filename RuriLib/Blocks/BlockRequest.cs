@@ -164,7 +164,7 @@ namespace RuriLib
 
             CustomHeaders.Clear(); // Remove the default headers
 
-            while (input != "" && !input.StartsWith("->"))
+            while (input != string.Empty && !input.StartsWith("->"))
             {
                 var parsed = LineParser.ParseToken(ref input, TokenType.Parameter, true).ToUpper();
                 switch (parsed)

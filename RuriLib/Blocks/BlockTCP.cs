@@ -113,7 +113,7 @@ namespace RuriLib
             }
 
             // Try to parse the arrow, otherwise just return the block as is with default var name and var / cap choice
-            if (LineParser.ParseToken(ref input, TokenType.Arrow, false) == "")
+            if (LineParser.ParseToken(ref input, TokenType.Arrow, false) == string.Empty)
                 return this;
 
             // Parse the VAR / CAP
@@ -220,7 +220,7 @@ namespace RuriLib
                         data.Log(new LogEntry(response, Colors.GreenYellow));
                     }
 
-                    if (VariableName != "")
+                    if (VariableName != string.Empty)
                     {
                         data.Variables.Set(new CVar(VariableName, response, IsCapture));
                         data.Log(new LogEntry($"Saved Response in variable {VariableName}", Colors.White));
@@ -319,7 +319,7 @@ namespace RuriLib
                     response = Encoding.ASCII.GetString(buffer, 0, bytes);
                     data.Log(new LogEntry("> " + response, Colors.GreenYellow));
 
-                    if (VariableName != "")
+                    if (VariableName != string.Empty)
                     {
                         data.Variables.Set(new CVar(VariableName, response, IsCapture));
                         data.Log(new LogEntry($"Saved Response in variable {VariableName}.", Colors.White));

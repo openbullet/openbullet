@@ -120,7 +120,7 @@ namespace RuriLib.Functions.Requests
         /// <returns>The request itself</returns>
         public Request SetMultipartContent(IEnumerable<MultipartContent> contents, string boundary = "", List<LogEntry> log = null)
         {
-            var bdry = boundary != "" ? boundary : GenerateMultipartBoundary();
+            var bdry = boundary != string.Empty ? boundary : GenerateMultipartBoundary();
             content = new Extreme.Net.MultipartContent(bdry);
             var mContent = content as Extreme.Net.MultipartContent;
             
@@ -214,14 +214,14 @@ namespace RuriLib.Functions.Requests
             }
 
             // Add the authorization header on a Basic Auth request
-            if (authorization != "")
+            if (authorization != string.Empty)
             {
                 request.AddHeader("Authorization", authorization);
                 if (log != null) log.Add(new LogEntry($"Authorization: {authorization}", Colors.MediumTurquoise));
             }
 
             // Add the content-type header
-            if (contentType != "")
+            if (contentType != string.Empty)
             {
                 if (log != null) log.Add(new LogEntry($"Content-Type: {contentType}", Colors.MediumTurquoise));
             }
@@ -365,7 +365,7 @@ namespace RuriLib.Functions.Requests
         public void SaveFile(string path, List<LogEntry> log = null)
         {
             var dirName = Path.GetDirectoryName(path);
-            if (dirName != "") dirName += Path.DirectorySeparatorChar.ToString();
+            if (dirName != string.Empty) dirName += Path.DirectorySeparatorChar.ToString();
             var fileName = Path.GetFileNameWithoutExtension(path);
             var fileExtension = Path.GetExtension(path);
             var sanitizedPath = $"{dirName}{Files.Files.MakeValidFileName(fileName)}{fileExtension}";

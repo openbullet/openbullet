@@ -48,7 +48,7 @@ namespace RuriLib
             while (LineParser.Lookahead(ref input) == TokenType.Boolean)
                 LineParser.SetBool(ref input, this);
 
-            while (input != "") // Scan for keychains until the end
+            while (input != string.Empty) // Scan for keychains until the end
             {
                 LineParser.EnsureIdentifier(ref input, "KEYCHAIN");
 
@@ -59,14 +59,14 @@ namespace RuriLib
                     kc.CustomType = LineParser.ParseLiteral(ref input, "Custom Type");
                 kc.Mode = (KeyChain.KeychainMode)LineParser.ParseEnum(ref input, "Keychain Mode", typeof(KeyChain.KeychainMode));
 
-                while (!input.StartsWith("KEYCHAIN") && input != "") // Scan for keys
+                while (!input.StartsWith("KEYCHAIN") && input != string.Empty) // Scan for keys
                 {
                     Key k = new Key();
                     LineParser.EnsureIdentifier(ref input, "KEY");
 
                     var first = LineParser.ParseLiteral(ref input, "Left Term");
                     // If there is another key/keychain/nothing, the user used the short syntax
-                    if (LineParser.CheckIdentifier(ref input, "KEY") || LineParser.CheckIdentifier(ref input, "KEYCHAIN") || input == "")
+                    if (LineParser.CheckIdentifier(ref input, "KEY") || LineParser.CheckIdentifier(ref input, "KEYCHAIN") || input == string.Empty)
                     {
                         k.LeftTerm = "<SOURCE>";
                         k.Comparer = Comparer.Contains;
@@ -152,7 +152,7 @@ namespace RuriLib
             // Check Global Keys
             foreach (var key in data.GlobalSettings.Proxies.GlobalBanKeys)
             {
-                if (key != "" && data.ResponseSource.Contains(key))
+                if (key != string.Empty && data.ResponseSource.Contains(key))
                 {
                     data.Status = BotStatus.BAN;
                     return;

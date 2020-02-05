@@ -50,7 +50,7 @@ namespace OpenBullet
                 {
                     // File
                     case 0:
-                        if (fileName != "")
+                        if (fileName != string.Empty)
                         {
                             OB.Logger.LogInfo(Components.ProxyManager, $"Trying to load from file {fileName}");
                             lines.AddRange(File.ReadAllLines(fileName).ToList());
@@ -63,7 +63,7 @@ namespace OpenBullet
                         break;
 
                     case 1:
-                        if (proxiesBox.Text != "")
+                        if (proxiesBox.Text != string.Empty)
                         {
                             lines.AddRange(proxiesBox.Text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None));
                         }
@@ -75,7 +75,7 @@ namespace OpenBullet
                         break;
 
                     case 2:
-                        if (urlTextbox.Text != "")
+                        if (urlTextbox.Text != string.Empty)
                         {
                             HttpRequest request = new HttpRequest();
                             var response = request.Get(urlTextbox.Text).ToString();

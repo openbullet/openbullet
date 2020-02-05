@@ -88,7 +88,7 @@ namespace RuriLib
                 .Token("CAPTCHA")
                 .Literal(Url);
 
-            if (UserAgent != "") writer.Literal(UserAgent);
+            if (UserAgent != string.Empty) writer.Literal(UserAgent);
 
             writer.Boolean(Base64, "Base64")
                 .Boolean(SendScreenshot, "SendScreenshot")
@@ -147,9 +147,9 @@ namespace RuriLib
             catch(Exception ex) { data.Log(new LogEntry(ex.Message, Colors.Tomato)); throw; }
             finally { bitmap.Dispose(); }
 
-            data.Log(response == "" ? new LogEntry("Couldn't get a response from the service", Colors.Tomato) : new LogEntry("Succesfully got the response: " + response, Colors.GreenYellow));
+            data.Log(response == string.Empty ? new LogEntry("Couldn't get a response from the service", Colors.Tomato) : new LogEntry("Succesfully got the response: " + response, Colors.GreenYellow));
 
-            if (VariableName != "")
+            if (VariableName != string.Empty)
             {
                 data.Log(new LogEntry("Response stored in variable: " + variableName, Colors.White));
                 data.Variables.Set(new CVar(variableName, response));

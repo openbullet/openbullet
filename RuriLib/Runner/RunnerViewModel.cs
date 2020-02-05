@@ -750,7 +750,7 @@ namespace RuriLib.Runner
                 catch { }
 
                 // Set the cloudflare cookies (to be used in normal requests) if we already have clearance and we don't have to get it each time
-                if (botData.UseProxies && botData.Proxy != null && botData.Proxy.Clearance != "" && !Settings.Proxies.AlwaysGetClearance)
+                if (botData.UseProxies && botData.Proxy != null && botData.Proxy.Clearance != string.Empty && !Settings.Proxies.AlwaysGetClearance)
                 {
                     botData.Cookies["cf_clearance"] = botData.Proxy.Clearance;
                     botData.Cookies["__cfduid"] = botData.Proxy.Cfduid;

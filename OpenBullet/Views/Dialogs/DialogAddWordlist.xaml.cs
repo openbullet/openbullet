@@ -32,7 +32,7 @@ namespace OpenBullet
         {
             if (Caller.GetType() == typeof(WordlistManager))
             {
-                if (nameTextbox.Text.Trim() == "") { MessageBox.Show("The name cannot be blank"); return; }
+                if (nameTextbox.Text.Trim() == string.Empty) { MessageBox.Show("The name cannot be blank"); return; }
 
                 var path = locationTextbox.Text;
                 var cwd = Directory.GetCurrentDirectory();
