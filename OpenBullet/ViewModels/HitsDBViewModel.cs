@@ -169,25 +169,23 @@ namespace OpenBullet.ViewModels
         #region Delete methods
         public void DeleteDuplicates()
         {
-            var duplicates = _repo.Get()
+            var duplicates = HitsCollection
                     .GroupBy(h => h.GetHashCode())
                     .Where(g => g.Count() > 1)
-                    .SelectMany(g => g.OrderBy(h => h.Date).Reverse().Skip(1));
+                    .SelectMany(g => g.OrderBy(h => h.Date)
+                    .Reverse().Skip(1)).ToList();
 
             Remove(duplicates);
         }
 
         public void DeleteFiltered()
         {
-            var list = HitsCollection.Where(h =>
+            var filtered = HitsCollection.Where(h =>
                     (string.IsNullOrEmpty(SearchString) ? true : h.CapturedString.ToLower().Contains(SearchString.ToLower())) &&
                     (ConfigFilter == "All" ? true : h.ConfigName == ConfigFilter) &&
                     h.Type == TypeFilter).ToList();
 
-            foreach (var hit in list)
-            {
-                Remove(hit);
-            }
+            Remove(filtered);
         }
         #endregion
     }
