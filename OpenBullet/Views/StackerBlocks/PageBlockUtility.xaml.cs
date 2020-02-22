@@ -95,6 +95,7 @@ namespace OpenBullet.Pages.StackerBlocks
                     listActionTabControl.SelectedIndex = 2;
                     break;
 
+                case ListAction.Concat:
                 case ListAction.Zip:
                     listActionTabControl.SelectedIndex = 3;
                     break;
