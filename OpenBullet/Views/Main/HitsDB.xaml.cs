@@ -188,7 +188,8 @@ namespace OpenBullet.Views.Main
         {
             try
             {
-                Selected.CopyToClipboard(hit => hit.ToFormattedString((sender as MenuItem).Header.ToString().Replace(@"\r\n", "\r\n").Replace(@"\n", "\n")));
+                Selected.CopyToClipboard(hit => hit.ToFormattedString((sender as MenuItem).Header.ToString()
+                    .Replace(@"\r\n", "\r\n").Replace(@"\n", "\n").Replace(@"\t", "\t")));
             }
             catch (Exception ex)
             {
