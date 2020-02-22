@@ -24,7 +24,7 @@ namespace OpenBullet.Views.Main
         private IEnumerable<Hit> Selected => hitsListView.SelectedItems.Cast<Hit>();
 
         #region Mappings
-        Func<Hit, string> mappingCapture = new Func<Hit, string>(hit => $"{hit.Data} | {hit.CapturedData}");
+        Func<Hit, string> mappingCapture = new Func<Hit, string>(hit => $"{hit.Data} | {hit.CapturedString}");
 
         Func<Hit, string> mappingFull = new Func<Hit, string>(hit =>
         {
@@ -34,7 +34,7 @@ namespace OpenBullet.Views.Main
                     " | Wordlist = " + hit.WordlistName +
                     " | Proxy = " + hit.Proxy +
                     " | Date = " + hit.Date.ToLongDateString() +
-                    " | CapturedData = " + hit.CapturedData.ToCaptureString();
+                    " | CapturedData = " + hit.CapturedString;
         });
         #endregion
 

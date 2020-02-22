@@ -21,7 +21,7 @@ namespace RuriLib.Models
         /// <summary>The list of all variables marked as Capture as a chained string.</summary>
         [JsonIgnore]
         [BsonIgnore]
-        public string CapturedString { get { return CapturedData.ToCaptureString(); } }
+        public string CapturedString => CapturedData.ToCaptureString();
 
         /// <summary>The proxy that was used.</summary>
         public string Proxy { get; set; }
