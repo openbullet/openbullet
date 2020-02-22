@@ -204,7 +204,7 @@
                     </GridViewColumn>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=HasNext}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Chain" Click="listViewColumnHeader_Click">Chain</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="HasNext" Click="listViewColumnHeader_Click">Chain</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=LastChecked}">

@@ -199,12 +199,12 @@
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=Config.Settings.Name}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Name" Click="listViewColumnHeader_Click">Name</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="Config.Settings.Name" Click="listViewColumnHeader_Click">Name</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=Config.Settings.Author}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Author" Click="listViewColumnHeader_Click">Author</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="Config.Settings.Author" Click="listViewColumnHeader_Click">Author</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn Width="180" DisplayMemberBinding="{Binding Path=Category}">
@@ -214,22 +214,22 @@
                     </GridViewColumn>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=Config.Settings.NeedsProxies}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="NeedsProxies" Click="listViewColumnHeader_Click">Proxies</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="Config.Settings.NeedsProxies" Click="listViewColumnHeader_Click">Proxies</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=Config.CaptchasNeeded}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="NeedsCaptchaService" Click="listViewColumnHeader_Click">Captchas</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="Config.CaptchasNeeded" Click="listViewColumnHeader_Click">Captchas</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=Config.SeleniumPresent}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="SeleniumPresent" Click="listViewColumnHeader_Click">Selenium</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="Config.SeleniumPresent" Click="listViewColumnHeader_Click">Selenium</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=Config.HasCFBypass}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="HasCFBypass" Click="listViewColumnHeader_Click">CF</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="Config.HasCFBypass" Click="listViewColumnHeader_Click">CF</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn Width="200" DisplayMemberBinding="{Binding Path=Config.Settings.LastModified}">

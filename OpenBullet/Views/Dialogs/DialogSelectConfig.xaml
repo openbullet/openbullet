@@ -135,14 +135,14 @@
 
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Width="130" DisplayMemberBinding="{Binding Path=Name}">
+                    <GridViewColumn Width="130" DisplayMemberBinding="{Binding Path=Config.Settings.Name}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Name" Click="listViewColumnHeader_Click">Name</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="Config.Settings.Name" Click="listViewColumnHeader_Click">Name</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=Config.Settings.Author}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Author" Click="listViewColumnHeader_Click">Author</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="Config.Settings.Author" Click="listViewColumnHeader_Click">Author</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=Category}">
@@ -152,32 +152,32 @@
                     </GridViewColumn>
                     <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=Config.AllowedWordlists}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="AllowedWordlists" Click="listViewColumnHeader_Click">Wordlists</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="Config.AllowedWordlists" Click="listViewColumnHeader_Click">Wordlists</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn Width="40" DisplayMemberBinding="{Binding Path=Config.Settings.NeedsProxies}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Proxies" Click="listViewColumnHeader_Click">Prox</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="Config.Settings.NeedsProxies" Click="listViewColumnHeader_Click">Prox</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn Width="40" DisplayMemberBinding="{Binding Path=Config.CaptchasNeeded}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Captcha" Click="listViewColumnHeader_Click">Cap</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="Config.CaptchasNeeded" Click="listViewColumnHeader_Click">Cap</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn Width="40" DisplayMemberBinding="{Binding Path=Config.SeleniumPresent}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Selenium" Click="listViewColumnHeader_Click">Sele</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="Config.SeleniumPresent" Click="listViewColumnHeader_Click">Sele</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=Config.HasCFBypass}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="HasCFBypass" Click="listViewColumnHeader_Click">CF</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="Config.HasCFBypass" Click="listViewColumnHeader_Click">CF</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn Width="200" DisplayMemberBinding="{Binding Path=Config.Settings.LastModified}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="LastModified" Click="listViewColumnHeader_Click">Last Modified</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="Config.Settings.LastModified" Click="listViewColumnHeader_Click">Last Modified</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                 </GridView>

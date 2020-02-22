@@ -22,7 +22,7 @@ namespace RuriLib.ViewModels
         public bool Remote { get; set; } = false;
 
         /// <summary>The name of the config.</summary>
-        public string Name { get { return Config.Settings.Name; } }
+        public string Name => Config.Settings.Name;
 
         /// <summary>
         /// Constructs an instance of the ConfigViewModel class.
