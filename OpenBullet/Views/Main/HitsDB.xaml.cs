@@ -304,10 +304,7 @@ namespace OpenBullet.Views.Main
         {
             OB.Logger.LogInfo(Components.HitsDB, $"Deleting {hitsListView.SelectedItems.Count} hits");
 
-            foreach (var hit in Selected.ToList())
-            {
-                vm.Remove(hit);
-            }
+            vm.Remove(Selected);
 
             OB.Logger.LogInfo(Components.HitsDB, "Succesfully sent the delete query and refreshed the list");
         }
