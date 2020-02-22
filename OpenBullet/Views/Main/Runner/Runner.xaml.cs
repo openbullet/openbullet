@@ -240,6 +240,7 @@ namespace OpenBullet.Views.Main.Runner
         public void SetConfig(Config config)
         {
             vm.SetConfig(config, OB.OBSettings.General.RecommendedBots);
+            if (OB.OBSettings.General.RecommendedBots) UpdateBotsSlider(config.Settings.SuggestedBots);
             RetrieveRecord();
         }
 
@@ -247,6 +248,13 @@ namespace OpenBullet.Views.Main.Runner
         {
             vm.SetWordlist(wordlist);
             RetrieveRecord();
+        }
+
+        private void UpdateBotsSlider(int amount)
+        {
+            if (amount < botsSlider.Minimum) botsSlider.Value = botsSlider.Minimum;
+            else if (amount > botsSlider.Maximum) botsSlider.Value = botsSlider.Maximum;
+            else botsSlider.Value = amount;
         }
         #endregion
 

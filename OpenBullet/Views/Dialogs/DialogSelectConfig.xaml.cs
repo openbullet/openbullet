@@ -34,8 +34,11 @@ namespace OpenBullet
             if (configsListView.SelectedItems.Count == 0) return;
             if(Caller.GetType() == typeof(Runner))
             {
-                if (OB.OBSettings.General.LiveConfigUpdates) ((Runner)Caller).SetConfig(((ConfigViewModel)configsListView.SelectedItem).Config);
-                else ((Runner)Caller).SetConfig(IOManager.CloneConfig(((ConfigViewModel)configsListView.SelectedItem).Config));
+                var config = ((ConfigViewModel)configsListView.SelectedItem).Config;
+                var runner = Caller as Runner;
+                
+                if (OB.OBSettings.General.LiveConfigUpdates) runner.SetConfig(config);
+                else runner.SetConfig(IOManager.CloneConfig(config));
             }
             ((MainDialog)Parent).Close();
         }
