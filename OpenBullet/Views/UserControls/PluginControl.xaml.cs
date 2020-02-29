@@ -19,12 +19,22 @@ namespace OpenBullet.Views.UserControls
         public ObservableCollection<UserControl> Controls { get; set; } = new ObservableCollection<UserControl>();
         private List<PropertyInfo> ValidProperties { get; set; } = new List<PropertyInfo>();
 
-        public PluginControl(Type type)
+        public PluginControl(Type type, IApplication app)
         {
             InitializeComponent();
             DataContext = this;
 
-            Plugin = Activator.CreateInstance(type) as IPlugin;
+            var constructorParams = new object[] { };
+
+            // If the constructor supports IApplication
+            if (type.GetConstructors()
+                .Any(c => c.GetParameters()
+                    .Any(p => p.ParameterType == typeof(IApplication))))
+            {
+                constructorParams = new object[] { app };
+            }
+            
+            Plugin = Activator.CreateInstance(type, constructorParams) as IPlugin;
 
             // For each valid property, add input field
             foreach (var p in type.GetProperties().Where(p => Check.InputProperty(p)))

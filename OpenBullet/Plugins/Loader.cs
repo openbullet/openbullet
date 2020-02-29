@@ -41,7 +41,7 @@ namespace OpenBullet.Plugins
                     // If it implements the IPlugin interface
                     if (type.GetInterface(nameof(IPlugin)) == typeof(IPlugin))
                     {
-                        plugins.Add(new PluginControl(type));
+                        plugins.Add(new PluginControl(type, OB.App));
                     }
                     // If it implements the IBlockPlugin interface and derives from BlockBase
                     else if (type.GetInterface(nameof(IBlockPlugin)) == typeof(IBlockPlugin) 
