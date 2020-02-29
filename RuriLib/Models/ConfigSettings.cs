@@ -1,4 +1,5 @@
-﻿using RuriLib.Models;
+﻿using Newtonsoft.Json;
+using RuriLib.Models;
 using RuriLib.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,7 @@ namespace RuriLib
         /// <summary>The plugins that are necessary in order for this config to run.</summary>
         public string[] RequiredPlugins { get { return requiredPlugins; } set { requiredPlugins = value; OnPropertyChanged(); OnPropertyChanged(nameof(RequiredPluginsString)); } }
 
+        [JsonIgnore]
         /// <summary>The required plugins list as a comma separated string.</summary>
         public string RequiredPluginsString => string.Join(", ", RequiredPlugins);
 
