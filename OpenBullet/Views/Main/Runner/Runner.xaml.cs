@@ -200,6 +200,18 @@ namespace OpenBullet.Views.Main.Runner
             switch (vm.Master.Status)
             {
                 case WorkerStatus.Idle:
+
+                    // Check if the required plugins are present
+                    try
+                    {
+                        OBIOManager.CheckRequiredPlugins(OB.BlockPlugins.Select(b => b.Name), vm.Config);
+                    }
+                    catch (Exception ex)
+                    {
+                        OB.Logger.LogError(Components.Runner, ex.Message, true);
+                        return;
+                    }
+
                     SetupSoundPlayers();
                     ThreadPool.SetMinThreads(vm.BotsAmount * 2 + 1, vm.BotsAmount * 2 + 1);
                     ServicePointManager.DefaultConnectionLimit = 10000; // This sets the default connection limit for requests on the whole application

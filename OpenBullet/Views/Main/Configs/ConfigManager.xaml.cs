@@ -211,7 +211,7 @@ namespace OpenBullet.Views.Main.Configs
 
             try
             {
-                vm.CheckRequiredPlugins(OB.BlockPlugins.Select(b => b.Name), config);
+                OBIOManager.CheckRequiredPlugins(OB.BlockPlugins.Select(b => b.Name), config.Config);
             }
             catch (Exception ex)
             {

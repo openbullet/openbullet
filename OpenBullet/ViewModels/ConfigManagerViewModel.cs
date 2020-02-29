@@ -74,17 +74,6 @@ namespace OpenBullet.ViewModels
                 .Distinct();
         }
 
-        public void CheckRequiredPlugins(IEnumerable<string> available, ConfigViewModel config)
-        {
-            foreach (var required in config.Config.Settings.RequiredPlugins)
-            {
-                if (!available.Contains(required))
-                {
-                    throw new Exception($"This config requires the plugin {required} which is missing from the Plugins folder and hence cannot be opened!");
-                }
-            }
-        }
-
         #region Filters
         private string searchString = "";
         public string SearchString 
