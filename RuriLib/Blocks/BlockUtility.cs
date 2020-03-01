@@ -75,7 +75,10 @@ namespace RuriLib
         RemoveDuplicates,
 
         /// <summary>Picks a random element from a list variable.</summary>
-        Random
+        Random,
+
+        /// <summary>Randomizes the order of elements in a list.</summary>
+        Shuffle
     }
 
     /// <summary>
@@ -485,6 +488,16 @@ namespace RuriLib
                                 lock (data.RandomLocker)
                                 {
                                     data.Variables.Set(new CVar(variableName, list[data.Random.Next(list.Count)], isCapture));
+                                }
+                                break;
+
+                            case ListAction.Shuffle:
+                                lock (data.RandomLocker)
+                                {
+                                    // This makes a copy of the original list
+                                    var listCopy = list.ToArray().ToList();
+                                    listCopy.Shuffle(data.Random);
+                                    data.Variables.Set(new CVar(variableName, listCopy, isCapture));
                                 }
                                 break;
 
