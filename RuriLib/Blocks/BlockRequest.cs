@@ -412,7 +412,7 @@ namespace RuriLib
             data.LogNewLine();
 
             // Perform the request
-            (data.Address, data.ResponseCode, data.ResponseHeaders, data.Cookies) = request.Perform(localUrl, Method, data.ConfigSettings.IgnoreResponseErrors, data.LogBuffer);
+            (data.Address, data.ResponseCode, data.ResponseHeaders, data.Cookies) = request.Perform(localUrl, Method, data.ConfigSettings.IgnoreResponseErrors, GetLogBuffer(data));
 
             // Save the response content
             switch (ResponseType)
@@ -542,6 +542,6 @@ namespace RuriLib
 
         #endregion
 
-        private List<LogEntry> GetLogBuffer(BotData data) => data.GlobalSettings.General.EnableBotLog ? data.LogBuffer : null;
+        private List<LogEntry> GetLogBuffer(BotData data) => data.GlobalSettings.General.EnableBotLog || data.IsDebug ? data.LogBuffer : null;
     }
 }
