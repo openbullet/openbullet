@@ -107,16 +107,19 @@ namespace OpenBullet.Pages.StackerBlocks
                     break;
 
                 case BlockFunction.Function.RSAEncrypt:
-                case BlockFunction.Function.RSADecrypt:
                     functionTabControl.SelectedIndex = 9;
                     break;
 
-                case BlockFunction.Function.CharAt:
+                case BlockFunction.Function.RSADecrypt:
                     functionTabControl.SelectedIndex = 10;
                     break;
 
-                case BlockFunction.Function.Substring:
+                case BlockFunction.Function.CharAt:
                     functionTabControl.SelectedIndex = 11;
+                    break;
+
+                case BlockFunction.Function.Substring:
+                    functionTabControl.SelectedIndex = 12;
                     break;
 
                 case BlockFunction.Function.GetRandomUA:
