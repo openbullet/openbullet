@@ -121,6 +121,7 @@
                         <Label Content="Max:"/>
                         <xctk:IntegerUpDown Value="{Binding RandomMax}" Minimum="0" Maximum="2147483647" Width="80" HorizontalAlignment="Left"/>
                     </DockPanel>
+                    <CheckBox Content="Pad with zeros on the left" IsChecked="{Binding RandomZeroPad}" VerticalContentAlignment="Center"/>
                 </StackPanel>
             </TabItem>
             <TabItem x:Name="countOccurrencesTab">

@@ -211,12 +211,16 @@ namespace RuriLib
 
         // -- Random Number
         private int randomMin = 0;
-        /// <summary>The minimum random number that can be generated.</summary>
+        /// <summary>The minimum random number that can be generated (inclusive).</summary>
         public int RandomMin { get { return randomMin; } set { randomMin = value; OnPropertyChanged(); } }
 
         private int randomMax = 0;
-        /// <summary>The maximum random number that can be generated.</summary>
+        /// <summary>The maximum random number that can be generated (exclusive).</summary>
         public int RandomMax { get { return randomMax; } set { randomMax = value; OnPropertyChanged(); } }
+
+        private bool randomZeroPad = false;
+        /// <summary>Whether to pad with zeros on the left to match the length of the maximum provided.</summary>
+        public bool RandomZeroPad { get { return randomZeroPad; } set { randomZeroPad = value; OnPropertyChanged(); } }
 
         // -- CountOccurrences
         private string stringToFind = "";
@@ -376,6 +380,8 @@ namespace RuriLib
                 case Function.RandomNum:
                     RandomMin = LineParser.ParseInt(ref input, "Minimum");
                     RandomMax = LineParser.ParseInt(ref input, "Maximum");
+                    if (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                        LineParser.SetBool(ref input, this);
                     break;
 
                 case Function.CountOccurrences:
@@ -502,7 +508,8 @@ namespace RuriLib
                 case Function.RandomNum:
                     writer
                         .Integer(RandomMin)
-                        .Integer(RandomMax);
+                        .Integer(RandomMax)
+                        .Boolean(RandomZeroPad, "RandomZeroPad");
                     break;
 
                 case Function.CountOccurrences:
@@ -674,7 +681,8 @@ namespace RuriLib
                     case Function.RandomNum:
                         lock (data.RandomLocker)
                         {
-                            outputString = data.Random.Next(randomMin, randomMax).ToString();
+                            var randomNumString = data.Random.Next(randomMin, randomMax).ToString();
+                            outputString = randomZeroPad ? randomNumString.PadLeft(randomMax.ToString().Length, '0') : randomNumString;
                         }
                         break;
 
