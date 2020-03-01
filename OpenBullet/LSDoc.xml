@@ -239,7 +239,7 @@ FUNCTION Translate StopAfterFirstMatch=True
 FUNCTION DateToUnixTime "format" "input" -> VAR "DATE"
 FUNCTION Replace "what" "with" UseRegex=True "input" -> VAR "REPLACED"
 FUNCTION RegexMatch "pattern" "input" -> VAR "MATCHED"
-FUNCTION RandomNum 0 100 -> VAR "RANDOM"
+FUNCTION RandomNum "0" "100" -> VAR "RANDOM"
 FUNCTION CountOccurrences "tofind" "input" -> VAR "COUNT"
 FUNCTION CharAt "index" "input" -> VAR "CHAR"
 FUNCTION Substring "startindex" "length" "input" -> VAR "SUBSTRING"
