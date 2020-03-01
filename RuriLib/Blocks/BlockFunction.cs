@@ -210,13 +210,13 @@ namespace RuriLib
         public string RegexMatch { get { return regexMatch; } set { regexMatch = value; OnPropertyChanged(); } }
 
         // -- Random Number
-        private int randomMin = 0;
+        private string randomMin = "0";
         /// <summary>The minimum random number that can be generated (inclusive).</summary>
-        public int RandomMin { get { return randomMin; } set { randomMin = value; OnPropertyChanged(); } }
+        public string RandomMin { get { return randomMin; } set { randomMin = value; OnPropertyChanged(); } }
 
-        private int randomMax = 0;
+        private string randomMax = "0";
         /// <summary>The maximum random number that can be generated (exclusive).</summary>
-        public int RandomMax { get { return randomMax; } set { randomMax = value; OnPropertyChanged(); } }
+        public string RandomMax { get { return randomMax; } set { randomMax = value; OnPropertyChanged(); } }
 
         private bool randomZeroPad = false;
         /// <summary>Whether to pad with zeros on the left to match the length of the maximum provided.</summary>
@@ -378,8 +378,18 @@ namespace RuriLib
                     break;
 
                 case Function.RandomNum:
-                    RandomMin = LineParser.ParseInt(ref input, "Minimum");
-                    RandomMax = LineParser.ParseInt(ref input, "Maximum");
+                    if (LineParser.Lookahead(ref input) == TokenType.Literal)
+                    {
+                        RandomMin = LineParser.ParseLiteral(ref input, "Minimum");
+                        RandomMax = LineParser.ParseLiteral(ref input, "Maximum");
+                    }
+                    // Support for old integer definition of Min and Max
+                    else
+                    {
+                        RandomMin = LineParser.ParseInt(ref input, "Minimum").ToString();
+                        RandomMax = LineParser.ParseInt(ref input, "Maximum").ToString();
+                    }
+                    
                     if (LineParser.Lookahead(ref input) == TokenType.Boolean)
                         LineParser.SetBool(ref input, this);
                     break;
@@ -507,8 +517,8 @@ namespace RuriLib
 
                 case Function.RandomNum:
                     writer
-                        .Integer(RandomMin)
-                        .Integer(RandomMax)
+                        .Literal(RandomMin)
+                        .Literal(RandomMax)
                         .Boolean(RandomZeroPad, "RandomZeroPad");
                     break;
 
@@ -681,8 +691,10 @@ namespace RuriLib
                     case Function.RandomNum:
                         lock (data.RandomLocker)
                         {
-                            var randomNumString = data.Random.Next(randomMin, randomMax).ToString();
-                            outputString = randomZeroPad ? randomNumString.PadLeft(randomMax.ToString().Length, '0') : randomNumString;
+                            var min = int.Parse(ReplaceValues(randomMin, data));
+                            var max = int.Parse(ReplaceValues(randomMax, data));
+                            var randomNumString = data.Random.Next(min, max).ToString();
+                            outputString = randomZeroPad ? randomNumString.PadLeft(max.ToString().Length, '0') : randomNumString;
                         }
                         break;
 

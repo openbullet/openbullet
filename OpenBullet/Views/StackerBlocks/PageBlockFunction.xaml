@@ -116,10 +116,12 @@
             <TabItem x:Name="randomNumberTab">
                 <StackPanel>
                     <DockPanel>
-                        <Label Content="Min:"/>
-                        <xctk:IntegerUpDown Value="{Binding RandomMin}" Minimum="0" Maximum="2147483647" Width="80" HorizontalAlignment="Left"/>
-                        <Label Content="Max:"/>
-                        <xctk:IntegerUpDown Value="{Binding RandomMax}" Minimum="0" Maximum="2147483647" Width="80" HorizontalAlignment="Left"/>
+                        <Label Content="Minimum:"/>
+                        <TextBox Text="{Binding RandomMin, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Maximum:"/>
+                        <TextBox Text="{Binding RandomMax, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
                     <CheckBox Content="Pad with zeros on the left" IsChecked="{Binding RandomZeroPad}" VerticalContentAlignment="Center"/>
                 </StackPanel>
