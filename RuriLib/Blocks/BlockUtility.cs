@@ -504,8 +504,7 @@ namespace RuriLib
                             default:
                                 break;
                         }
-
-                        data.Log(new LogEntry(string.Format("Executed action {0} on list {1}", listAction, listName), Colors.White));
+                        data.Log(new LogEntry($"Executed action {listAction} on file {listName}", Colors.White));
                         break;
 
                     case UtilityGroup.Variable:
@@ -517,13 +516,13 @@ namespace RuriLib
                                 data.Variables.Set(new CVar(variableName, single.Split(new string[] { ReplaceValues(splitSeparator, data) }, StringSplitOptions.None).ToList(), isCapture));
                                 break;
                         }
-                        data.Log(new LogEntry(string.Format("Executed action {0} on variable {1}", varAction, varName), Colors.White));
+                        data.Log(new LogEntry($"Executed action {varAction} on variable {varName}", Colors.White));
                         break;
 
                     case UtilityGroup.Conversion:
                         byte[] convertedBytes = ReplaceValues(inputString, data).ConvertFrom(conversionFrom);
                         data.Variables.Set(new CVar(variableName, convertedBytes.ConvertTo(conversionTo), isCapture));
-                        data.Log(new LogEntry(string.Format("Converted input from {0} to {1}", conversionFrom, conversionTo), Colors.White));
+                        data.Log(new LogEntry($"Converted input {conversionFrom} to {conversionTo}", Colors.White));
                         break;
 
                     case UtilityGroup.File:
@@ -556,6 +555,7 @@ namespace RuriLib
                                 File.AppendAllLines(file, inputs);
                                 break;
                         }
+                        data.Log(new LogEntry($"Executed action {fileAction} on file {file}", Colors.White));
                         break;
 
                     default:
