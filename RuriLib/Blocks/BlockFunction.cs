@@ -694,7 +694,7 @@ namespace RuriLib
                             var min = int.Parse(ReplaceValues(randomMin, data));
                             var max = int.Parse(ReplaceValues(randomMax, data));
                             var randomNumString = data.Random.Next(min, max).ToString();
-                            outputString = randomZeroPad ? randomNumString.PadLeft(randomMax.ToString().Length, '0') : randomNumString;
+                            outputString = randomZeroPad ? randomNumString.PadLeft(max.ToString().Length, '0') : randomNumString;
                         }
                         break;
 
