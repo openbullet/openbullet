@@ -40,6 +40,10 @@ namespace RuriLib
         private string version = "1.2.0";
         /// <summary>The version of RuriLib the Config was made with.</summary>
         public string Version { get { return version; } set { version = value; OnPropertyChanged(); } }
+
+        private bool saveEmptyCaptures = true;
+        /// <summary>Whether to remove the empty captures before saving the hits to the database.</summary>
+        public bool SaveEmptyCaptures { get { return saveEmptyCaptures; } set { saveEmptyCaptures = value; OnPropertyChanged(); } }
         #endregion
 
         #region Requests

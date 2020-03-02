@@ -324,10 +324,14 @@ namespace RuriLib
             {
                 if (list.Count == 0)
                 {
-                    if (createEmpty)
+                    if (createEmpty && data.ConfigSettings.SaveEmptyCaptures)
                     {
                         variable = new CVar(variableName, list, isCapture);
                     }
+                }
+                else if (list.Count == 1 && string.IsNullOrWhiteSpace(list.First()))
+                {
+                    
                 }
                 else
                 {
@@ -338,10 +342,14 @@ namespace RuriLib
             {
                 if (list.Count == 0)
                 {
-                    if (createEmpty)
+                    if (createEmpty && data.ConfigSettings.SaveEmptyCaptures)
                     {
                         variable = new CVar(variableName, "", isCapture);
                     }
+                }
+                else if (list.Count == 1 && string.IsNullOrWhiteSpace(list.First()))
+                {
+
                 }
                 else
                 {
