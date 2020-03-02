@@ -639,9 +639,9 @@ namespace RuriLib.Runner
             {
                 foreach (var bot in Bots.Where(b => b.Worker.IsBusy))
                 {
-                    ValidData validData = new ValidData(bot.Data, bot.Proxy, ProxyType.Http, BotStatus.NONE, "TOCHK", "", "", new List<LogEntry>());
-                    HitsList.Add(validData);
-                    var hit = new Hit(bot.Data, new VariableList(), bot.Proxy, "TOCHK", ConfigName, WordlistName);
+                    ValidData validData = new ValidData(bot.Data, bot.Proxy, ProxyType.Http, BotStatus.NONE, "NONE", "", "", new List<LogEntry>());
+                    ToCheckList.Add(validData);
+                    var hit = new Hit(bot.Data, new VariableList(), bot.Proxy, "NONE", ConfigName, WordlistName);
                     RaiseFoundHit(hit);
                 }
             }
