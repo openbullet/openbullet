@@ -349,6 +349,13 @@ namespace RuriLib
                 }
             }
 
+            // If we don't want to save empty captures, and it's a capture, and the list is either an empty string or a list made of an empty string
+            if (!data.ConfigSettings.SaveEmptyCaptures && isCapture && 
+                (list.Count == 0 || list.Count > 0 && string.IsNullOrWhiteSpace(list.First())))
+            {
+                variable = null;
+            }
+
             if (variable != null)
             {
                 data.Variables.Set(variable);
