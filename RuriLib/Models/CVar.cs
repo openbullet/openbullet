@@ -141,6 +141,14 @@ namespace RuriLib.Models
         {
             if (Type != VarType.List) return null;
             var list = Value as List<string>;
+
+            // If the index is negative, start from the end
+            if (index < 0)
+            {
+                // For example in a [1,2,3] list, the element at -1 is at index 3-1 = 2 which is element '3'
+                index = list.Count - index;
+            }
+
             if (index > list.Count - 1 || index < 0) return null;
             return list[index];
         }
