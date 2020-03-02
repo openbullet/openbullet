@@ -146,7 +146,7 @@ namespace RuriLib.Models
             if (index < 0)
             {
                 // For example in a [1,2,3] list, the element at -1 is at index 3-1 = 2 which is element '3'
-                index = list.Count - index;
+                index = list.Count + index;
             }
 
             if (index > list.Count - 1 || index < 0) return null;
