@@ -407,17 +407,6 @@ namespace RuriLib.Runner
         /// </summary>
         public void ForceStop()
         {
-            if (Settings.General.SendToCheckOnAbort)
-            {
-                foreach (var bot in Bots.Where(b => b.Worker.IsBusy))
-                {
-                    ValidData validData = new ValidData(bot.Data, bot.Proxy, ProxyType.Http, BotStatus.NONE, "TOCHK", "", "", new List<LogEntry>());
-                    HitsList.Add(validData);
-                    var hit = new Hit(bot.Data, new VariableList(), bot.Proxy, "TOCHK", ConfigName, WordlistName);
-                    RaiseFoundHit(hit);
-                }
-            }
-
             AbortAllBots();
             Master.Abort();
             RaiseMessageArrived(LogLevel.Info, "Hard Aborted the Master Worker", false);
@@ -646,6 +635,17 @@ namespace RuriLib.Runner
         // Executed when the Master Worker has finished its job
         private void RunCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (Settings.General.SendToCheckOnAbort)
+            {
+                foreach (var bot in Bots.Where(b => b.Worker.IsBusy))
+                {
+                    ValidData validData = new ValidData(bot.Data, bot.Proxy, ProxyType.Http, BotStatus.NONE, "TOCHK", "", "", new List<LogEntry>());
+                    HitsList.Add(validData);
+                    var hit = new Hit(bot.Data, new VariableList(), bot.Proxy, "TOCHK", ConfigName, WordlistName);
+                    RaiseFoundHit(hit);
+                }
+            }
+
             if (e.Error != null) RaiseMessageArrived(LogLevel.Error, "The Master Worker has encountered an error: " + e.Error.Message, true);
             Master.Status = WorkerStatus.Idle;
             OnPropertyChanged("Busy");
