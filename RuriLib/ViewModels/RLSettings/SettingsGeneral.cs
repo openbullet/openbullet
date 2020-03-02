@@ -47,6 +47,10 @@ namespace RuriLib.ViewModels
         /// <summary>Whether to store the last Response Source after a successful check.</summary>
         public bool SaveLastSource { get { return saveLastSource; } set { saveLastSource = value; OnPropertyChanged(); } }
 
+        private bool sendToCheckOnAbort = false;
+        /// <summary>Whether to save as ToCheck all the data lines that were being processed when the master worker was aborted.</summary>
+        public bool SendToCheckOnAbort { get { return sendToCheckOnAbort; } set { sendToCheckOnAbort = value; OnPropertyChanged(); } }
+
         private bool webhookEnabled = false;
         /// <summary>Whether to activate the hit webhook that gets called upon a SUCCESS or a custom result.</summary>
         public bool WebhookEnabled { get { return webhookEnabled; } set { webhookEnabled = value; OnPropertyChanged(); } }
