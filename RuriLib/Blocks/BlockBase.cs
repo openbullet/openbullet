@@ -324,14 +324,10 @@ namespace RuriLib
             {
                 if (list.Count == 0)
                 {
-                    if (createEmpty && data.ConfigSettings.SaveEmptyCaptures)
+                    if (createEmpty)
                     {
                         variable = new CVar(variableName, list, isCapture);
                     }
-                }
-                else if (list.Count == 1 && string.IsNullOrWhiteSpace(list.First()))
-                {
-                    
                 }
                 else
                 {
@@ -342,19 +338,22 @@ namespace RuriLib
             {
                 if (list.Count == 0)
                 {
-                    if (createEmpty && data.ConfigSettings.SaveEmptyCaptures)
+                    if (createEmpty)
                     {
                         variable = new CVar(variableName, "", isCapture);
                     }
-                }
-                else if (list.Count == 1 && string.IsNullOrWhiteSpace(list.First()))
-                {
-
                 }
                 else
                 {
                     variable = new CVar(variableName, list.First(), isCapture);
                 }
+            }
+
+            // If we don't want to save empty captures, and it's a capture, and the list is either an empty string or a list made of an empty string
+            if (!data.ConfigSettings.SaveEmptyCaptures && isCapture && 
+                (list.Count == 0 || list.Count > 0 && string.IsNullOrWhiteSpace(list.First())))
+            {
+                variable = null;
             }
 
             if (variable != null)

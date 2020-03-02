@@ -41,7 +41,7 @@ namespace RuriLib
         /// <summary>The version of RuriLib the Config was made with.</summary>
         public string Version { get { return version; } set { version = value; OnPropertyChanged(); } }
 
-        private bool saveEmptyCaptures = true;
+        private bool saveEmptyCaptures = false;
         /// <summary>Whether to remove the empty captures before saving the hits to the database.</summary>
         public bool SaveEmptyCaptures { get { return saveEmptyCaptures; } set { saveEmptyCaptures = value; OnPropertyChanged(); } }
         #endregion
