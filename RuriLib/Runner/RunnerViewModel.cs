@@ -641,6 +641,7 @@ namespace RuriLib.Runner
                 {
                     ValidData validData = new ValidData(bot.Data, bot.Proxy, ProxyType.Http, BotStatus.NONE, "NONE", "", "", new List<LogEntry>());
                     ToCheckList.Add(validData);
+                    UpdateStats();
                     var hit = new Hit(bot.Data, new VariableList(), bot.Proxy, "NONE", ConfigName, WordlistName);
                     RaiseFoundHit(hit);
                 }
