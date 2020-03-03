@@ -1,4 +1,5 @@
-﻿using RuriLib.Functions.Conversions;
+﻿using RuriLib.Functions.Conditions;
+using RuriLib.Functions.Conversions;
 using RuriLib.LS;
 using RuriLib.Models;
 using RuriLib.ViewModels;
@@ -68,8 +69,11 @@ namespace RuriLib
         /// <summary>Adds an element to a list variable.</summary>
         Add,
 
-        /// <summary>Removes an element from a list variable.</summary>
+        /// <summary>Removes an element from a list variable given its index.</summary>
         Remove,
+
+        /// <summary>Removes one ore more elements from a list variable given their value.</summary>
+        RemoveValues,
 
         /// <summary>Removes duplicate elements from a list variable, keeping only the first one.</summary>
         RemoveDuplicates,
@@ -160,6 +164,14 @@ namespace RuriLib
         private string listIndex = "-1"; // Add (-1 = end, 0 = start)
         /// <summary>The list index where an item can be added/removed. -1 = end, 0 = start.</summary>
         public string ListIndex { get { return listIndex; } set { listIndex = value; OnPropertyChanged(); } }
+
+        private Comparer listElementComparer = Comparer.EqualTo;
+        /// <summary>The comparer to use when removing or modifying one or more elements of a list.</summary>
+        public Comparer ListElementComparer { get { return listElementComparer; } set { listElementComparer = value; OnPropertyChanged(); } }
+
+        private string listComparisonTerm = "";
+        /// <summary>The string that elements in a list should be compared to.</summary>
+        public string ListComparisonTerm { get { return listComparisonTerm; } set { listComparisonTerm = value; OnPropertyChanged(); } }
         #endregion
 
         // Variables
@@ -248,6 +260,11 @@ namespace RuriLib
 
                         case ListAction.Remove:
                             ListIndex = LineParser.ParseLiteral(ref input, "Index");
+                            break;
+
+                        case ListAction.RemoveValues:
+                            ListElementComparer = LineParser.ParseEnum(ref input, "Comparer", typeof(Comparer));
+                            ListComparisonTerm = LineParser.ParseLiteral(ref input, "Comparison Term");
                             break;
                     }
                     break;
@@ -351,6 +368,12 @@ namespace RuriLib
                         case ListAction.Remove:
                             writer
                                 .Literal(ListIndex);
+                            break;
+
+                        case ListAction.RemoveValues:
+                            writer
+                                .Token(ListElementComparer)
+                                .Literal(ListComparisonTerm);
                             break;
                     }
                     break;
@@ -463,6 +486,7 @@ namespace RuriLib
                                 break;
 
                             case ListAction.Add:
+                                // TODO: Refactor this
                                 variable = data.Variables.Get(listName, CVar.VarType.List);
                                 if (variable == null) variable = data.GlobalVariables.Get(listName, CVar.VarType.List);
                                 if (variable == null) break;
@@ -472,12 +496,22 @@ namespace RuriLib
                                 break;
 
                             case ListAction.Remove:
+                                // TODO: Refactor this
                                 variable = data.Variables.Get(listName, CVar.VarType.List);
                                 if (variable == null) variable = data.GlobalVariables.Get(listName, CVar.VarType.List);
                                 if (variable == null) break;
                                 if (variable.Value.Count == 0) index = 0;
                                 else if (index < 0) index += variable.Value.Count;
                                 variable.Value.RemoveAt(index);
+                                break;
+
+                            case ListAction.RemoveValues:
+                                data.Variables.Set(new CVar(variableName, list.Where(l => !Condition.Verify(new KeycheckCondition
+                                {
+                                    Left = ReplaceValues(l, data),
+                                    Comparer = ListElementComparer,
+                                    Right = ListComparisonTerm
+                                })).ToList(), isCapture));
                                 break;
 
                             case ListAction.RemoveDuplicates:
