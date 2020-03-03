@@ -55,7 +55,7 @@ namespace OpenBullet.ViewModels
         public RunnerInstance(int id)
         {
             Id = id;
-            ViewModel = new RunnerViewModel(OB.Settings.Environment, OB.Settings.RLSettings, OB.random);
+            ViewModel = new RunnerViewModel(OB.Settings.Environment, OB.Settings.RLSettings);
             View = new Runner(ViewModel);
         }
     }
