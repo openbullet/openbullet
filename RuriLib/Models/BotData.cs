@@ -43,7 +43,7 @@ namespace RuriLib
     public class BotData
     {
         /// <summary>A random number generator.</summary>
-        public Random Random = new Random();
+        public Random Random { get; set; }
 
         /// <summary>An object to use to lock <see cref="Random"/> in order to avoid the generation of the same random number if executed in rapid succession.</summary>
         public object RandomLocker = new object();
