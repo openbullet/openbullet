@@ -45,9 +45,6 @@ namespace RuriLib
         /// <summary>A random number generator.</summary>
         public Random random;
 
-        /// <summary>An object to use to lock <see cref="random"/> in order to avoid the generation of the same random number if executed in rapid succession.</summary>
-        public object randomLocker = new object();
-
         /// <summary>The Status of the Bot.</summary>
         public BotStatus Status { get; set; }
 
