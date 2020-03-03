@@ -1,4 +1,5 @@
 ﻿using RuriLib;
+using RuriLib.Functions.Conditions;
 using RuriLib.Functions.Conversions;
 using System;
 using System.Windows.Controls;
@@ -47,6 +48,11 @@ namespace OpenBullet.Pages.StackerBlocks
                 fileActionCombobox.Items.Add(a);
 
             fileActionCombobox.SelectedIndex = (int)block.FileAction;
+
+            foreach (var c in Enum.GetNames(typeof(Comparer)))
+                removeComparerCombobox.Items.Add(c);
+
+            removeComparerCombobox.SelectedIndex = (int)block.ListElementComparer;
         }
 
         private void groupCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -111,6 +117,10 @@ namespace OpenBullet.Pages.StackerBlocks
                 case ListAction.Remove:
                     listActionTabControl.SelectedIndex = 5;
                     break;
+
+                case ListAction.RemoveValues:
+                    listActionTabControl.SelectedIndex = 6;
+                    break;
             }
         }
 
@@ -127,6 +137,11 @@ namespace OpenBullet.Pages.StackerBlocks
         private void fileActionCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             block.FileAction = (FileAction)((ComboBox)e.OriginalSource).SelectedIndex;
+        }
+
+        private void removeComparerCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            block.ListElementComparer = (Comparer)((ComboBox)e.OriginalSource).SelectedIndex;
         }
 
         private void varActionCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)

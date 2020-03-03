@@ -104,6 +104,19 @@
                                 </DockPanel>
                             </StackPanel>
                         </TabItem>
+                        <TabItem x:Name="removeValuesTab">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Column="0" Content="Remove element if" />
+                                <ComboBox Grid.Column="1" x:Name="removeComparerCombobox" SelectionChanged="removeComparerCombobox_SelectionChanged"/>
+                                <TextBox Grid.Column="2" Text="{Binding ListComparisonTerm, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Grid>
+                        </TabItem>
                     </TabControl>
 
                 </StackPanel>
