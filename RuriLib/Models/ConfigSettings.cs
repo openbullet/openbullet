@@ -50,6 +50,10 @@ namespace RuriLib
         private int _maxRedirects = 8;
         /// <summary>The maximum amount of times we can be redirected to different URLs for a single request.</summary>
         public int MaxRedirects { get { return _maxRedirects; } set { _maxRedirects = value; OnPropertyChanged(); } }
+
+        private bool forceRunCustomStatus = false;
+        /// <summary>If the Bot should run after CUSTOM status</summary>
+        public bool ForceRunCustomStatus { get { return forceRunCustomStatus; } set { forceRunCustomStatus = value; OnPropertyChanged(); } }
         #endregion
 
         #region Proxy

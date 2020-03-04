@@ -215,13 +215,24 @@ namespace RuriLib.LS
             // Clean the inner Log
             data.LogBuffer.Clear();
 
-            if (data.Status != BotStatus.NONE && data.Status != BotStatus.SUCCESS)
+            if (!data.ConfigSettings.ForceRunCustomStatus)
             {
-                i = lines.Count(); // Go to the end
-                return;
+                if (data.Status != BotStatus.NONE && data.Status != BotStatus.SUCCESS)
+                {
+                    i = lines.Count(); // Go to the end
+                    return;
+                }
+            }
+            else
+            {
+                if (data.Status != BotStatus.NONE && data.Status != BotStatus.SUCCESS && data.Status != BotStatus.CUSTOM)
+                {
+                    i = lines.Count(); // Go to the end
+                    return;
+                }
             }
 
-            TAKELINE:
+        TAKELINE:
 
             CurrentLine = lines[i];
 
