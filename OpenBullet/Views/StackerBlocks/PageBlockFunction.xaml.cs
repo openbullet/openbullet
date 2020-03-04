@@ -1,6 +1,7 @@
 ﻿using OpenBullet.Views.Main.Runner;
 using RuriLib;
 using RuriLib.Functions.Crypto;
+using RuriLib.Functions.UserAgent;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -37,6 +38,13 @@ namespace OpenBullet.Pages.StackerBlocks
             hashTypeCombobox.SelectedIndex = (int)vm.HashType;
             hmacHashTypeCombobox.SelectedIndex = (int)vm.HashType;
             kdfAlgorithmCombobox.SelectedIndex = (int)vm.KdfAlgorithm;
+
+            foreach (var b in Enum.GetNames(typeof(UserAgent.Browser)))
+            {
+                randomUABrowserCombobox.Items.Add(b);
+            }
+
+            randomUABrowserCombobox.SelectedIndex = (int)vm.UserAgentBrowser;
 
             foreach (var m in Enum.GetNames(typeof(CipherMode)))
             {
@@ -111,13 +119,17 @@ namespace OpenBullet.Pages.StackerBlocks
                     functionTabControl.SelectedIndex = 11;
                     break;
 
-                case BlockFunction.Function.AESEncrypt:
-                case BlockFunction.Function.AESDecrypt:
+                case BlockFunction.Function.GetRandomUA:
                     functionTabControl.SelectedIndex = 12;
                     break;
 
-                case BlockFunction.Function.PBKDF2PKCS5:
+                case BlockFunction.Function.AESEncrypt:
+                case BlockFunction.Function.AESDecrypt:
                     functionTabControl.SelectedIndex = 13;
+                    break;
+
+                case BlockFunction.Function.PBKDF2PKCS5:
+                    functionTabControl.SelectedIndex = 14;
                     break;
             }
         }
@@ -167,6 +179,11 @@ namespace OpenBullet.Pages.StackerBlocks
         private void kdfAlgorithmCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             vm.KdfAlgorithm = (Hash)((ComboBox)e.OriginalSource).SelectedIndex;
+        }
+
+        private void randomUABrowserCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            vm.UserAgentBrowser = (UserAgent.Browser)((ComboBox)e.OriginalSource).SelectedIndex;
         }
     }
 }

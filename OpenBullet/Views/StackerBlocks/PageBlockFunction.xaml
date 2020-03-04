@@ -171,6 +171,18 @@
                     </DockPanel>
                 </StackPanel>
             </TabItem>
+            <TabItem x:Name="randomUATab">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <CheckBox Grid.Column="0" Content="Generate only for" IsChecked="{Binding UserAgentSpecifyBrowser}" VerticalContentAlignment="Center" Margin="0 0 10 0"/>
+                        <ComboBox Grid.Column="1" x:Name="randomUABrowserCombobox" SelectionChanged="randomUABrowserCombobox_SelectionChanged"/>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
             <TabItem x:Name="aesTab">
                 <StackPanel>
                     <DockPanel Margin="0 5 0 0">
