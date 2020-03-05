@@ -519,20 +519,14 @@ namespace RuriLib
                                 break;
 
                             case ListAction.Random:
-                                lock (data.randomLocker)
-                                {
-                                    data.Variables.Set(new CVar(variableName, list[data.random.Next(list.Count)], isCapture));
-                                }
+                                data.Variables.Set(new CVar(variableName, list[data.random.Next(list.Count)], isCapture));
                                 break;
 
                             case ListAction.Shuffle:
-                                lock (data.randomLocker)
-                                {
-                                    // This makes a copy of the original list
-                                    var listCopy = list.ToArray().ToList();
-                                    listCopy.Shuffle(data.random);
-                                    data.Variables.Set(new CVar(variableName, listCopy, isCapture));
-                                }
+                                // This makes a copy of the original list
+                                var listCopy = list.ToArray().ToList();
+                                listCopy.Shuffle(data.random);
+                                data.Variables.Set(new CVar(variableName, listCopy, isCapture));
                                 break;
 
                             default:
