@@ -3,6 +3,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Interactions;
 using RuriLib.Functions.Files;
+using RuriLib.Functions.UserAgent;
 using RuriLib.LS;
 using RuriLib.ViewModels;
 using System;
@@ -322,7 +323,7 @@ namespace RuriLib
                                     .Select(ext => Directory.GetCurrentDirectory() + "\\ChromeExtensions\\" + ext));
                             if (data.ConfigSettings.DisableNotifications) chromeop.AddArgument("--disable-notifications");
                             if (data.ConfigSettings.CustomCMDArgs != string.Empty) chromeop.AddArgument(data.ConfigSettings.CustomCMDArgs);
-                            if (data.ConfigSettings.RandomUA) chromeop.AddArgument("--user-agent=" + BlockFunction.RandomUserAgent(data.random));
+                            if (data.ConfigSettings.RandomUA) chromeop.AddArgument("--user-agent=" + UserAgent.Random(data.random));
                             else if (data.ConfigSettings.CustomUserAgent != string.Empty) chromeop.AddArgument("--user-agent=" + data.ConfigSettings.CustomUserAgent);
 
                             if (data.UseProxies) chromeop.AddArgument("--proxy-server=" + data.Proxy.Type.ToString().ToLower() + "://" + data.Proxy.Proxy);
@@ -347,7 +348,7 @@ namespace RuriLib
                             if (data.GlobalSettings.Selenium.Headless || data.ConfigSettings.ForceHeadless) fireop.AddArgument("--headless");
                             if (data.ConfigSettings.DisableNotifications) fireprofile.SetPreference("dom.webnotifications.enabled", false);
                             if (data.ConfigSettings.CustomCMDArgs != string.Empty) fireop.AddArgument(data.ConfigSettings.CustomCMDArgs);
-                            if (data.ConfigSettings.RandomUA) fireprofile.SetPreference("general.useragent.override", BlockFunction.RandomUserAgent(data.random));
+                            if (data.ConfigSettings.RandomUA) fireprofile.SetPreference("general.useragent.override", UserAgent.Random(data.random));
                             else if (data.ConfigSettings.CustomUserAgent != string.Empty) fireprofile.SetPreference("general.useragent.override", data.ConfigSettings.CustomUserAgent);
 
                             if (data.UseProxies)

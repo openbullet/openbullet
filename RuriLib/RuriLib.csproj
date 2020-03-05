@@ -255,6 +255,7 @@
     <Compile Include="Functions\Files\Files.cs" />
     <Compile Include="Functions\Requests\Request.cs" />
     <Compile Include="Functions\Time\Time.cs" />
+    <Compile Include="Functions\UserAgent\UserAgent.cs" />
     <Compile Include="GZip.cs" />
     <Compile Include="Interfaces\IAlerter.cs" />
     <Compile Include="Interfaces\IApplication.cs" />

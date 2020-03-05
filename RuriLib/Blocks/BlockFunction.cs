@@ -1,7 +1,7 @@
-﻿using Extreme.Net;
-using RuriLib.Functions.Crypto;
+﻿using RuriLib.Functions.Crypto;
 using RuriLib.Functions.Formats;
 using RuriLib.Functions.Time;
+using RuriLib.Functions.UserAgent;
 using RuriLib.LS;
 using System;
 using System.Collections.Generic;
@@ -258,6 +258,15 @@ namespace RuriLib
         /// <summary>The length of the wanted substring.</summary>
         public string SubstringLength { get { return substringLength; } set { substringLength = value; OnPropertyChanged(); } }
 
+        // -- User Agent
+        private bool userAgentSpecifyBrowser = false;
+        /// <summary>Whether to only limit the UA generation to a certain browser.</summary>
+        public bool UserAgentSpecifyBrowser { get { return userAgentSpecifyBrowser; } set { userAgentSpecifyBrowser = value; OnPropertyChanged(); } }
+
+        private UserAgent.Browser userAgentBrowser = UserAgent.Browser.Chrome;
+        /// <summary>The browser for which the User Agent should be generated.</summary>
+        public UserAgent.Browser UserAgentBrowser { get { return userAgentBrowser; } set { userAgentBrowser = value; OnPropertyChanged(); } }
+
         // -- AES
         private string aesKey = "";
         /// <summary>The keys used for AES encryption and decryption as a base64 string.</summary>
@@ -416,6 +425,14 @@ namespace RuriLib
                         LineParser.SetBool(ref input, this);
                     break;
 
+                case Function.GetRandomUA:
+                    if (LineParser.ParseToken(ref input, TokenType.Parameter, false).ToUpper() == "BROWSER")
+                    {
+                        UserAgentSpecifyBrowser = true;
+                        UserAgentBrowser = LineParser.ParseEnum(ref input, "BROWSER", typeof(UserAgent.Browser));
+                    };
+                    break;
+
                 case Function.AESDecrypt:
                 case Function.AESEncrypt:
                     AesKey = LineParser.ParseLiteral(ref input, "Key");
@@ -545,6 +562,15 @@ namespace RuriLib
                         .Literal(RsaMod)
                         .Literal(RsaExp)
                         .Boolean(RsaOAEP, "RsaOAEP");
+                    break;
+
+                case Function.GetRandomUA:
+                    if (UserAgentSpecifyBrowser)
+                    {
+                        writer
+                            .Token("BROWSER")
+                            .Token(UserAgentBrowser);
+                    }
                     break;
 
                 case Function.AESDecrypt:
@@ -774,7 +800,14 @@ namespace RuriLib
                         break;
 
                     case Function.GetRandomUA:
-                        outputString = RandomUserAgent(data.random);
+                        if (UserAgentSpecifyBrowser)
+                        {
+                            outputString = UserAgent.ForBrowser(UserAgentBrowser);
+                        }
+                        else
+                        {
+                            outputString = UserAgent.Random(data.random);
+                        }
                         break;
 
                     case Function.AESEncrypt:
@@ -920,41 +953,6 @@ namespace RuriLib
                 count++;
             }
             return count;
-        }
-        #endregion
-
-        #region RandomUA
-
-        // All credits for this method goes to the Leaf.xNet fork of Extreme.NET
-        // https://github.com/csharp-leaf/Leaf.xNet
-
-        /// <summary>
-        /// Gets a random User-Agent header.
-        /// </summary>
-        /// <param name="rand">A random number generator</param>
-        /// <returns>A randomly generated User-Agent header</returns>
-        public static string RandomUserAgent(Random rand)
-        {
-            int random = rand.Next(99) + 1;
-
-            // Chrome = 70%
-            if (random >= 1 && random <= 70)
-                return Http.ChromeUserAgent();
-
-            // Firefox = 15%
-            if (random > 70 && random <= 85)
-                return Http.FirefoxUserAgent();
-
-            // IE = 6%
-            if (random > 85 && random <= 91)
-                return Http.IEUserAgent();
-
-            // Opera 12 = 5%
-            if (random > 91 && random <= 96)
-                return Http.OperaUserAgent();
-
-            // Opera mini = 4%
-            return Http.OperaMiniUserAgent();
         }
         #endregion
 
