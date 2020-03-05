@@ -33,6 +33,11 @@ namespace RuriLib.Functions.UserAgent
             OperaMini
         }
 
+        /// <summary>
+        /// Generates a User Agent for a specific Browser.
+        /// </summary>
+        /// <param name="browser">The Browser</param>
+        /// <returns>A User Agent for the given browser</returns>
         public static string ForBrowser(Browser browser)
         {
             switch (browser)
