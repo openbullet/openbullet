@@ -43,10 +43,7 @@ namespace RuriLib
     public class BotData
     {
         /// <summary>A random number generator.</summary>
-        public Random Random = new Random();
-
-        /// <summary>An object to use to lock <see cref="Random"/> in order to avoid the generation of the same random number if executed in rapid succession.</summary>
-        public object RandomLocker = new object();
+        public Random random;
 
         /// <summary>The Status of the Bot.</summary>
         public BotStatus Status { get; set; }
@@ -171,7 +168,7 @@ namespace RuriLib
             Data = data;
             Proxy = proxy;
             UseProxies = useProxies;
-            Random = random;
+            this.random = new Random(random.Next(0, int.MaxValue)); // Create a new local RNG seeded with a random seed from the global RNG
             Status = BotStatus.NONE;
             BotNumber = BotNumber;
             GlobalSettings = globalSettings;

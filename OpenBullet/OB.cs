@@ -20,7 +20,6 @@ namespace OpenBullet
         };
 
         public static string Version => "1.2.0";
-        public static Random Random { get; } = new Random();
 
         // Windows
         // TODO: Remove these from here, everything should only depend on the ViewModels not on the Views!

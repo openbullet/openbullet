@@ -344,7 +344,7 @@ namespace OpenBullet.Views.Main.Configs
             // Initialize BotData and Reset LS
             var cData = new CData(vm.TestData, OB.Settings.Environment.GetWordlistType(vm.TestDataType));
 
-            vm.BotData = new BotData(OB.Settings.RLSettings, vm.Config.Config.Settings, cData, proxy, vm.UseProxy, OB.Random);
+            vm.BotData = new BotData(OB.Settings.RLSettings, vm.Config.Config.Settings, cData, proxy, vm.UseProxy, new Random());
             vm.LS.Reset();
 
             // Ask for user input

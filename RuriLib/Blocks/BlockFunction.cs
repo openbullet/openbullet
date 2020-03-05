@@ -689,28 +689,22 @@ namespace RuriLib
                         break;
 
                     case Function.RandomNum:
-                        lock (data.RandomLocker)
-                        {
-                            var min = int.Parse(ReplaceValues(randomMin, data));
-                            var max = int.Parse(ReplaceValues(randomMax, data));
-                            var randomNumString = data.Random.Next(min, max).ToString();
-                            outputString = randomZeroPad ? randomNumString.PadLeft(max.ToString().Length, '0') : randomNumString;
-                        }
+                        var min = int.Parse(ReplaceValues(randomMin, data));
+                        var max = int.Parse(ReplaceValues(randomMax, data));
+                        var randomNumString = data.random.Next(min, max).ToString();
+                        outputString = randomZeroPad ? randomNumString.PadLeft(max.ToString().Length, '0') : randomNumString;
                         break;
 
                     case Function.RandomString:
                         outputString = localInputString;
-                        lock (data.RandomLocker)
-                        {
-                            outputString = Regex.Replace(outputString, @"\?l", m => _lowercase[data.Random.Next(_lowercase.Length)].ToString());
-                            outputString = Regex.Replace(outputString, @"\?u", m => _uppercase[data.Random.Next(_uppercase.Length)].ToString());
-                            outputString = Regex.Replace(outputString, @"\?d", m => _digits[data.Random.Next(_digits.Length)].ToString());
-                            outputString = Regex.Replace(outputString, @"\?s", m => _symbols[data.Random.Next(_symbols.Length)].ToString());
-                            outputString = Regex.Replace(outputString, @"\?h", m => _hex[data.Random.Next(_hex.Length)].ToString());
-                            outputString = Regex.Replace(outputString, @"\?a", m => _allChars[data.Random.Next(_allChars.Length)].ToString());
-                            outputString = Regex.Replace(outputString, @"\?m", m => _udChars[data.Random.Next(_udChars.Length)].ToString());
-                            outputString = Regex.Replace(outputString, @"\?i", m => _ludChars[data.Random.Next(_ludChars.Length)].ToString());
-                        }
+                        outputString = Regex.Replace(outputString, @"\?l", m => _lowercase[data.random.Next(_lowercase.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?u", m => _uppercase[data.random.Next(_uppercase.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?d", m => _digits[data.random.Next(_digits.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?s", m => _symbols[data.random.Next(_symbols.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?h", m => _hex[data.random.Next(_hex.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?a", m => _allChars[data.random.Next(_allChars.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?m", m => _udChars[data.random.Next(_udChars.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?i", m => _ludChars[data.random.Next(_ludChars.Length)].ToString());
                         break;
 
                     case Function.Ceil:
@@ -780,10 +774,7 @@ namespace RuriLib
                         break;
 
                     case Function.GetRandomUA:
-                        lock (data.RandomLocker)
-                        {
-                            outputString = RandomUserAgent(data.Random);
-                        }
+                        outputString = RandomUserAgent(data.random);
                         break;
 
                     case Function.AESEncrypt:
