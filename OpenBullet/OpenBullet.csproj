@@ -263,6 +263,9 @@
     <Compile Include="Views\UserControls\UserControlConfig.xaml.cs">
       <DependentUpon>UserControlConfig.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\UserControls\UserControlInfoText.xaml.cs">
+      <DependentUpon>UserControlInfoText.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\UserControls\UserControlWordlist.xaml.cs">
       <DependentUpon>UserControlWordlist.xaml</DependentUpon>
     </Compile>
@@ -776,6 +779,10 @@
     <Page Include="Views\UserControls\UserControlConfig.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\UserControls\UserControlInfoText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\UserControls\UserControlWordlist.xaml">
       <Generator>MSBuild:Compile</Generator>

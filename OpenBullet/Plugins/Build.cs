@@ -18,6 +18,10 @@ namespace OpenBullet.Plugins
 
             switch (attribute)
             {
+                case InfoText a:
+                    control = new UserControlInfoText(defaultValue);
+                    break;
+
                 case Text a:
                     control = new UserControlText(defaultValue);
                     break;

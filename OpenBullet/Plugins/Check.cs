@@ -12,6 +12,7 @@ namespace OpenBullet.Plugins
     {
         private static Dictionary<Type, Type> _requiredPropertyTypes = new Dictionary<Type, Type>()
         {
+            { typeof(InfoText), typeof(string) },
             { typeof(Text), typeof(string) },
             { typeof(Numeric), typeof(int) },
             { typeof(Checkbox), typeof(bool) },
