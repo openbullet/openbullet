@@ -426,7 +426,7 @@ namespace RuriLib
                     break;
 
                 case Function.GetRandomUA:
-                    if (LineParser.ParseToken(ref input, TokenType.Parameter, false, false).ToUpper() == "BROWSER")
+                    if (LineParser.ParseToken(ref input, TokenType.Parameter, false).ToUpper() == "BROWSER")
                     {
                         UserAgentSpecifyBrowser = true;
                         UserAgentBrowser = LineParser.ParseEnum(ref input, "BROWSER", typeof(UserAgent.Browser));
