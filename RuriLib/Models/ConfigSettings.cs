@@ -44,6 +44,10 @@ namespace RuriLib
         private bool saveEmptyCaptures = false;
         /// <summary>Whether to remove the empty captures before saving the hits to the database.</summary>
         public bool SaveEmptyCaptures { get { return saveEmptyCaptures; } set { saveEmptyCaptures = value; OnPropertyChanged(); } }
+
+        private bool continueOnCustom = false;
+        /// <summary>Whether to continue execution after a Custom status has been reached.</summary>
+        public bool ContinueOnCustom { get { return continueOnCustom; } set { continueOnCustom = value; OnPropertyChanged(); } }
         #endregion
 
         #region Requests

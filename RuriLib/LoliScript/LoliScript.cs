@@ -215,7 +215,10 @@ namespace RuriLib.LS
             // Clean the inner Log
             data.LogBuffer.Clear();
 
-            if (data.Status != BotStatus.NONE && data.Status != BotStatus.SUCCESS)
+            // TODO: Refactor this with a properly written policy
+            // If we have a custom status without forced continue OR we have a status that is not NONE or SUCCESS or CUSTOM
+            if ((data.Status == BotStatus.CUSTOM && !data.ConfigSettings.ContinueOnCustom) ||
+                (data.Status != BotStatus.NONE && data.Status != BotStatus.SUCCESS && data.Status != BotStatus.CUSTOM))
             {
                 i = lines.Count(); // Go to the end
                 return;
