@@ -48,6 +48,12 @@ namespace RuriLib
         /// <summary>Scrolls down by a given number of pixels from the top of the page.</summary>
         Scroll,
 
+        /// <summary>Opens a new tab.</summary>
+        OpenNewTab,
+
+        /// <summary>Closes the current tab.</summary>
+        CloseCurrentTab,
+
         /// <summary>Switches to the browser tab with a given index.</summary>
         SwitchToTab,
 
@@ -162,6 +168,7 @@ namespace RuriLib
             }
 
             var replacedInput = ReplaceValues(input, data);
+            Actions keyActions = null;
 
             switch (action)
             {
@@ -185,33 +192,33 @@ namespace RuriLib
                     break;
 
                 case BrowserAction.SendKeys:
-                    var action = new Actions(data.Driver);
+                    keyActions = new Actions(data.Driver);
                     foreach(var s in replacedInput.Split(new string[] { "||" }, StringSplitOptions.None))
                     {
                         switch (s)
                         {
                             case "<TAB>":
-                                action.SendKeys(OpenQA.Selenium.Keys.Tab);
+                                keyActions.SendKeys(Keys.Tab);
                                 break;
 
                             case "<ENTER>":
-                                action.SendKeys(OpenQA.Selenium.Keys.Enter);
+                                keyActions.SendKeys(Keys.Enter);
                                 break;
 
                             case "<BACKSPACE>":
-                                action.SendKeys(OpenQA.Selenium.Keys.Backspace);
+                                keyActions.SendKeys(Keys.Backspace);
                                 break;
 
                             case "<ESC>":
-                                action.SendKeys(OpenQA.Selenium.Keys.Escape);
+                                keyActions.SendKeys(Keys.Escape);
                                 break;
 
                             default:
-                                action.SendKeys(s);
+                                keyActions.SendKeys(s);
                                 break;
                         }
                     }
-                    action.Perform();
+                    keyActions.Perform();
                     Thread.Sleep(1000);
                     if(replacedInput.Contains("<ENTER>") || replacedInput.Contains("<BACKSPACE>")) // These might lead to a page change
                         UpdateSeleniumData(data);
@@ -222,9 +229,18 @@ namespace RuriLib
                     Files.SaveScreenshot(image, data);
                     break;
 
+                case BrowserAction.OpenNewTab:
+                    ((IJavaScriptExecutor)data.Driver).ExecuteScript("window.open();");
+                    data.Driver.SwitchTo().Window(data.Driver.WindowHandles.Last());
+                    break;
+
                 case BrowserAction.SwitchToTab:
                     data.Driver.SwitchTo().Window(data.Driver.WindowHandles[int.Parse(replacedInput)]);
                     UpdateSeleniumData(data);
+                    break;
+
+                case BrowserAction.CloseCurrentTab:
+                    ((IJavaScriptExecutor)data.Driver).ExecuteScript("window.close();");
                     break;
 
                 case BrowserAction.Refresh:
