@@ -76,7 +76,7 @@ namespace RuriLib.Functions.Requests
             this.contentType = contentType;
             var pData = Regex.Replace(postData, @"(?<!\\)\\n", Environment.NewLine).Replace(@"\\n", @"\n");
 
-            if (CanContainBody(method))
+            if (HttpRequest.CanContainRequestBody(method))
             {
                 if (encodeContent)
                 {
@@ -388,16 +388,6 @@ namespace RuriLib.Functions.Requests
                 builder.Append(ch);
             }
             return $"------WebKitFormBoundary{builder.ToString().ToLower()}";
-        }
-
-        /// <summary>
-        /// Checks if an HTTP method can have a body.
-        /// </summary>
-        /// <param name="method">The HTTP method</param>
-        /// <returns>True if the method allows a body</returns>
-        public static bool CanContainBody(HttpMethod method)
-        {
-            return method == HttpMethod.POST || method == HttpMethod.PUT || method == HttpMethod.DELETE;
         }
     }
 
