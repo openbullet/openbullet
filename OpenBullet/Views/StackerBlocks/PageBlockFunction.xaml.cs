@@ -125,16 +125,16 @@ namespace OpenBullet.Pages.StackerBlocks
                     break;
 
                 case BlockFunction.Function.GetRandomUA:
-                    functionTabControl.SelectedIndex = 12;
+                    functionTabControl.SelectedIndex = 13;
                     break;
 
                 case BlockFunction.Function.AESEncrypt:
                 case BlockFunction.Function.AESDecrypt:
-                    functionTabControl.SelectedIndex = 13;
+                    functionTabControl.SelectedIndex = 14;
                     break;
 
                 case BlockFunction.Function.PBKDF2PKCS5:
-                    functionTabControl.SelectedIndex = 14;
+                    functionTabControl.SelectedIndex = 15;
                     break;
             }
         }
