@@ -114,8 +114,8 @@ namespace RuriLib
             /// <summary>Encrypts a string with RSA.</summary>
             RSAEncrypt,
 
-            /// <summary>Decrypts a string with RSA.</summary>
-            RSADecrypt,
+            // <summary>Decrypts a string with RSA.</summary>
+            // RSADecrypt,
 
             /// <summary>Waits a given amount of milliseconds.</summary>
             Delay,
@@ -228,17 +228,17 @@ namespace RuriLib
         public string StringToFind { get { return stringToFind; } set { stringToFind = value; OnPropertyChanged(); } }
 
         // -- RSA
-        private string rsaKey = "";
-        /// <summary>The RSA private key as a base64 string.</summary>
-        public string RsaKey { get { return rsaKey; } set { rsaKey = value; OnPropertyChanged(); } }
-
-        private string rsaMod = "";
+        private string rsaN = "";
         /// <summary>The modulus of the RSA public key as a base64 string.</summary>
-        public string RsaMod { get { return rsaMod; } set { rsaMod = value; OnPropertyChanged(); } }
+        public string RsaN { get { return rsaN; } set { rsaN = value; OnPropertyChanged(); } }
 
-        private string rsaExp = "";
+        private string rsaE = "";
         /// <summary>The exponent of the RSA public key as a base64 string.</summary>
-        public string RsaExp { get { return rsaExp; } set { rsaExp = value; OnPropertyChanged(); } }
+        public string RsaE { get { return rsaE; } set { rsaE = value; OnPropertyChanged(); } }
+
+        private string rsaD = "";
+        /// <summary>The exponent of the RSA private key as a base64 string.</summary>
+        public string RsaD { get { return rsaD; } set { rsaD = value; OnPropertyChanged(); } }
 
         private bool rsaOAEP = true;
         /// <summary>Whether to use OAEP padding instead of PKCS v1.5.</summary>
@@ -417,13 +417,20 @@ namespace RuriLib
                     break;
 
                 case Function.RSAEncrypt:
-                case Function.RSADecrypt:
-                    RsaKey = LineParser.ParseLiteral(ref input, "Private Key");
-                    RsaMod = LineParser.ParseLiteral(ref input, "Public Key Modulus");
-                    RsaExp = LineParser.ParseLiteral(ref input, "Public Key Exponent");
+                    RsaN = LineParser.ParseLiteral(ref input, "Public Key Modulus");
+                    RsaE = LineParser.ParseLiteral(ref input, "Public Key Exponent");
                     if (LineParser.Lookahead(ref input) == TokenType.Boolean)
                         LineParser.SetBool(ref input, this);
                     break;
+
+                    /*
+                case Function.RSADecrypt:
+                    RsaN = LineParser.ParseLiteral(ref input, "Public Key Modulus");
+                    RsaD = LineParser.ParseLiteral(ref input, "Private Key Exponent");
+                    if (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                        LineParser.SetBool(ref input, this);
+                    break;
+                    */
 
                 case Function.GetRandomUA:
                     if (LineParser.ParseToken(ref input, TokenType.Parameter, false).ToUpper() == "BROWSER")
@@ -556,13 +563,20 @@ namespace RuriLib
                     break;
 
                 case Function.RSAEncrypt:
-                case Function.RSADecrypt:
                     writer
-                        .Literal(RsaKey)
-                        .Literal(RsaMod)
-                        .Literal(RsaExp)
+                        .Literal(RsaN)
+                        .Literal(RsaE)
                         .Boolean(RsaOAEP, "RsaOAEP");
                     break;
+
+                    /*
+                case Function.RSADecrypt:
+                    writer
+                        .Literal(RsaN)
+                        .Literal(RsaD)
+                        .Boolean(RsaOAEP, "RsaOAEP");
+                    break;
+                    */
 
                 case Function.GetRandomUA:
                     if (UserAgentSpecifyBrowser)
@@ -760,22 +774,22 @@ namespace RuriLib
                     case Function.RSAEncrypt:
                         outputString = Crypto.RSAEncrypt(
                             localInputString,
-                            ReplaceValues(RsaKey, data),
-                            ReplaceValues(RsaMod, data),
-                            ReplaceValues(RsaExp, data),
+                            ReplaceValues(RsaN, data),
+                            ReplaceValues(RsaE, data),
                             RsaOAEP
                             );
                         break;
 
+                        /*
                     case Function.RSADecrypt:
                         outputString = Crypto.RSADecrypt(
                             localInputString,
-                            ReplaceValues(RsaKey, data),
-                            ReplaceValues(RsaMod, data),
-                            ReplaceValues(RsaExp, data),
+                            ReplaceValues(RsaN, data),
+                            ReplaceValues(RsaD, data),
                             RsaOAEP
                             );
                         break;
+                        */
 
                     case Function.Delay:
                         try { Thread.Sleep(int.Parse(localInputString)); } catch { }
