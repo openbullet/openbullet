@@ -117,6 +117,10 @@ namespace RuriLib
         /// <summary>Whether to always quit the browser and dispose of the WebDriver at the end of the checking process (if any browser is open).</summary>
         public bool AlwaysQuit { get { return alwaysQuit; } set { alwaysQuit = value; OnPropertyChanged(); } }
 
+        private bool quitOnBanRetry = false;
+        /// <summary>Whether to quit the browser and dispose of the WebDriver at the end of the checking process (if any browser is open) on a BAN or RETRY status.</summary>
+        public bool QuitOnBanRetry { get { return quitOnBanRetry; } set { quitOnBanRetry = value; OnPropertyChanged(); } }
+
         private bool disableNotifications = false;
         /// <summary>Whether to disable notifications the lock the page and make it impossible to proceed.</summary>
         public bool DisableNotifications { get { return disableNotifications; } set { disableNotifications = value; OnPropertyChanged(); } }
