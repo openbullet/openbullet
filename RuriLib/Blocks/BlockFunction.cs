@@ -114,8 +114,8 @@ namespace RuriLib
             /// <summary>Encrypts a string with RSA.</summary>
             RSAEncrypt,
 
-            /// <summary>Decrypts a string with RSA.</summary>
-            RSADecrypt,
+            // <summary>Decrypts a string with RSA.</summary>
+            // RSADecrypt,
 
             /// <summary>Waits a given amount of milliseconds.</summary>
             Delay,
@@ -423,12 +423,14 @@ namespace RuriLib
                         LineParser.SetBool(ref input, this);
                     break;
 
+                    /*
                 case Function.RSADecrypt:
                     RsaN = LineParser.ParseLiteral(ref input, "Public Key Modulus");
                     RsaD = LineParser.ParseLiteral(ref input, "Private Key Exponent");
                     if (LineParser.Lookahead(ref input) == TokenType.Boolean)
                         LineParser.SetBool(ref input, this);
                     break;
+                    */
 
                 case Function.GetRandomUA:
                     if (LineParser.ParseToken(ref input, TokenType.Parameter, false).ToUpper() == "BROWSER")
@@ -567,12 +569,14 @@ namespace RuriLib
                         .Boolean(RsaOAEP, "RsaOAEP");
                     break;
 
+                    /*
                 case Function.RSADecrypt:
                     writer
                         .Literal(RsaN)
                         .Literal(RsaD)
                         .Boolean(RsaOAEP, "RsaOAEP");
                     break;
+                    */
 
                 case Function.GetRandomUA:
                     if (UserAgentSpecifyBrowser)
@@ -776,6 +780,7 @@ namespace RuriLib
                             );
                         break;
 
+                        /*
                     case Function.RSADecrypt:
                         outputString = Crypto.RSADecrypt(
                             localInputString,
@@ -784,6 +789,7 @@ namespace RuriLib
                             RsaOAEP
                             );
                         break;
+                        */
 
                     case Function.Delay:
                         try { Thread.Sleep(int.Parse(localInputString)); } catch { }

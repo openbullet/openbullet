@@ -110,9 +110,11 @@ namespace OpenBullet.Pages.StackerBlocks
                     functionTabControl.SelectedIndex = 9;
                     break;
 
+                    /*
                 case BlockFunction.Function.RSADecrypt:
                     functionTabControl.SelectedIndex = 10;
                     break;
+                    */
 
                 case BlockFunction.Function.CharAt:
                     functionTabControl.SelectedIndex = 11;

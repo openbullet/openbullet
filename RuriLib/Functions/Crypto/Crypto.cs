@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace RuriLib.Functions.Crypto
 {
@@ -282,7 +280,6 @@ namespace RuriLib.Functions.Crypto
             return RSAEncrypt(
                 data,
                 new RSAParameters { 
-                    D = new byte[] { },
                     Modulus = Encoding.UTF8.GetBytes(n),
                     Exponent = Encoding.UTF8.GetBytes(e)
                 },
@@ -305,8 +302,7 @@ namespace RuriLib.Functions.Crypto
                 new RSAParameters
                 {
                     D = Encoding.UTF8.GetBytes(d),
-                    Modulus = Encoding.UTF8.GetBytes(n),
-                    Exponent = new byte[] { }
+                    Modulus = Encoding.UTF8.GetBytes(n)
                 },
                 oaep
             );
