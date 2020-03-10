@@ -853,7 +853,7 @@ namespace RuriLib.Runner
                 RaiseMessageArrived(LogLevel.Info, $"[{bot.Id}][{bot.Data}][{proxyUsedText}] Ended with result {botData.StatusString}", false);
 
                 // Quit Browser if Always Quit
-                if (Config.Settings.AlwaysQuit)
+                if (Config.Settings.AlwaysQuit || (Config.Settings.QuitOnBanRetry && (botData.Status == BotStatus.BAN || botData.Status == BotStatus.RETRY)))
                     try { botData.Driver.Quit(); botData.BrowserOpen = false; } catch { }
 
                 // Save Browser Status

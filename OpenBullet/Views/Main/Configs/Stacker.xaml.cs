@@ -416,7 +416,7 @@ namespace OpenBullet.Views.Main.Configs
             }
 
             // Quit Browser if Always Quit
-            if (vm.Config.Config.Settings.AlwaysQuit)
+            if (vm.Config.Config.Settings.AlwaysQuit || (vm.Config.Config.Settings.QuitOnBanRetry && (vm.BotData.Status == BotStatus.BAN || vm.BotData.Status == BotStatus.RETRY)))
             {
                 try {
                     vm.BotData.Driver.Quit();
