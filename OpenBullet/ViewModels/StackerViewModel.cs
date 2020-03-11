@@ -1,5 +1,6 @@
 ﻿using Extreme.Net;
-using OpenBullet.Pages.StackerBlocks;
+using OpenBullet.Views.StackerBlocks;
+using PluginFramework;
 using RuriLib;
 using RuriLib.LS;
 using RuriLib.ViewModels;
@@ -47,6 +48,7 @@ namespace OpenBullet.ViewModels
         public List<BlockBase> GetList()
         {
             ConvertKeychains();
+            ConvertPlugins();
             return Stack.Select(x => x.Block).ToList();
         }
 
@@ -64,6 +66,16 @@ namespace OpenBullet.ViewModels
 
                     kcblock.KeyChains = kcpage.vm.KeychainList.Select(k => k.Keychain).ToList();
                 }
+            }
+        }
+
+        public void ConvertPlugins()
+        {
+            // For each plugin block in the stack
+            foreach (StackerBlockViewModel stackerBlock in Stack.Where(sb => sb.Block.IsPlugin()))
+            {
+                var page = stackerBlock.Page as BlockPluginPage;
+                page.SetPropertyValues();
             }
         }
 

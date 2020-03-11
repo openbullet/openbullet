@@ -102,7 +102,7 @@
       <HintPath>..\packages\DynamicLanguageRuntime.1.2.2\lib\net45\Microsoft.Scripting.Metadata.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="ProxySocket, Version=1.1.2.0, Culture=neutral, PublicKeyToken=966874d7118d1436, processorArchitecture=MSIL">
@@ -213,6 +213,10 @@
       <DependentUpon>LogWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="OpenBulletApp.cs" />
+    <Compile Include="Plugins\Build.cs" />
+    <Compile Include="Plugins\Check.cs" />
+    <Compile Include="Plugins\IControl.cs" />
+    <Compile Include="Plugins\Loader.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Views\Dialogs\DialogLSDoc.xaml.cs">
       <DependentUpon>DialogLSDoc.xaml</DependentUpon>
@@ -234,6 +238,48 @@
     </Compile>
     <Compile Include="LoadingWindow.xaml.cs">
       <DependentUpon>LoadingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Main\PluginsSection.xaml.cs">
+      <DependentUpon>PluginsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\ButtonContainer.xaml.cs">
+      <DependentUpon>ButtonContainer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StackerBlocks\BlockPluginPage.xaml.cs">
+      <DependentUpon>BlockPluginPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\PluginControl.xaml.cs">
+      <DependentUpon>PluginControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\UserControlCheckbox.xaml.cs">
+      <DependentUpon>UserControlCheckbox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\UserControlContainer.xaml.cs">
+      <DependentUpon>UserControlContainer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\UserControlDropdown.xaml.cs">
+      <DependentUpon>UserControlDropdown.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\UserControlConfig.xaml.cs">
+      <DependentUpon>UserControlConfig.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\UserControlInfoText.xaml.cs">
+      <DependentUpon>UserControlInfoText.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\UserControlWordlist.xaml.cs">
+      <DependentUpon>UserControlWordlist.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\UserControlFilePicker.xaml.cs">
+      <DependentUpon>UserControlFilePicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\UserControlNumeric.xaml.cs">
+      <DependentUpon>UserControlNumeric.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\UserControlText.xaml.cs">
+      <DependentUpon>UserControlText.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\UserControlTextMulti.xaml.cs">
+      <DependentUpon>UserControlTextMulti.xaml</DependentUpon>
     </Compile>
     <None Include="LSHighlighting.xshd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -381,8 +427,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Views\Main\Tools.xaml.cs">
-      <DependentUpon>Tools.xaml</DependentUpon>
+    <Compile Include="Views\Main\ToolsSection.xaml.cs">
+      <DependentUpon>ToolsSection.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Main\Tools\ListGenerator.xaml.cs">
       <DependentUpon>ListGenerator.xaml</DependentUpon>
@@ -508,6 +554,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Main\HitsDB.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Main\PluginsSection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -690,7 +740,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Main\Tools.xaml">
+    <Page Include="Views\Main\ToolsSection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -699,6 +749,58 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Main\Tools\SeleniumTools.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserControls\ButtonContainer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StackerBlocks\BlockPluginPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\UserControls\PluginControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserControls\UserControlCheckbox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserControls\UserControlContainer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserControls\UserControlDropdown.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserControls\UserControlConfig.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\UserControls\UserControlInfoText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserControls\UserControlWordlist.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\UserControls\UserControlFilePicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserControls\UserControlNumeric.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserControls\UserControlText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserControls\UserControlTextMulti.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -813,6 +915,10 @@
     <Resource Include="Images\Icons\log.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PluginFramework\PluginFramework.csproj">
+      <Project>{E1DD89D0-EC1D-4849-A2B6-ADB261DFA3CE}</Project>
+      <Name>PluginFramework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RuriLib\RuriLib.csproj">
       <Project>{17e95d0b-c1fd-445c-9fdf-244af7299a67}</Project>
       <Name>RuriLib</Name>

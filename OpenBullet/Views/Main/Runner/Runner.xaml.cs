@@ -102,20 +102,16 @@ namespace OpenBullet.Views.Main.Runner
 
         private void RegisterHit(IRunnerMessaging sender, Hit hit)
         {
-            OB.Logger.LogInfo(Components.Runner, $"Adding {hit.Type} hit " + hit.Data + " to the DB");
-            try
+            Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                using (var db = new LiteDatabase(OB.dataBaseFile))
+                try
                 {
-                    App.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        OB.HitsDB.Add(hit);
-                        OB.MainWindow.HitsDBPage.AddConfigToFilter(vm.ConfigName);
-                    }));
-                    db.GetCollection<Hit>("hits").Insert(hit);
+                    OB.Logger.LogInfo(Components.Runner, $"Adding {hit.Type} hit " + hit.Data + " to the DB");
+                    OB.HitsDB.Add(hit);
+                    OB.MainWindow.HitsDBPage.AddConfigToFilter(vm.ConfigName);
                 }
-            }
-            catch (Exception ex) { OB.Logger.LogError(Components.Runner, $"Failed to add {hit.Type} hit " + hit.Data + $" to the DB - {ex.Message}"); }
+                catch (Exception ex) { OB.Logger.LogError(Components.Runner, $"Failed to add {hit.Type} hit " + hit.Data + $" to the DB - {ex.Message}"); }
+            }));
         }
 
         private void PlayHitSound(IRunnerMessaging sender, Hit hit)
@@ -204,6 +200,18 @@ namespace OpenBullet.Views.Main.Runner
             switch (vm.Master.Status)
             {
                 case WorkerStatus.Idle:
+
+                    // Check if the required plugins are present
+                    try
+                    {
+                        OBIOManager.CheckRequiredPlugins(OB.BlockPlugins.Select(b => b.Name), vm.Config);
+                    }
+                    catch (Exception ex)
+                    {
+                        OB.Logger.LogError(Components.Runner, ex.Message, true);
+                        return;
+                    }
+
                     SetupSoundPlayers();
                     ThreadPool.SetMinThreads(vm.BotsAmount * 2 + 1, vm.BotsAmount * 2 + 1);
                     ServicePointManager.DefaultConnectionLimit = 10000; // This sets the default connection limit for requests on the whole application

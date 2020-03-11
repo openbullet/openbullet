@@ -31,7 +31,6 @@ namespace OpenBullet.Repositories
                 Directory.CreateDirectory(Path.Combine(BaseFolder, entity.Category));
             }
 
-
             if (!File.Exists(path))
             {
                 IOManager.SaveConfig(entity.Config, path);

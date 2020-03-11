@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace OpenBullet.Pages.StackerBlocks
+namespace OpenBullet.Views.StackerBlocks
 {
     /// <summary>
     /// Logica di interazione per PageBlockKeycheck.xaml

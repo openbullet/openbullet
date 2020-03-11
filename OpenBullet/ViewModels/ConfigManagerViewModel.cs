@@ -1,9 +1,11 @@
 ﻿using Extreme.Net;
 using OpenBullet.Models;
 using OpenBullet.Repositories;
+using PluginFramework;
 using RuriLib;
 using RuriLib.Functions.Formats;
 using RuriLib.Interfaces;
+using RuriLib.LS;
 using RuriLib.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -60,6 +62,16 @@ namespace OpenBullet.ViewModels
         {
             _diskRepo = new ConfigRepository(OB.configFolder);
             Rescan();
+        }
+
+        public IEnumerable<string> GetRequiredPlugins(ConfigViewModel config)
+        {
+            return new LoliScript(config.Config.Script)
+                .ToBlocks()
+                .OnlyPlugins()
+                .Cast<IBlockPlugin>()
+                .Select(p => p.Name)
+                .Distinct();
         }
 
         #region Filters

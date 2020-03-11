@@ -1,7 +1,11 @@
 ﻿using OpenBullet.Views.Main.Configs;
 using RuriLib;
+using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace OpenBullet.Views.Dialogs
 {
@@ -16,6 +20,35 @@ namespace OpenBullet.Views.Dialogs
         {
             InitializeComponent();
             Caller = caller;
+
+            // Add rows to the grid
+            for(var i = 0; i < OB.BlockPlugins.Count; i += 3)
+            {
+                pluginsGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            }
+
+            // Create the buttons and fill the grid
+            for(var i = 0; i < OB.BlockPlugins.Count; i++)
+            {
+                var plugin = OB.BlockPlugins[i];
+                var button = new Button();
+                button.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(plugin.Color));
+                if (plugin.LightForeground) button.Foreground = new SolidColorBrush(Colors.Gainsboro);
+                button.Content = plugin.Name;
+                button.SetValue(Grid.ColumnProperty, i % 3);
+                button.SetValue(Grid.RowProperty, i / 3);
+                button.Tag = plugin.GetType();
+                button.Click += pluginButton_Click;
+                pluginsGrid.Children.Add(button);
+            }
+
+            defaultSetLabel_MouseDown(this, null);
+        }
+
+        private void pluginButton_Click(object sender, RoutedEventArgs e)
+        {
+            var type = (e.OriginalSource as Button).Tag as Type;
+            SendBack(Activator.CreateInstance(type) as BlockBase);
         }
 
         private void blockRequestButton_Click(object sender, RoutedEventArgs e)
@@ -90,6 +123,20 @@ namespace OpenBullet.Views.Dialogs
                 ((Stacker)Caller).AddBlock(block);
             }
             ((MainDialog)Parent).Close();
+        }
+
+        private void defaultSetLabel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            defaultSetLabel.Foreground = Utils.GetBrush("ForegroundMenuSelected");
+            pluginsSetLabel.Foreground = Utils.GetBrush("ForegroundMain");
+            blockSetTabControl.SelectedIndex = 0;
+        }
+
+        private void pluginsSetLabel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            defaultSetLabel.Foreground = Utils.GetBrush("ForegroundMain");
+            pluginsSetLabel.Foreground = Utils.GetBrush("ForegroundMenuSelected");
+            blockSetTabControl.SelectedIndex = 1;
         }
     }
 }

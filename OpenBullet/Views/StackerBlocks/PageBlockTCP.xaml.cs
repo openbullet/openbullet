@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace OpenBullet.Pages.StackerBlocks
+namespace OpenBullet.Views.StackerBlocks
 {
     /// <summary>
     /// Logica di interazione per PageBlockTCP.xaml
