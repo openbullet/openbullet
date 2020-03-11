@@ -1,7 +1,9 @@
 # OpenBullet
 [![Build status](https://ci.appveyor.com/api/projects/status/ubdcnn38uanaoqic?svg=true)](https://ci.appveyor.com/project/openbullet/openbullet)
 
-**NEW** Take a look at the brand new [Official Forum](https://forum.openbullet.dev/)!
+**OpenBullet needs YOUR help to stay alive!** https://forum.openbullet.dev/topic/505/openbullet-crowdfunding
+
+Link to the [Official Forum](https://forum.openbullet.dev/)
 
 - - - -
 
