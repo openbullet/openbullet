@@ -1,14 +1,13 @@
 ﻿using RuriLib.LS;
 using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Windows.Media;
-using System.Threading;
-using Jint;
-using Leaf.xNet;
 using System.Net;
-using Leaf.xNet.Services.Cloudflare;
-using Leaf.xNet.Services.Captcha;
+using CloudflareSolverRe;
+using CloudflareSolverRe.Types;
+using CloudflareSolverRe.CaptchaProviders;
+using System.Net.Http;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RuriLib
 {
@@ -58,12 +57,12 @@ namespace RuriLib
 
             Url = LineParser.ParseLiteral(ref input, "URL");
 
-            if (input != string.Empty && LineParser.Lookahead(ref input) == TokenType.Literal)
+            if (input != "" && LineParser.Lookahead(ref input) == TokenType.Literal)
             {
                 UserAgent = LineParser.ParseLiteral(ref input, "UA");
             }
 
-            while (input != string.Empty)
+            while (input != "")
             {
                 LineParser.SetBool(ref input, this);
             }
@@ -93,7 +92,7 @@ namespace RuriLib
             // If the clearance info is already set and we're not getting it fresh each time, skip
             if (data.UseProxies)
             {
-                if (data.Proxy.Clearance != string.Empty && !data.GlobalSettings.Proxies.AlwaysGetClearance)
+                if (data.Proxy.Clearance != "" && !data.GlobalSettings.Proxies.AlwaysGetClearance)
                 {
                     data.Log(new LogEntry("Skipping CF Bypass because there is already a valid cookie", Colors.White));
                     data.Cookies["cf_clearance"] = data.Proxy.Clearance;
@@ -103,78 +102,124 @@ namespace RuriLib
 
             var localUrl = ReplaceValues(url, data);
             var uri = new Uri(localUrl);
-            
+
             var timeout = data.GlobalSettings.General.RequestTimeout * 1000;
 
-            var request = new HttpRequest();
-            request.IgnoreProtocolErrors = true;
-            request.ConnectTimeout = timeout;
-            request.ReadWriteTimeout = timeout;
-            request.Cookies = new CookieStorage();
-            foreach (var cookie in data.Cookies)
-                request.Cookies.Add(new Cookie(cookie.Key, cookie.Value, "/", uri.Host));
+            // Initialize the captcha provider
+            // TODO: Add more providers by implementing the ICaptchaProvider interface on the missing ones
+            ICaptchaProvider provider = null;
+            switch (data.GlobalSettings.Captchas.CurrentService)
+            {
+                case CaptchaServices.ServiceType.AntiCaptcha:
+                    provider = new AntiCaptchaProvider(data.GlobalSettings.Captchas.AntiCapToken);
+                    break;
 
+                case CaptchaServices.ServiceType.TwoCaptcha:
+                    provider = new TwoCaptchaProvider(data.GlobalSettings.Captchas.TwoCapToken);
+                    break;
+            }
+
+            // Initialize the Cloudflare Solver
+            CloudflareSolver cf = new CloudflareSolver(provider, ReplaceValues(UserAgent, data));
+            cf.ClearanceDelay = 3000;
+            cf.MaxCaptchaTries = 1;
+            cf.MaxTries = 3;
+
+            // Create the cookie container
+            CookieContainer cookies = new CookieContainer();
+            foreach (var cookie in data.Cookies)
+            {
+                cookies.Add(new Cookie(cookie.Key, cookie.Value, "/", uri.Host));
+            }
+
+            // Initialize the http handler
+            HttpClientHandler handler = new HttpClientHandler
+            {
+                AllowAutoRedirect = true,
+                CookieContainer = cookies,
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            };
+
+            // Assign the proxy to the inner handler if necessary
             if (data.UseProxies)
             {
-                switch (data.Proxy.Type)
+                if (data.Proxy.Type != Extreme.Net.ProxyType.Http)
                 {
-                    case Extreme.Net.ProxyType.Http:
-                        request.Proxy = HttpProxyClient.Parse(data.Proxy.Proxy);
-                        break;
-
-                    case Extreme.Net.ProxyType.Socks4:
-                        request.Proxy = Socks4ProxyClient.Parse(data.Proxy.Proxy);
-                        break;
-
-                    case Extreme.Net.ProxyType.Socks4a:
-                        request.Proxy = Socks4AProxyClient.Parse(data.Proxy.Proxy);
-                        break;
-
-                    case Extreme.Net.ProxyType.Socks5:
-                        request.Proxy = Socks5ProxyClient.Parse(data.Proxy.Proxy);
-                        break;
-
-                    case Extreme.Net.ProxyType.Chain:
-                        throw new Exception("The Chain Proxy Type is not supported in Leaf.xNet (used for CF Bypass).");
+                    throw new Exception($"The proxy type {data.Proxy.Type} is not supported by this block yet");
                 }
 
-                request.Proxy.ReadWriteTimeout = timeout;
-                request.Proxy.ConnectTimeout = timeout;
-                request.Proxy.Username = data.Proxy.Username;
-                request.Proxy.Password = data.Proxy.Password;
+                handler.Proxy = new WebProxy(data.Proxy.Proxy, false);
+                handler.UseProxy = true;
+
+                if (!string.IsNullOrEmpty(data.Proxy.Username))
+                {
+                    handler.DefaultProxyCredentials = new NetworkCredential(data.Proxy.Username, data.Proxy.Password);
+                }
             }
 
-            request.UserAgent = ReplaceValues(userAgent, data);
+            // Initialize the http client
+            HttpClient http = new HttpClient(handler);
+            http.Timeout = TimeSpan.FromMinutes(timeout);
+            http.DefaultRequestHeaders.Add("User-Agent", ReplaceValues(UserAgent, data));
 
-            var cs = data.GlobalSettings.Captchas;
-            if (cs.TwoCapToken != string.Empty)
+            var result = cf.Solve(http, handler, uri, ReplaceValues(UserAgent, data)).Result;
+
+            if (result.Success)
             {
-                request.CaptchaSolver = new TwoCaptchaSolver() { ApiKey = cs.TwoCapToken };
+                data.Log(new LogEntry($"[Success] Protection bypassed: {result.DetectResult.Protection}", Colors.GreenYellow));
+            }
+            else if (result.DetectResult.Protection == CloudflareProtection.Unknown)
+            {
+                data.Log(new LogEntry($"Unknown protection, skipping the bypass!", Colors.Tomato));
+            }
+            else
+            {
+                throw new Exception($"CF Bypass Failed: {result.FailReason}");
             }
 
-            var response = request.GetThroughCloudflare(new Uri(localUrl));
-            var responseString = response.ToString();
-
-            // Save the cookies
-            var ck = response.Cookies.GetCookies(localUrl);
-
-            var clearance = "";
-            var cfduid = "";
-
+            // Now that we got the cookies, proceed with the normal request
+            HttpResponseMessage response = null;
             try
             {
-                clearance = ck["cf_clearance"].Value;
-                cfduid = ck["__cfduid"].Value;
+                response = http.GetAsync(uri).Result;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                handler.Dispose();
+                http.Dispose();
+            }
 
+            var responseString = response.Content.ReadAsStringAsync().Result;
+
+            // Save the cloudflare cookies
+            var clearance = "";
+            var cfduid = "";
+            foreach (Cookie cookie in cookies.GetCookies(uri))
+            {
+                switch (cookie.Name)
+                {
+                    case "cf_clearance":
+                        clearance = cookie.Value;
+                        break;
+
+                    case "__cfduid":
+                        cfduid = cookie.Value;
+                        break;
+                }
+            }
+
+            // Save the cookies in the proxy
             if (data.UseProxies)
             {
                 data.Proxy.Clearance = clearance;
                 data.Proxy.Cfduid = cfduid;
             }
 
-            if (clearance != string.Empty)
+            if (clearance != "")
             {
                 data.Log(new LogEntry("Got Cloudflare clearance!", Colors.GreenYellow));
                 data.Log(new LogEntry(clearance + Environment.NewLine + cfduid + Environment.NewLine, Colors.White));
@@ -186,15 +231,16 @@ namespace RuriLib
 
             // Get headers
             if (PrintResponseInfo) data.Log(new LogEntry("Received headers:", Colors.DeepPink));
-            var receivedHeaders = response.EnumerateHeaders();
             data.ResponseHeaders.Clear();
-            while (receivedHeaders.MoveNext())
+            foreach (var header in response.Headers)
             {
-                var header = receivedHeaders.Current;
-                data.ResponseHeaders.Add(header.Key, header.Value);
-                if (PrintResponseInfo) data.Log(new LogEntry($"{header.Key}: {header.Value}", Colors.LightPink));
+                var h = new KeyValuePair<string, string>(header.Key, header.Value.First());
+                data.ResponseHeaders.Add(h.Key, h.Value);
+                if (PrintResponseInfo) data.Log(new LogEntry($"{h.Key}: {h.Value}", Colors.LightPink));
             }
-            if (!response.ContainsHeader(HttpHeader.ContentLength))
+
+            // Add the Content-Length header if it was not sent by the server
+            if (!data.ResponseHeaders.ContainsKey("Content-Length"))
             {
                 if (data.ResponseHeaders.ContainsKey("Content-Encoding") && data.ResponseHeaders["Content-Encoding"].Contains("gzip"))
                 {
@@ -210,13 +256,13 @@ namespace RuriLib
 
             // Get cookies
             if (PrintResponseInfo) data.Log(new LogEntry("Received cookies:", Colors.Goldenrod));
-            foreach (Cookie cookie in response.Cookies.GetCookies(localUrl))
+            foreach (Cookie cookie in cookies.GetCookies(uri))
             {
-                if (data.Cookies.ContainsKey(cookie.Name)) data.Cookies[cookie.Name] = cookie.Value;
-                else data.Cookies.Add(cookie.Name, cookie.Value);
+                data.Cookies[cookie.Name] = cookie.Value;
                 if (PrintResponseInfo) data.Log(new LogEntry($"{cookie.Name}: {cookie.Value}", Colors.LightGoldenrodYellow));
             }
 
+            // Print source
             data.ResponseSource = responseString;
             if (PrintResponseInfo)
             {
@@ -224,7 +270,8 @@ namespace RuriLib
                 data.Log(new LogEntry(data.ResponseSource, Colors.GreenYellow));
             }
 
-            if (ErrorOn302 && data.ResponseCode.Contains("302"))
+            // Error on 302 status
+            if (ErrorOn302 && response.StatusCode == HttpStatusCode.Redirect)
             {
                 data.Status = BotStatus.ERROR;
             }
