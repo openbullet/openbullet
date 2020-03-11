@@ -38,8 +38,8 @@ namespace RuriLib
         /// <summary>The plugins that are necessary in order for this config to run.</summary>
         public string[] RequiredPlugins { get { return requiredPlugins; } set { requiredPlugins = value; OnPropertyChanged(); OnPropertyChanged(nameof(RequiredPluginsString)); } }
 
-        [JsonIgnore]
         /// <summary>The required plugins list as a comma separated string.</summary>
+        [JsonIgnore]
         public string RequiredPluginsString => string.Join(", ", RequiredPlugins);
 
         private string author = "";
