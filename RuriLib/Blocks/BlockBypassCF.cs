@@ -96,6 +96,7 @@ namespace RuriLib
                 {
                     data.Log(new LogEntry("Skipping CF Bypass because there is already a valid cookie", Colors.White));
                     data.Cookies["cf_clearance"] = data.Proxy.Clearance;
+                    data.Cookies["__cfduid"] = data.Proxy.Cfduid;
                     return;
                 }
             }
@@ -120,10 +121,12 @@ namespace RuriLib
             }
 
             // Initialize the Cloudflare Solver
-            CloudflareSolver cf = new CloudflareSolver(provider, ReplaceValues(UserAgent, data));
-            cf.ClearanceDelay = 3000;
-            cf.MaxCaptchaTries = 1;
-            cf.MaxTries = 3;
+            CloudflareSolver cf = new CloudflareSolver(provider, ReplaceValues(UserAgent, data))
+            {
+                ClearanceDelay = 3000,
+                MaxCaptchaTries = 1,
+                MaxTries = 3
+            };
 
             // Create the cookie container
             CookieContainer cookies = new CookieContainer();
