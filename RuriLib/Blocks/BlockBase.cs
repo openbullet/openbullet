@@ -301,7 +301,42 @@ namespace RuriLib
             data.Address = data.Driver.Url;
             data.ResponseSource = data.Driver.PageSource;
         }
-        
+
+        #region Variable Insertion
+        /// <summary>
+        /// Adds a single variable with the given value.
+        /// </summary>
+        /// <param name="data">The BotData used for variable replacement and insertion</param>
+        /// <param name="isCapture">Whether the variable should be marked for Capture</param>
+        /// <param name="value">The value of the variable</param>
+        /// <param name="variableName">The name of the variable to create</param>
+        /// <param name="prefix">The string to add at the start of the value</param>
+        /// <param name="suffix">The string to add at the end of the value</param>
+        /// <param name="urlEncode">Whether to URLencode the values before creating the variables</param>
+        /// <param name="createEmpty">Whether to create an empty (single) variable if the list of values is empty</param>
+        public static void InsertVariable(BotData data, bool isCapture, string value, string variableName,
+            string prefix = "", string suffix = "", bool urlEncode = false, bool createEmpty = true)
+        {
+            InsertVariable(data, isCapture, false, new string[] { value }, variableName, prefix, suffix, urlEncode, createEmpty);
+        }
+
+        /// <summary>
+        /// Adds a list variable with the given value.
+        /// </summary>
+        /// <param name="data">The BotData used for variable replacement and insertion</param>
+        /// <param name="isCapture">Whether the variable should be marked for Capture</param>
+        /// <param name="values">The list of values</param>
+        /// <param name="variableName">The name of the variable to create</param>
+        /// <param name="prefix">The string to add at the start of the value</param>
+        /// <param name="suffix">The string to add at the end of the value</param>
+        /// <param name="urlEncode">Whether to URLencode the values before creating the variables</param>
+        /// <param name="createEmpty">Whether to create an empty (single) variable if the list of values is empty</param>
+        public static void InsertVariable(BotData data, bool isCapture, IEnumerable<string> values, string variableName,
+            string prefix = "", string suffix = "", bool urlEncode = false, bool createEmpty = true)
+        {
+            InsertVariable(data, isCapture, true, values, variableName, prefix, suffix, urlEncode, createEmpty);
+        }
+
         /// <summary>
         /// Adds a single or list variable with the given value.
         /// </summary>
@@ -314,7 +349,8 @@ namespace RuriLib
         /// <param name="suffix">The string to add at the end of the value</param>
         /// <param name="urlEncode">Whether to URLencode the values before creating the variables</param>
         /// <param name="createEmpty">Whether to create an empty (single) variable if the list of values is empty</param>
-        public static void InsertVariables(BotData data, bool isCapture, bool recursive, List<string> values, string variableName, string prefix, string suffix, bool urlEncode, bool createEmpty)
+        internal static void InsertVariable(BotData data, bool isCapture, bool recursive, IEnumerable<string> values, string variableName, 
+            string prefix = "", string suffix = "", bool urlEncode = false, bool createEmpty = true)
         {
             var list = values.Select(v => ReplaceValues(prefix, data) + v.Trim() + ReplaceValues(suffix, data)).ToList();
             if (urlEncode) list = list.Select(v => Uri.EscapeDataString(v)).ToList();
@@ -366,9 +402,10 @@ namespace RuriLib
                 data.Log(new LogEntry("Could not parse any data. The variable was not created.", Colors.White));
             }
         }
+        #endregion
 
         #region File Utilities
-        
+
 
         /// <summary>
         /// Truncates a string to fit a given size and adds ' [...]' (5 characters) at the end to display that the string would be longer.

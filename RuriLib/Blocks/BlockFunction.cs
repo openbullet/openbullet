@@ -845,7 +845,7 @@ namespace RuriLib
             }
 
             var isList = outputs.Count > 1 || InputString.Contains("[*]") || InputString.Contains("(*)") || InputString.Contains("{*}");
-            InsertVariables(data, isCapture, isList, outputs, variableName, "", "", false, true);
+            InsertVariable(data, isCapture, isList, outputs, variableName, "", "", false, true);
         }
 
         /// <summary>

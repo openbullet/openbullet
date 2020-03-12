@@ -105,7 +105,7 @@ namespace RuriLib
             {
                 try
                 {
-                    InsertVariables(data, isCapture, false, new List<string>() { returned.ToString() }, outputVariable, "", "", false, true);
+                    InsertVariable(data, isCapture, false, new List<string>() { returned.ToString() }, outputVariable, "", "", false, true);
                 }
                 catch
                 {
