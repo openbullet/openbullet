@@ -1,5 +1,6 @@
 ﻿using OpenBullet.ViewModels;
 using OpenBullet.Views.Main.Runner;
+using OpenBullet.Views.UserControls;
 using RuriLib;
 using RuriLib.ViewModels;
 using System.ComponentModel;
@@ -39,6 +40,10 @@ namespace OpenBullet
                 
                 if (OB.OBSettings.General.LiveConfigUpdates) runner.SetConfig(config);
                 else runner.SetConfig(IOManager.CloneConfig(config));
+            }
+            else if (Caller.GetType() == typeof(UserControlConfig))
+            {
+                ((UserControlConfig)Caller).Config = (ConfigViewModel)configsListView.SelectedItem;
             }
             ((MainDialog)Parent).Close();
         }

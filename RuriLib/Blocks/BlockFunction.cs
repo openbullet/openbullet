@@ -1,7 +1,7 @@
-﻿using Extreme.Net;
-using RuriLib.Functions.Crypto;
+﻿using RuriLib.Functions.Crypto;
 using RuriLib.Functions.Formats;
 using RuriLib.Functions.Time;
+using RuriLib.Functions.UserAgent;
 using RuriLib.LS;
 using System;
 using System.Collections.Generic;
@@ -114,8 +114,8 @@ namespace RuriLib
             /// <summary>Encrypts a string with RSA.</summary>
             RSAEncrypt,
 
-            /// <summary>Decrypts a string with RSA.</summary>
-            RSADecrypt,
+            // <summary>Decrypts a string with RSA.</summary>
+            // RSADecrypt,
 
             /// <summary>Waits a given amount of milliseconds.</summary>
             Delay,
@@ -210,13 +210,17 @@ namespace RuriLib
         public string RegexMatch { get { return regexMatch; } set { regexMatch = value; OnPropertyChanged(); } }
 
         // -- Random Number
-        private int randomMin = 0;
-        /// <summary>The minimum random number that can be generated.</summary>
-        public int RandomMin { get { return randomMin; } set { randomMin = value; OnPropertyChanged(); } }
+        private string randomMin = "0";
+        /// <summary>The minimum random number that can be generated (inclusive).</summary>
+        public string RandomMin { get { return randomMin; } set { randomMin = value; OnPropertyChanged(); } }
 
-        private int randomMax = 0;
-        /// <summary>The maximum random number that can be generated.</summary>
-        public int RandomMax { get { return randomMax; } set { randomMax = value; OnPropertyChanged(); } }
+        private string randomMax = "0";
+        /// <summary>The maximum random number that can be generated (exclusive).</summary>
+        public string RandomMax { get { return randomMax; } set { randomMax = value; OnPropertyChanged(); } }
+
+        private bool randomZeroPad = false;
+        /// <summary>Whether to pad with zeros on the left to match the length of the maximum provided.</summary>
+        public bool RandomZeroPad { get { return randomZeroPad; } set { randomZeroPad = value; OnPropertyChanged(); } }
 
         // -- CountOccurrences
         private string stringToFind = "";
@@ -224,17 +228,17 @@ namespace RuriLib
         public string StringToFind { get { return stringToFind; } set { stringToFind = value; OnPropertyChanged(); } }
 
         // -- RSA
-        private string rsaKey = "";
-        /// <summary>The RSA private key as a base64 string.</summary>
-        public string RsaKey { get { return rsaKey; } set { rsaKey = value; OnPropertyChanged(); } }
-
-        private string rsaMod = "";
+        private string rsaN = "";
         /// <summary>The modulus of the RSA public key as a base64 string.</summary>
-        public string RsaMod { get { return rsaMod; } set { rsaMod = value; OnPropertyChanged(); } }
+        public string RsaN { get { return rsaN; } set { rsaN = value; OnPropertyChanged(); } }
 
-        private string rsaExp = "";
+        private string rsaE = "";
         /// <summary>The exponent of the RSA public key as a base64 string.</summary>
-        public string RsaExp { get { return rsaExp; } set { rsaExp = value; OnPropertyChanged(); } }
+        public string RsaE { get { return rsaE; } set { rsaE = value; OnPropertyChanged(); } }
+
+        private string rsaD = "";
+        /// <summary>The exponent of the RSA private key as a base64 string.</summary>
+        public string RsaD { get { return rsaD; } set { rsaD = value; OnPropertyChanged(); } }
 
         private bool rsaOAEP = true;
         /// <summary>Whether to use OAEP padding instead of PKCS v1.5.</summary>
@@ -253,6 +257,15 @@ namespace RuriLib
         private string substringLength = "1";
         /// <summary>The length of the wanted substring.</summary>
         public string SubstringLength { get { return substringLength; } set { substringLength = value; OnPropertyChanged(); } }
+
+        // -- User Agent
+        private bool userAgentSpecifyBrowser = false;
+        /// <summary>Whether to only limit the UA generation to a certain browser.</summary>
+        public bool UserAgentSpecifyBrowser { get { return userAgentSpecifyBrowser; } set { userAgentSpecifyBrowser = value; OnPropertyChanged(); } }
+
+        private UserAgent.Browser userAgentBrowser = UserAgent.Browser.Chrome;
+        /// <summary>The browser for which the User Agent should be generated.</summary>
+        public UserAgent.Browser UserAgentBrowser { get { return userAgentBrowser; } set { userAgentBrowser = value; OnPropertyChanged(); } }
 
         // -- AES
         private string aesKey = "";
@@ -374,8 +387,20 @@ namespace RuriLib
                     break;
 
                 case Function.RandomNum:
-                    RandomMin = LineParser.ParseInt(ref input, "Minimum");
-                    RandomMax = LineParser.ParseInt(ref input, "Maximum");
+                    if (LineParser.Lookahead(ref input) == TokenType.Literal)
+                    {
+                        RandomMin = LineParser.ParseLiteral(ref input, "Minimum");
+                        RandomMax = LineParser.ParseLiteral(ref input, "Maximum");
+                    }
+                    // Support for old integer definition of Min and Max
+                    else
+                    {
+                        RandomMin = LineParser.ParseInt(ref input, "Minimum").ToString();
+                        RandomMax = LineParser.ParseInt(ref input, "Maximum").ToString();
+                    }
+                    
+                    if (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                        LineParser.SetBool(ref input, this);
                     break;
 
                 case Function.CountOccurrences:
@@ -392,12 +417,28 @@ namespace RuriLib
                     break;
 
                 case Function.RSAEncrypt:
-                case Function.RSADecrypt:
-                    RsaKey = LineParser.ParseLiteral(ref input, "Private Key");
-                    RsaMod = LineParser.ParseLiteral(ref input, "Public Key Modulus");
-                    RsaExp = LineParser.ParseLiteral(ref input, "Public Key Exponent");
+                    RsaN = LineParser.ParseLiteral(ref input, "Public Key Modulus");
+                    RsaE = LineParser.ParseLiteral(ref input, "Public Key Exponent");
                     if (LineParser.Lookahead(ref input) == TokenType.Boolean)
                         LineParser.SetBool(ref input, this);
+                    break;
+
+                    /*
+                case Function.RSADecrypt:
+                    RsaN = LineParser.ParseLiteral(ref input, "Public Key Modulus");
+                    RsaD = LineParser.ParseLiteral(ref input, "Private Key Exponent");
+                    if (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                        LineParser.SetBool(ref input, this);
+                    break;
+                    */
+
+                case Function.GetRandomUA:
+                    if (LineParser.ParseToken(ref input, TokenType.Parameter, false, false) == "BROWSER")
+                    {
+                        LineParser.EnsureIdentifier(ref input, "BROWSER");
+                        UserAgentSpecifyBrowser = true;
+                        UserAgentBrowser = LineParser.ParseEnum(ref input, "BROWSER", typeof(UserAgent.Browser));
+                    };
                     break;
 
                 case Function.AESDecrypt:
@@ -501,8 +542,9 @@ namespace RuriLib
 
                 case Function.RandomNum:
                     writer
-                        .Integer(RandomMin)
-                        .Integer(RandomMax);
+                        .Literal(RandomMin)
+                        .Literal(RandomMax)
+                        .Boolean(RandomZeroPad, "RandomZeroPad");
                     break;
 
                 case Function.CountOccurrences:
@@ -522,12 +564,28 @@ namespace RuriLib
                     break;
 
                 case Function.RSAEncrypt:
+                    writer
+                        .Literal(RsaN)
+                        .Literal(RsaE)
+                        .Boolean(RsaOAEP, "RsaOAEP");
+                    break;
+
+                    /*
                 case Function.RSADecrypt:
                     writer
-                        .Literal(RsaKey)
-                        .Literal(RsaMod)
-                        .Literal(RsaExp)
+                        .Literal(RsaN)
+                        .Literal(RsaD)
                         .Boolean(RsaOAEP, "RsaOAEP");
+                    break;
+                    */
+
+                case Function.GetRandomUA:
+                    if (UserAgentSpecifyBrowser)
+                    {
+                        writer
+                            .Token("BROWSER")
+                            .Token(UserAgentBrowser);
+                    }
                     break;
 
                 case Function.AESDecrypt:
@@ -672,25 +730,22 @@ namespace RuriLib
                         break;
 
                     case Function.RandomNum:
-                        lock (data.RandomLocker)
-                        {
-                            outputString = data.Random.Next(randomMin, randomMax).ToString();
-                        }
+                        var min = int.Parse(ReplaceValues(randomMin, data));
+                        var max = int.Parse(ReplaceValues(randomMax, data));
+                        var randomNumString = data.random.Next(min, max).ToString();
+                        outputString = randomZeroPad ? randomNumString.PadLeft(max.ToString().Length, '0') : randomNumString;
                         break;
 
                     case Function.RandomString:
                         outputString = localInputString;
-                        lock (data.RandomLocker)
-                        {
-                            outputString = Regex.Replace(outputString, @"\?l", m => _lowercase[data.Random.Next(_lowercase.Length)].ToString());
-                            outputString = Regex.Replace(outputString, @"\?u", m => _uppercase[data.Random.Next(_uppercase.Length)].ToString());
-                            outputString = Regex.Replace(outputString, @"\?d", m => _digits[data.Random.Next(_digits.Length)].ToString());
-                            outputString = Regex.Replace(outputString, @"\?s", m => _symbols[data.Random.Next(_symbols.Length)].ToString());
-                            outputString = Regex.Replace(outputString, @"\?h", m => _hex[data.Random.Next(_hex.Length)].ToString());
-                            outputString = Regex.Replace(outputString, @"\?a", m => _allChars[data.Random.Next(_allChars.Length)].ToString());
-                            outputString = Regex.Replace(outputString, @"\?m", m => _udChars[data.Random.Next(_udChars.Length)].ToString());
-                            outputString = Regex.Replace(outputString, @"\?i", m => _ludChars[data.Random.Next(_ludChars.Length)].ToString());
-                        }
+                        outputString = Regex.Replace(outputString, @"\?l", m => _lowercase[data.random.Next(_lowercase.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?u", m => _uppercase[data.random.Next(_uppercase.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?d", m => _digits[data.random.Next(_digits.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?s", m => _symbols[data.random.Next(_symbols.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?h", m => _hex[data.random.Next(_hex.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?a", m => _allChars[data.random.Next(_allChars.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?m", m => _udChars[data.random.Next(_udChars.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?i", m => _ludChars[data.random.Next(_ludChars.Length)].ToString());
                         break;
 
                     case Function.Ceil:
@@ -720,22 +775,22 @@ namespace RuriLib
                     case Function.RSAEncrypt:
                         outputString = Crypto.RSAEncrypt(
                             localInputString,
-                            ReplaceValues(RsaKey, data),
-                            ReplaceValues(RsaMod, data),
-                            ReplaceValues(RsaExp, data),
+                            ReplaceValues(RsaN, data),
+                            ReplaceValues(RsaE, data),
                             RsaOAEP
                             );
                         break;
 
+                        /*
                     case Function.RSADecrypt:
                         outputString = Crypto.RSADecrypt(
                             localInputString,
-                            ReplaceValues(RsaKey, data),
-                            ReplaceValues(RsaMod, data),
-                            ReplaceValues(RsaExp, data),
+                            ReplaceValues(RsaN, data),
+                            ReplaceValues(RsaD, data),
                             RsaOAEP
                             );
                         break;
+                        */
 
                     case Function.Delay:
                         try { Thread.Sleep(int.Parse(localInputString)); } catch { }
@@ -760,9 +815,13 @@ namespace RuriLib
                         break;
 
                     case Function.GetRandomUA:
-                        lock (data.RandomLocker)
+                        if (UserAgentSpecifyBrowser)
                         {
-                            outputString = RandomUserAgent(data.Random);
+                            outputString = UserAgent.ForBrowser(UserAgentBrowser);
+                        }
+                        else
+                        {
+                            outputString = UserAgent.Random(data.random);
                         }
                         break;
 
@@ -786,7 +845,7 @@ namespace RuriLib
             }
 
             var isList = outputs.Count > 1 || InputString.Contains("[*]") || InputString.Contains("(*)") || InputString.Contains("{*}");
-            InsertVariables(data, isCapture, isList, outputs, variableName, "", "", false, true);
+            InsertVariable(data, isCapture, isList, outputs, variableName, "", "", false, true);
         }
 
         /// <summary>
@@ -909,41 +968,6 @@ namespace RuriLib
                 count++;
             }
             return count;
-        }
-        #endregion
-
-        #region RandomUA
-
-        // All credits for this method goes to the Leaf.xNet fork of Extreme.NET
-        // https://github.com/csharp-leaf/Leaf.xNet
-
-        /// <summary>
-        /// Gets a random User-Agent header.
-        /// </summary>
-        /// <param name="rand">A random number generator</param>
-        /// <returns>A randomly generated User-Agent header</returns>
-        public static string RandomUserAgent(Random rand)
-        {
-            int random = rand.Next(99) + 1;
-
-            // Chrome = 70%
-            if (random >= 1 && random <= 70)
-                return Http.ChromeUserAgent();
-
-            // Firefox = 15%
-            if (random > 70 && random <= 85)
-                return Http.FirefoxUserAgent();
-
-            // IE = 6%
-            if (random > 85 && random <= 91)
-                return Http.IEUserAgent();
-
-            // Opera 12 = 5%
-            if (random > 91 && random <= 96)
-                return Http.OperaUserAgent();
-
-            // Opera mini = 4%
-            return Http.OperaMiniUserAgent();
         }
         #endregion
 

@@ -43,10 +43,7 @@ namespace RuriLib
     public class BotData
     {
         /// <summary>A random number generator.</summary>
-        public Random Random = new Random();
-
-        /// <summary>An object to use to lock <see cref="Random"/> in order to avoid the generation of the same random number if executed in rapid succession.</summary>
-        public object RandomLocker = new object();
+        public Random random;
 
         /// <summary>The Status of the Bot.</summary>
         public BotStatus Status { get; set; }
@@ -68,18 +65,9 @@ namespace RuriLib
 
         /// <summary>Whether the browser is open or not.</summary>
         public bool BrowserOpen { get; set; }
-        
-        /// <summary>The TCP Client used for TCP blocks.</summary>
-        public TcpClient TCPClient { get; set; }
 
-        /// <summary>The NET Stream used for TCP blocks with unencrypted connection.</summary>
-        public NetworkStream NETStream { get; set; }
-
-        /// <summary>The SSL Stream used for TCP blocks with encrypted connection.</summary>
-        public SslStream SSLStream { get; set; }
-
-        /// <summary>Whether to use SSL for the current TCPClient.</summary>
-        public bool TCPSSL { get; set; } = true;
+        /// <summary>A dictionary of object that can be used for keeping session-based objects through different blocks.</summary>
+        public Dictionary<string, object> CustomObjects { get; set; }
 
         /// <summary>The wrapped data line that needs to be checked.</summary>
         public CData Data { get; set; }
@@ -171,7 +159,7 @@ namespace RuriLib
             Data = data;
             Proxy = proxy;
             UseProxies = useProxies;
-            Random = random;
+            this.random = new Random(random.Next(0, int.MaxValue)); // Create a new local RNG seeded with a random seed from the global RNG
             Status = BotStatus.NONE;
             BotNumber = BotNumber;
             GlobalSettings = globalSettings;
@@ -195,6 +183,8 @@ namespace RuriLib
             BrowserOpen = false;
             IsDebug = isDebug;
             BotNumber = botNumber;
+
+            CustomObjects = new Dictionary<string, object>();
         }
 
         /// <summary>
@@ -205,6 +195,15 @@ namespace RuriLib
         {
             if (GlobalSettings.General.EnableBotLog || IsDebug)
                 LogBuffer.Add(entry);
+        }
+
+        /// <summary>
+        /// Adds a new message to the LogBuffer with white text.
+        /// </summary>
+        /// <param name="message">The message to log</param>
+        public void Log(string message)
+        {
+            Log(new LogEntry(message, Colors.White));
         }
 
         /// <summary>
@@ -223,6 +222,16 @@ namespace RuriLib
         public void LogNewLine()
         {
             LogBuffer.Add(new LogEntry("", Colors.White));
+        }
+
+        /// <summary>
+        /// Retrieves a custom object from the 
+        /// </summary>
+        /// <param name="key">The key of the object in the dictionary</param>
+        /// <returns>The object or null if the key was not found</returns>
+        public object GetCustomObject(string key)
+        {
+            return CustomObjects.ContainsKey(key) ? CustomObjects[key] : null;
         }
     }
 }

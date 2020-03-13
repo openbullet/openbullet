@@ -171,39 +171,39 @@ ELEMENT LOCATOR "STRING" [INDEX]
 
 Allowed Actions:
 ## Spawn a div with a given id to a (x,y) absolute position, so you can use it as element hook for mouse movement
-SPAWN "ID" X Y
+SPAWN "ID" "X" "Y"
 CLICK [ELEMENT]
 CLICKANDHOLD [ELEMENT]
 RIGHTCLICK [ELEMENT]
 DOUBLECLICK [ELEMENT]
 DRAGANDDROP ELEMENT -> ELEMENT
-DRAGANDDROPWITHOFFSET X Y ELEMENT
+DRAGANDDROPWITHOFFSET "X" "Y" ELEMENT
 KEYDOWN "KEY" [ELEMENT]
 KEYUP "KEY" [ELEMENT]
-MOVEBY X Y
+MOVEBY "X" "Y"
 MOVETO ELEMENT
 RELEASE [ELEMENT]
 SENDKEYS "KEYS" [ELEMENT]
 ## Draws random points in a square starting from the top left corner and with the given width and height
 DRAWPOINTS MAXW MAXH AMOUNT
-DRAWLINE (X1 Y2 -> X2 Y2 / ELEMENT -> ELEMENT) : AMOUNT
-DRAWLINEHUMAN (X1 Y1 -> X2 Y2 / ELEMENT -> ELEMENT) : AMOUNT [GRAVITY WIND]
+DRAWLINE ("X1" "Y1" -> "X2" "Y2" / ELEMENT -> ELEMENT) : AMOUNT
+DRAWLINEHUMAN ("X1" "Y1" -> "X2" "Y2" / ELEMENT -> ELEMENT) : AMOUNT [GRAVITY WIND]
 
 Examples:
 ## Moving to an element and clicking 100 pixels right of it
 MOUSEACTION
   MOVETO ELEMENT CLASS "testclass" 1
-  MOVEBY 100 0
+  MOVEBY "100" "0"
   CLICK
 
 ## Moving to a specific set of coordinates on the page
 MOUSEACTION
-  SPAWN "target" 100 150
+  SPAWN "target" "100" "150"
   MOVETO ELEMENT ID "target"
   
 ## Moving like a human from point A (0,0) to point B (700,700). The lower the AMOUNT, the faster the line is drawn
 MOUSEACTION
-  DRAWLINEHUMAN 0 0 -> 700 700 : 150 1 1
+  DRAWLINEHUMAN "0" "0" -> "700" "700" : 150 1 1
 
 ## Moving like a human from element with id="one" to element with id="two", 20 points and default gravity/wind
 MOUSEACTION
@@ -239,7 +239,7 @@ FUNCTION Translate StopAfterFirstMatch=True
 FUNCTION DateToUnixTime "format" "input" -> VAR "DATE"
 FUNCTION Replace "what" "with" UseRegex=True "input" -> VAR "REPLACED"
 FUNCTION RegexMatch "pattern" "input" -> VAR "MATCHED"
-FUNCTION RandomNum 0 100 -> VAR "RANDOM"
+FUNCTION RandomNum "0" "100" -> VAR "RANDOM"
 FUNCTION CountOccurrences "tofind" "input" -> VAR "COUNT"
 FUNCTION CharAt "index" "input" -> VAR "CHAR"
 FUNCTION Substring "startindex" "length" "input" -> VAR "SUBSTRING"

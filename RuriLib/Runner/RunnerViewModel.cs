@@ -44,11 +44,11 @@ namespace RuriLib.Runner
         /// <param name="environment">The environment settings</param>
         /// <param name="settings">The RuriLib settings</param>
         /// <param name="random">A reference to the global random generator</param>
-        public RunnerViewModel(EnvironmentSettings environment, RLSettingsViewModel settings, Random random)
+        public RunnerViewModel(EnvironmentSettings environment, RLSettingsViewModel settings, Random random = null)
         {
             Env = environment;
             Settings = settings;
-            Random = random;
+            this.random = random != null ? random : new Random();
             OnPropertyChanged("Busy");
             OnPropertyChanged("ControlsEnabled");
         }
@@ -57,7 +57,8 @@ namespace RuriLib.Runner
         #region Settings
         private RLSettingsViewModel Settings { get; set; }
         private EnvironmentSettings Env { get; set; }
-        private Random Random { get; set; }
+        private Random random;
+        private object randomLocker = new object();
         #endregion
 
         #region Workers
@@ -635,6 +636,18 @@ namespace RuriLib.Runner
         // Executed when the Master Worker has finished its job
         private void RunCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (Settings.General.SendToCheckOnAbort)
+            {
+                foreach (var bot in Bots.Where(b => b.Worker.IsBusy))
+                {
+                    ValidData validData = new ValidData(bot.Data, bot.Proxy, ProxyType.Http, BotStatus.NONE, "NONE", "", "", new List<LogEntry>());
+                    ToCheckList.Add(validData);
+                    UpdateStats();
+                    var hit = new Hit(bot.Data, new VariableList(), bot.Proxy, "NONE", ConfigName, WordlistName);
+                    RaiseFoundHit(hit);
+                }
+            }
+
             if (e.Error != null) RaiseMessageArrived(LogLevel.Error, "The Master Worker has encountered an error: " + e.Error.Message, true);
             Master.Status = WorkerStatus.Idle;
             OnPropertyChanged("Busy");
@@ -729,7 +742,11 @@ namespace RuriLib.Runner
                 var proxyUsedText = currentProxy == null ? "NONE" : $"{currentProxy.Proxy} ({currentProxy.Type})";
 
                 // Initialize the Bot Data
-                BotData botData = new BotData(Settings, Config.Settings, currentData, currentProxy, UseProxies, Random, bot.Id, false);
+                BotData botData = null;
+                lock (randomLocker)
+                {
+                    botData = new BotData(Settings, Config.Settings, currentData, currentProxy, UseProxies, random, bot.Id, false);
+                }
                 botData.Driver = bot.Driver;
                 botData.BrowserOpen = bot.IsDriverOpen;
                 List<LogEntry> BotLog = new List<LogEntry>();
@@ -836,7 +853,7 @@ namespace RuriLib.Runner
                 RaiseMessageArrived(LogLevel.Info, $"[{bot.Id}][{bot.Data}][{proxyUsedText}] Ended with result {botData.StatusString}", false);
 
                 // Quit Browser if Always Quit
-                if (Config.Settings.AlwaysQuit)
+                if (Config.Settings.AlwaysQuit || (Config.Settings.QuitOnBanRetry && (botData.Status == BotStatus.BAN || botData.Status == BotStatus.RETRY)))
                     try { botData.Driver.Quit(); botData.BrowserOpen = false; } catch { }
 
                 // Save Browser Status

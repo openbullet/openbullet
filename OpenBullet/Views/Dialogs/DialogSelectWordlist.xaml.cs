@@ -1,4 +1,5 @@
 ﻿using OpenBullet.Views.Main.Runner;
+using OpenBullet.Views.UserControls;
 using RuriLib.Models;
 using System.ComponentModel;
 using System.IO;
@@ -32,6 +33,10 @@ namespace OpenBullet
             if (Caller.GetType() == typeof(Runner))
             {
                 ((Runner)Caller).SetWordlist((Wordlist)wordlistsListView.SelectedItem);
+            }
+            else if (Caller.GetType() == typeof(UserControlWordlist))
+            {
+                ((UserControlWordlist)Caller).Wordlist = (Wordlist)wordlistsListView.SelectedItem;
             }
             ((MainDialog)Parent).Close();
         }

@@ -25,6 +25,8 @@
                 <Label Content="Maximum CPM to avoid overloading the website (0 = infinite)" />
                 <xctk:IntegerUpDown Background="Transparent" Width="100" Margin="10 0 0 0" Value="{Binding MaxCPM}" Foreground="{DynamicResource ForegroundMain}" HorizontalAlignment="Left" Minimum="0" Maximum="100000"/>
             </DockPanel>
+            <CheckBox Content="Save empty captures" IsChecked="{Binding SaveEmptyCaptures}" VerticalContentAlignment="Center"/>
+            <CheckBox Content="Continue after Custom Status" IsChecked="{Binding ContinueOnCustom}" VerticalContentAlignment="Center"/>
         </StackPanel>
     </Grid>
 </Page>

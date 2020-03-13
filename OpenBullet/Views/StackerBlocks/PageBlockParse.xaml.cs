@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 
-namespace OpenBullet.Pages.StackerBlocks
+namespace OpenBullet.Views.StackerBlocks
 {
     /// <summary>
     /// Logica di interazione per PageBlockParse.xaml

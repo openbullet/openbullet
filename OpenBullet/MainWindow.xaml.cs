@@ -19,6 +19,11 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using OpenBullet.Plugins;
+using System.Collections.Generic;
+using OpenBullet.Views.UserControls;
+using OpenBullet.Views.StackerBlocks;
+using RuriLib.LS;
 
 namespace OpenBullet
 {
@@ -38,6 +43,7 @@ namespace OpenBullet
         public HitsDB HitsDBPage { get; set; }
         public Settings OBSettingsPage { get; set; }
         public ToolsSection ToolsPage { get; set; }
+        public PluginsSection PluginsPage { get; set; }
         public About AboutPage { get; set; }
         public Rectangle Bounds { get; private set; }
 
@@ -59,8 +65,8 @@ namespace OpenBullet
             titleLabel.Content = title;
 
             // Make sure all folders are there or recreate them
-            var folders = new string[] { "Captchas", "ChromeExtensions", "Configs", "DB", "Screenshots", "Settings", "Sounds", "Wordlists" };
-            foreach (var folder in folders.Select(f => System.IO.Path.Combine(Directory.GetCurrentDirectory(), f)))
+            var folders = new string[] { "Captchas", "ChromeExtensions", "Configs", "DB", "Plugins", "Screenshots", "Settings", "Sounds", "Wordlists" };
+            foreach (var folder in folders.Select(f => Path.Combine(Directory.GetCurrentDirectory(), f)))
             {
                 if (!Directory.Exists(folder))
                     Directory.CreateDirectory(folder);
@@ -73,13 +79,15 @@ namespace OpenBullet
             }
             catch
             {
-                MessageBox.Show("Could not find / parse the Environment Settings file. Please fix the issue and try again.");
+                OB.Logger.LogError(Components.Main, 
+                    "Could not find / parse the Environment Settings file. Please fix the issue and try again.", true);
                 Environment.Exit(0);
             }
 
             if (OB.Settings.Environment.WordlistTypes.Count == 0 || OB.Settings.Environment.CustomKeychains.Count == 0)
             {
-                MessageBox.Show("At least one WordlistType and one CustomKeychain must be defined in the Environment Settings file.");
+                OB.Logger.LogError(Components.Main, 
+                    "At least one WordlistType and one CustomKeychain must be defined in the Environment Settings file.", true);
                 Environment.Exit(0);
             }
 
@@ -140,6 +148,46 @@ namespace OpenBullet
 
             Topmost = OB.OBSettings.General.AlwaysOnTop;
 
+            // Load Plugins
+            var (plugins, blockPlugins) = Loader.LoadPlugins(OB.pluginsFolder);
+            OB.BlockPlugins = blockPlugins.ToList();
+
+            // Set mappings
+            OB.BlockMappings = new List<(Type, Type, System.Windows.Media.Color)>()
+            {
+                ( typeof(BlockBypassCF),        typeof(PageBlockBypassCF),          Colors.DarkSalmon ),
+                ( typeof(BlockImageCaptcha),    typeof(PageBlockCaptcha),           Colors.DarkOrange ),
+                ( typeof(BlockFunction),        typeof(PageBlockFunction),          Colors.YellowGreen ),
+                ( typeof(BlockKeycheck),        typeof(PageBlockKeycheck),          Colors.DodgerBlue ),
+                ( typeof(BlockLSCode),          typeof(PageBlockLSCode),            Colors.White ),
+                ( typeof(BlockParse),           typeof(PageBlockParse),             Colors.Gold ),
+                ( typeof(BlockRecaptcha),       typeof(PageBlockRecaptcha),         Colors.Turquoise ),
+                ( typeof(BlockRequest),         typeof(PageBlockRequest),           Colors.LimeGreen ),
+                ( typeof(BlockTCP),             typeof(PageBlockTCP),               Colors.MediumPurple ),
+                ( typeof(BlockUtility),         typeof(PageBlockUtility),           Colors.Wheat ),
+                ( typeof(SBlockBrowserAction),  typeof(PageSBlockBrowserAction),    Colors.Green ),
+                ( typeof(SBlockElementAction),  typeof(PageSBlockElementAction),    Colors.Firebrick ),
+                ( typeof(SBlockExecuteJS),      typeof(PageSBlockExecuteJS),        Colors.Indigo ),
+                ( typeof(SBlockNavigate),       typeof(PageSBlockNavigate),         Colors.RoyalBlue )
+            };
+
+            // Add block plugins to mappings
+            foreach (var plugin in blockPlugins)
+            {
+                try
+                {
+                    var color = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(plugin.Color);
+                    OB.BlockMappings.Add((plugin.GetType(), typeof(BlockPluginPage), color));
+                    BlockParser.BlockMappings.Add(plugin.Name, plugin.GetType());
+                    OB.Logger.LogInfo(Components.Main, $"Initialized {plugin.Name} block plugin");
+                }
+                catch 
+                {
+                    OB.Logger.LogError(Components.Main, $"The color {plugin.Color} in block plugin {plugin.Name} is invalid", true);
+                    Environment.Exit(0);
+                }
+            }
+
             // ViewModels
             OB.RunnerManager = new RunnerManagerViewModel();
             OB.ProxyManager = new ProxyManagerViewModel();
@@ -164,6 +212,8 @@ namespace OpenBullet
             OB.Logger.LogInfo(Components.Main, "Initialized Settings");
             ToolsPage = new ToolsSection();
             OB.Logger.LogInfo(Components.Main, "Initialized Tools");
+            PluginsPage = new PluginsSection(plugins);
+            OB.Logger.LogInfo(Components.Main, "Initialized Plugins");
             AboutPage = new About();
 
             menuOptionRunner_MouseDown(this, null);
@@ -282,6 +332,12 @@ namespace OpenBullet
         {
             Main.Content = ToolsPage;
             menuOptionSelected(menuOptionTools);
+        }
+
+        private void menuOptionPlugins_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Main.Content = PluginsPage;
+            menuOptionSelected(menuOptionPlugins);
         }
 
         private void menuOptionSettings_MouseDown(object sender, MouseButtonEventArgs e)

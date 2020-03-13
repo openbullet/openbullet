@@ -344,7 +344,7 @@ namespace OpenBullet.Views.Main.Configs
             // Initialize BotData and Reset LS
             var cData = new CData(vm.TestData, OB.Settings.Environment.GetWordlistType(vm.TestDataType));
 
-            vm.BotData = new BotData(OB.Settings.RLSettings, vm.Config.Config.Settings, cData, proxy, vm.UseProxy, OB.Random);
+            vm.BotData = new BotData(OB.Settings.RLSettings, vm.Config.Config.Settings, cData, proxy, vm.UseProxy, new Random());
             vm.LS.Reset();
 
             // Ask for user input
@@ -416,7 +416,7 @@ namespace OpenBullet.Views.Main.Configs
             }
 
             // Quit Browser if Always Quit
-            if (vm.Config.Config.Settings.AlwaysQuit)
+            if (vm.Config.Config.Settings.AlwaysQuit || (vm.Config.Config.Settings.QuitOnBanRetry && (vm.BotData.Status == BotStatus.BAN || vm.BotData.Status == BotStatus.RETRY)))
             {
                 try {
                     vm.BotData.Driver.Quit();

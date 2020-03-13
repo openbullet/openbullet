@@ -1,4 +1,5 @@
-﻿using RuriLib.Functions.Conversions;
+﻿using RuriLib.Functions.Conditions;
+using RuriLib.Functions.Conversions;
 using RuriLib.LS;
 using RuriLib.Models;
 using RuriLib.ViewModels;
@@ -68,14 +69,20 @@ namespace RuriLib
         /// <summary>Adds an element to a list variable.</summary>
         Add,
 
-        /// <summary>Removes an element from a list variable.</summary>
+        /// <summary>Removes an element from a list variable given its index.</summary>
         Remove,
+
+        /// <summary>Removes one ore more elements from a list variable given their value.</summary>
+        RemoveValues,
 
         /// <summary>Removes duplicate elements from a list variable, keeping only the first one.</summary>
         RemoveDuplicates,
 
         /// <summary>Picks a random element from a list variable.</summary>
-        Random
+        Random,
+
+        /// <summary>Randomizes the order of elements in a list.</summary>
+        Shuffle
     }
 
     /// <summary>
@@ -157,6 +164,14 @@ namespace RuriLib
         private string listIndex = "-1"; // Add (-1 = end, 0 = start)
         /// <summary>The list index where an item can be added/removed. -1 = end, 0 = start.</summary>
         public string ListIndex { get { return listIndex; } set { listIndex = value; OnPropertyChanged(); } }
+
+        private Comparer listElementComparer = Comparer.EqualTo;
+        /// <summary>The comparer to use when removing or modifying one or more elements of a list.</summary>
+        public Comparer ListElementComparer { get { return listElementComparer; } set { listElementComparer = value; OnPropertyChanged(); } }
+
+        private string listComparisonTerm = "";
+        /// <summary>The string that elements in a list should be compared to.</summary>
+        public string ListComparisonTerm { get { return listComparisonTerm; } set { listComparisonTerm = value; OnPropertyChanged(); } }
         #endregion
 
         // Variables
@@ -245,6 +260,11 @@ namespace RuriLib
 
                         case ListAction.Remove:
                             ListIndex = LineParser.ParseLiteral(ref input, "Index");
+                            break;
+
+                        case ListAction.RemoveValues:
+                            ListElementComparer = LineParser.ParseEnum(ref input, "Comparer", typeof(Comparer));
+                            ListComparisonTerm = LineParser.ParseLiteral(ref input, "Comparison Term");
                             break;
                     }
                     break;
@@ -348,6 +368,12 @@ namespace RuriLib
                         case ListAction.Remove:
                             writer
                                 .Literal(ListIndex);
+                            break;
+
+                        case ListAction.RemoveValues:
+                            writer
+                                .Token(ListElementComparer)
+                                .Literal(ListComparisonTerm);
                             break;
                     }
                     break;
@@ -460,6 +486,7 @@ namespace RuriLib
                                 break;
 
                             case ListAction.Add:
+                                // TODO: Refactor this
                                 variable = data.Variables.Get(listName, CVar.VarType.List);
                                 if (variable == null) variable = data.GlobalVariables.Get(listName, CVar.VarType.List);
                                 if (variable == null) break;
@@ -469,6 +496,7 @@ namespace RuriLib
                                 break;
 
                             case ListAction.Remove:
+                                // TODO: Refactor this
                                 variable = data.Variables.Get(listName, CVar.VarType.List);
                                 if (variable == null) variable = data.GlobalVariables.Get(listName, CVar.VarType.List);
                                 if (variable == null) break;
@@ -477,22 +505,34 @@ namespace RuriLib
                                 variable.Value.RemoveAt(index);
                                 break;
 
+                            case ListAction.RemoveValues:
+                                data.Variables.Set(new CVar(variableName, list.Where(l => !Condition.Verify(new KeycheckCondition
+                                {
+                                    Left = ReplaceValues(l, data),
+                                    Comparer = ListElementComparer,
+                                    Right = ListComparisonTerm
+                                })).ToList(), isCapture));
+                                break;
+
                             case ListAction.RemoveDuplicates:
                                 data.Variables.Set(new CVar(variableName, list.Distinct().ToList(), isCapture));
                                 break;
 
                             case ListAction.Random:
-                                lock (data.RandomLocker)
-                                {
-                                    data.Variables.Set(new CVar(variableName, list[data.Random.Next(list.Count)], isCapture));
-                                }
+                                data.Variables.Set(new CVar(variableName, list[data.random.Next(list.Count)], isCapture));
+                                break;
+
+                            case ListAction.Shuffle:
+                                // This makes a copy of the original list
+                                var listCopy = list.ToArray().ToList();
+                                listCopy.Shuffle(data.random);
+                                data.Variables.Set(new CVar(variableName, listCopy, isCapture));
                                 break;
 
                             default:
                                 break;
                         }
-
-                        data.Log(new LogEntry(string.Format("Executed action {0} on list {1}", listAction, listName), Colors.White));
+                        data.Log(new LogEntry($"Executed action {listAction} on file {listName}", Colors.White));
                         break;
 
                     case UtilityGroup.Variable:
@@ -504,13 +544,13 @@ namespace RuriLib
                                 data.Variables.Set(new CVar(variableName, single.Split(new string[] { ReplaceValues(splitSeparator, data) }, StringSplitOptions.None).ToList(), isCapture));
                                 break;
                         }
-                        data.Log(new LogEntry(string.Format("Executed action {0} on variable {1}", varAction, varName), Colors.White));
+                        data.Log(new LogEntry($"Executed action {varAction} on variable {varName}", Colors.White));
                         break;
 
                     case UtilityGroup.Conversion:
                         byte[] convertedBytes = ReplaceValues(inputString, data).ConvertFrom(conversionFrom);
                         data.Variables.Set(new CVar(variableName, convertedBytes.ConvertTo(conversionTo), isCapture));
-                        data.Log(new LogEntry(string.Format("Converted input from {0} to {1}", conversionFrom, conversionTo), Colors.White));
+                        data.Log(new LogEntry($"Converted input {conversionFrom} to {conversionTo}", Colors.White));
                         break;
 
                     case UtilityGroup.File:
@@ -543,6 +583,7 @@ namespace RuriLib
                                 File.AppendAllLines(file, inputs);
                                 break;
                         }
+                        data.Log(new LogEntry($"Executed action {fileAction} on file {file}", Colors.White));
                         break;
 
                     default:

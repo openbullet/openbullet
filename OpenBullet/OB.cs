@@ -1,6 +1,11 @@
 ﻿using OpenBullet.ViewModels;
+using PluginFramework;
+using RuriLib;
 using RuriLib.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Media;
 
 namespace OpenBullet
 {
@@ -20,7 +25,14 @@ namespace OpenBullet
         };
 
         public static string Version => "1.2.0";
-        public static Random Random { get; } = new Random();
+
+        // Block Mappings (including Plugins)
+        public static List<(Type, Type, Color)> BlockMappings = new List<(Type, Type, Color)>();
+
+        // Block Plugins
+        // HACK: Find a better way to do this and a better place to put them
+        public static List<IBlockPlugin> BlockPlugins;
+        public static IEnumerable<BlockBase> BlockPluginsAsBase => BlockPlugins.Cast<BlockBase>();
 
         // Windows
         // TODO: Remove these from here, everything should only depend on the ViewModels not on the Views!
@@ -48,5 +60,6 @@ namespace OpenBullet
         public static readonly string licenseFile = @"Settings/License.txt";
         public static readonly string logFile = @"Log.txt";
         public static readonly string configFolder = @"Configs";
+        public static readonly string pluginsFolder = @"Plugins";
     }
 }

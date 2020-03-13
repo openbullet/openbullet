@@ -1,9 +1,9 @@
-﻿<Page x:Class="OpenBullet.Pages.StackerBlocks.PageBlockFunction"
+﻿<Page x:Class="OpenBullet.Views.StackerBlocks.PageBlockFunction"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:OpenBullet.Pages.StackerBlocks"
+      xmlns:local="clr-namespace:OpenBullet.Views.StackerBlocks"
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       mc:Ignorable="d" 
       d:DesignHeight="500" d:DesignWidth="400"
@@ -116,11 +116,14 @@
             <TabItem x:Name="randomNumberTab">
                 <StackPanel>
                     <DockPanel>
-                        <Label Content="Min:"/>
-                        <xctk:IntegerUpDown Value="{Binding RandomMin}" Minimum="0" Maximum="2147483647" Width="80" HorizontalAlignment="Left"/>
-                        <Label Content="Max:"/>
-                        <xctk:IntegerUpDown Value="{Binding RandomMax}" Minimum="0" Maximum="2147483647" Width="80" HorizontalAlignment="Left"/>
+                        <Label Content="Minimum:"/>
+                        <TextBox Text="{Binding RandomMin, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
+                    <DockPanel>
+                        <Label Content="Maximum:"/>
+                        <TextBox Text="{Binding RandomMax, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <CheckBox Content="Pad with zeros on the left" IsChecked="{Binding RandomZeroPad}" VerticalContentAlignment="Center"/>
                 </StackPanel>
             </TabItem>
             <TabItem x:Name="countOccurrencesTab">
@@ -131,19 +134,28 @@
                     </DockPanel>
                 </StackPanel>
             </TabItem>
-            <TabItem x:Name="rsaTab">
+            <TabItem x:Name="rsaEncTab">
                 <StackPanel>
-                    <DockPanel>
-                        <Label Content="Key:"/>
-                        <TextBox Text="{Binding RsaKey, UpdateSourceTrigger=PropertyChanged}"/>
+                    <DockPanel Margin="0 5 0 0">
+                        <Label Content="Public Key Modulus (n):"/>
+                        <TextBox Text="{Binding RsaN, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
                     <DockPanel Margin="0 5 0 0">
-                        <Label Content="Modulus:"/>
-                        <TextBox Text="{Binding RsaMod, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label Content="Public Key Exponent (e):"/>
+                        <TextBox Text="{Binding RsaE, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <CheckBox Content="Use OAEP instead of PKCS v1.5" IsChecked="{Binding RsaOAEP}" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="rsaDecTab">
+                <StackPanel>
+                    <DockPanel Margin="0 5 0 0">
+                        <Label Content="Public Key Modulus (n):"/>
+                        <TextBox Text="{Binding RsaN, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
                     <DockPanel Margin="0 5 0 0">
-                        <Label Content="Exponent:"/>
-                        <TextBox Text="{Binding RsaExp, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label Content="Private Key Exponent (d):"/>
+                        <TextBox Text="{Binding RsaD, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
                     <CheckBox Content="Use OAEP instead of PKCS v1.5" IsChecked="{Binding RsaOAEP}" VerticalContentAlignment="Center"/>
                 </StackPanel>
@@ -166,6 +178,18 @@
                         <Label Content="Length:"/>
                         <TextBox Text="{Binding SubstringLength, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="randomUATab">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <CheckBox Grid.Column="0" Content="Generate only for" IsChecked="{Binding UserAgentSpecifyBrowser}" VerticalContentAlignment="Center" Margin="0 0 10 0"/>
+                        <ComboBox Grid.Column="1" x:Name="randomUABrowserCombobox" SelectionChanged="randomUABrowserCombobox_SelectionChanged"/>
+                    </Grid>
                 </StackPanel>
             </TabItem>
             <TabItem x:Name="aesTab">

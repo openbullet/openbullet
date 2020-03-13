@@ -1,13 +1,14 @@
 ﻿using OpenBullet.Views.Main.Runner;
 using RuriLib;
 using RuriLib.Functions.Crypto;
+using RuriLib.Functions.UserAgent;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace OpenBullet.Pages.StackerBlocks
+namespace OpenBullet.Views.StackerBlocks
 {
     /// <summary>
     /// Logica di interazione per PageBlockFunction.xaml
@@ -37,6 +38,13 @@ namespace OpenBullet.Pages.StackerBlocks
             hashTypeCombobox.SelectedIndex = (int)vm.HashType;
             hmacHashTypeCombobox.SelectedIndex = (int)vm.HashType;
             kdfAlgorithmCombobox.SelectedIndex = (int)vm.KdfAlgorithm;
+
+            foreach (var b in Enum.GetNames(typeof(UserAgent.Browser)))
+            {
+                randomUABrowserCombobox.Items.Add(b);
+            }
+
+            randomUABrowserCombobox.SelectedIndex = (int)vm.UserAgentBrowser;
 
             foreach (var m in Enum.GetNames(typeof(CipherMode)))
             {
@@ -99,25 +107,34 @@ namespace OpenBullet.Pages.StackerBlocks
                     break;
 
                 case BlockFunction.Function.RSAEncrypt:
-                case BlockFunction.Function.RSADecrypt:
                     functionTabControl.SelectedIndex = 9;
                     break;
 
-                case BlockFunction.Function.CharAt:
+                    /*
+                case BlockFunction.Function.RSADecrypt:
                     functionTabControl.SelectedIndex = 10;
+                    break;
+                    */
+
+                case BlockFunction.Function.CharAt:
+                    functionTabControl.SelectedIndex = 11;
                     break;
 
                 case BlockFunction.Function.Substring:
-                    functionTabControl.SelectedIndex = 11;
+                    functionTabControl.SelectedIndex = 12;
+                    break;
+
+                case BlockFunction.Function.GetRandomUA:
+                    functionTabControl.SelectedIndex = 13;
                     break;
 
                 case BlockFunction.Function.AESEncrypt:
                 case BlockFunction.Function.AESDecrypt:
-                    functionTabControl.SelectedIndex = 12;
+                    functionTabControl.SelectedIndex = 14;
                     break;
 
                 case BlockFunction.Function.PBKDF2PKCS5:
-                    functionTabControl.SelectedIndex = 13;
+                    functionTabControl.SelectedIndex = 15;
                     break;
             }
         }
@@ -167,6 +184,11 @@ namespace OpenBullet.Pages.StackerBlocks
         private void kdfAlgorithmCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             vm.KdfAlgorithm = (Hash)((ComboBox)e.OriginalSource).SelectedIndex;
+        }
+
+        private void randomUABrowserCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            vm.UserAgentBrowser = (UserAgent.Browser)((ComboBox)e.OriginalSource).SelectedIndex;
         }
     }
 }

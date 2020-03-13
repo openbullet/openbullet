@@ -15,10 +15,9 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0">
-            <DockPanel Margin="5">
-                <CheckBox DockPanel.Dock="Top" Content="Always Open browser at the start" IsChecked="{Binding AlwaysOpen}" VerticalContentAlignment="Center"/>
-                <CheckBox DockPanel.Dock="Top" Content="Always Quit browser at the end" IsChecked="{Binding AlwaysQuit}" VerticalContentAlignment="Center"/>
-            </DockPanel>
+            <CheckBox Content="Always Open browser at the start" IsChecked="{Binding AlwaysOpen}" VerticalContentAlignment="Center"/>
+            <CheckBox Content="Always Quit browser at the end" IsChecked="{Binding AlwaysQuit}" VerticalContentAlignment="Center"/>
+            <CheckBox Content="Quit browser only on BAN or RETRY" IsChecked="{Binding QuitOnBanRetry}" VerticalContentAlignment="Center"/>
         </StackPanel>
         <StackPanel Grid.Column="1">
             <DockPanel Margin="5">

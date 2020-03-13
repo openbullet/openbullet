@@ -139,14 +139,9 @@ namespace RuriLib
         /// <param name="config">The viewmodel of the config to save</param>
         /// <param name="fileName">The path of the file where the Config will be saved</param>
         /// <returns>Whether the file has been saved successfully</returns>
-        public static bool SaveConfig(Config config, string fileName)
+        public static void SaveConfig(Config config, string fileName)
         {
-            try
-            {
-                File.WriteAllText(fileName, SerializeConfig(config));
-                return true;
-            }
-            catch { return false; }
+            File.WriteAllText(fileName, SerializeConfig(config));
         }
 
         /// <summary>
@@ -239,19 +234,33 @@ namespace RuriLib
                 var prop = type.GetProperty(pair[0]);
                 var propObj = prop.GetValue(obj);
                 dynamic value = null;
-                var ts = new TypeSwitch()
-                    .Case((String x) => value = pair[1])
-                    .Case((Int32 x) => value = Int32.Parse(pair[1]))
-                    .Case((Boolean x) => value = Boolean.Parse(pair[1]))
-                    .Case((List<String> x) => value = pair[1].Split(',').ToList())
-                    .Case((Color x) => value = Color.FromRgb(
-                        System.Drawing.Color.FromName(pair[1]).R,
-                        System.Drawing.Color.FromName(pair[1]).G,
-                        System.Drawing.Color.FromName(pair[1]).B
-                    ))
-                ;
 
-                ts.Switch(propObj);
+                switch (propObj)
+                {
+                    case string x:
+                        value = pair[1];
+                        break;
+
+                    case int x:
+                        value = int.Parse(pair[1]);
+                        break;
+
+                    case bool x:
+                        value = bool.Parse(pair[1]);
+                        break;
+
+                    case List<string> x:
+                        value = pair[1].Split(',').ToList();
+                        break;
+
+                    case Color x:
+                        value = Color.FromRgb(
+                            System.Drawing.Color.FromName(pair[1]).R,
+                            System.Drawing.Color.FromName(pair[1]).G,
+                            System.Drawing.Color.FromName(pair[1]).B);
+                        break;
+                }
+                
                 prop.SetValue(obj, value);
             }
             return obj;

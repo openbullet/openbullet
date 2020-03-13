@@ -303,7 +303,7 @@ namespace RuriLib
                     break;
             }
 
-            InsertVariables(data, isCapture, recursive, list, variableName, prefix, suffix, encodeOutput, createEmpty);
+            InsertVariable(data, isCapture, recursive, list, variableName, prefix, suffix, encodeOutput, createEmpty);
         }
     }
 }

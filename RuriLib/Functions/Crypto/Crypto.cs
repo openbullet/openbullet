@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace RuriLib.Functions.Crypto
 {
@@ -273,19 +271,17 @@ namespace RuriLib.Functions.Crypto
         /// Encrypts a string using RSA.
         /// </summary>
         /// <param name="data">The data to encrypt as a base64 string</param>
-        /// <param name="password">The private key as a base64 string</param>
-        /// <param name="modulus">The public key's modulus as a base64 string</param>
-        /// <param name="exponent">The public key's exponent as a base64 string</param>
+        /// <param name="n">The public key's modulus as a base64 string</param>
+        /// <param name="e">The public key's exponent as a base64 string</param>
         /// <param name="oaep">Whether to use OAEP-SHA1 padding mode instead of PKCS1</param>
         /// <returns>The encrypted data encoded as base64.</returns>
-        public static string RSAEncrypt(string data, string password, string modulus, string exponent, bool oaep)
+        public static string RSAEncrypt(string data, string n, string e, bool oaep)
         {
             return RSAEncrypt(
                 data,
                 new RSAParameters { 
-                    D = Encoding.UTF8.GetBytes(password),
-                    Modulus = Encoding.UTF8.GetBytes(modulus),
-                    Exponent = Encoding.UTF8.GetBytes(exponent)
+                    Modulus = Encoding.UTF8.GetBytes(n),
+                    Exponent = Encoding.UTF8.GetBytes(e)
                 },
                 oaep
             );
@@ -295,20 +291,18 @@ namespace RuriLib.Functions.Crypto
         /// Decrypts a string using RSA.
         /// </summary>
         /// <param name="data">The data to decrypt as a base64 string</param>
-        /// <param name="password">The private key as a base64 string</param>
-        /// <param name="modulus">The public key's modulus as a base64 string</param>
-        /// <param name="exponent">The public key's exponent as a base64 string</param>
+        /// <param name="n">The public key's modulus as a base64 string</param>
+        /// <param name="d">The private key's exponent as a base64 string</param>
         /// <param name="oaep">Whether to use OAEP-SHA1 padding mode instead of PKCS v1.5</param>
         /// <returns>The decrypted data encoded as base64.</returns>
-        public static string RSADecrypt(string data, string password, string modulus, string exponent, bool oaep)
+        public static string RSADecrypt(string data, string n, string d, bool oaep)
         {
             return RSADecrypt(
                 data,
                 new RSAParameters
                 {
-                    D = Encoding.UTF8.GetBytes(password),
-                    Modulus = Encoding.UTF8.GetBytes(modulus),
-                    Exponent = Encoding.UTF8.GetBytes(exponent)
+                    D = Encoding.UTF8.GetBytes(d),
+                    Modulus = Encoding.UTF8.GetBytes(n)
                 },
                 oaep
             );
