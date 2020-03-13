@@ -69,7 +69,7 @@ namespace RuriLib.CaptchaServices
             {
                 if (Timeout > 0) client.Timeout = Timeout;
                 client.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
-                var response = client.UploadString($"http://{Domain}{Port}/in.php",
+                var response = client.UploadString($"http://{Domain}:{Port}/in.php",
                     $"key={ApiKey}&method=base64&regsense=1&body={EscapeLongString(GetBase64(bitmap, ImageFormat.Bmp))}");
                 if (!response.StartsWith("OK")) throw new Exception(response);
                 TaskId = response.Split('|')[1];
