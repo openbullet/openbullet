@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="OpenBullet.Views.UserControls.UserControlConfig"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OpenBullet.Views.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
+
+        <TextBox x:Name="ConfigName" Grid.Column="0" IsReadOnly="True" VerticalContentAlignment="Center" />
+        <Button x:Name="Choose" Grid.Column="1" Content="Choose" Click="Choose_Click" Padding="10 0" />
+    </Grid>
+</UserControl>

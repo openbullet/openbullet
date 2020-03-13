@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29509.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenBullet", "OpenBullet\OpenBullet.csproj", "{99E40E7F-00A4-4FB1-9441-B05A56C47C08}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuriLib", "RuriLib\RuriLib.csproj", "{17E95D0B-C1FD-445C-9FDF-244AF7299A67}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenBulletCLI", "OpenBulletCLI\OpenBulletCLI.csproj", "{0B6D8B01-861E-4CAF-B1C9-6670884381DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginFramework", "PluginFramework\PluginFramework.csproj", "{E1DD89D0-EC1D-4849-A2B6-ADB261DFA3CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{0B6D8B01-861E-4CAF-B1C9-6670884381DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B6D8B01-861E-4CAF-B1C9-6670884381DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B6D8B01-861E-4CAF-B1C9-6670884381DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1DD89D0-EC1D-4849-A2B6-ADB261DFA3CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1DD89D0-EC1D-4849-A2B6-ADB261DFA3CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1DD89D0-EC1D-4849-A2B6-ADB261DFA3CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1DD89D0-EC1D-4849-A2B6-ADB261DFA3CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

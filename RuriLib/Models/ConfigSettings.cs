@@ -1,4 +1,5 @@
-﻿using RuriLib.Models;
+﻿using Newtonsoft.Json;
+using RuriLib.Models;
 using RuriLib.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -33,13 +34,29 @@ namespace RuriLib
         /// <summary>Additional information on the Config usage.</summary>
         public string AdditionalInfo { get { return additionalInfo; } set { additionalInfo = value; OnPropertyChanged(); } }
 
+        private string[] requiredPlugins = new string[] { };
+        /// <summary>The plugins that are necessary in order for this config to run.</summary>
+        public string[] RequiredPlugins { get { return requiredPlugins; } set { requiredPlugins = value; OnPropertyChanged(); OnPropertyChanged(nameof(RequiredPluginsString)); } }
+
+        /// <summary>The required plugins list as a comma separated string.</summary>
+        [JsonIgnore]
+        public string RequiredPluginsString => string.Join(", ", RequiredPlugins);
+
         private string author = "";
         /// <summary>The name of the Author of the Config.</summary>
         public string Author { get { return author; } set { author = value; OnPropertyChanged(); } }
 
-        private string version = "1.1.5";
+        private string version = "1.2.0";
         /// <summary>The version of RuriLib the Config was made with.</summary>
         public string Version { get { return version; } set { version = value; OnPropertyChanged(); } }
+
+        private bool saveEmptyCaptures = false;
+        /// <summary>Whether to remove the empty captures before saving the hits to the database.</summary>
+        public bool SaveEmptyCaptures { get { return saveEmptyCaptures; } set { saveEmptyCaptures = value; OnPropertyChanged(); } }
+
+        private bool continueOnCustom = false;
+        /// <summary>Whether to continue execution after a Custom status has been reached.</summary>
+        public bool ContinueOnCustom { get { return continueOnCustom; } set { continueOnCustom = value; OnPropertyChanged(); } }
         #endregion
 
         #region Requests
@@ -108,6 +125,10 @@ namespace RuriLib
         private bool alwaysQuit = false;
         /// <summary>Whether to always quit the browser and dispose of the WebDriver at the end of the checking process (if any browser is open).</summary>
         public bool AlwaysQuit { get { return alwaysQuit; } set { alwaysQuit = value; OnPropertyChanged(); } }
+
+        private bool quitOnBanRetry = false;
+        /// <summary>Whether to quit the browser and dispose of the WebDriver at the end of the checking process (if any browser is open) on a BAN or RETRY status.</summary>
+        public bool QuitOnBanRetry { get { return quitOnBanRetry; } set { quitOnBanRetry = value; OnPropertyChanged(); } }
 
         private bool disableNotifications = false;
         /// <summary>Whether to disable notifications the lock the page and make it impossible to proceed.</summary>

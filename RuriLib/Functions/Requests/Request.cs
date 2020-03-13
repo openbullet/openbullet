@@ -22,13 +22,21 @@ namespace RuriLib.Functions.Requests
         private HttpContent content = null;
         private Dictionary<string, string> oldCookies = new Dictionary<string, string>();
         private int timeout = 60000;
-        private string url = "";
         private string contentType = "";
         private string authorization = "";
 
         private HttpResponse response = null;
         private bool hasContentLength = true;
         private bool isGZipped = false;
+
+        /// <summary>
+        /// Disposes of the HttpRequest and HttpContent when destroyed.
+        /// </summary>
+        ~Request()
+        {
+            request?.Dispose();
+            content?.Dispose();
+        }
 
         /// <summary>
         /// Sets up the request options.
@@ -68,7 +76,7 @@ namespace RuriLib.Functions.Requests
             this.contentType = contentType;
             var pData = Regex.Replace(postData, @"(?<!\\)\\n", Environment.NewLine).Replace(@"\\n", @"\n");
 
-            if (CanContainBody(method))
+            if (HttpRequest.CanContainRequestBody(method))
             {
                 if (encodeContent)
                 {
@@ -112,7 +120,7 @@ namespace RuriLib.Functions.Requests
         /// <returns>The request itself</returns>
         public Request SetMultipartContent(IEnumerable<MultipartContent> contents, string boundary = "", List<LogEntry> log = null)
         {
-            var bdry = boundary != "" ? boundary : GenerateMultipartBoundary();
+            var bdry = boundary != string.Empty ? boundary : GenerateMultipartBoundary();
             content = new Extreme.Net.MultipartContent(bdry);
             var mContent = content as Extreme.Net.MultipartContent;
             
@@ -206,14 +214,14 @@ namespace RuriLib.Functions.Requests
             }
 
             // Add the authorization header on a Basic Auth request
-            if (authorization != "")
+            if (authorization != string.Empty)
             {
                 request.AddHeader("Authorization", authorization);
                 if (log != null) log.Add(new LogEntry($"Authorization: {authorization}", Colors.MediumTurquoise));
             }
 
             // Add the content-type header
-            if (contentType != "")
+            if (contentType != string.Empty)
             {
                 if (log != null) log.Add(new LogEntry($"Content-Type: {contentType}", Colors.MediumTurquoise));
             }
@@ -357,7 +365,7 @@ namespace RuriLib.Functions.Requests
         public void SaveFile(string path, List<LogEntry> log = null)
         {
             var dirName = Path.GetDirectoryName(path);
-            if (dirName != "") dirName += Path.DirectorySeparatorChar.ToString();
+            if (dirName != string.Empty) dirName += Path.DirectorySeparatorChar.ToString();
             var fileName = Path.GetFileNameWithoutExtension(path);
             var fileExtension = Path.GetExtension(path);
             var sanitizedPath = $"{dirName}{Files.Files.MakeValidFileName(fileName)}{fileExtension}";
@@ -380,16 +388,6 @@ namespace RuriLib.Functions.Requests
                 builder.Append(ch);
             }
             return $"------WebKitFormBoundary{builder.ToString().ToLower()}";
-        }
-
-        /// <summary>
-        /// Checks if an HTTP method can have a body.
-        /// </summary>
-        /// <param name="method">The HTTP method</param>
-        /// <returns>True if the method allows a body</returns>
-        public static bool CanContainBody(HttpMethod method)
-        {
-            return method == HttpMethod.POST || method == HttpMethod.PUT || method == HttpMethod.DELETE;
         }
     }
 

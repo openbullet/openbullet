@@ -19,7 +19,7 @@
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
 
-        <ListView x:Name="logListView" Grid.Row="0" Foreground="Gainsboro" Background="Transparent" ItemsSource="{Binding Path=List, Mode=OneWay}" SelectionMode="Extended" BorderThickness="1">
+        <ListView x:Name="logListView" Grid.Row="0" Foreground="Gainsboro" Background="Transparent" ItemsSource="{Binding Path=EntriesCollection, Mode=OneWay}" SelectionMode="Extended" BorderThickness="1">
             <!-- Align Headers to the Left -->
             <ListView.Resources>
                 <Style x:Key="GridViewColumnHeaderGripper" TargetType="Thumb">

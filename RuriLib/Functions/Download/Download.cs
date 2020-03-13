@@ -30,7 +30,7 @@ namespace RuriLib.Functions.Download
         {
             HttpRequest request = new HttpRequest();
 
-            if (userAgent != "") request.UserAgent = userAgent;
+            if (userAgent != string.Empty) request.UserAgent = userAgent;
             request.Cookies = new CookieDictionary();
             foreach (var cookie in cookies)
                 request.Cookies.Add(cookie.Key, cookie.Value);

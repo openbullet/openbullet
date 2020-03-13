@@ -5,11 +5,8 @@ namespace RuriLib.Models
     /// <summary>
     /// A record that, given a Config's name and a Wordlist's location, returns how many data lines have already been checked.
     /// </summary>
-    public class Record
+    public class Record : Persistable<Guid>
     {
-        /// <summary>Needed for NoSQL storage.</summary>
-        public Guid Id { get; set; }
-
         /// <summary>The name of the Config.</summary>
         public string ConfigName { get; set; }
 

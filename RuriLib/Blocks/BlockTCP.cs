@@ -113,7 +113,7 @@ namespace RuriLib
             }
 
             // Try to parse the arrow, otherwise just return the block as is with default var name and var / cap choice
-            if (LineParser.ParseToken(ref input, TokenType.Arrow, false) == "")
+            if (LineParser.ParseToken(ref input, TokenType.Arrow, false) == string.Empty)
                 return this;
 
             // Parse the VAR / CAP
@@ -171,9 +171,9 @@ namespace RuriLib
         public override void Process(BotData data)
         {
             // Get easy handles
-            var tcp = data.TCPClient;
-            var net = data.NETStream;
-            var ssl = data.SSLStream;
+            var tcp = data.GetCustomObject("TCPClient") as TcpClient;
+            var net = data.GetCustomObject("NETStream") as NetworkStream;
+            var ssl = data.GetCustomObject("SSLStream") as SslStream;
             byte[] buffer = new byte[2048];
             int bytes = -1;
             string response = "";
@@ -188,7 +188,6 @@ namespace RuriLib
                     // Initialize the TCP client, connect to the host and get the SSL stream
                     tcp = new TcpClient();
                     tcp.Connect(h, p);
-
 
                     if (tcp.Connected)
                     {
@@ -211,16 +210,16 @@ namespace RuriLib
                         }
 
                         // Save the TCP client and the streams
-                        data.TCPClient = tcp;
-                        data.NETStream = net;
-                        data.SSLStream = ssl;
-                        data.TCPSSL = UseSSL;
+                        data.CustomObjects["TCPClient"] = tcp;
+                        data.CustomObjects["NETStream"] = net;
+                        data.CustomObjects["SSLStream"] = ssl;
+                        data.CustomObjects["TCPSSL"] = UseSSL;
 
                         data.Log(new LogEntry($"Succesfully connected to host {h} on port {p}. The server says:", Colors.Green));
                         data.Log(new LogEntry(response, Colors.GreenYellow));
                     }
 
-                    if (VariableName != "")
+                    if (VariableName != string.Empty)
                     {
                         data.Variables.Set(new CVar(VariableName, response, IsCapture));
                         data.Log(new LogEntry($"Saved Response in variable {VariableName}", Colors.White));
@@ -304,7 +303,8 @@ namespace RuriLib
                     }
                     data.Log(new LogEntry("> " + msg, Colors.White));
 
-                    if (data.TCPSSL)
+                    var TCPSSL = data.GetCustomObject("TCPSSL") as bool?;
+                    if (TCPSSL.HasValue && TCPSSL.Value)
                     {
                         ssl.Write(b);
                         bytes = ssl.Read(buffer, 0, buffer.Length);
@@ -319,7 +319,7 @@ namespace RuriLib
                     response = Encoding.ASCII.GetString(buffer, 0, bytes);
                     data.Log(new LogEntry("> " + response, Colors.GreenYellow));
 
-                    if (VariableName != "")
+                    if (VariableName != string.Empty)
                     {
                         data.Variables.Set(new CVar(VariableName, response, IsCapture));
                         data.Log(new LogEntry($"Saved Response in variable {VariableName}.", Colors.White));

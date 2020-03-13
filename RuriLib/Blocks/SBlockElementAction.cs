@@ -170,12 +170,12 @@ namespace RuriLib
                 ElementIndex = LineParser.ParseInt(ref input, "INDEX");
             Action = (ElementAction)LineParser.ParseEnum(ref input, "ACTION", typeof(ElementAction));
 
-            if (input == "") return this;
+            if (input == string.Empty) return this;
             if (LineParser.Lookahead(ref input) == TokenType.Literal)
                 Input = LineParser.ParseLiteral(ref input, "INPUT");
 
             // Try to parse the arrow, otherwise just return the block as is with default var name and var / cap choice
-            if (LineParser.ParseToken(ref input, TokenType.Arrow, false) == "")
+            if (LineParser.ParseToken(ref input, TokenType.Arrow, false) == string.Empty)
                 return this;
 
             // Parse the VAR / CAP
@@ -364,7 +364,7 @@ namespace RuriLib
 
             if (outputs.Count != 0)
             {
-                InsertVariables(data, isCapture, recursive, outputs, outputVariable, "", "", false, true);
+                InsertVariable(data, isCapture, recursive, outputs, outputVariable, "", "", false, true);
             }
         }
 

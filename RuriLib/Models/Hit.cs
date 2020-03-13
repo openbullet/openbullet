@@ -10,11 +10,8 @@ namespace RuriLib.Models
     /// <summary>
     /// Represents the outcome of a successful check, used as Data Type in a Database.
     /// </summary>
-    public class Hit
+    public class Hit : Persistable<Guid>
     {
-        /// <summary>Needed for NoSQL storage.</summary>
-        public Guid Id { get; set; }
-
         /// <summary>The data line that was used.</summary>
         public string Data { get; set; }
 
@@ -24,7 +21,7 @@ namespace RuriLib.Models
         /// <summary>The list of all variables marked as Capture as a chained string.</summary>
         [JsonIgnore]
         [BsonIgnore]
-        public string CapturedString { get { return CapturedData.ToCaptureString(); } }
+        public string CapturedString => CapturedData.ToCaptureString();
 
         /// <summary>The proxy that was used.</summary>
         public string Proxy { get; set; }
@@ -84,6 +81,15 @@ namespace RuriLib.Models
                 sb.Replace("<" + cap.Name + ">", cap.ToString());   
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Gets a unique hash of the hit.
+        /// </summary>
+        /// <returns>The hash code</returns>
+        public override int GetHashCode()
+        {
+            return (Data + ConfigName + WordlistName).GetHashCode();
         }
     }
 }

@@ -3,6 +3,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Interactions;
 using RuriLib.Functions.Files;
+using RuriLib.Functions.UserAgent;
 using RuriLib.LS;
 using RuriLib.ViewModels;
 using System;
@@ -46,6 +47,12 @@ namespace RuriLib
 
         /// <summary>Scrolls down by a given number of pixels from the top of the page.</summary>
         Scroll,
+
+        /// <summary>Opens a new tab.</summary>
+        OpenNewTab,
+
+        /// <summary>Closes the current tab.</summary>
+        CloseCurrentTab,
 
         /// <summary>Switches to the browser tab with a given index.</summary>
         SwitchToTab,
@@ -132,7 +139,7 @@ namespace RuriLib
 
             Action = (BrowserAction)LineParser.ParseEnum(ref input, "ACTION", typeof(BrowserAction));
 
-            if (input != "") Input = LineParser.ParseLiteral(ref input, "INPUT");
+            if (input != string.Empty) Input = LineParser.ParseLiteral(ref input, "INPUT");
 
             return this;
         }
@@ -161,6 +168,7 @@ namespace RuriLib
             }
 
             var replacedInput = ReplaceValues(input, data);
+            Actions keyActions = null;
 
             switch (action)
             {
@@ -184,33 +192,33 @@ namespace RuriLib
                     break;
 
                 case BrowserAction.SendKeys:
-                    var action = new Actions(data.Driver);
+                    keyActions = new Actions(data.Driver);
                     foreach(var s in replacedInput.Split(new string[] { "||" }, StringSplitOptions.None))
                     {
                         switch (s)
                         {
                             case "<TAB>":
-                                action.SendKeys(OpenQA.Selenium.Keys.Tab);
+                                keyActions.SendKeys(Keys.Tab);
                                 break;
 
                             case "<ENTER>":
-                                action.SendKeys(OpenQA.Selenium.Keys.Enter);
+                                keyActions.SendKeys(Keys.Enter);
                                 break;
 
                             case "<BACKSPACE>":
-                                action.SendKeys(OpenQA.Selenium.Keys.Backspace);
+                                keyActions.SendKeys(Keys.Backspace);
                                 break;
 
                             case "<ESC>":
-                                action.SendKeys(OpenQA.Selenium.Keys.Escape);
+                                keyActions.SendKeys(Keys.Escape);
                                 break;
 
                             default:
-                                action.SendKeys(s);
+                                keyActions.SendKeys(s);
                                 break;
                         }
                     }
-                    action.Perform();
+                    keyActions.Perform();
                     Thread.Sleep(1000);
                     if(replacedInput.Contains("<ENTER>") || replacedInput.Contains("<BACKSPACE>")) // These might lead to a page change
                         UpdateSeleniumData(data);
@@ -221,9 +229,18 @@ namespace RuriLib
                     Files.SaveScreenshot(image, data);
                     break;
 
+                case BrowserAction.OpenNewTab:
+                    ((IJavaScriptExecutor)data.Driver).ExecuteScript("window.open();");
+                    data.Driver.SwitchTo().Window(data.Driver.WindowHandles.Last());
+                    break;
+
                 case BrowserAction.SwitchToTab:
                     data.Driver.SwitchTo().Window(data.Driver.WindowHandles[int.Parse(replacedInput)]);
                     UpdateSeleniumData(data);
+                    break;
+
+                case BrowserAction.CloseCurrentTab:
+                    ((IJavaScriptExecutor)data.Driver).ExecuteScript("window.close();");
                     break;
 
                 case BrowserAction.Refresh:
@@ -321,9 +338,9 @@ namespace RuriLib
                                     .Where(ext => ext.EndsWith(".crx"))
                                     .Select(ext => Directory.GetCurrentDirectory() + "\\ChromeExtensions\\" + ext));
                             if (data.ConfigSettings.DisableNotifications) chromeop.AddArgument("--disable-notifications");
-                            if (data.ConfigSettings.CustomCMDArgs != "") chromeop.AddArgument(data.ConfigSettings.CustomCMDArgs);
-                            if (data.ConfigSettings.RandomUA) chromeop.AddArgument("--user-agent=" + BlockFunction.RandomUserAgent(data.Random));
-                            else if (data.ConfigSettings.CustomUserAgent != "") chromeop.AddArgument("--user-agent=" + data.ConfigSettings.CustomUserAgent);
+                            if (data.ConfigSettings.CustomCMDArgs != string.Empty) chromeop.AddArgument(data.ConfigSettings.CustomCMDArgs);
+                            if (data.ConfigSettings.RandomUA) chromeop.AddArgument("--user-agent=" + UserAgent.Random(data.random));
+                            else if (data.ConfigSettings.CustomUserAgent != string.Empty) chromeop.AddArgument("--user-agent=" + data.ConfigSettings.CustomUserAgent);
 
                             if (data.UseProxies) chromeop.AddArgument("--proxy-server=" + data.Proxy.Type.ToString().ToLower() + "://" + data.Proxy.Proxy);
 
@@ -346,9 +363,9 @@ namespace RuriLib
                             fireop.BrowserExecutableLocation = data.GlobalSettings.Selenium.FirefoxBinaryLocation;
                             if (data.GlobalSettings.Selenium.Headless || data.ConfigSettings.ForceHeadless) fireop.AddArgument("--headless");
                             if (data.ConfigSettings.DisableNotifications) fireprofile.SetPreference("dom.webnotifications.enabled", false);
-                            if (data.ConfigSettings.CustomCMDArgs != "") fireop.AddArgument(data.ConfigSettings.CustomCMDArgs);
-                            if (data.ConfigSettings.RandomUA) fireprofile.SetPreference("general.useragent.override", BlockFunction.RandomUserAgent(data.Random));
-                            else if (data.ConfigSettings.CustomUserAgent != "") fireprofile.SetPreference("general.useragent.override", data.ConfigSettings.CustomUserAgent);
+                            if (data.ConfigSettings.CustomCMDArgs != string.Empty) fireop.AddArgument(data.ConfigSettings.CustomCMDArgs);
+                            if (data.ConfigSettings.RandomUA) fireprofile.SetPreference("general.useragent.override", UserAgent.Random(data.random));
+                            else if (data.ConfigSettings.CustomUserAgent != string.Empty) fireprofile.SetPreference("general.useragent.override", data.ConfigSettings.CustomUserAgent);
 
                             if (data.UseProxies)
                             {

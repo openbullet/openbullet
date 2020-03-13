@@ -1,5 +1,6 @@
 ﻿using Extreme.Net;
-using OpenBullet.Pages.StackerBlocks;
+using OpenBullet.Views.StackerBlocks;
+using PluginFramework;
 using RuriLib;
 using RuriLib.LS;
 using RuriLib.ViewModels;
@@ -47,6 +48,7 @@ namespace OpenBullet.ViewModels
         public List<BlockBase> GetList()
         {
             ConvertKeychains();
+            ConvertPlugins();
             return Stack.Select(x => x.Block).ToList();
         }
 
@@ -64,6 +66,16 @@ namespace OpenBullet.ViewModels
 
                     kcblock.KeyChains = kcpage.vm.KeychainList.Select(k => k.Keychain).ToList();
                 }
+            }
+        }
+
+        public void ConvertPlugins()
+        {
+            // For each plugin block in the stack
+            foreach (StackerBlockViewModel stackerBlock in Stack.Where(sb => sb.Block.IsPlugin()))
+            {
+                var page = stackerBlock.Page as BlockPluginPage;
+                page.SetPropertyValues();
             }
         }
 
@@ -131,7 +143,7 @@ namespace OpenBullet.ViewModels
         private bool useProxy = false;
         public bool UseProxy { get { return useProxy; } set { useProxy = value; OnPropertyChanged(); OnPropertyChanged("UseProxyString"); OnPropertyChanged("UseProxyColor"); } }
         public string UseProxyString { get { return UseProxy ? "ON" : "OFF"; } }
-        public SolidColorBrush UseProxyColor { get { return UseProxy ? Globals.GetBrush("ForegroundGood") : Globals.GetBrush("ForegroundBad"); } }
+        public SolidColorBrush UseProxyColor { get { return UseProxy ? Utils.GetBrush("ForegroundGood") : Utils.GetBrush("ForegroundBad"); } }
 
         private bool sbs = false;
         public bool SBS { get { return sbs; } set { sbs = value; OnPropertyChanged(); } }

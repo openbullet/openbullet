@@ -1,49 +1,104 @@
 ﻿using LiteDB;
+using OpenBullet.Repositories;
+using RuriLib.Interfaces;
 using RuriLib.Models;
 using RuriLib.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace OpenBullet.ViewModels
 {
-    public class HitsDBViewModel : ViewModelBase
+    public class HitsDBViewModel : ViewModelBase, IHitsDB
     {
-        public ObservableCollection<Hit> HitsList { get; set; }
+        public LiteDBRepository<Hit> _repo;
 
-        public List<string> ConfigsList { get
+        private ObservableCollection<Hit> hitsCollection;
+        public ObservableCollection<Hit> HitsCollection
+        {
+            get => hitsCollection;
+            private set
             {
-                return HitsList.Select(x => x.ConfigName).Distinct().ToList();
+                hitsCollection = value;
+                OnPropertyChanged();
             }
         }
 
-        public int Total { get { return HitsList.Count; } }
+        public int Total => HitsCollection.Count;
 
-        private string searchString = "";
-        public string SearchString { get { return searchString; } set { searchString = value; OnPropertyChanged("SearchString"); CollectionViewSource.GetDefaultView(HitsList).Refresh(); OnPropertyChanged("FilteredCount"); } }
-
-        private string typeFilter = "SUCCESS";
-        public string TypeFilter { get { return typeFilter; } set { typeFilter = value; OnPropertyChanged("TypeFilter"); CollectionViewSource.GetDefaultView(HitsList).Refresh(); OnPropertyChanged("FilteredCount"); } }
-
-        private string configFilter = "All";
-        public string ConfigFilter { get { return configFilter; } set { configFilter = value; OnPropertyChanged("ConfigFilter"); CollectionViewSource.GetDefaultView(HitsList).Refresh(); OnPropertyChanged("FilteredCount"); } }
+        public IEnumerable<Hit> Hits => HitsCollection;
 
         public HitsDBViewModel()
         {
-            HitsList = new ObservableCollection<Hit>();
+            _repo = new LiteDBRepository<Hit>(OB.dataBaseFile, "hits");
+            HitsCollection = new ObservableCollection<Hit>();
 
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(HitsList);
             HookFilters();
         }
 
-        public int FilteredCount { get { return HitsList.Where(h => HitsFilter(h)).Count(); } }
+        #region Filters
+        public static readonly string defaultFilter = "All";
+
+        public List<string> ConfigsList => HitsCollection.Select(x => x.ConfigName).Distinct().ToList();
+
+        private string searchString = "";
+        public string SearchString
+        {
+            get
+            {
+                return searchString;
+            }
+            set
+            {
+                searchString = value;
+                OnPropertyChanged();
+                CollectionViewSource.GetDefaultView(HitsCollection).Refresh();
+                OnPropertyChanged(nameof(Filtered));
+            }
+        }
+
+        private string typeFilter = "SUCCESS";
+        public string TypeFilter
+        {
+            get
+            {
+                return typeFilter;
+            }
+            set
+            {
+                typeFilter = value;
+                OnPropertyChanged();
+                CollectionViewSource.GetDefaultView(HitsCollection).Refresh();
+                OnPropertyChanged(nameof(Filtered));
+            }
+        }
+
+        private string configFilter = defaultFilter;
+        public string ConfigFilter
+        {
+            get
+            {
+                return configFilter;
+            }
+            set
+            {
+                configFilter = value;
+                OnPropertyChanged();
+                CollectionViewSource.GetDefaultView(HitsCollection).Refresh();
+                OnPropertyChanged(nameof(Filtered));
+            }
+        }
+
+        public int Filtered => HitsCollection.Count(h => HitsFilter(h));
 
         public void HookFilters()
         {
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(HitsList);
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(HitsCollection);
             view.Filter = HitsFilter;
         }
 
@@ -52,7 +107,7 @@ namespace OpenBullet.ViewModels
             if ((item as Hit).Type != TypeFilter)
                 return false;
 
-            if (ConfigFilter != "All" && (item as Hit).ConfigName != ConfigFilter)
+            if (ConfigFilter != defaultFilter && (item as Hit).ConfigName != ConfigFilter)
                 return false;
             
             if(!string.IsNullOrEmpty(SearchString))
@@ -60,18 +115,78 @@ namespace OpenBullet.ViewModels
 
             return true;
         }
+        #endregion
 
+        #region CRUD Operations
+        // Create
+        public void Add(Hit hit)
+        {
+            HitsCollection.Add(hit);
+            _repo.Add(hit);
+        }
+
+        // Read
         public void RefreshList()
         {
-            using (var db = new LiteDatabase(Globals.dataBaseFile))
-            {
-                HitsList = new ObservableCollection<Hit>(db.GetCollection<Hit>("hits").FindAll());
-            }
+            HitsCollection = new ObservableCollection<Hit>(_repo.Get());
 
             HookFilters();
 
-            OnPropertyChanged("Total");
-            OnPropertyChanged("HitsCount");
+            OnPropertyChanged(nameof(Total));
         }
+
+        // Update
+        public void Update(Hit hit)
+        {
+            _repo.Update(hit);
+        }
+
+        // Delete
+        public void Remove(Hit hit)
+        {
+            HitsCollection.Remove(hit);
+            _repo.Remove(hit);
+        }
+
+        public void Remove(IEnumerable<Hit> hits)
+        {
+            var toRemove = hits.ToArray();
+            foreach (var hit in toRemove)
+            {
+                HitsCollection.Remove(hit);
+            }
+
+            _repo.Remove(toRemove);
+        }
+
+        public void RemoveAll()
+        {
+            HitsCollection.Clear();
+            _repo.RemoveAll();
+        }
+        #endregion
+
+        #region Delete methods
+        public void DeleteDuplicates()
+        {
+            var duplicates = HitsCollection
+                    .GroupBy(h => h.GetHashCode())
+                    .Where(g => g.Count() > 1)
+                    .SelectMany(g => g.OrderBy(h => h.Date)
+                    .Reverse().Skip(1)).ToList();
+
+            Remove(duplicates);
+        }
+
+        public void DeleteFiltered()
+        {
+            var filtered = HitsCollection.Where(h =>
+                    (string.IsNullOrEmpty(SearchString) ? true : h.CapturedString.ToLower().Contains(SearchString.ToLower())) &&
+                    (ConfigFilter == "All" ? true : h.ConfigName == ConfigFilter) &&
+                    h.Type == TypeFilter).ToList();
+
+            Remove(filtered);
+        }
+        #endregion
     }
 }

@@ -27,13 +27,13 @@ namespace RuriLib.Utils.Parsing
         public static IEnumerable<string> LR(string input, string left, string right, bool recursive = false, bool useRegex = false)
         {
             // No L and R = return full input
-            if (left == "" && right == "")
+            if (left == string.Empty && right == string.Empty)
             {
                 return new string[] { input };
             }
 
             // L or R not present and not empty = return nothing
-            else if (((left != "" && !input.Contains(left)) || (right != "" && !input.Contains(right))))
+            else if (((left != string.Empty && !input.Contains(left)) || (right != string.Empty && !input.Contains(right))))
             {
                 return new string[] { };
             }
@@ -60,14 +60,14 @@ namespace RuriLib.Utils.Parsing
                 {
                     try
                     {
-                        while (left == "" || (partial.Contains(left)) && (right == "" || partial.Contains(right)))
+                        while (left == string.Empty || (partial.Contains(left)) && (right == string.Empty || partial.Contains(right)))
                         {
                             // Search for left delimiter and Calculate offset
-                            pFrom = left == "" ? 0 : partial.IndexOf(left) + left.Length;
+                            pFrom = left == string.Empty ? 0 : partial.IndexOf(left) + left.Length;
                             // Move right of offset
                             partial = partial.Substring(pFrom);
                             // Search for right delimiter and Calculate length to parse
-                            pTo = right == "" ? (partial.Length - 1) : partial.IndexOf(right);
+                            pTo = right == string.Empty ? (partial.Length - 1) : partial.IndexOf(right);
                             // Parse it
                             var parsed = partial.Substring(0, pTo);
                             list.Add(parsed);
@@ -92,9 +92,9 @@ namespace RuriLib.Utils.Parsing
                 {
                     try
                     {
-                        pFrom = left == "" ? 0 : partial.IndexOf(left) + left.Length;
+                        pFrom = left == string.Empty ? 0 : partial.IndexOf(left) + left.Length;
                         partial = partial.Substring(pFrom);
-                        pTo = right == "" ? partial.Length : partial.IndexOf(right);
+                        pTo = right == string.Empty ? partial.Length : partial.IndexOf(right);
                         list.Add(partial.Substring(0, pTo));
                     }
                     catch { }
