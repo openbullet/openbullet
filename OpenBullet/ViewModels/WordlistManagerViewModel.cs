@@ -83,8 +83,10 @@ namespace OpenBullet.ViewModels
         #region Delete methods
         public void DeleteNotFound()
         {
-            foreach (var wordlist in WordlistsCollection)
+            for (var i = 0; i < WordlistsCollection.Count; i++)
             {
+                var wordlist = WordlistsCollection[i];
+
                 if (!File.Exists(wordlist.Path))
                 {
                     Remove(wordlist);
