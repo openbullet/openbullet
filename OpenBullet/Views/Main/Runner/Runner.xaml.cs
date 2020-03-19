@@ -58,7 +58,7 @@ namespace OpenBullet.Views.Main.Runner
             {
                 OB.Logger.LogInfo(Components.About, "Changed the Runner interface");
                 Grid.SetColumn(rightGrid, 0);
-                Grid.SetRow(rightGrid, 1);
+                Grid.SetRow(rightGrid, 2);
                 Grid.SetColumn(bottomLeftGrid, 2);
                 Grid.SetRow(bottomLeftGrid, 0);
             }
