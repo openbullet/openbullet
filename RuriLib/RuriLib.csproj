@@ -49,6 +49,9 @@
     <Reference Include="CloudflareSolverRe.Captcha">
       <HintPath>..\CloudflareSolverRe.Captcha.dll</HintPath>
     </Reference>
+    <Reference Include="Esprima, Version=1.0.1258.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Esprima.1.0.1258\lib\net45\Esprima.dll</HintPath>
+    </Reference>
     <Reference Include="Extreme.Net, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Extreme.Net.dll</HintPath>
@@ -66,7 +69,7 @@
       <HintPath>..\packages\IronPython.2.7.9\lib\net45\IronPython.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Jint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jint.2.11.58\lib\net451\Jint.dll</HintPath>
+      <HintPath>..\packages\Jint.3.0.0-beta-1715\lib\net45\Jint.dll</HintPath>
     </Reference>
     <Reference Include="LiteDB, Version=4.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
       <HintPath>..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
