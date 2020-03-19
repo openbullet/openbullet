@@ -280,6 +280,7 @@ namespace OpenBullet.Views.Main
             var wordlist = new Wordlist(partialName, "NULL", OB.Settings.Environment.RecognizeWordlistType(first.Data), "", true, true);
 
             var manager = OB.RunnerManager;
+            manager.Create();
             var page = manager.RunnersCollection.Last().View;
             var runner = manager.RunnersCollection.Last().ViewModel;
             OB.MainWindow.ShowRunner(page);
