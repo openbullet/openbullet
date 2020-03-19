@@ -433,10 +433,10 @@ namespace RuriLib
 
             try
             {
+                var replacedInput = ReplaceValues(inputString, data);
                 switch (group)
                 {
                     case UtilityGroup.List:
-
                         var list = data.Variables.GetList(listName);
                         var list2 = data.Variables.GetList(secondListName);
                         var item = ReplaceValues(listItem, data);
@@ -532,7 +532,7 @@ namespace RuriLib
                             default:
                                 break;
                         }
-                        data.Log(new LogEntry($"Executed action {listAction} on file {listName}", Colors.White));
+                        data.Log(new LogEntry($"Executed action {listAction} on file {listName}", isCapture ? Colors.Tomato : Colors.Yellow));
                         break;
 
                     case UtilityGroup.Variable:
@@ -544,19 +544,18 @@ namespace RuriLib
                                 data.Variables.Set(new CVar(variableName, single.Split(new string[] { ReplaceValues(splitSeparator, data) }, StringSplitOptions.None).ToList(), isCapture));
                                 break;
                         }
-                        data.Log(new LogEntry($"Executed action {varAction} on variable {varName}", Colors.White));
+                        data.Log(new LogEntry($"Executed action {varAction} on variable {varName}", isCapture ? Colors.Tomato : Colors.Yellow));
                         break;
 
                     case UtilityGroup.Conversion:
-                        byte[] convertedBytes = ReplaceValues(inputString, data).ConvertFrom(conversionFrom);
-                        data.Variables.Set(new CVar(variableName, convertedBytes.ConvertTo(conversionTo), isCapture));
-                        data.Log(new LogEntry($"Converted input {conversionFrom} to {conversionTo}", Colors.White));
+                        byte[] conversionInputBytes = replacedInput.ConvertFrom(conversionFrom);
+                        var conversionResult = conversionInputBytes.ConvertTo(conversionTo);
+                        data.Variables.Set(new CVar(variableName, conversionResult, isCapture));
+                        data.Log(new LogEntry($"Executed conversion {conversionFrom} to {conversionTo} on input {replacedInput} with outcome {conversionResult}", isCapture ? Colors.Tomato : Colors.Yellow));
                         break;
 
                     case UtilityGroup.File:
                         var file = ReplaceValues(filePath, data);
-                        var input = ReplaceValues(inputString, data).Replace("\\r\\n", "\r\n").Replace("\\n", "\n");
-                        var inputs = ReplaceValuesRecursive(inputString, data).Select(i => i.Replace("\\r\\n", "\r\n").Replace("\\n", "\n"));
                         switch (fileAction)
                         {
                             case FileAction.Read:
@@ -568,22 +567,22 @@ namespace RuriLib
                                 break;
 
                             case FileAction.Write:
-                                File.WriteAllText(file, input);
+                                File.WriteAllText(file, replacedInput.Unescape());
                                 break;
 
                             case FileAction.WriteLines:
-                                File.WriteAllLines(file, inputs);
+                                File.WriteAllLines(file, ReplaceValuesRecursive(inputString, data).Select(i => i.Unescape()));
                                 break;
 
                             case FileAction.Append:
-                                File.AppendAllText(file, input);
+                                File.AppendAllText(file, replacedInput.Unescape());
                                 break;
 
                             case FileAction.AppendLines:
-                                File.AppendAllLines(file, inputs);
+                                File.AppendAllLines(file, ReplaceValuesRecursive(inputString, data).Select(i => i.Unescape()));
                                 break;
                         }
-                        data.Log(new LogEntry($"Executed action {fileAction} on file {file}", Colors.White));
+                        data.Log(new LogEntry($"Executed action {fileAction} on file {file}", isCapture ? Colors.Tomato : Colors.Yellow));
                         break;
 
                     default:
