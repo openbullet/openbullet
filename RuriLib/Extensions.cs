@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace RuriLib
@@ -27,6 +28,33 @@ namespace RuriLib
                 list[k] = list[n];
                 list[n] = value;
             }
+        }
+    }
+
+    /// <summary>
+    /// Extension methods for strings.
+    /// </summary>
+    public static class StringExtensions
+    {
+        /// <summary>
+        /// Replaces literal values of \n, \r\n and \t with the actual escape codes.
+        /// </summary>
+        /// <param name="str">The string to unescape</param>
+        /// <param name="useEnvNewLine">Whether to unescape both \n and \r\n with the Environment.NewLine</param>
+        /// <returns>The string with unescaped escape sequences.</returns>
+        public static string Unescape(this string str, bool useEnvNewLine = false)
+        {
+            // Unescape only \n etc. not \\n
+            str = Regex.Replace(str, @"(?<!\\)\\r\\n", useEnvNewLine ? Environment.NewLine : "\r\n");
+            str = Regex.Replace(str, @"(?<!\\)\\n", useEnvNewLine ? Environment.NewLine : "\n");
+            str = Regex.Replace(str, @"(?<!\\)\\t", "\t");
+
+            // Replace \\n with \n
+            return new StringBuilder(str)
+                .Replace(@"\\r\\n", @"\r\n")
+                .Replace(@"\\n", @"\n")
+                .Replace(@"\\t", @"\t")
+                .ToString();
         }
     }
 }
