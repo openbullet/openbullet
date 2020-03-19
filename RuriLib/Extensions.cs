@@ -29,4 +29,37 @@ namespace RuriLib
             }
         }
     }
+
+    /// <summary>
+    /// Extension methods for strings.
+    /// </summary>
+    public static class StringExtensions
+    {
+        /// <summary>
+        /// Replaces literal values of \n, \r\n and \t with the actual escape codes.
+        /// </summary>
+        /// <param name="str">The string to unescape</param>
+        /// <param name="useEnvNewLine">Whether to unescape both \n and \r\n with the Environment.NewLine</param>
+        /// <returns>The string with unescaped escape sequences.</returns>
+        public static string Unescape(this string str, bool useEnvNewLine = false)
+        {
+            var stringBuilder = new StringBuilder(str)
+                .Replace(@"\t", "\t");
+
+            if (useEnvNewLine)
+            {
+                stringBuilder
+                    .Replace(@"\n", Environment.NewLine)
+                    .Replace(@"\r\n", Environment.NewLine);
+            }
+            else
+            {
+                stringBuilder
+                    .Replace(@"\n", "\n")
+                    .Replace(@"\r\n", "\r\n");
+            }
+
+            return stringBuilder.ToString();
+        }
+    }
 }

@@ -74,7 +74,7 @@ namespace RuriLib.Functions.Requests
             HttpMethod method = HttpMethod.POST, bool encodeContent = false, List<LogEntry> log = null)
         {
             this.contentType = contentType;
-            var pData = Regex.Replace(postData, @"(?<!\\)\\n", Environment.NewLine).Replace(@"\\n", @"\n");
+            var pData = Regex.Replace(postData, @"(?<!\\)\\n", Environment.NewLine).Unescape();
 
             if (HttpRequest.CanContainRequestBody(method))
             {
@@ -136,7 +136,7 @@ namespace RuriLib.Functions.Requests
                 if (c.Type == MultipartContentType.String)
                 {
                     mContent.Add(new StringContent(c.Value), c.Name);
-                    if (log != null) log.Add(new LogEntry($"Content-Disposition: form-data; name=\"{c.Name}\"{Environment.NewLine}{Environment.NewLine}{c.Value}", Colors.MediumTurquoise));
+                    if (log != null) log.Add(new LogEntry($"Content-Disposition: form-data; name=\"{c.Name}\"{Environment.NewLine}{Environment.NewLine}{c.Value.Unescape()}", Colors.MediumTurquoise));
                 }
                 else if (c.Type == MultipartContentType.File)
                 {
