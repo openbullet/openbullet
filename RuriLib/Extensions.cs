@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace RuriLib
@@ -43,23 +44,17 @@ namespace RuriLib
         /// <returns>The string with unescaped escape sequences.</returns>
         public static string Unescape(this string str, bool useEnvNewLine = false)
         {
-            var stringBuilder = new StringBuilder(str)
-                .Replace(@"\t", "\t");
+            // Unescape only \n etc. not \\n
+            str = Regex.Replace(str, @"(?<!\\)\\r\\n", useEnvNewLine ? Environment.NewLine : "\r\n");
+            str = Regex.Replace(str, @"(?<!\\)\\n", useEnvNewLine ? Environment.NewLine : "\n");
+            str = Regex.Replace(str, @"(?<!\\)\\t", "\t");
 
-            if (useEnvNewLine)
-            {
-                stringBuilder
-                    .Replace(@"\n", Environment.NewLine)
-                    .Replace(@"\r\n", Environment.NewLine);
-            }
-            else
-            {
-                stringBuilder
-                    .Replace(@"\n", "\n")
-                    .Replace(@"\r\n", "\r\n");
-            }
-
-            return stringBuilder.ToString();
+            // Replace \\n with \n
+            return new StringBuilder(str)
+                .Replace(@"\\r\\n", @"\r\n")
+                .Replace(@"\\n", @"\n")
+                .Replace(@"\\t", @"\t")
+                .ToString();
         }
     }
 }

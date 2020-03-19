@@ -135,7 +135,7 @@ namespace RuriLib.Functions.Requests
             {
                 if (c.Type == MultipartContentType.String)
                 {
-                    mContent.Add(new StringContent(c.Value), c.Name);
+                    mContent.Add(new StringContent(c.Value.Unescape()), c.Name);
                     if (log != null) log.Add(new LogEntry($"Content-Disposition: form-data; name=\"{c.Name}\"{Environment.NewLine}{Environment.NewLine}{c.Value.Unescape()}", Colors.MediumTurquoise));
                 }
                 else if (c.Type == MultipartContentType.File)
