@@ -501,7 +501,7 @@ namespace RuriLib.LS
                                         break;
 
                                     default:
-                                        jsengine.SetValue(variable.Name, variable.Value);
+                                        jsengine.SetValue(variable.Name, variable.Value.ToString());
                                         break;
                                 }
                             }
