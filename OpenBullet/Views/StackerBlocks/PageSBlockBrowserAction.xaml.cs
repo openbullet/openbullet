@@ -35,7 +35,7 @@ namespace OpenBullet.Views.StackerBlocks
             { "Open", "Opens the browser assigned to the current bot. This will be disregarded if the browser is already opened." },
             { "Close", "Closes the current tab without disposing of the webdriver (not recommended)." },
             { "Quit", "Quits all the tabs and windows and disposes of the webdriver (recommended)." },
-            { "SendKeys", "Sends the keys directly to the browser as if you were typing them on your keyboard. You can use variables and <TAB> <ENTER> and <BACKSPACE> separated by || e.g. <USER>||<TAB>||<PASS>||<TAB>||<ENTER>." },
+            { "SendKeys", "Sends the keys directly to the browser as if you were typing them on your keyboard. You can use variables and <TAB> <ENTER> and <BACKSPACE> separated by || e.g. <USER>||<TAB>||<PASS>||<TAB>||<ENTER>. If you need other keys look here https://github.com/SeleniumHQ/selenium/blob/master/dotnet/src/webdriver/Keys.cs" },
             { "MoveMouse", "Not Implemented Yet" },
             { "Screenshot", "Takes a screenshot of the visible part of the page." },
             { "Scroll", "Scrolls down by the specified amount in the input field." },
