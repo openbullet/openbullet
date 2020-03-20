@@ -5,6 +5,8 @@
 
 Link to the [Official Forum](https://forum.openbullet.dev/)
 
+**NEW!** The Plugin System was released with version 1.2.0. You can find a [sample Plugin](https://github.com/openbullet/openbullet-plugin) with fully documented code that you can use as a basis to develop your own plugins!
+
 - - - -
 
 OpenBullet is a webtesting suite that allows to perform requests towards a target webapp and offers a lot of tools to work with the results. This software can be used for **scraping** and **parsing data**, automated **pentesting**, unit testing through **selenium** and much more.
