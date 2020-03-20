@@ -90,6 +90,7 @@ namespace OpenBullet.ViewModels
                 if (!File.Exists(wordlist.Path))
                 {
                     Remove(wordlist);
+                    i--;
                 }
             }
         }
