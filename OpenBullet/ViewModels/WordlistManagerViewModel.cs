@@ -42,6 +42,20 @@ namespace OpenBullet.ViewModels
             return WordlistsCollection.Where(x => x.Name == name).First();
         }
 
+        public static Wordlist FileToWordlist(string path)
+        {
+            // Build the wordlist object
+            var wordlist = new Wordlist(Path.GetFileNameWithoutExtension(path), path, OB.Settings.Environment.WordlistTypes.First().Name, "");
+
+            // Get the first line
+            var first = File.ReadLines(wordlist.Path).First();
+
+            // Set the correct wordlist type
+            wordlist.Type = OB.Settings.Environment.RecognizeWordlistType(first);
+
+            return wordlist;
+        }
+
         #region CRUD Operations
         // Create
         public void Add(Wordlist wordlist)

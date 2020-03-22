@@ -7,6 +7,7 @@ using RuriLib.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 
 namespace OpenBullet.ViewModels
@@ -62,7 +63,7 @@ namespace OpenBullet.ViewModels
             {
                 Bots = r.BotsAmount,
                 Config = r.ConfigName,
-                Wordlist = r.WordlistName,
+                Wordlist = r.Wordlist.Path,
                 ProxyMode = r.ProxyMode
             }
             ));
@@ -88,8 +89,17 @@ namespace OpenBullet.ViewModels
 
                     instance.SetConfig(configVM.Config, false);
 
-                    var wordlist = OB.WordlistManager.Wordlists.FirstOrDefault(w => w.Name == r.Wordlist)
-                        ?? throw new Exception($"The Wordlist {r.Wordlist} was not found in the WordlistManager");
+                    // Try to get the Wordlist from the Manager
+                    var wordlist = OB.WordlistManager.Wordlists.FirstOrDefault(w => w.Path == r.Wordlist);
+
+                    // If not found, try to get it from disk
+                    if (wordlist == null)
+                    {
+                        if (!File.Exists(r.Wordlist))
+                            throw new Exception($"The Wordlist {r.Wordlist} was not found in the WordlistManager or on Disk");
+
+                        wordlist = WordlistManagerViewModel.FileToWordlist(r.Wordlist);
+                    }
 
                     instance.SetWordlist(wordlist);
                 }
