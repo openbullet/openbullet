@@ -29,8 +29,6 @@ namespace OpenBullet.Views.Main
             DataContext = vm;
 
             InitializeComponent();
-
-            vm.RefreshList();
         }
 
         public void AddWordlist(Wordlist wordlist)

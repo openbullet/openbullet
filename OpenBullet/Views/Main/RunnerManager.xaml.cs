@@ -24,24 +24,18 @@ namespace OpenBullet.Views.Main
             StartRunner?.Invoke(this, EventArgs.Empty);
         }
 
-        public RunnerManager(bool createFirst)
+        public RunnerManager()
         {
             vm = OB.RunnerManager;
             DataContext = vm;
 
             InitializeComponent();
-
-            if (createFirst)
-            {
-                addRunnerButton_Click(this, null);
-            }
         }
 
         #region Buttons
         private void addRunnerButton_Click(object sender, RoutedEventArgs e)
         {
             vm.Create();
-            helpMessageLabel.Visibility = Visibility.Collapsed;
         }
 
         private void removeRunnerButton_Click(object sender, RoutedEventArgs e)

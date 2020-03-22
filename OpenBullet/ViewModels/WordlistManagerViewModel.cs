@@ -34,6 +34,7 @@ namespace OpenBullet.ViewModels
         {
             _repo = new LiteDBRepository<Wordlist>(OB.dataBaseFile, "wordlists");
             WordlistsCollection = new ObservableCollection<Wordlist>();
+            RefreshList();
         }
 
         public Wordlist GetWordlistByName(string name)

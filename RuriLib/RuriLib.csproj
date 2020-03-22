@@ -285,6 +285,7 @@
     <Compile Include="Models\DataPool.cs" />
     <Compile Include="Models\Persistable.cs" />
     <Compile Include="Models\ProxyResult.cs" />
+    <Compile Include="Models\RunnerSessionData.cs" />
     <Compile Include="Models\Stats\ProxyManagerStats.cs" />
     <Compile Include="Models\ProxyPool.cs" />
     <Compile Include="Models\RemoteProxySource.cs" />
