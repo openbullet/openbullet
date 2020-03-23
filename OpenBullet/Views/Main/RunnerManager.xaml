@@ -14,11 +14,6 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="helpMessageLabel" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25" FontWeight="Bold" Foreground="{DynamicResource ForegroundMain}" TextAlignment="Center" >
-            Welcome to Open Bullet!<LineBreak/>
-            Create a Runner to get started.
-        </TextBlock>
-
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button x:Name="addRunnerButton" Click="addRunnerButton_Click">
                 <StackPanel Orientation="Horizontal">

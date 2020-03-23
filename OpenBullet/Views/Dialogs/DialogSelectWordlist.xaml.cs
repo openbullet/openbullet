@@ -1,4 +1,5 @@
-﻿using OpenBullet.Views.Main.Runner;
+﻿using OpenBullet.ViewModels;
+using OpenBullet.Views.Main.Runner;
 using OpenBullet.Views.UserControls;
 using RuriLib.Models;
 using System.ComponentModel;
@@ -80,17 +81,8 @@ namespace OpenBullet
             ofd.ShowDialog();
             try
             {
-                // Build the wordlist object
-                var wordlist = new Wordlist(Path.GetFileNameWithoutExtension(ofd.FileName), ofd.FileName, OB.Settings.Environment.WordlistTypes.First().Name, "");
-
-                // Get the first line
-                var first = File.ReadLines(wordlist.Path).First();
-
-                // Set the correct wordlist type
-                wordlist.Type = OB.Settings.Environment.RecognizeWordlistType(first);
-
                 // Add the wordlist to the runner
-                ((Runner)Caller).SetWordlist(wordlist);
+                ((Runner)Caller).SetWordlist(WordlistManagerViewModel.FileToWordlist(ofd.FileName));
 
                 ((MainDialog)Parent).Close();
             }

@@ -36,6 +36,7 @@ namespace OpenBullet
         private int snowBuffer = 0;
 
         public RunnerManager RunnerManagerPage { get; set; }
+        // TODO: Do not create a different View for each RunnerInstance, but instead just replace the vm!
         public Runner CurrentRunnerPage { get; set; }
         public ProxyManager ProxyManagerPage { get; set; }
         public WordlistManager WordlistManagerPage { get; set; }
@@ -196,9 +197,15 @@ namespace OpenBullet
             OB.HitsDB = new HitsDBViewModel();
 
             // Views
-            RunnerManagerPage = new RunnerManager(OB.OBSettings.General.AutoCreateRunner);
-            if (OB.OBSettings.General.AutoCreateRunner)
+            RunnerManagerPage = new RunnerManager();
+            
+            // If we create first runner and there was no session to restore
+            if (OB.OBSettings.General.AutoCreateRunner & !OB.RunnerManager.RestoreSession())
+            {
+                var firstRunner = OB.RunnerManager.Create();
                 CurrentRunnerPage = OB.RunnerManager.RunnersCollection.FirstOrDefault().View;
+            }
+                
             OB.Logger.LogInfo(Components.Main, "Initialized RunnerManager");
             ProxyManagerPage = new ProxyManager();
             OB.Logger.LogInfo(Components.Main, "Initialized ProxyManager");
@@ -410,6 +417,10 @@ namespace OpenBullet
                     "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                     return false;
             }
+            
+            OB.Logger.LogInfo(Components.Main, "Saving RunnerManager session to the database");
+            OB.RunnerManager.SaveSession();
+
             OB.Logger.LogInfo(Components.Main, "Quit sequence initiated");
             return true;
         }
