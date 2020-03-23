@@ -241,14 +241,21 @@ namespace RuriLib.Utils.Parsing
         /// <param name="pattern">The Regex pattern containing groups</param>
         /// <param name="output">The output format string, for which [0] will be replaced with the full match, [1] with the first group etc.</param>
         /// <param name="recursive">Whether to make multiple matches</param>
+        /// <param name="dotMatches">Whether Regex . matches over multiple lines</param>
+        /// <param name="caseSensitive">Whether Regex is case sensitive</param>
         /// <returns>The parsed string(s).</returns>
-        public static IEnumerable<string> REGEX(string input, string pattern, string output, bool recursive = false)
+        public static IEnumerable<string> REGEX(string input, string pattern, string output, bool recursive = false, bool dotMatches = false, bool caseSensitive = true)
         {
             var list = new List<string>();
+            RegexOptions options = new RegexOptions();
+            if (dotMatches)
+                options |= RegexOptions.Singleline;
+            if (caseSensitive == false)
+                options |= RegexOptions.IgnoreCase;
 
             if (recursive)
             {
-                var matches = Regex.Matches(input, pattern);
+                var matches = Regex.Matches(input, pattern, options);
                 foreach (Match match in matches)
                 {
                     var final = output;
@@ -258,7 +265,7 @@ namespace RuriLib.Utils.Parsing
             }
             else
             {
-                var match = Regex.Match(input, pattern);
+                var match = Regex.Match(input, pattern, options);
                 if (match.Success)
                 {
                     var final = output;
