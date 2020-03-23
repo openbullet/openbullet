@@ -69,8 +69,8 @@ namespace OpenBullet.ViewModels
                 .Select(r => new RunnerSessionData()
             {
                 Bots = r.BotsAmount,
-                Config = r.ConfigName,
-                Wordlist = r.Wordlist.Path,
+                Config = r.Config != null ? r.ConfigName : "",
+                Wordlist = r.Wordlist != null ? r.Wordlist.Path : "",
                 ProxyMode = r.ProxyMode
             }
             ));
