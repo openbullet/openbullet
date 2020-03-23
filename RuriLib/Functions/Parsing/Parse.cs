@@ -243,13 +243,14 @@ namespace RuriLib.Utils.Parsing
         /// <param name="recursive">Whether to make multiple matches</param>
         /// <param name="options">The Regex Options to use</param>
         /// <returns>The parsed string(s).</returns>
-        public static IEnumerable<string> REGEX(string input, string pattern, string output, RegexOptions options, bool recursive = false)
+        public static IEnumerable<string> REGEX(string input, string pattern, string output, bool recursive = false, RegexOptions? options = null)
         {
             var list = new List<string>();
+            if (!options.HasValue) options = new RegexOptions();
 
             if (recursive)
             {
-                var matches = Regex.Matches(input, pattern, options);
+                var matches = Regex.Matches(input, pattern, options.Value);
                 foreach (Match match in matches)
                 {
                     var final = output;
@@ -259,7 +260,7 @@ namespace RuriLib.Utils.Parsing
             }
             else
             {
-                var match = Regex.Match(input, pattern, options);
+                var match = Regex.Match(input, pattern, options.Value);
                 if (match.Success)
                 {
                     var final = output;

@@ -314,7 +314,7 @@ namespace RuriLib
                         regexOptions |= RegexOptions.Singleline;
                     if (caseSensitive == false)
                         regexOptions |= RegexOptions.IgnoreCase;
-                    list = Parse.REGEX(original, ReplaceValues(regexString, data), ReplaceValues(regexOutput, data), regexOptions, recursive).ToList();
+                    list = Parse.REGEX(original, ReplaceValues(regexString, data), ReplaceValues(regexOutput, data), recursive, regexOptions).ToList();
                     break;
             }
 
