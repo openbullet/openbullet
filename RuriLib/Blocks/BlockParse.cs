@@ -309,7 +309,12 @@ namespace RuriLib
                     throw new NotImplementedException("XPATH parsing is not implemented yet");
 
                 case ParseType.REGEX:
-                    list = Parse.REGEX(original, ReplaceValues(regexString, data), ReplaceValues(regexOutput, data), recursive, dotMatches, caseSensitive).ToList();
+                    RegexOptions regexOptions = new RegexOptions();
+                    if (dotMatches)
+                        regexOptions |= RegexOptions.Singleline;
+                    if (caseSensitive == false)
+                        regexOptions |= RegexOptions.IgnoreCase;
+                    list = Parse.REGEX(original, ReplaceValues(regexString, data), ReplaceValues(regexOutput, data), regexOptions, recursive).ToList();
                     break;
             }
 
