@@ -35,6 +35,8 @@ namespace OpenBullet.ViewModels
         public IRunner Create()
         {
             var instance = new RunnerInstance(rand.Next());
+            instance.ViewModel.ConfigChanged += OnRunnerSessionChanged;
+            instance.ViewModel.WordlistChanged += OnRunnerSessionChanged;
             RunnersCollection.Add(instance);
             return instance.ViewModel;
         }
@@ -52,6 +54,11 @@ namespace OpenBullet.ViewModels
         public void RemoveAll()
         {
             RunnersCollection.Clear();
+        }
+
+        public void OnRunnerSessionChanged(IRunnerMessaging obj)
+        {
+            SaveSession();
         }
 
         public void SaveSession()
