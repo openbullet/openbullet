@@ -148,6 +148,10 @@
                             <CheckBox Content="Encode Output" IsChecked="{Binding EncodeOutput}" VerticalContentAlignment="Center"/>
                             <CheckBox Content="Create Empty" IsChecked="{Binding CreateEmpty}" VerticalContentAlignment="Center"/>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Content="Dot Matches Line Breaks" IsChecked="{Binding DotMatches}" VerticalContentAlignment="Center"/>
+                            <CheckBox Content="Case Sensitive" IsChecked="{Binding CaseSensitive}" VerticalContentAlignment="Center"/>
+                        </StackPanel>
                     </StackPanel>
                 </TabItem>
             </TabControl>
