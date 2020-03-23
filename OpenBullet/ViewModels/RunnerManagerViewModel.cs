@@ -1,5 +1,7 @@
-﻿using OpenBullet.Repositories;
+﻿using LiteDB;
+using OpenBullet.Repositories;
 using OpenBullet.Views.Main.Runner;
+using RuriLib;
 using RuriLib.Interfaces;
 using RuriLib.Models;
 using RuriLib.Runner;
@@ -108,7 +110,11 @@ namespace OpenBullet.ViewModels
                         wordlist = WordlistManagerViewModel.FileToWordlist(r.Wordlist);
                     }
 
+                    // Set the Wordlist
                     instance.SetWordlist(wordlist);
+
+                    // Retrieve the record from the DB
+                    instance.StartingPoint = RetrieveRecord(configVM.Config, wordlist);
                 }
                 catch (Exception ex)
                 {
@@ -117,6 +123,44 @@ namespace OpenBullet.ViewModels
             }
 
             return true;
+        }
+
+        public int RetrieveRecord(Config config, Wordlist wordlist)
+        {
+            if (wordlist == null || config == null)
+            {
+                return 1;
+            }
+
+            using (var db = new LiteDatabase(OB.dataBaseFile))
+            {
+                var record = db.GetCollection<Record>("records").FindOne(r => r.ConfigName == config.Settings.Name && r.WordlistLocation == wordlist.Path);
+                if (record != null)
+                {
+                    return record.Checkpoint;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+        }
+
+        public void SaveRecord(Config config, Wordlist wordlist, int progress)
+        {
+            if (config == null || wordlist == null)
+            {
+                return;
+            }
+
+            using (var db = new LiteDatabase(OB.dataBaseFile))
+            {
+                var coll = db.GetCollection<Record>("records");
+                var record = new Record(config.Settings.Name, wordlist.Path, progress);
+
+                coll.Delete(r => r.ConfigName == config.Settings.Name && r.WordlistLocation == wordlist.Path);
+                coll.Insert(record);
+            }
         }
     }
 
