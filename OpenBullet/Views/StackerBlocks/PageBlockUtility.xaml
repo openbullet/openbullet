@@ -188,6 +188,7 @@
                         <TextBox Text="{Binding InputString, UpdateSourceTrigger=PropertyChanged}" />
                     </DockPanel>
                     <Label Foreground="{DynamicResource ForegroundCustom}" Content="Newline escape sequences will be evaluated. &quot;Lines&quot; accept LIST[*]." />
+                    <Label Foreground="{DynamicResource ForegroundCustom}" Content="On Copy and Move, Input String needs to be the destination file path." />
                 </StackPanel>
             </TabItem>
             <TabItem x:Name="folderTab">
