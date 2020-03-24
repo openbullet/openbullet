@@ -375,6 +375,16 @@ namespace RuriLib
                     DateFormat = LineParser.ParseLiteral(ref input, "DATE FORMAT");
                     break;
 
+                case Function.UnixTimeToDate:
+                    DateFormat = LineParser.ParseLiteral(ref input, "DATE FORMAT");
+                    // a little backward compatability with the old line format.
+                    if (LineParser.Lookahead(ref input) != TokenType.Literal)
+                    {
+                        InputString = DateFormat;
+                        DateFormat = "yyyy-MM-dd:HH-mm-ss";
+                    }
+                    break;
+
                 case Function.Replace:
                     ReplaceWhat = LineParser.ParseLiteral(ref input, "What");
                     ReplaceWith = LineParser.ParseLiteral(ref input, "With");
@@ -525,7 +535,12 @@ namespace RuriLib
 
                 case Function.DateToUnixTime:
                     writer
-                        .Literal(DateFormat, "DateFormat");
+                        .Literal(DateFormat, "DateFormat", true);
+                    break;
+
+                case Function.UnixTimeToDate:
+                    writer
+                        .Literal(DateFormat, "DateFormat", true);
                     break;
 
                 case Function.Replace:
@@ -718,7 +733,7 @@ namespace RuriLib
                         break;
 
                     case Function.UnixTimeToDate:
-                        outputString = double.Parse(localInputString).ToDateTime().ToShortDateString();
+                        outputString = double.Parse(localInputString).ToDateTime().ToString(dateFormat);
                         break;
 
                     case Function.CurrentUnixTime:

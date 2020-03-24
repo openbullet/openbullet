@@ -136,6 +136,10 @@ namespace OpenBullet.Views.StackerBlocks
                 case BlockFunction.Function.PBKDF2PKCS5:
                     functionTabControl.SelectedIndex = 15;
                     break;
+
+                case BlockFunction.Function.UnixTimeToDate:
+                    functionTabControl.SelectedIndex = 16;
+                    break;
             }
         }
 
