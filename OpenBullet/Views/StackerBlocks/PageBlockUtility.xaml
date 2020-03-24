@@ -183,7 +183,6 @@
                         <Label Content="Path:" DockPanel.Dock="Left"/>
                         <TextBox Text="{Binding FilePath, UpdateSourceTrigger=PropertyChanged}" />
                     </DockPanel>
-                    <Label Foreground="{DynamicResource ForegroundCustom}" Content="Path can be relative or absolute" />
                     <DockPanel>
                         <Label Content="Input String:" DockPanel.Dock="Left" />
                         <TextBox Text="{Binding InputString, UpdateSourceTrigger=PropertyChanged}" />
@@ -201,7 +200,6 @@
                         <Label Content="Path:" DockPanel.Dock="Left"/>
                         <TextBox Text="{Binding FolderPath, UpdateSourceTrigger=PropertyChanged}" />
                     </DockPanel>
-                    <Label Foreground="{DynamicResource ForegroundCustom}" Content="Path can be relative or absolute" />
                 </StackPanel>
             </TabItem>
         </TabControl>
