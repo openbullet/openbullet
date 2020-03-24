@@ -604,11 +604,7 @@ namespace RuriLib
 
                     case UtilityGroup.File:
                         var file = ReplaceValues(filePath, data);
-
-                        if (!file.IsSubPathOf(Directory.GetCurrentDirectory()))
-                        {
-                            throw new UnauthorizedAccessException("For security reasons, you cannot interact with paths outside of the current working directory");
-                        }
+                        ThrowIfNotInCWD(file);
 
                         switch (fileAction)
                         {
@@ -625,18 +621,12 @@ namespace RuriLib
                                 break;
 
                             case FileAction.Write:
-                                if (!Directory.Exists(Path.GetDirectoryName(file)))
-                                {
-                                    Directory.CreateDirectory(Path.GetDirectoryName(file));
-                                }
+                                CreatePath(file);
                                 File.WriteAllText(file, replacedInput.Unescape());
                                 break;
 
                             case FileAction.WriteLines:
-                                if (!Directory.Exists(Path.GetDirectoryName(file)))
-                                {
-                                    Directory.CreateDirectory(Path.GetDirectoryName(file));
-                                }
+                                CreatePath(file);
                                 File.WriteAllLines(file, ReplaceValuesRecursive(inputString, data).Select(i => i.Unescape()));
                                 break;
 
@@ -650,19 +640,15 @@ namespace RuriLib
 
                             case FileAction.Copy:
                                 var fileCopyLocation = ReplaceValues(inputString, data);
-                                if (!fileCopyLocation.IsSubPathOf(Directory.GetCurrentDirectory()))
-                                {
-                                    throw new UnauthorizedAccessException("For security reasons, you cannot interact with paths outside of the current working directory");
-                                }
+                                ThrowIfNotInCWD(fileCopyLocation);
+                                CreatePath(fileCopyLocation);
                                 File.Copy(file, fileCopyLocation);
                                 break;
 
                             case FileAction.Move:
                                 var fileMoveLocation = ReplaceValues(inputString, data);
-                                if (!fileMoveLocation.IsSubPathOf(Directory.GetCurrentDirectory()))
-                                {
-                                    throw new UnauthorizedAccessException("For security reasons, you cannot interact with paths outside of the current working directory");
-                                }
+                                ThrowIfNotInCWD(fileMoveLocation);
+                                CreatePath(fileMoveLocation);
                                 File.Move(file, fileMoveLocation);
                                 break;
                         }
@@ -671,11 +657,7 @@ namespace RuriLib
 
                     case UtilityGroup.Folder:
                         var folder = ReplaceValues(folderPath, data);
-
-                        if (!folder.IsSubPathOf(Directory.GetCurrentDirectory()))
-                        {
-                            throw new UnauthorizedAccessException("For security reasons, you cannot interact with paths outside of the current working directory");
-                        }
+                        ThrowIfNotInCWD(folder);
 
                         switch (folderAction)
                         {
@@ -695,6 +677,22 @@ namespace RuriLib
                 }
             }
             catch(Exception ex) { data.Log(new LogEntry(ex.Message, Colors.Tomato)); }
+        }
+
+        private void ThrowIfNotInCWD(string path)
+        {
+            if (!path.IsSubPathOf(Directory.GetCurrentDirectory()))
+            {
+                throw new UnauthorizedAccessException("For security reasons, you cannot interact with paths outside of the current working directory");
+            }
+        }
+
+        private void CreatePath(string file)
+        {
+            if (!Directory.Exists(Path.GetDirectoryName(file)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(file));
+            }
         }
     }
 }
