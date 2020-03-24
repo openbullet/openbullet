@@ -191,6 +191,19 @@
                     <Label Foreground="{DynamicResource ForegroundCustom}" Content="Newline escape sequences will be evaluated. &quot;Lines&quot; accept LIST[*]." />
                 </StackPanel>
             </TabItem>
+            <TabItem x:Name="folderTab">
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Action:" DockPanel.Dock="Left" />
+                        <ComboBox x:Name="folderActionCombobox" SelectionChanged="folderActionCombobox_SelectionChanged" />
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Path:" DockPanel.Dock="Left"/>
+                        <TextBox Text="{Binding FolderPath, UpdateSourceTrigger=PropertyChanged}" />
+                    </DockPanel>
+                    <Label Foreground="{DynamicResource ForegroundCustom}" Content="Path can be relative or absolute" />
+                </StackPanel>
+            </TabItem>
         </TabControl>
     </Grid>
 </Page>
