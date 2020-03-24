@@ -28,7 +28,10 @@ namespace RuriLib
         Conversion,
 
         /// <summary>The group of actions that interact with files.</summary>
-        File
+        File,
+
+        /// <summary>The group of actions that interact with folders.</summary>
+        Folder
     }
 
     /// <summary>
@@ -90,6 +93,9 @@ namespace RuriLib
     /// </summary>
     public enum FileAction
     {
+        /// <summary>Checks if a file exists.</summary>
+        Exists,
+
         /// <summary>Reads a file to a single variable.</summary>
         Read,
 
@@ -106,7 +112,25 @@ namespace RuriLib
         Append,
 
         /// <summary>Appends a list variable to a file.</summary>
-        AppendLines
+        AppendLines,
+
+        /// <summary>Copies a file to a new file.</summary>
+        Copy,
+
+        /// <summary>Moves a file to a different location.</summary>
+        Move
+    }
+
+    /// <summary>
+    /// Actions that can be performed on folders.
+    /// </summary>
+    public enum FolderAction
+    {
+        /// <summary>Checks if a folder exists.</summary>
+        Exists,
+
+        /// <summary>Creates a folder.</summary>
+        Create
     }
 
     /// <summary>
@@ -200,12 +224,21 @@ namespace RuriLib
 
         // Files
         private string filePath = "test.txt";
-        /// <summary>The path to the file to read/write.</summary>
+        /// <summary>The path to the file to interact with.</summary>
         public string FilePath { get { return filePath; } set { filePath = value; OnPropertyChanged(); } }
 
         private FileAction fileAction = FileAction.Read;
         /// <summary>The action to be performed on the file.</summary>
         public FileAction FileAction { get { return fileAction; } set { fileAction = value; OnPropertyChanged(); } }
+
+        // Folders
+        private string folderPath = "TestFolder";
+        /// <summary>The path to the folder to interact with.</summary>
+        public string FolderPath { get { return folderPath; } set { folderPath = value; OnPropertyChanged(); } }
+
+        private FolderAction folderAction = FolderAction.Create;
+        /// <summary>The action to be performed on the folder.</summary>
+        public FolderAction FolderAction { get { return folderAction; } set { folderAction = value; OnPropertyChanged(); } }
 
         /// <summary>
         /// Creates a Utility block.
@@ -297,9 +330,16 @@ namespace RuriLib
                         case FileAction.WriteLines:
                         case FileAction.Append:
                         case FileAction.AppendLines:
+                        case FileAction.Copy:
+                        case FileAction.Move:
                             InputString = LineParser.ParseLiteral(ref input, "Input String");
                             break;
                     }
+                    break;
+
+                case UtilityGroup.Folder:
+                    FolderPath = LineParser.ParseLiteral(ref input, "Folder Name");
+                    FolderAction = (FolderAction)LineParser.ParseEnum(ref input, "Folder Action", typeof(FolderAction));
                     break;
             }
 
@@ -410,10 +450,18 @@ namespace RuriLib
                         case FileAction.WriteLines:
                         case FileAction.Append:
                         case FileAction.AppendLines:
+                        case FileAction.Copy:
+                        case FileAction.Move:
                             writer
                                 .Literal(InputString);
                             break;
                     }
+                    break;
+
+                case UtilityGroup.Folder:
+                    writer
+                        .Literal(FolderPath)
+                        .Token(FolderAction);
                     break;
             }
 
@@ -556,8 +604,14 @@ namespace RuriLib
 
                     case UtilityGroup.File:
                         var file = ReplaceValues(filePath, data);
+                        ThrowIfNotInCWD(file);
+
                         switch (fileAction)
                         {
+                            case FileAction.Exists:
+                                data.Variables.Set(new CVar(variableName, File.Exists(file).ToString(), isCapture));
+                                break;
+
                             case FileAction.Read:
                                 data.Variables.Set(new CVar(variableName, File.ReadAllText(file), isCapture));
                                 break;
@@ -567,10 +621,12 @@ namespace RuriLib
                                 break;
 
                             case FileAction.Write:
+                                CreatePath(file);
                                 File.WriteAllText(file, replacedInput.Unescape());
                                 break;
 
                             case FileAction.WriteLines:
+                                CreatePath(file);
                                 File.WriteAllLines(file, ReplaceValuesRecursive(inputString, data).Select(i => i.Unescape()));
                                 break;
 
@@ -581,8 +637,39 @@ namespace RuriLib
                             case FileAction.AppendLines:
                                 File.AppendAllLines(file, ReplaceValuesRecursive(inputString, data).Select(i => i.Unescape()));
                                 break;
+
+                            case FileAction.Copy:
+                                var fileCopyLocation = ReplaceValues(inputString, data);
+                                ThrowIfNotInCWD(fileCopyLocation);
+                                CreatePath(fileCopyLocation);
+                                File.Copy(file, fileCopyLocation);
+                                break;
+
+                            case FileAction.Move:
+                                var fileMoveLocation = ReplaceValues(inputString, data);
+                                ThrowIfNotInCWD(fileMoveLocation);
+                                CreatePath(fileMoveLocation);
+                                File.Move(file, fileMoveLocation);
+                                break;
                         }
                         data.Log(new LogEntry($"Executed action {fileAction} on file {file}", isCapture ? Colors.Tomato : Colors.Yellow));
+                        break;
+
+                    case UtilityGroup.Folder:
+                        var folder = ReplaceValues(folderPath, data);
+                        ThrowIfNotInCWD(folder);
+
+                        switch (folderAction)
+                        {
+                            case FolderAction.Exists:
+                                data.Variables.Set(new CVar(variableName, Directory.Exists(folder).ToString(), isCapture));
+                                break;
+
+                            case FolderAction.Create:
+                                data.Variables.Set(new CVar(variableName, Directory.CreateDirectory(folder).ToString(), isCapture));
+                                break;
+                        }
+                        data.Log(new LogEntry($"Executed action {folderAction} on folder {folder}", isCapture ? Colors.Tomato : Colors.Yellow));
                         break;
 
                     default:
@@ -590,6 +677,22 @@ namespace RuriLib
                 }
             }
             catch(Exception ex) { data.Log(new LogEntry(ex.Message, Colors.Tomato)); }
+        }
+
+        private void ThrowIfNotInCWD(string path)
+        {
+            if (!path.IsSubPathOf(Directory.GetCurrentDirectory()))
+            {
+                throw new UnauthorizedAccessException("For security reasons, you cannot interact with paths outside of the current working directory");
+            }
+        }
+
+        private void CreatePath(string file)
+        {
+            if (!Directory.Exists(Path.GetDirectoryName(file)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(file));
+            }
         }
     }
 }
