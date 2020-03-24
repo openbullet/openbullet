@@ -625,10 +625,18 @@ namespace RuriLib
                                 break;
 
                             case FileAction.Write:
+                                if (!Directory.Exists(Path.GetDirectoryName(file)))
+                                {
+                                    Directory.CreateDirectory(Path.GetDirectoryName(file));
+                                }
                                 File.WriteAllText(file, replacedInput.Unescape());
                                 break;
 
                             case FileAction.WriteLines:
+                                if (!Directory.Exists(Path.GetDirectoryName(file)))
+                                {
+                                    Directory.CreateDirectory(Path.GetDirectoryName(file));
+                                }
                                 File.WriteAllLines(file, ReplaceValuesRecursive(inputString, data).Select(i => i.Unescape()));
                                 break;
 
