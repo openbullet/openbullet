@@ -63,10 +63,11 @@ namespace RuriLib.LS
         /// </summary>
         /// <param name="literal">The literal value to write</param>
         /// <param name="property">The name of the property of the block. If the value is the default one, it will not be written. Do not set this parameter to always write the variable.</param>
+        /// <param name="alwaysWrite">Always write the value even if that value is default</param>
         /// <returns>The BlockWriter itself</returns>
-        public BlockWriter Literal(string literal, string property = "")
+        public BlockWriter Literal(string literal, string property = "", bool alwaysWrite = false)
         {
-            if (property != string.Empty && CheckDefault(literal, property)) return this;
+            if (property != string.Empty && (!alwaysWrite && CheckDefault(literal, property))) return this;
             Write($"\"{literal.Replace("\\", "\\\\").Replace("\"", "\\\"")}\" ");
             return this;
         }        

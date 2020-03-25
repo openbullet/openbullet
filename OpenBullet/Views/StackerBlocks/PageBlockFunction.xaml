@@ -236,6 +236,18 @@
                     </DockPanel>
                 </StackPanel>
             </TabItem>
+            <TabItem x:Name="unixTimeToDateTab">
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Date Format:"/>
+                        <TextBox Text="{Binding DateFormat, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.ToolTip>
+                                <TextBlock>Key characters:<LineBreak/>y: year<LineBreak/>M: month<LineBreak/>d: day<LineBreak/>H: hour<LineBreak/>m: minute<LineBreak/>s: second</TextBlock>
+                            </TextBox.ToolTip>
+                        </TextBox>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
         </TabControl>
 
         <TextBlock Grid.Row="2" x:Name="functionInfoTextblock" TextWrapping="WrapWithOverflow" Foreground="{DynamicResource ForegroundMain}" HorizontalAlignment="Center" VerticalAlignment="Center"/>

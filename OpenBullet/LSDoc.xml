@@ -237,6 +237,7 @@ FUNCTION Translate StopAfterFirstMatch=True
   KEY "key2" VALUE "value2"
   "input" -> CAP "Translated"
 FUNCTION DateToUnixTime "format" "input" -> VAR "DATE"
+FUNCTION UnixTimeToDate "format" "input" -> VAR "UNIXTIME"
 FUNCTION Replace "what" "with" UseRegex=True "input" -> VAR "REPLACED"
 FUNCTION RegexMatch "pattern" "input" -> VAR "MATCHED"
 FUNCTION RandomNum "0" "100" -> VAR "RANDOM"
