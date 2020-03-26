@@ -67,11 +67,17 @@ namespace RuriLib.Functions.Crypto
         /// <param name="input">The message for which a signature will be generated</param>
         /// <param name="key">The secret key to use to sign the message</param>
         /// <param name="base64">Whether to return the string as Base64 or as a Hex</param>
+        /// <param name="keyBase64">Whether key is base64 encoded</param>
         /// <returns>A base64 or uppercase hex string.</returns>
-        public static string HMACMD5(string input, string key, bool base64)
+        public static string HMACMD5(string input, string key, bool base64, bool keyBase64)
         {
-            HMACMD5 hmac = new HMACMD5(System.Text.Encoding.ASCII.GetBytes(key));
-            var hash = hmac.ComputeHash(System.Text.Encoding.ASCII.GetBytes(input));
+            HMACMD5 hmac;
+            if (keyBase64)
+                hmac = new HMACMD5(Convert.FromBase64String(key));
+            else
+                hmac = new HMACMD5(Encoding.ASCII.GetBytes(key));
+
+            var hash = hmac.ComputeHash(Encoding.ASCII.GetBytes(input));
             if (base64) { return Convert.ToBase64String(hash); }
             else { return ToHex(hash); }
         }
@@ -95,11 +101,17 @@ namespace RuriLib.Functions.Crypto
         /// <param name="input">The message for which a signature will be generated</param>
         /// <param name="key">The secret key to use to sign the message</param>
         /// <param name="base64">Whether to return the string as Base64 or as a Hex</param>
+        /// <param name="keyBase64">Whether key is base64 encoded</param>
         /// <returns>A base64 or uppercase hex string.</returns>
-        public static string HMACSHA1(string input, string key, bool base64)
+        public static string HMACSHA1(string input, string key, bool base64, bool keyBase64)
         {
-            HMACSHA1 hmac = new HMACSHA1(System.Text.Encoding.ASCII.GetBytes(key));
-            var hash = hmac.ComputeHash(System.Text.Encoding.ASCII.GetBytes(input));
+            HMACSHA1 hmac;
+            if (keyBase64)
+                hmac = new HMACSHA1(Convert.FromBase64String(key));
+            else
+                hmac = new HMACSHA1(Encoding.ASCII.GetBytes(key));
+
+            var hash = hmac.ComputeHash(Encoding.ASCII.GetBytes(input));
             if (base64) { return Convert.ToBase64String(hash); }
             else { return ToHex(hash); }
         }
@@ -123,11 +135,17 @@ namespace RuriLib.Functions.Crypto
         /// <param name="input">The message for which a signature will be generated</param>
         /// <param name="key">The secret key to use to sign the message</param>
         /// <param name="base64">Whether to return the string as Base64 or as a Hex</param>
+        /// <param name="keyBase64">Whether key is base64 encoded</param>
         /// <returns>A base64 or uppercase hex string.</returns>
-        public static string HMACSHA256(string input, string key, bool base64)
+        public static string HMACSHA256(string input, string key, bool base64, bool keyBase64)
         {
-            HMACSHA256 hmac = new HMACSHA256(System.Text.Encoding.ASCII.GetBytes(key));
-            var hash = hmac.ComputeHash(System.Text.Encoding.ASCII.GetBytes(input));
+            HMACSHA256 hmac;
+            if (keyBase64)
+                hmac = new HMACSHA256(Convert.FromBase64String(key));
+            else
+                hmac = new HMACSHA256(Encoding.ASCII.GetBytes(key));
+
+            var hash = hmac.ComputeHash(Encoding.ASCII.GetBytes(input));
             if (base64) { return Convert.ToBase64String(hash); }
             else { return ToHex(hash); }
         }
@@ -151,11 +169,17 @@ namespace RuriLib.Functions.Crypto
         /// <param name="input">The message for which a signature will be generated</param>
         /// <param name="key">The secret key to use to sign the message</param>
         /// <param name="base64">Whether to return the string as Base64 or as a Hex</param>
+        /// <param name="keyBase64">Whether key is base64 encoded</param>
         /// <returns>A base64 or uppercase hex string.</returns>
-        public static string HMACSHA384(string input, string key, bool base64)
+        public static string HMACSHA384(string input, string key, bool base64, bool keyBase64)
         {
-            HMACSHA384 hmac = new HMACSHA384(System.Text.Encoding.ASCII.GetBytes(key));
-            var hash = hmac.ComputeHash(System.Text.Encoding.ASCII.GetBytes(input));
+            HMACSHA384 hmac;
+            if (keyBase64)
+                hmac = new HMACSHA384(Convert.FromBase64String(key));
+            else
+                hmac = new HMACSHA384(Encoding.ASCII.GetBytes(key));
+
+            var hash = hmac.ComputeHash(Encoding.ASCII.GetBytes(input));
             if (base64) { return Convert.ToBase64String(hash); }
             else { return ToHex(hash); }
         }
@@ -179,11 +203,17 @@ namespace RuriLib.Functions.Crypto
         /// <param name="input">The message for which a signature will be generated</param>
         /// <param name="key">The secret key to use to sign the message</param>
         /// <param name="base64">Whether to return the string as Base64 or as a Hex</param>
+        /// <param name="keyBase64">Whether key is base64 encoded</param>
         /// <returns>A base64 or uppercase hex string.</returns>
-        public static string HMACSHA512(string input, string key, bool base64)
+        public static string HMACSHA512(string input, string key, bool base64, bool keyBase64)
         {
-            HMACSHA512 hmac = new HMACSHA512(System.Text.Encoding.ASCII.GetBytes(key));
-            var hash = hmac.ComputeHash(System.Text.Encoding.ASCII.GetBytes(input));
+            HMACSHA512 hmac;
+            if (keyBase64)
+                hmac = new HMACSHA512(Convert.FromBase64String(key));
+            else
+                hmac = new HMACSHA512(Encoding.ASCII.GetBytes(key));
+
+            var hash = hmac.ComputeHash(Encoding.ASCII.GetBytes(input));
             if (base64) { return Convert.ToBase64String(hash); }
             else { return ToHex(hash); }
         }
