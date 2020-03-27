@@ -330,6 +330,14 @@ namespace RuriLib
                     break;
             }
 
+            if (SecurityProtocol != SecurityProtocol.SystemDefault)
+            {
+                writer
+                    .Indent()
+                    .Token("SECPROTO")
+                    .Token(SecurityProtocol, "SecurityProtocol");
+            }
+
             foreach (var c in CustomCookies)
             {
                 writer
@@ -344,14 +352,6 @@ namespace RuriLib
                     .Indent()
                     .Token("HEADER")
                     .Literal($"{h.Key}: {h.Value}");
-            }
-
-            if (SecurityProtocol != SecurityProtocol.SystemDefault)
-            {
-                writer
-                    .Indent()
-                    .Token("SECPROTO")
-                    .Token(SecurityProtocol, "SecurityProtocol");
             }
 
             if (ResponseType == ResponseType.File)
