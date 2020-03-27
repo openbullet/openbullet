@@ -912,22 +912,28 @@ namespace RuriLib
         /// <returns>The HMAC signature</returns>
         public static string Hmac(string baseString, Hash type, string key, bool base64, bool keyBase64)
         {
+            byte[] keybytes;
+            if (keyBase64)
+                keybytes = Convert.FromBase64String(key);
+            else
+                keybytes = Encoding.ASCII.GetBytes(key);
+
             switch (type)
             {
                 case Hash.MD5:
-                    return Crypto.HMACMD5(baseString, key, base64, keyBase64);
+                    return Crypto.HMACMD5(baseString, keybytes, base64);
 
                 case Hash.SHA1:
-                    return Crypto.HMACSHA1(baseString, key, base64, keyBase64);
+                    return Crypto.HMACSHA1(baseString, keybytes, base64);
 
                 case Hash.SHA256:
-                    return Crypto.HMACSHA256(baseString, key, base64, keyBase64);
+                    return Crypto.HMACSHA256(baseString, keybytes, base64);
 
                 case Hash.SHA384:
-                    return Crypto.HMACSHA384(baseString, key, base64, keyBase64);
+                    return Crypto.HMACSHA384(baseString, keybytes, base64);
 
                 case Hash.SHA512:
-                    return Crypto.HMACSHA512(baseString, key, base64, keyBase64);
+                    return Crypto.HMACSHA512(baseString, keybytes, base64);
 
                 default:
                     throw new NotSupportedException("Unsupported algorithm");
