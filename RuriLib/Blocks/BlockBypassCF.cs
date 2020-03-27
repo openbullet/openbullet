@@ -83,9 +83,16 @@ namespace RuriLib
             writer
                 .Label(Label)
                 .Token("BYPASSCF")
-                .Literal(Url)
-                .Token("SECPROTO")
-                .Token(SecurityProtocol)
+                .Literal(Url);
+
+            if (SecurityProtocol != SecurityProtocol.SystemDefault)
+            {
+                writer
+                    .Token("SECPROTO")
+                    .Token(SecurityProtocol);
+            }
+                
+            writer
                 .Literal(UserAgent, "UserAgent")
                 .Boolean(PrintResponseInfo, "PrintResponseInfo");
             return writer.ToString();
