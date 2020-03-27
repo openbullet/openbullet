@@ -420,6 +420,7 @@ namespace RuriLib
             {
                 if (data.ConfigSettings.IgnoreResponseErrors)
                 {
+                    data.Log(new LogEntry(ex.Message, Colors.Tomato));
                     data.ResponseSource = ex.Message;
                     return;
                 }

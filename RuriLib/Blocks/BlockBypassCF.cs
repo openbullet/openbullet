@@ -181,6 +181,7 @@ namespace RuriLib
                 
                 if (data.ConfigSettings.IgnoreResponseErrors)
                 {
+                    data.Log(new LogEntry(message, Colors.Tomato));
                     data.ResponseCode = message;
                     return;
                 }
@@ -190,6 +191,7 @@ namespace RuriLib
             {
                 if (data.ConfigSettings.IgnoreResponseErrors)
                 {
+                    data.Log(new LogEntry(ex.Message, Colors.Tomato));
                     data.ResponseSource = ex.Message;
                     return;
                 }
@@ -206,12 +208,15 @@ namespace RuriLib
             }
             else
             {
+                var message = $"CF Bypass Failed: {result.FailReason}";
+
                 if (data.ConfigSettings.IgnoreResponseErrors)
                 {
-                    data.ResponseSource = $"CF Bypass Failed: {result.FailReason}";
+                    data.Log(new LogEntry(message, Colors.Tomato));
+                    data.ResponseSource = message;
                     return;
                 }
-                throw new Exception($"CF Bypass Failed: {result.FailReason}");
+                throw new Exception(message);
             }
 
             // Now that we got the cookies, proceed with the normal request
