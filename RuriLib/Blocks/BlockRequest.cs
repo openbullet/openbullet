@@ -414,7 +414,7 @@ namespace RuriLib
             // Perform the request
             try
             {
-                (data.Address, data.ResponseCode, data.ResponseHeaders, data.Cookies) = request.Perform(localUrl, Method, data.ConfigSettings.IgnoreResponseErrors, GetLogBuffer(data));
+                (data.Address, data.ResponseCode, data.ResponseHeaders, data.Cookies) = request.Perform(localUrl, Method, GetLogBuffer(data));
             }
             catch
             {
