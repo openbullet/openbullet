@@ -412,7 +412,15 @@ namespace RuriLib
             data.LogNewLine();
 
             // Perform the request
-            (data.Address, data.ResponseCode, data.ResponseHeaders, data.Cookies) = request.Perform(localUrl, Method, data.ConfigSettings.IgnoreResponseErrors, GetLogBuffer(data));
+            try
+            {
+                (data.Address, data.ResponseCode, data.ResponseHeaders, data.Cookies) = request.Perform(localUrl, Method, data.ConfigSettings.IgnoreResponseErrors, GetLogBuffer(data));
+            }
+            catch
+            {
+                if (data.ConfigSettings.IgnoreResponseErrors) return;
+                throw;
+            }
 
             // Save the response content
             switch (ResponseType)
