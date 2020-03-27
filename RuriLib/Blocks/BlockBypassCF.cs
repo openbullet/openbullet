@@ -96,9 +96,6 @@ namespace RuriLib
         {
             base.Process(data);
 
-            // Accept all protocols except TLS 1.2
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls | SecurityProtocolType.Ssl3;
-
             // If the clearance info is already set and we're not getting it fresh each time, skip
             if (data.UseProxies)
             {
