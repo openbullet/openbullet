@@ -21,9 +21,6 @@ namespace RuriLib.Functions.Requests
         /// <summary>Let the operative system decide and block the unsecure protocols.</summary>
         SystemDefault,
 
-        /// <summary>The SSL2 protocol (obsolete).</summary>
-        SSL2,
-
         /// <summary>The SSL3 protocol (obsolete).</summary>
         SSL3,
 

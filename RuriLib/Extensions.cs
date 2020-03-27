@@ -137,9 +137,6 @@ namespace RuriLib
                 case SecurityProtocol.SystemDefault:
                     return SslProtocols.None;
 
-                case SecurityProtocol.SSL2:
-                    return SslProtocols.Ssl2;
-
                 case SecurityProtocol.SSL3:
                     return SslProtocols.Ssl3;
 
