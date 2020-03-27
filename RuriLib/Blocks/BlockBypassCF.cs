@@ -168,7 +168,33 @@ namespace RuriLib
             http.Timeout = TimeSpan.FromMinutes(timeout);
             http.DefaultRequestHeaders.Add("User-Agent", ReplaceValues(UserAgent, data));
 
-            var result = cf.Solve(http, handler, uri, ReplaceValues(UserAgent, data)).Result;
+            SolveResult result = new SolveResult();
+
+            try
+            {
+                result = cf.Solve(http, handler, uri, ReplaceValues(UserAgent, data)).Result;
+            }
+            catch (AggregateException ex)
+            {
+                // Join all the aggregate exception inner exception messages
+                var message = string.Join(Environment.NewLine, ex.InnerExceptions.Select(e => e.Message));
+                
+                if (data.ConfigSettings.IgnoreResponseErrors)
+                {
+                    data.ResponseCode = message;
+                    return;
+                }
+                throw new Exception(message);
+            }
+            catch (Exception ex)
+            {
+                if (data.ConfigSettings.IgnoreResponseErrors)
+                {
+                    data.ResponseSource = ex.Message;
+                    return;
+                }
+                throw;
+            }
 
             if (result.Success)
             {
@@ -180,6 +206,11 @@ namespace RuriLib
             }
             else
             {
+                if (data.ConfigSettings.IgnoreResponseErrors)
+                {
+                    data.ResponseSource = $"CF Bypass Failed: {result.FailReason}";
+                    return;
+                }
                 throw new Exception($"CF Bypass Failed: {result.FailReason}");
             }
 
@@ -191,6 +222,11 @@ namespace RuriLib
             }
             catch (Exception ex)
             {
+                if (data.ConfigSettings.IgnoreResponseErrors)
+                {
+                    data.ResponseSource = ex.Message;
+                    return;
+                }
                 throw new Exception(ex.Message);
             }
             finally

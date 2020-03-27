@@ -416,9 +416,13 @@ namespace RuriLib
             {
                 (data.Address, data.ResponseCode, data.ResponseHeaders, data.Cookies) = request.Perform(localUrl, Method, GetLogBuffer(data));
             }
-            catch
+            catch (Exception ex)
             {
-                if (data.ConfigSettings.IgnoreResponseErrors) return;
+                if (data.ConfigSettings.IgnoreResponseErrors)
+                {
+                    data.ResponseSource = ex.Message;
+                    return;
+                }
                 throw;
             }
 
