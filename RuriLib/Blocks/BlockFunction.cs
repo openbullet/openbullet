@@ -178,6 +178,10 @@ namespace RuriLib
         /// <summary>Whether to output the message as a base64-encoded string instead of a hex-encoded string.</summary>
         public bool HmacBase64 { get { return hmacBase64; } set { hmacBase64 = value; OnPropertyChanged(); } }
 
+        private bool keyBase64 = false;
+        /// <summary>Whether the HMAC Key is a base64-encoded string instead of ascii.</summary>
+        public bool KeyBase64 { get { return keyBase64; } set { keyBase64 = value; OnPropertyChanged(); } }
+
         // -- Translate
         private bool stopAfterFirstMatch = true;
         /// <summary>Whether to stop translating after the first match.</summary>
@@ -515,7 +519,8 @@ namespace RuriLib
                     writer
                         .Token(HashType)
                         .Literal(HmacKey)
-                        .Boolean(HmacBase64, "HmacBase64");
+                        .Boolean(HmacBase64, "HmacBase64")
+                        .Boolean(KeyBase64, "KeyBase64");
                     break;
 
                 case Function.Translate:
@@ -677,7 +682,7 @@ namespace RuriLib
                         break;
 
                     case Function.HMAC:
-                        outputString = Hmac(localInputString, hashType, ReplaceValues(hmacKey, data), hmacBase64);
+                        outputString = Hmac(localInputString, hashType, ReplaceValues(hmacKey, data), hmacBase64, keyBase64);
                         break;
 
                     case Function.Translate:
@@ -903,25 +908,32 @@ namespace RuriLib
         /// <param name="type">The hashing function</param>
         /// <param name="key">The HMAC key</param>
         /// <param name="base64">Whether the output should be encrypted as a base64 string</param>
+        /// <param name="keyBase64"></param>
         /// <returns>The HMAC signature</returns>
-        public static string Hmac(string baseString, Hash type, string key, bool base64)
+        public static string Hmac(string baseString, Hash type, string key, bool base64, bool keyBase64)
         {
+            byte[] keybytes;
+            if (keyBase64)
+                keybytes = Convert.FromBase64String(key);
+            else
+                keybytes = Encoding.ASCII.GetBytes(key);
+
             switch (type)
             {
                 case Hash.MD5:
-                    return Crypto.HMACMD5(baseString, key, base64);
+                    return Crypto.HMACMD5(baseString, keybytes, base64);
 
                 case Hash.SHA1:
-                    return Crypto.HMACSHA1(baseString, key, base64);
+                    return Crypto.HMACSHA1(baseString, keybytes, base64);
 
                 case Hash.SHA256:
-                    return Crypto.HMACSHA256(baseString, key, base64);
+                    return Crypto.HMACSHA256(baseString, keybytes, base64);
 
                 case Hash.SHA384:
-                    return Crypto.HMACSHA384(baseString, key, base64);
+                    return Crypto.HMACSHA384(baseString, keybytes, base64);
 
                 case Hash.SHA512:
-                    return Crypto.HMACSHA512(baseString, key, base64);
+                    return Crypto.HMACSHA512(baseString, keybytes, base64);
 
                 default:
                     throw new NotSupportedException("Unsupported algorithm");

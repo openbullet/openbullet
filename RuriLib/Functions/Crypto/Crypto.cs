@@ -68,10 +68,10 @@ namespace RuriLib.Functions.Crypto
         /// <param name="key">The secret key to use to sign the message</param>
         /// <param name="base64">Whether to return the string as Base64 or as a Hex</param>
         /// <returns>A base64 or uppercase hex string.</returns>
-        public static string HMACMD5(string input, string key, bool base64)
+        public static string HMACMD5(string input, byte[] key, bool base64)
         {
-            HMACMD5 hmac = new HMACMD5(System.Text.Encoding.ASCII.GetBytes(key));
-            var hash = hmac.ComputeHash(System.Text.Encoding.ASCII.GetBytes(input));
+            HMACMD5 hmac = new HMACMD5(key);
+            var hash = hmac.ComputeHash(Encoding.ASCII.GetBytes(input));
             if (base64) { return Convert.ToBase64String(hash); }
             else { return ToHex(hash); }
         }
@@ -96,10 +96,10 @@ namespace RuriLib.Functions.Crypto
         /// <param name="key">The secret key to use to sign the message</param>
         /// <param name="base64">Whether to return the string as Base64 or as a Hex</param>
         /// <returns>A base64 or uppercase hex string.</returns>
-        public static string HMACSHA1(string input, string key, bool base64)
+        public static string HMACSHA1(string input, byte[] key, bool base64)
         {
-            HMACSHA1 hmac = new HMACSHA1(System.Text.Encoding.ASCII.GetBytes(key));
-            var hash = hmac.ComputeHash(System.Text.Encoding.ASCII.GetBytes(input));
+            HMACSHA1 hmac = new HMACSHA1(key);
+            var hash = hmac.ComputeHash(Encoding.ASCII.GetBytes(input));
             if (base64) { return Convert.ToBase64String(hash); }
             else { return ToHex(hash); }
         }
@@ -124,10 +124,10 @@ namespace RuriLib.Functions.Crypto
         /// <param name="key">The secret key to use to sign the message</param>
         /// <param name="base64">Whether to return the string as Base64 or as a Hex</param>
         /// <returns>A base64 or uppercase hex string.</returns>
-        public static string HMACSHA256(string input, string key, bool base64)
+        public static string HMACSHA256(string input, byte[] key, bool base64)
         {
-            HMACSHA256 hmac = new HMACSHA256(System.Text.Encoding.ASCII.GetBytes(key));
-            var hash = hmac.ComputeHash(System.Text.Encoding.ASCII.GetBytes(input));
+            HMACSHA256 hmac = new HMACSHA256(key);
+            var hash = hmac.ComputeHash(Encoding.ASCII.GetBytes(input));
             if (base64) { return Convert.ToBase64String(hash); }
             else { return ToHex(hash); }
         }
@@ -152,10 +152,10 @@ namespace RuriLib.Functions.Crypto
         /// <param name="key">The secret key to use to sign the message</param>
         /// <param name="base64">Whether to return the string as Base64 or as a Hex</param>
         /// <returns>A base64 or uppercase hex string.</returns>
-        public static string HMACSHA384(string input, string key, bool base64)
+        public static string HMACSHA384(string input, byte[] key, bool base64)
         {
-            HMACSHA384 hmac = new HMACSHA384(System.Text.Encoding.ASCII.GetBytes(key));
-            var hash = hmac.ComputeHash(System.Text.Encoding.ASCII.GetBytes(input));
+            HMACSHA384 hmac = new HMACSHA384(key);
+            var hash = hmac.ComputeHash(Encoding.ASCII.GetBytes(input));
             if (base64) { return Convert.ToBase64String(hash); }
             else { return ToHex(hash); }
         }
@@ -180,10 +180,10 @@ namespace RuriLib.Functions.Crypto
         /// <param name="key">The secret key to use to sign the message</param>
         /// <param name="base64">Whether to return the string as Base64 or as a Hex</param>
         /// <returns>A base64 or uppercase hex string.</returns>
-        public static string HMACSHA512(string input, string key, bool base64)
+        public static string HMACSHA512(string input, byte[] key, bool base64)
         {
-            HMACSHA512 hmac = new HMACSHA512(System.Text.Encoding.ASCII.GetBytes(key));
-            var hash = hmac.ComputeHash(System.Text.Encoding.ASCII.GetBytes(input));
+            HMACSHA512 hmac = new HMACSHA512(key);
+            var hash = hmac.ComputeHash(Encoding.ASCII.GetBytes(input));
             if (base64) { return Convert.ToBase64String(hash); }
             else { return ToHex(hash); }
         }

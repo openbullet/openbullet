@@ -231,7 +231,7 @@ FUNCTION ClearCookies
 
 Peculiar functions:
 FUNCTION Hash SHA512 "&lt;PASS&gt;" -> VAR "HASHED"
-FUNCTION HMAC SHA1 "key" HmacBase64=True "&lt;PASS&gt;" -> VAR "DIGEST"
+FUNCTION HMAC SHA1 "key" HmacBase64=True KeyBase64=False "&lt;PASS&gt;" -> VAR "DIGEST"
 FUNCTION Translate StopAfterFirstMatch=True
   KEY "key1" VALUE "value1"
   KEY "key2" VALUE "value2"

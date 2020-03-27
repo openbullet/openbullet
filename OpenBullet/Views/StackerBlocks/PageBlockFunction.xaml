@@ -61,6 +61,7 @@
                         <Label Content="HMAC Key:"/>
                         <TextBox Text="{Binding HmacKey, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
+                    <CheckBox VerticalContentAlignment="Center" Content="HMAC Key Base64" IsChecked="{Binding KeyBase64}" ToolTip="Whether HMAC Key uses base64 encoding instead of ascii"/>
                     <CheckBox VerticalContentAlignment="Center" Content="Output Base64" IsChecked="{Binding HmacBase64}" ToolTip="Whether to output with base64 encoding instead of hex encoding"/>
                 </StackPanel>
             </TabItem>
