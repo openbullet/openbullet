@@ -234,11 +234,9 @@ namespace RuriLib.Functions.Requests
         /// </summary>
         /// <param name="url">The URL</param>
         /// <param name="method">The HTTP method</param>
-        /// <param name="ignoreErrors">Whether to ignore response errors</param>
         /// <param name="log">The log (if any)</param>
         /// <returns>A 4-tuple containing Address, Response code, Headers and Cookies.</returns>
-        public (string, string, Dictionary<string, string>, Dictionary<string, string>) Perform(string url, HttpMethod method, 
-            bool ignoreErrors = false, List<LogEntry> log = null)
+        public (string, string, Dictionary<string, string>, Dictionary<string, string>) Perform(string url, HttpMethod method, List<LogEntry> log = null)
         {
             var address = "";
             var responseCode = "0";
@@ -295,7 +293,7 @@ namespace RuriLib.Functions.Requests
                     if (log != null) log.Add(new LogEntry("Status code: " + responseCode, Colors.Cyan));
                 }
 
-                if (!ignoreErrors) throw;
+                throw;
             }
 
             return (address, responseCode, headers, cookies);
