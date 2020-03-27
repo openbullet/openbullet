@@ -336,7 +336,7 @@ PARSE "&lt;SOURCE&gt;" CSS "[name=csrf]" "value" -> VAR "CSRF"
 This will spawn and execute a BypassCF Block.
 
 Syntax:
-BYPASSCF "URL" SECPROTO security-protocol ["UA"]
+BYPASSCF "URL" [SECPROTO security-protocol] ["UA"]
 
 Example:
 BYPASSCF "http://example.com"

@@ -19,6 +19,7 @@ REQUEST METHOD "URL" [AcceptEncoding?] [AutoRedirect?] [ReadResponseSource?] [Pa
   [BOUNDARY "abcd"]
   [COOKIE "abc: def"]*
   [HEADER "abc: def"]*
+  [SECPROTO security-protocol]
   [-> STRING / -> FILE "path"]
   </item>
   <item name="RECAPTCHA">
