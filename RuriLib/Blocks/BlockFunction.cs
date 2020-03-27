@@ -540,12 +540,12 @@ namespace RuriLib
 
                 case Function.DateToUnixTime:
                     writer
-                        .Literal(DateFormat, "DateFormat", true);
+                        .Literal(DateFormat);
                     break;
 
                 case Function.UnixTimeToDate:
                     writer
-                        .Literal(DateFormat, "DateFormat", true);
+                        .Literal(DateFormat);
                     break;
 
                 case Function.Replace:
