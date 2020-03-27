@@ -25,7 +25,6 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
                 </Grid.RowDefinitions>
 
                 <!-- Row 1 -->
@@ -40,11 +39,13 @@
                 <CheckBox Grid.Column="0" Grid.Row="1" Content="Read Resp. Source" IsChecked="{Binding ReadResponseSource}" VerticalContentAlignment="Center" />
                 <CheckBox Grid.Column="1" Grid.Row="1" Content="Accept-Encoding" IsChecked="{Binding AcceptEncoding}" VerticalContentAlignment="Center"/>
                 <CheckBox Grid.Column="2" Grid.Row="1" Content="Encode Content" IsChecked="{Binding EncodeContent}" VerticalContentAlignment="Center"/>
-                
-                <!-- Row 3 -->
-                
             </Grid>
 
+            <DockPanel>
+                <Label Content="Security Protocol:"/>
+                <ComboBox x:Name="securityProtocolCombobox" SelectionChanged="securityProtocolCombobox_SelectionChanged"/>
+            </DockPanel>
+            
             <DockPanel Margin="0 5 0 0">
                 <Label Content="Request Type:" Foreground="{DynamicResource ForegroundCustom}" />
                 <ComboBox x:Name="requestTypeCombobox" SelectionChanged="requestTypeCombobox_SelectionChanged" />

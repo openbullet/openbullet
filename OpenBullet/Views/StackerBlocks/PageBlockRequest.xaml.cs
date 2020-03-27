@@ -1,5 +1,6 @@
 ﻿using OpenBullet.Views.Main.Runner;
 using RuriLib;
+using RuriLib.Functions.Requests;
 using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
@@ -47,6 +48,11 @@ namespace OpenBullet.Views.StackerBlocks
 
             foreach (var c in commonContentTypes)
                 contentTypeCombobox.Items.Add(c);
+
+            foreach (var s in Enum.GetNames(typeof(SecurityProtocol)))
+                securityProtocolCombobox.Items.Add(s);
+
+            securityProtocolCombobox.SelectedIndex = (int)vm.SecurityProtocol;
         }
 
         private void methodCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -103,6 +109,11 @@ namespace OpenBullet.Views.StackerBlocks
         private void multipartContentsRTB_LostFocus(object sender, System.Windows.RoutedEventArgs e)
         {
             vm.SetMultipartContents(multipartContentsRTB.Lines());
+        }
+
+        private void securityProtocolCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            vm.SecurityProtocol = (SecurityProtocol)((ComboBox)e.OriginalSource).SelectedIndex;
         }
     }
 }

@@ -14,6 +14,30 @@ using System.Windows.Media;
 namespace RuriLib.Functions.Requests
 {
     /// <summary>
+    /// Enumerates the supported security protocols.
+    /// </summary>
+    public enum SecurityProtocol
+    {
+        /// <summary>Let the operative system decide and block the unsecure protocols.</summary>
+        SystemDefault,
+
+        /// <summary>The SSL2 protocol (obsolete).</summary>
+        SSL2,
+
+        /// <summary>The SSL3 protocol (obsolete).</summary>
+        SSL3,
+
+        /// <summary>The TLS 1.0 protocol (obsolete).</summary>
+        TLS10,
+
+        /// <summary>The TLS 1.1 protocol.</summary>
+        TLS11,
+
+        /// <summary>The TLS 1.2 protocol.</summary>
+        TLS12
+    }
+
+    /// <summary>
     /// Provides methods to easily perform Extreme.NET requests.
     /// </summary>
     public class Request
@@ -42,11 +66,13 @@ namespace RuriLib.Functions.Requests
         /// Sets up the request options.
         /// </summary>
         /// <param name="settings">The RuriLib settings</param>
+        /// <param name="securityProtocol">The security protocol to use</param>
         /// <param name="autoRedirect">Whether to perform automatic redirection</param>
         /// <param name="acceptEncoding"></param>
         /// <param name="maxRedirects"></param>
         /// <returns></returns>
-        public Request Setup(RLSettingsViewModel settings, bool autoRedirect = true, int maxRedirects = 8, bool acceptEncoding = true)
+        public Request Setup(RLSettingsViewModel settings, SecurityProtocol securityProtocol = SecurityProtocol.SystemDefault,
+            bool autoRedirect = true, int maxRedirects = 8, bool acceptEncoding = true)
         {
             // Setup options
             timeout = settings.General.RequestTimeout * 1000;
@@ -57,6 +83,7 @@ namespace RuriLib.Functions.Requests
             request.ConnectTimeout = timeout;
             request.KeepAlive = true;
             request.MaximumAutomaticRedirections = maxRedirects;
+            request.SslProtocols = securityProtocol.ToSslProtocols();
 
             return this;
         }

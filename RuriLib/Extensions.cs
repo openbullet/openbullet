@@ -1,7 +1,9 @@
-﻿using System;
+﻿using RuriLib.Functions.Requests;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Authentication;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -115,6 +117,44 @@ namespace RuriLib
             }
 
             return (length < value.Length) ? value.Substring(value.Length - length) : value;
+        }
+    }
+
+    /// <summary>
+    /// Extension methods for SecurityProtocol enum.
+    /// </summary>
+    public static class SecurityProtocolExtensions
+    {
+        /// <summary>
+        /// Converts the SecurityProtocol to an SslProtocols enum. Multiple protocols are not supported and SystemDefault is None.
+        /// </summary>
+        /// <param name="protocol">The SecurityProtocol</param>
+        /// <returns>The converted SslProtocols.</returns>
+        public static SslProtocols ToSslProtocols(this SecurityProtocol protocol)
+        {
+            switch (protocol)
+            {
+                case SecurityProtocol.SystemDefault:
+                    return SslProtocols.None;
+
+                case SecurityProtocol.SSL2:
+                    return SslProtocols.Ssl2;
+
+                case SecurityProtocol.SSL3:
+                    return SslProtocols.Ssl3;
+
+                case SecurityProtocol.TLS10:
+                    return SslProtocols.Tls;
+
+                case SecurityProtocol.TLS11:
+                    return SslProtocols.Tls11;
+
+                case SecurityProtocol.TLS12:
+                    return SslProtocols.Tls12;
+
+                default:
+                    throw new Exception("Protocol not supported");
+            }
         }
     }
 }

@@ -8,6 +8,7 @@ using CloudflareSolverRe.CaptchaProviders;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Linq;
+using RuriLib.Functions.Requests;
 
 namespace RuriLib
 {
@@ -28,9 +29,9 @@ namespace RuriLib
         /// <summary>Whether to print the full response info to the log.</summary>
         public bool PrintResponseInfo { get { return printResponseInfo; } set { printResponseInfo = value; OnPropertyChanged(); } }
 
-        private bool errorOn302 = true;
-        /// <summary>Whether to set ERROR Status on 302.</summary>
-        public bool ErrorOn302 { get { return errorOn302; } set { errorOn302 = value; OnPropertyChanged(); } }
+        private SecurityProtocol securityProtocol = SecurityProtocol.SystemDefault;
+        /// <summary>The security protocol(s) to use for the HTTPS request.</summary>
+        public SecurityProtocol SecurityProtocol { get { return securityProtocol; } set { securityProtocol = value; OnPropertyChanged(); } }
 
         /// <summary>
         /// Creates a Cloudflare bypass block.
@@ -52,7 +53,7 @@ namespace RuriLib
 
             /*
              * Syntax
-             * BYPASSCF "URL" ["UA"]
+             * BYPASSCF "URL" SECPROTO PROTOCOL ["UA"]
              * */
 
             Url = LineParser.ParseLiteral(ref input, "URL");
@@ -60,6 +61,11 @@ namespace RuriLib
             if (input != "" && LineParser.Lookahead(ref input) == TokenType.Literal)
             {
                 UserAgent = LineParser.ParseLiteral(ref input, "UA");
+            }
+
+            if (input != "" && LineParser.ParseToken(ref input, TokenType.Parameter, false, true) == "SECPROTO")
+            {
+                SecurityProtocol = LineParser.ParseEnum(ref input, "Security Protocol", typeof(SecurityProtocol));
             }
 
             while (input != "")
@@ -78,9 +84,10 @@ namespace RuriLib
                 .Label(Label)
                 .Token("BYPASSCF")
                 .Literal(Url)
+                .Token("SECPROTO")
+                .Token(SecurityProtocol)
                 .Literal(UserAgent, "UserAgent")
-                .Boolean(PrintResponseInfo, "PrintResponseInfo")
-                .Boolean(ErrorOn302, "ErrorOn302");
+                .Boolean(PrintResponseInfo, "PrintResponseInfo");
             return writer.ToString();
         }
 
@@ -143,7 +150,8 @@ namespace RuriLib
             {
                 AllowAutoRedirect = true,
                 CookieContainer = cookies,
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                SslProtocols = SecurityProtocol.ToSslProtocols()
             };
 
             // Assign the proxy to the inner handler if necessary
@@ -315,12 +323,6 @@ namespace RuriLib
             {
                 data.Log(new LogEntry("Response Source:", Colors.Green));
                 data.Log(new LogEntry(data.ResponseSource, Colors.GreenYellow));
-            }
-
-            // Error on 302 status
-            if (ErrorOn302 && response.StatusCode == HttpStatusCode.Redirect)
-            {
-                data.Status = BotStatus.ERROR;
             }
         }
     }
