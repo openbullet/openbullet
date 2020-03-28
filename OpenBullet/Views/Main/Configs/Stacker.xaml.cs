@@ -171,8 +171,9 @@ namespace OpenBullet.Views.Main.Configs
 
         public void AddBlock(BlockBase block)
         {
-            OB.Logger.LogInfo(Components.Stacker, $"Added a block of type {block.GetType()} in position {vm.Stack.Count}");
-            vm.AddBlock(block, -1);
+            var position = vm.Stack.Count > 0 ? vm.CurrentBlockIndex + 1 : 0;
+            OB.Logger.LogInfo(Components.Stacker, $"Added a block of type {block.GetType()} in position {position}");
+            vm.AddBlock(block, position);
         }
 
         private void RemoveBlock_MouseDown(object sender, MouseButtonEventArgs e)
