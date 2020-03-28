@@ -93,7 +93,7 @@ namespace RuriLib
 
         /// <summary>The custom headers that are sent in the HTTP request.</summary>
         public Dictionary<string, string> CustomHeaders { get; set; } = new Dictionary<string, string>() {
-            { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36" },
+            { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36" },
             { "Pragma", "no-cache" },
             { "Accept", "*/*" }
         };
