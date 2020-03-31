@@ -89,6 +89,13 @@ namespace RuriLib
         private bool banProxyAfterGoodStatus = false;
         /// <summary>Whether to ban the proxy after a SUCCESS, CUSTOM or NONE status (not FAIL or RETRY).</summary>
         public bool BanProxyAfterGoodStatus { get { return banProxyAfterGoodStatus; } set { banProxyAfterGoodStatus = value; OnPropertyChanged(); } }
+
+        private int banLoopEvasionOverride = -1;
+        /// <summary>
+        /// The maximum amount of times a data line ends up with a BAN status before it's marked as ToCheck.
+        /// Overrides the global setting unless set to -1.
+        /// </summary>
+        public int BanLoopEvasionOverride { get { return banLoopEvasionOverride; } set { banLoopEvasionOverride = value; OnPropertyChanged(); } }
         #endregion
 
         #region Data
