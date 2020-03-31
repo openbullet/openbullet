@@ -277,7 +277,7 @@ namespace OpenBullet.Views.Main
         {
             try
             {
-                Selected.CopyToClipboard(p => $"({p.Type}){p.Host}:{p.Port}" + (string.IsNullOrEmpty(p.Username) ? "" : $"{p.Username}:{p.Password}"));
+                Selected.CopyToClipboard(p => $"({p.Type}){p.Host}:{p.Port}" + (string.IsNullOrEmpty(p.Username) ? "" : $":{p.Username}:{p.Password}"));
                 OB.Logger.LogInfo(Components.ProxyManager, $"Copied {Selected.Count()} proxies");
             }
             catch (Exception ex)
