@@ -254,6 +254,7 @@
     <Compile Include="CaptchaServices\RuCaptcha.cs" />
     <Compile Include="CaptchaServices\Service.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="FileLocker.cs" />
     <Compile Include="Functions\Conversion\Conversion.cs" />
     <Compile Include="Functions\Crypto\Crypto.cs" />
     <Compile Include="Functions\Download\Download.cs" />
