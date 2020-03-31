@@ -931,7 +931,7 @@ namespace RuriLib.Runner
                             RetryCount++;
                         }
 
-                        if (currentData.Retries < Settings.Proxies.BanLoopEvasion || Settings.Proxies.BanLoopEvasion == 0)
+                        if (ShouldTriggerEvasion(currentData.Retries))
                         {
                             currentData.Retries++;
                             goto GETPROXY;
@@ -1268,6 +1268,15 @@ namespace RuriLib.Runner
             proxies.AddRange(lines.Select(l => new CProxy(l, type)));
 
             return proxies;
+        }
+
+        private bool ShouldTriggerEvasion(int retries)
+        {
+            var evasionValue = Config.Settings.BanLoopEvasionOverride == -1 
+                ? Settings.Proxies.BanLoopEvasion 
+                : Config.Settings.BanLoopEvasionOverride;
+            
+            return retries < evasionValue || evasionValue == 0;
         }
         #endregion
 
