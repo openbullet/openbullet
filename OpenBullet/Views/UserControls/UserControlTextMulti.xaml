@@ -6,5 +6,5 @@
              xmlns:local="clr-namespace:OpenBullet.Views.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <TextBox x:Name="Box" TextWrapping="Wrap" AcceptsReturn="True" Height="100" />
+    <TextBox x:Name="valueTextbox" TextWrapping="Wrap" AcceptsReturn="True" Height="100" />
 </UserControl>
