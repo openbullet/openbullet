@@ -264,7 +264,20 @@ namespace OpenBullet.Views.Main
         {
             try
             {
-                Selected.CopyToClipboard(p => p.Proxy);
+                Selected.CopyToClipboard(p => $"{p.Host}:{p.Port}");
+                OB.Logger.LogInfo(Components.ProxyManager, $"Copied {Selected.Count()} proxies");
+            }
+            catch (Exception ex)
+            {
+                OB.Logger.LogError(Components.ProxyManager, $"Failed to copy proxies - {ex.Message}");
+            }
+        }
+
+        private void copySelectedProxiesFull_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Selected.CopyToClipboard(p => $"({p.Type}){p.Host}:{p.Port}" + (string.IsNullOrEmpty(p.Username) ? "" : $"{p.Username}:{p.Password}"));
                 OB.Logger.LogInfo(Components.ProxyManager, $"Copied {Selected.Count()} proxies");
             }
             catch (Exception ex)
