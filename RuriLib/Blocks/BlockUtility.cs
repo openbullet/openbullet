@@ -1,5 +1,6 @@
 ﻿using RuriLib.Functions.Conditions;
 using RuriLib.Functions.Conversions;
+using RuriLib.Functions.Files;
 using RuriLib.LS;
 using RuriLib.Models;
 using RuriLib.ViewModels;
@@ -604,7 +605,7 @@ namespace RuriLib
 
                     case UtilityGroup.File:
                         var file = ReplaceValues(filePath, data);
-                        ThrowIfNotInCWD(file);
+                        Files.ThrowIfNotInCWD(file);
 
                         switch (fileAction)
                         {
@@ -613,43 +614,55 @@ namespace RuriLib
                                 break;
 
                             case FileAction.Read:
-                                data.Variables.Set(new CVar(variableName, File.ReadAllText(file), isCapture));
+                                lock (FileLocker.GetLock(file))
+                                    data.Variables.Set(new CVar(variableName, File.ReadAllText(file), isCapture));
                                 break;
 
                             case FileAction.ReadLines:
-                                data.Variables.Set(new CVar(variableName, File.ReadAllLines(file).ToList(), isCapture));
+                                lock (FileLocker.GetLock(file))
+                                    data.Variables.Set(new CVar(variableName, File.ReadAllLines(file).ToList(), isCapture));
                                 break;
 
                             case FileAction.Write:
-                                CreatePath(file);
-                                File.WriteAllText(file, replacedInput.Unescape());
+                                Files.CreatePath(file);
+                                lock (FileLocker.GetLock(file))
+                                    File.WriteAllText(file, replacedInput.Unescape());
                                 break;
 
                             case FileAction.WriteLines:
-                                CreatePath(file);
-                                File.WriteAllLines(file, ReplaceValuesRecursive(inputString, data).Select(i => i.Unescape()));
+                                Files.CreatePath(file);
+                                lock (FileLocker.GetLock(file))
+                                    File.WriteAllLines(file, ReplaceValuesRecursive(inputString, data).Select(i => i.Unescape()));
                                 break;
 
                             case FileAction.Append:
-                                File.AppendAllText(file, replacedInput.Unescape());
+                                Files.CreatePath(file);
+                                lock (FileLocker.GetLock(file))
+                                    File.AppendAllText(file, replacedInput.Unescape());
                                 break;
 
                             case FileAction.AppendLines:
-                                File.AppendAllLines(file, ReplaceValuesRecursive(inputString, data).Select(i => i.Unescape()));
+                                Files.CreatePath(file);
+                                lock (FileLocker.GetLock(file))
+                                    File.AppendAllLines(file, ReplaceValuesRecursive(inputString, data).Select(i => i.Unescape()));
                                 break;
 
                             case FileAction.Copy:
                                 var fileCopyLocation = ReplaceValues(inputString, data);
-                                ThrowIfNotInCWD(fileCopyLocation);
-                                CreatePath(fileCopyLocation);
-                                File.Copy(file, fileCopyLocation);
+                                Files.ThrowIfNotInCWD(fileCopyLocation);
+                                Files.CreatePath(fileCopyLocation);
+                                lock (FileLocker.GetLock(file))
+                                    lock (FileLocker.GetLock(fileCopyLocation))
+                                        File.Copy(file, fileCopyLocation);
                                 break;
 
                             case FileAction.Move:
                                 var fileMoveLocation = ReplaceValues(inputString, data);
-                                ThrowIfNotInCWD(fileMoveLocation);
-                                CreatePath(fileMoveLocation);
-                                File.Move(file, fileMoveLocation);
+                                Files.ThrowIfNotInCWD(fileMoveLocation);
+                                Files.CreatePath(fileMoveLocation);
+                                lock (FileLocker.GetLock(file))
+                                    lock (FileLocker.GetLock(fileMoveLocation))
+                                        File.Move(file, fileMoveLocation);
                                 break;
                         }
                         data.Log(new LogEntry($"Executed action {fileAction} on file {file}", isCapture ? Colors.Tomato : Colors.Yellow));
@@ -657,7 +670,7 @@ namespace RuriLib
 
                     case UtilityGroup.Folder:
                         var folder = ReplaceValues(folderPath, data);
-                        ThrowIfNotInCWD(folder);
+                        Files.ThrowIfNotInCWD(folder);
 
                         switch (folderAction)
                         {
@@ -677,22 +690,6 @@ namespace RuriLib
                 }
             }
             catch(Exception ex) { data.Log(new LogEntry(ex.Message, Colors.Tomato)); }
-        }
-
-        private void ThrowIfNotInCWD(string path)
-        {
-            if (!path.IsSubPathOf(Directory.GetCurrentDirectory()))
-            {
-                throw new UnauthorizedAccessException("For security reasons, you cannot interact with paths outside of the current working directory");
-            }
-        }
-
-        private void CreatePath(string file)
-        {
-            if (!Directory.Exists(Path.GetDirectoryName(file)))
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(file));
-            }
         }
     }
 }

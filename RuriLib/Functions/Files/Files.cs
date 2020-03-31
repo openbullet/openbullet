@@ -94,5 +94,31 @@ namespace RuriLib.Functions.Files
 
             return Regex.Replace(name, invalidRegStr, underscore ? "_" : "");
         }
+
+        /// <summary>
+        /// Throws an UnauthorizedAccessException if the path is not part of the current working directory.
+        /// </summary>
+        /// <param name="path">The absolute or relative path.</param>
+        public static void ThrowIfNotInCWD(string path)
+        {
+            if (!path.IsSubPathOf(Directory.GetCurrentDirectory()))
+            {
+                throw new UnauthorizedAccessException("For security reasons, you cannot interact with paths outside of the current working directory");
+            }
+        }
+
+        /// <summary>
+        /// Creates the folder structure that contains a certain files if it doesn't already exist.
+        /// </summary>
+        /// <param name="file">The absolute or relative path to the file.</param>
+        public static void CreatePath(string file)
+        {
+            var dirName = Path.GetDirectoryName(file);
+
+            if (!string.IsNullOrWhiteSpace(dirName) && !Directory.Exists(dirName))
+            {
+                Directory.CreateDirectory(dirName);
+            }
+        }
     }
 }
