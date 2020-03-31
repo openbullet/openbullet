@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Windows.Data;
 
 namespace OpenBullet.ViewModels
 {
@@ -36,6 +37,32 @@ namespace OpenBullet.ViewModels
             WordlistsCollection = new ObservableCollection<Wordlist>();
             RefreshList();
         }
+
+        #region Filters
+        private string searchString = "";
+        public string SearchString
+        {
+            get => searchString;
+            set
+            {
+                searchString = value;
+                OnPropertyChanged();
+                CollectionViewSource.GetDefaultView(WordlistsCollection).Refresh();
+                OnPropertyChanged(nameof(Total));
+            }
+        }
+
+        public void HookFilters()
+        {
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(WordlistsCollection);
+            view.Filter = WordlistsFilter;
+        }
+
+        private bool WordlistsFilter(object item)
+        {
+            return (item as Wordlist).Name.ToLower().Contains(searchString.ToLower());
+        }
+        #endregion
 
         public Wordlist GetWordlistByName(string name)
         {
@@ -73,6 +100,7 @@ namespace OpenBullet.ViewModels
         public void RefreshList()
         {
             WordlistsCollection = new ObservableCollection<Wordlist>(_repo.Get());
+            HookFilters();
         }
 
         // Update

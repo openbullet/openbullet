@@ -39,7 +39,13 @@
                     <TextBlock VerticalAlignment="Center" Margin="5 0">Delete Not Found</TextBlock>
                 </StackPanel>
             </Button>
-            <Label Content="TIP: You can drag and drop files into the window to automatically import multiple lists at once." FontSize="8"/>
+            <TextBox x:Name="filterTextbox" Text="{Binding SearchString}" Margin="10 0 0 0" Width="150" KeyDown="filterTextbox_KeyDown"/>
+            <Button x:Name="searchButton" Click="searchButton_Click" >
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Images/Icons/search.png" Width="20" />
+                    <TextBlock VerticalAlignment="Center" Margin="5 0">Search</TextBlock>
+                </StackPanel>
+            </Button>
         </StackPanel>
 
         <ListView x:Name="wordlistListView" Grid.Row="1" Foreground="{DynamicResource ForegroundMain}" Background="Transparent" ItemsSource="{Binding Path=WordlistsCollection}" SelectionMode="Extended" BorderThickness="1" AllowDrop="True" Drop="wordlistListViewDrop">
