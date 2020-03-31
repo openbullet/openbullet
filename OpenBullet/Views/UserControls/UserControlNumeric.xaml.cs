@@ -1,4 +1,7 @@
 ﻿using OpenBullet.Plugins;
+using RuriLib.ViewModels;
+using System;
+using System.ComponentModel;
 using System.Windows.Controls;
 
 namespace OpenBullet.Views.UserControls
@@ -8,28 +11,41 @@ namespace OpenBullet.Views.UserControls
     /// </summary>
     public partial class UserControlNumeric : UserControl, IControl
     {
-        public int Value { get; set; }
+        private ViewModelBase viewModel;
+
         public int Minimum { get; set; }
         public int Maximum { get; set; }
 
-        public UserControlNumeric(int defaultValue, int minimum, int maximum)
+        public UserControlNumeric(int defaultValue, int minimum, int maximum, ViewModelBase viewModel = null)
         {
             InitializeComponent();
             DataContext = this;
 
-            Value = defaultValue;
             Minimum = minimum;
             Maximum = maximum;
+
+            SetValue(defaultValue);
+
+            this.viewModel = viewModel;
+            if (viewModel != null)
+            {
+                viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            }
+        }
+
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            SetValue(viewModel.GetType().GetProperty(e.PropertyName).GetValue(viewModel));
         }
 
         public dynamic GetValue()
         {
-            return Value;
+            return valueNumeric.Value;
         }
 
         public void SetValue(dynamic value)
         {
-            Value = (int)value;
+            valueNumeric.Value = (int)value;
         }
     }
 }

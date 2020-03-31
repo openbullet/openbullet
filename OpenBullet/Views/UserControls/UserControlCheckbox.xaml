@@ -12,6 +12,6 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <CheckBox Grid.Column="0" IsChecked="{Binding Value}" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+        <CheckBox x:Name="valueCheckbox" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
     </Grid>
 </UserControl>

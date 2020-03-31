@@ -13,6 +13,6 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <xctk:IntegerUpDown Grid.Column="0" Width="100" Name="myUpDownControl" Value="{Binding Value}" Minimum="{Binding Minimum}" Maximum="{Binding Maximum}" />
+        <xctk:IntegerUpDown Grid.Column="0" Width="100" Name="valueNumeric" Minimum="{Binding Minimum}" Maximum="{Binding Maximum}" />
     </Grid>
 </UserControl>

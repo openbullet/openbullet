@@ -12,6 +12,6 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <ComboBox Grid.Column="0" Width="250" x:Name="Dropdown" VerticalContentAlignment="Center" />
+        <ComboBox Grid.Column="0" Width="250" x:Name="valueDropdown" VerticalContentAlignment="Center" />
     </Grid>
 </UserControl>

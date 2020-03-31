@@ -1,5 +1,7 @@
 ﻿using OpenBullet.Plugins;
+using RuriLib.ViewModels;
 using System;
+using System.ComponentModel;
 using System.Windows.Controls;
 
 namespace OpenBullet.Views.UserControls
@@ -9,23 +11,37 @@ namespace OpenBullet.Views.UserControls
     /// </summary>
     public partial class UserControlTextMulti : UserControl, IControl
     {
-        public UserControlTextMulti(string[] value)
+        private ViewModelBase viewModel;
+
+        public UserControlTextMulti(string[] defaultValue, bool readOnly = false, ViewModelBase viewModel = null)
         {
             InitializeComponent();
             DataContext = this;
+            valueTextbox.IsReadOnly = readOnly;
 
-            SetValue(value);
+            SetValue(defaultValue);
+
+            this.viewModel = viewModel;
+            if (viewModel != null)
+            {
+                viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            }
+        }
+
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            SetValue(viewModel.GetType().GetProperty(e.PropertyName).GetValue(viewModel));
         }
 
         public dynamic GetValue()
         {
-            return Box.Text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+            return valueTextbox.Text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
         }
 
         public void SetValue(dynamic value)
         {
             var val = (string[])value;
-            Box.Text = string.Join(Environment.NewLine, val);
+            valueTextbox.Text = string.Join(Environment.NewLine, val);
         }
     }
 }
