@@ -284,6 +284,10 @@ namespace RuriLib
                 data.Log(new LogEntry(clearance + Environment.NewLine + cfduid + Environment.NewLine, Colors.White));
             }
 
+            // Get address
+            data.Address = response.RequestMessage.RequestUri.AbsoluteUri;
+            if (PrintResponseInfo) data.Log(new LogEntry($"Address: {data.Address}", Colors.Cyan));
+
             // Get code
             data.ResponseCode = ((int)response.StatusCode).ToString();
             if (PrintResponseInfo) data.Log(new LogEntry($"Response code: {data.ResponseCode}", Colors.Cyan));
