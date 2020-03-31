@@ -3,8 +3,6 @@ using OpenBullet.Views.Main.Runner;
 using OpenBullet.Views.UserControls;
 using RuriLib.Models;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -21,12 +19,15 @@ namespace OpenBullet
         private GridViewColumnHeader listViewSortCol = null;
         private SortAdorner listViewSortAdorner = null;
         object Caller { get; set; }
+        WordlistManagerViewModel vm = null;
 
         public DialogSelectWordlist(object caller)
         {
-            InitializeComponent();
             Caller = caller;
-            DataContext = OB.WordlistManager;
+            vm = OB.WordlistManager;
+            DataContext = vm;
+
+            InitializeComponent();
         }
         
         private void selectButton_Click(object sender, RoutedEventArgs e)
@@ -87,6 +88,17 @@ namespace OpenBullet
                 ((MainDialog)Parent).Close();
             }
             catch { }
+        }
+
+        private void searchButton_Click(object sender, RoutedEventArgs e)
+        {
+            vm.SearchString = filterTextbox.Text;
+        }
+
+        private void filterTextbox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+                searchButton_Click(this, null);
         }
     }
 }
