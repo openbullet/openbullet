@@ -12,6 +12,7 @@
     <Page.Resources>
         <ContextMenu x:Key="ItemContextMenu">
             <MenuItem x:Name="copySelectedProxies" Header="Copy Selected Proxies" Click="copySelectedProxies_Click"/>
+            <MenuItem x:Name="copySelectedProxiesFull" Header="Copy Selected Proxies (with type and credentials)" Click="copySelectedProxiesFull_Click"/>
         </ContextMenu>
     </Page.Resources>
 
