@@ -29,6 +29,10 @@ namespace RuriLib
         /// <summary>Whether to print the full response info to the log.</summary>
         public bool PrintResponseInfo { get { return printResponseInfo; } set { printResponseInfo = value; OnPropertyChanged(); } }
 
+        private bool autoRedirect = false;
+        /// <summary>Whether to enable auto-redirect (situational, depends on site).</summary>
+        public bool AutoRedirect { get { return autoRedirect; } set { autoRedirect = value; OnPropertyChanged(); } }
+
         private SecurityProtocol securityProtocol = SecurityProtocol.SystemDefault;
         /// <summary>The security protocol(s) to use for the HTTPS request.</summary>
         public SecurityProtocol SecurityProtocol { get { return securityProtocol; } set { securityProtocol = value; OnPropertyChanged(); } }
@@ -63,8 +67,9 @@ namespace RuriLib
                 UserAgent = LineParser.ParseLiteral(ref input, "UA");
             }
 
-            if (input != "" && LineParser.ParseToken(ref input, TokenType.Parameter, false, true) == "SECPROTO")
+            if (input != "" && LineParser.ParseToken(ref input, TokenType.Parameter, false, false) == "SECPROTO")
             {
+                LineParser.ParseToken(ref input, TokenType.Parameter, true);
                 SecurityProtocol = LineParser.ParseEnum(ref input, "Security Protocol", typeof(SecurityProtocol));
             }
 
@@ -83,7 +88,8 @@ namespace RuriLib
             writer
                 .Label(Label)
                 .Token("BYPASSCF")
-                .Literal(Url);
+                .Literal(Url)
+                .Literal(UserAgent, nameof(UserAgent));
 
             if (SecurityProtocol != SecurityProtocol.SystemDefault)
             {
@@ -93,8 +99,8 @@ namespace RuriLib
             }
                 
             writer
-                .Literal(UserAgent, "UserAgent")
-                .Boolean(PrintResponseInfo, "PrintResponseInfo");
+                .Boolean(PrintResponseInfo, nameof(PrintResponseInfo))
+                .Boolean(AutoRedirect, nameof(AutoRedirect));
             return writer.ToString();
         }
 
@@ -117,8 +123,6 @@ namespace RuriLib
 
             var localUrl = ReplaceValues(url, data);
             var uri = new Uri(localUrl);
-
-            var timeout = data.GlobalSettings.General.RequestTimeout * 1000;
 
             // Initialize the captcha provider
             // TODO: Add more providers by implementing the ICaptchaProvider interface on the missing ones
@@ -152,7 +156,7 @@ namespace RuriLib
             // Initialize the http handler
             HttpClientHandler handler = new HttpClientHandler
             {
-                AllowAutoRedirect = true,
+                AllowAutoRedirect = AutoRedirect,
                 CookieContainer = cookies,
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
                 SslProtocols = SecurityProtocol.ToSslProtocols()
@@ -177,7 +181,7 @@ namespace RuriLib
 
             // Initialize the http client
             HttpClient http = new HttpClient(handler);
-            http.Timeout = TimeSpan.FromMinutes(timeout);
+            http.Timeout = TimeSpan.FromSeconds(data.GlobalSettings.General.RequestTimeout);
             http.DefaultRequestHeaders.Add("User-Agent", ReplaceValues(UserAgent, data));
 
             SolveResult result = new SolveResult();
@@ -283,6 +287,10 @@ namespace RuriLib
                 data.Log(new LogEntry("Got Cloudflare clearance!", Colors.GreenYellow));
                 data.Log(new LogEntry(clearance + Environment.NewLine + cfduid + Environment.NewLine, Colors.White));
             }
+
+            // Get address
+            data.Address = response.RequestMessage.RequestUri.AbsoluteUri;
+            if (PrintResponseInfo) data.Log(new LogEntry($"Address: {data.Address}", Colors.Cyan));
 
             // Get code
             data.ResponseCode = ((int)response.StatusCode).ToString();
