@@ -24,7 +24,7 @@
                 <LineBreak/><LineBreak/>
                 <Span Foreground="{DynamicResource ForegroundBad}"><Bold>IT IS ILLEGAL</Bold> to use this program to perform (D)DoS or credential stuffing attacks on sites you don't own!</Span>
                 <LineBreak/><LineBreak/>
-                Special thanks to the beta testers:
+                Special thanks to my collaborators:
                 <LineBreak/><LineBreak/>
                 • demiurgo
                 <LineBreak/>
