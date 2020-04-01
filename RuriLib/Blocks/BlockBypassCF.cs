@@ -88,7 +88,8 @@ namespace RuriLib
             writer
                 .Label(Label)
                 .Token("BYPASSCF")
-                .Literal(Url);
+                .Literal(Url)
+                .Literal(UserAgent, nameof(UserAgent));
 
             if (SecurityProtocol != SecurityProtocol.SystemDefault)
             {
@@ -98,7 +99,6 @@ namespace RuriLib
             }
                 
             writer
-                .Literal(UserAgent, nameof(UserAgent))
                 .Boolean(PrintResponseInfo, nameof(PrintResponseInfo))
                 .Boolean(AutoRedirect, nameof(AutoRedirect));
             return writer.ToString();
