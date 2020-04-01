@@ -29,6 +29,10 @@ namespace RuriLib
         /// <summary>Whether to print the full response info to the log.</summary>
         public bool PrintResponseInfo { get { return printResponseInfo; } set { printResponseInfo = value; OnPropertyChanged(); } }
 
+        private bool autoRedirect = false;
+        /// <summary>Whether to enable auto-redirect (situational, depends on site).</summary>
+        public bool AutoRedirect { get { return autoRedirect; } set { autoRedirect = value; OnPropertyChanged(); } }
+
         private SecurityProtocol securityProtocol = SecurityProtocol.SystemDefault;
         /// <summary>The security protocol(s) to use for the HTTPS request.</summary>
         public SecurityProtocol SecurityProtocol { get { return securityProtocol; } set { securityProtocol = value; OnPropertyChanged(); } }
@@ -95,7 +99,8 @@ namespace RuriLib
                 
             writer
                 .Literal(UserAgent, nameof(UserAgent))
-                .Boolean(PrintResponseInfo, nameof(PrintResponseInfo));
+                .Boolean(PrintResponseInfo, nameof(PrintResponseInfo))
+                .Boolean(AutoRedirect, nameof(AutoRedirect));
             return writer.ToString();
         }
 
@@ -153,7 +158,7 @@ namespace RuriLib
             // Initialize the http handler
             HttpClientHandler handler = new HttpClientHandler
             {
-                AllowAutoRedirect = true,
+                AllowAutoRedirect = AutoRedirect,
                 CookieContainer = cookies,
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
                 SslProtocols = SecurityProtocol.ToSslProtocols()

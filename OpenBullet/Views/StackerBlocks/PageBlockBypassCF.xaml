@@ -27,6 +27,7 @@
                 <ComboBox x:Name="securityProtocolCombobox" SelectionChanged="securityProtocolCombobox_SelectionChanged"/>
             </DockPanel>
             <CheckBox IsChecked="{Binding PrintResponseInfo}" Content="Print Response Info" VerticalContentAlignment="Center" />
+            <CheckBox IsChecked="{Binding AutoRedirect}" Content="Auto Redirect (might not work on some sites)" VerticalContentAlignment="Center" />
 
             <TextBlock
                    FontSize="12" 
