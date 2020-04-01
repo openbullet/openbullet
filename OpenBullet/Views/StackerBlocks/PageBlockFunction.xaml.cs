@@ -116,25 +116,29 @@ namespace OpenBullet.Views.StackerBlocks
                     break;
                     */
 
-                case BlockFunction.Function.CharAt:
+                case BlockFunction.Function.RSAPKCS1PAD2:
                     functionTabControl.SelectedIndex = 11;
                     break;
 
-                case BlockFunction.Function.Substring:
+                case BlockFunction.Function.CharAt:
                     functionTabControl.SelectedIndex = 12;
                     break;
 
-                case BlockFunction.Function.GetRandomUA:
+                case BlockFunction.Function.Substring:
                     functionTabControl.SelectedIndex = 13;
+                    break;
+
+                case BlockFunction.Function.GetRandomUA:
+                    functionTabControl.SelectedIndex = 14;
                     break;
 
                 case BlockFunction.Function.AESEncrypt:
                 case BlockFunction.Function.AESDecrypt:
-                    functionTabControl.SelectedIndex = 14;
+                    functionTabControl.SelectedIndex = 15;
                     break;
 
                 case BlockFunction.Function.PBKDF2PKCS5:
-                    functionTabControl.SelectedIndex = 15;
+                    functionTabControl.SelectedIndex = 16;
                     break;
             }
         }
@@ -149,6 +153,7 @@ namespace OpenBullet.Views.StackerBlocks
             { "Compute", "Calculates the value of a math expression, for example (6+3)*5 will return 45." },
             { "RSAEncrypt", "Encrypts data with RSA. All parameters must be provided as base64 strings" },
             { "RSADecrypt", "Decrypts data with RSA. All parameters must be provided as base64 strings" },
+            { "RSAPKCS1PAD" , "Encrypts data with RSA Pkcs1Pad2. Modulus and exponent must be provided as HEX strings."},
             { "Delay", "Write the amount of MILLISECONDS you want to wait in the input field" },
             { "CharAt", "Returns the character at the specified index of the string in the input field" },
             { "AESEncrypt", "Encrypts data with AES. All parameters must be provided as base64 strings. Uses SHA-256 to get a 256 bit key" },

@@ -117,6 +117,9 @@ namespace RuriLib
             // <summary>Decrypts a string with RSA.</summary>
             // RSADecrypt,
 
+            /// <summary>Encrypts a string with RSA PKCS1PAD2.</summary>
+            RSAPKCS1PAD2,
+
             /// <summary>Waits a given amount of milliseconds.</summary>
             Delay,
 
@@ -423,14 +426,19 @@ namespace RuriLib
                         LineParser.SetBool(ref input, this);
                     break;
 
-                    /*
-                case Function.RSADecrypt:
+                /*
+            case Function.RSADecrypt:
+                RsaN = LineParser.ParseLiteral(ref input, "Public Key Modulus");
+                RsaD = LineParser.ParseLiteral(ref input, "Private Key Exponent");
+                if (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                    LineParser.SetBool(ref input, this);
+                break;
+                */
+
+                case Function.RSAPKCS1PAD2:
                     RsaN = LineParser.ParseLiteral(ref input, "Public Key Modulus");
-                    RsaD = LineParser.ParseLiteral(ref input, "Private Key Exponent");
-                    if (LineParser.Lookahead(ref input) == TokenType.Boolean)
-                        LineParser.SetBool(ref input, this);
+                    RsaE = LineParser.ParseLiteral(ref input, "Public Key Exponent");
                     break;
-                    */
 
                 case Function.GetRandomUA:
                     if (LineParser.ParseToken(ref input, TokenType.Parameter, false, false) == "BROWSER")
@@ -578,6 +586,12 @@ namespace RuriLib
                         .Boolean(RsaOAEP, "RsaOAEP");
                     break;
                     */
+
+                case Function.RSAPKCS1PAD2:
+                    writer
+                        .Literal(RsaN)
+                        .Literal(RsaE);
+                    break;
 
                 case Function.GetRandomUA:
                     if (UserAgentSpecifyBrowser)
@@ -791,6 +805,14 @@ namespace RuriLib
                             );
                         break;
                         */
+
+                    case Function.RSAPKCS1PAD2:
+                        outputString = Crypto.RSAPkcs1Pad2(
+                            localInputString,
+                            ReplaceValues(RsaN, data),
+                            ReplaceValues(RsaE, data)
+                            );
+                        break;
 
                     case Function.Delay:
                         try { Thread.Sleep(int.Parse(localInputString)); } catch { }
