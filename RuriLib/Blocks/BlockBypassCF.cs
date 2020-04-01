@@ -124,8 +124,6 @@ namespace RuriLib
             var localUrl = ReplaceValues(url, data);
             var uri = new Uri(localUrl);
 
-            var timeout = data.GlobalSettings.General.RequestTimeout * 1000;
-
             // Initialize the captcha provider
             // TODO: Add more providers by implementing the ICaptchaProvider interface on the missing ones
             ICaptchaProvider provider = null;
@@ -183,7 +181,7 @@ namespace RuriLib
 
             // Initialize the http client
             HttpClient http = new HttpClient(handler);
-            http.Timeout = TimeSpan.FromMinutes(timeout);
+            http.Timeout = TimeSpan.FromSeconds(data.GlobalSettings.General.RequestTimeout);
             http.DefaultRequestHeaders.Add("User-Agent", ReplaceValues(UserAgent, data));
 
             SolveResult result = new SolveResult();
