@@ -63,8 +63,9 @@ namespace RuriLib
                 UserAgent = LineParser.ParseLiteral(ref input, "UA");
             }
 
-            if (input != "" && LineParser.ParseToken(ref input, TokenType.Parameter, false, true) == "SECPROTO")
+            if (input != "" && LineParser.ParseToken(ref input, TokenType.Parameter, false, false) == "SECPROTO")
             {
+                LineParser.ParseToken(ref input, TokenType.Parameter, true);
                 SecurityProtocol = LineParser.ParseEnum(ref input, "Security Protocol", typeof(SecurityProtocol));
             }
 
@@ -93,8 +94,8 @@ namespace RuriLib
             }
                 
             writer
-                .Literal(UserAgent, "UserAgent")
-                .Boolean(PrintResponseInfo, "PrintResponseInfo");
+                .Literal(UserAgent, nameof(UserAgent))
+                .Boolean(PrintResponseInfo, nameof(PrintResponseInfo));
             return writer.ToString();
         }
 
