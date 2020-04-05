@@ -31,9 +31,6 @@ namespace RuriLib.CaptchaServices
         /// <summary>The service provided by http://www.imagetyperz.com/</summary>
         ImageTypers,
 
-        /// <summary>The service provided by https://www.solverecaptcha.com/</summary>
-        SolveRecaptcha,
-
         /// <summary>The service provided by https://2captcha.com/</summary>
         TwoCaptcha,
 
@@ -78,9 +75,6 @@ namespace RuriLib.CaptchaServices
 
                 case ServiceType.AZCaptcha:
                     return new AZCaptcha(cs.AZCapToken, cs.Timeout);
-
-                case ServiceType.SolveRecaptcha:
-                    return new SolveReCaptcha(cs.SRUserId, cs.SRToken, cs.Timeout);
 
                 case ServiceType.CaptchasIO:
                     return new CaptchasIO(cs.CIOToken, cs.Timeout);

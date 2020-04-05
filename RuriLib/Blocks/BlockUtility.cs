@@ -1,5 +1,6 @@
 ﻿using RuriLib.Functions.Conditions;
 using RuriLib.Functions.Conversions;
+using RuriLib.Functions.Files;
 using RuriLib.LS;
 using RuriLib.Models;
 using RuriLib.ViewModels;
@@ -28,7 +29,10 @@ namespace RuriLib
         Conversion,
 
         /// <summary>The group of actions that interact with files.</summary>
-        File
+        File,
+
+        /// <summary>The group of actions that interact with folders.</summary>
+        Folder
     }
 
     /// <summary>
@@ -90,6 +94,9 @@ namespace RuriLib
     /// </summary>
     public enum FileAction
     {
+        /// <summary>Checks if a file exists.</summary>
+        Exists,
+
         /// <summary>Reads a file to a single variable.</summary>
         Read,
 
@@ -106,7 +113,25 @@ namespace RuriLib
         Append,
 
         /// <summary>Appends a list variable to a file.</summary>
-        AppendLines
+        AppendLines,
+
+        /// <summary>Copies a file to a new file.</summary>
+        Copy,
+
+        /// <summary>Moves a file to a different location.</summary>
+        Move
+    }
+
+    /// <summary>
+    /// Actions that can be performed on folders.
+    /// </summary>
+    public enum FolderAction
+    {
+        /// <summary>Checks if a folder exists.</summary>
+        Exists,
+
+        /// <summary>Creates a folder.</summary>
+        Create
     }
 
     /// <summary>
@@ -200,12 +225,21 @@ namespace RuriLib
 
         // Files
         private string filePath = "test.txt";
-        /// <summary>The path to the file to read/write.</summary>
+        /// <summary>The path to the file to interact with.</summary>
         public string FilePath { get { return filePath; } set { filePath = value; OnPropertyChanged(); } }
 
         private FileAction fileAction = FileAction.Read;
         /// <summary>The action to be performed on the file.</summary>
         public FileAction FileAction { get { return fileAction; } set { fileAction = value; OnPropertyChanged(); } }
+
+        // Folders
+        private string folderPath = "TestFolder";
+        /// <summary>The path to the folder to interact with.</summary>
+        public string FolderPath { get { return folderPath; } set { folderPath = value; OnPropertyChanged(); } }
+
+        private FolderAction folderAction = FolderAction.Create;
+        /// <summary>The action to be performed on the folder.</summary>
+        public FolderAction FolderAction { get { return folderAction; } set { folderAction = value; OnPropertyChanged(); } }
 
         /// <summary>
         /// Creates a Utility block.
@@ -297,9 +331,16 @@ namespace RuriLib
                         case FileAction.WriteLines:
                         case FileAction.Append:
                         case FileAction.AppendLines:
+                        case FileAction.Copy:
+                        case FileAction.Move:
                             InputString = LineParser.ParseLiteral(ref input, "Input String");
                             break;
                     }
+                    break;
+
+                case UtilityGroup.Folder:
+                    FolderPath = LineParser.ParseLiteral(ref input, "Folder Name");
+                    FolderAction = (FolderAction)LineParser.ParseEnum(ref input, "Folder Action", typeof(FolderAction));
                     break;
             }
 
@@ -410,10 +451,18 @@ namespace RuriLib
                         case FileAction.WriteLines:
                         case FileAction.Append:
                         case FileAction.AppendLines:
+                        case FileAction.Copy:
+                        case FileAction.Move:
                             writer
                                 .Literal(InputString);
                             break;
                     }
+                    break;
+
+                case UtilityGroup.Folder:
+                    writer
+                        .Literal(FolderPath)
+                        .Token(FolderAction);
                     break;
             }
 
@@ -433,10 +482,10 @@ namespace RuriLib
 
             try
             {
+                var replacedInput = ReplaceValues(inputString, data);
                 switch (group)
                 {
                     case UtilityGroup.List:
-
                         var list = data.Variables.GetList(listName);
                         var list2 = data.Variables.GetList(secondListName);
                         var item = ReplaceValues(listItem, data);
@@ -532,7 +581,7 @@ namespace RuriLib
                             default:
                                 break;
                         }
-                        data.Log(new LogEntry($"Executed action {listAction} on file {listName}", Colors.White));
+                        data.Log(new LogEntry($"Executed action {listAction} on file {listName}", isCapture ? Colors.Tomato : Colors.Yellow));
                         break;
 
                     case UtilityGroup.Variable:
@@ -544,46 +593,96 @@ namespace RuriLib
                                 data.Variables.Set(new CVar(variableName, single.Split(new string[] { ReplaceValues(splitSeparator, data) }, StringSplitOptions.None).ToList(), isCapture));
                                 break;
                         }
-                        data.Log(new LogEntry($"Executed action {varAction} on variable {varName}", Colors.White));
+                        data.Log(new LogEntry($"Executed action {varAction} on variable {varName}", isCapture ? Colors.Tomato : Colors.Yellow));
                         break;
 
                     case UtilityGroup.Conversion:
-                        byte[] convertedBytes = ReplaceValues(inputString, data).ConvertFrom(conversionFrom);
-                        data.Variables.Set(new CVar(variableName, convertedBytes.ConvertTo(conversionTo), isCapture));
-                        data.Log(new LogEntry($"Converted input {conversionFrom} to {conversionTo}", Colors.White));
+                        byte[] conversionInputBytes = replacedInput.ConvertFrom(conversionFrom);
+                        var conversionResult = conversionInputBytes.ConvertTo(conversionTo);
+                        data.Variables.Set(new CVar(variableName, conversionResult, isCapture));
+                        data.Log(new LogEntry($"Executed conversion {conversionFrom} to {conversionTo} on input {replacedInput} with outcome {conversionResult}", isCapture ? Colors.Tomato : Colors.Yellow));
                         break;
 
                     case UtilityGroup.File:
                         var file = ReplaceValues(filePath, data);
-                        var input = ReplaceValues(inputString, data).Replace("\\r\\n", "\r\n").Replace("\\n", "\n");
-                        var inputs = ReplaceValuesRecursive(inputString, data).Select(i => i.Replace("\\r\\n", "\r\n").Replace("\\n", "\n"));
+                        Files.ThrowIfNotInCWD(file);
+
                         switch (fileAction)
                         {
+                            case FileAction.Exists:
+                                data.Variables.Set(new CVar(variableName, File.Exists(file).ToString(), isCapture));
+                                break;
+
                             case FileAction.Read:
-                                data.Variables.Set(new CVar(variableName, File.ReadAllText(file), isCapture));
+                                lock (FileLocker.GetLock(file))
+                                    data.Variables.Set(new CVar(variableName, File.ReadAllText(file), isCapture));
                                 break;
 
                             case FileAction.ReadLines:
-                                data.Variables.Set(new CVar(variableName, File.ReadAllLines(file).ToList(), isCapture));
+                                lock (FileLocker.GetLock(file))
+                                    data.Variables.Set(new CVar(variableName, File.ReadAllLines(file).ToList(), isCapture));
                                 break;
 
                             case FileAction.Write:
-                                File.WriteAllText(file, input);
+                                Files.CreatePath(file);
+                                lock (FileLocker.GetLock(file))
+                                    File.WriteAllText(file, replacedInput.Unescape());
                                 break;
 
                             case FileAction.WriteLines:
-                                File.WriteAllLines(file, inputs);
+                                Files.CreatePath(file);
+                                lock (FileLocker.GetLock(file))
+                                    File.WriteAllLines(file, ReplaceValuesRecursive(inputString, data).Select(i => i.Unescape()));
                                 break;
 
                             case FileAction.Append:
-                                File.AppendAllText(file, input);
+                                Files.CreatePath(file);
+                                lock (FileLocker.GetLock(file))
+                                    File.AppendAllText(file, replacedInput.Unescape());
                                 break;
 
                             case FileAction.AppendLines:
-                                File.AppendAllLines(file, inputs);
+                                Files.CreatePath(file);
+                                lock (FileLocker.GetLock(file))
+                                    File.AppendAllLines(file, ReplaceValuesRecursive(inputString, data).Select(i => i.Unescape()));
+                                break;
+
+                            case FileAction.Copy:
+                                var fileCopyLocation = ReplaceValues(inputString, data);
+                                Files.ThrowIfNotInCWD(fileCopyLocation);
+                                Files.CreatePath(fileCopyLocation);
+                                lock (FileLocker.GetLock(file))
+                                    lock (FileLocker.GetLock(fileCopyLocation))
+                                        File.Copy(file, fileCopyLocation);
+                                break;
+
+                            case FileAction.Move:
+                                var fileMoveLocation = ReplaceValues(inputString, data);
+                                Files.ThrowIfNotInCWD(fileMoveLocation);
+                                Files.CreatePath(fileMoveLocation);
+                                lock (FileLocker.GetLock(file))
+                                    lock (FileLocker.GetLock(fileMoveLocation))
+                                        File.Move(file, fileMoveLocation);
                                 break;
                         }
-                        data.Log(new LogEntry($"Executed action {fileAction} on file {file}", Colors.White));
+                        data.Log(new LogEntry($"Executed action {fileAction} on file {file}", isCapture ? Colors.Tomato : Colors.Yellow));
+                        break;
+
+                    case UtilityGroup.Folder:
+                        var folder = ReplaceValues(folderPath, data);
+                        Files.ThrowIfNotInCWD(folder);
+
+                        switch (folderAction)
+                        {
+                            case FolderAction.Exists:
+                                data.Variables.Set(new CVar(variableName, Directory.Exists(folder).ToString(), isCapture));
+                                break;
+
+                            case FolderAction.Create:
+                                data.Variables.Set(new CVar(variableName, Directory.CreateDirectory(folder).ToString(), isCapture));
+                                break;
+                        }
+                        data.Log(new LogEntry($"Executed action {folderAction} on folder {folder}", isCapture ? Colors.Tomato : Colors.Yellow));
                         break;
 
                     default:

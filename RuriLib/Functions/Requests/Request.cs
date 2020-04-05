@@ -14,6 +14,27 @@ using System.Windows.Media;
 namespace RuriLib.Functions.Requests
 {
     /// <summary>
+    /// Enumerates the supported security protocols.
+    /// </summary>
+    public enum SecurityProtocol
+    {
+        /// <summary>Let the operative system decide and block the unsecure protocols.</summary>
+        SystemDefault,
+
+        /// <summary>The SSL3 protocol (obsolete).</summary>
+        SSL3,
+
+        /// <summary>The TLS 1.0 protocol (obsolete).</summary>
+        TLS10,
+
+        /// <summary>The TLS 1.1 protocol.</summary>
+        TLS11,
+
+        /// <summary>The TLS 1.2 protocol.</summary>
+        TLS12
+    }
+
+    /// <summary>
     /// Provides methods to easily perform Extreme.NET requests.
     /// </summary>
     public class Request
@@ -42,11 +63,13 @@ namespace RuriLib.Functions.Requests
         /// Sets up the request options.
         /// </summary>
         /// <param name="settings">The RuriLib settings</param>
+        /// <param name="securityProtocol">The security protocol to use</param>
         /// <param name="autoRedirect">Whether to perform automatic redirection</param>
         /// <param name="acceptEncoding"></param>
         /// <param name="maxRedirects"></param>
         /// <returns></returns>
-        public Request Setup(RLSettingsViewModel settings, bool autoRedirect = true, int maxRedirects = 8, bool acceptEncoding = true)
+        public Request Setup(RLSettingsViewModel settings, SecurityProtocol securityProtocol = SecurityProtocol.SystemDefault,
+            bool autoRedirect = true, int maxRedirects = 8, bool acceptEncoding = true)
         {
             // Setup options
             timeout = settings.General.RequestTimeout * 1000;
@@ -57,6 +80,7 @@ namespace RuriLib.Functions.Requests
             request.ConnectTimeout = timeout;
             request.KeepAlive = true;
             request.MaximumAutomaticRedirections = maxRedirects;
+            request.SslProtocols = securityProtocol.ToSslProtocols();
 
             return this;
         }
@@ -74,7 +98,7 @@ namespace RuriLib.Functions.Requests
             HttpMethod method = HttpMethod.POST, bool encodeContent = false, List<LogEntry> log = null)
         {
             this.contentType = contentType;
-            var pData = Regex.Replace(postData, @"(?<!\\)\\n", Environment.NewLine).Replace(@"\\n", @"\n");
+            var pData = Regex.Replace(postData, @"(?<!\\)\\n", Environment.NewLine).Unescape();
 
             if (HttpRequest.CanContainRequestBody(method))
             {
@@ -135,8 +159,8 @@ namespace RuriLib.Functions.Requests
             {
                 if (c.Type == MultipartContentType.String)
                 {
-                    mContent.Add(new StringContent(c.Value), c.Name);
-                    if (log != null) log.Add(new LogEntry($"Content-Disposition: form-data; name=\"{c.Name}\"{Environment.NewLine}{Environment.NewLine}{c.Value}", Colors.MediumTurquoise));
+                    mContent.Add(new StringContent(c.Value.Unescape()), c.Name);
+                    if (log != null) log.Add(new LogEntry($"Content-Disposition: form-data; name=\"{c.Name}\"{Environment.NewLine}{Environment.NewLine}{c.Value.Unescape()}", Colors.MediumTurquoise));
                 }
                 else if (c.Type == MultipartContentType.File)
                 {
@@ -234,11 +258,9 @@ namespace RuriLib.Functions.Requests
         /// </summary>
         /// <param name="url">The URL</param>
         /// <param name="method">The HTTP method</param>
-        /// <param name="ignoreErrors">Whether to ignore response errors</param>
         /// <param name="log">The log (if any)</param>
         /// <returns>A 4-tuple containing Address, Response code, Headers and Cookies.</returns>
-        public (string, string, Dictionary<string, string>, Dictionary<string, string>) Perform(string url, HttpMethod method, 
-            bool ignoreErrors = false, List<LogEntry> log = null)
+        public (string, string, Dictionary<string, string>, Dictionary<string, string>) Perform(string url, HttpMethod method, List<LogEntry> log = null)
         {
             var address = "";
             var responseCode = "0";
@@ -295,7 +317,7 @@ namespace RuriLib.Functions.Requests
                     if (log != null) log.Add(new LogEntry("Status code: " + responseCode, Colors.Cyan));
                 }
 
-                if (!ignoreErrors) throw;
+                throw;
             }
 
             return (address, responseCode, headers, cookies);

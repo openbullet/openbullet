@@ -6,5 +6,5 @@
              xmlns:local="clr-namespace:OpenBullet.Views.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <TextBox Text="{Binding Path=Value, Mode=TwoWay}" VerticalContentAlignment="Center" />
+    <TextBox x:Name="valueTextbox" VerticalContentAlignment="Center" />
 </UserControl>

@@ -1,6 +1,7 @@
 ﻿using OpenBullet.Plugins;
 using PluginFramework;
 using RuriLib.Interfaces;
+using RuriLib.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,7 +20,7 @@ namespace OpenBullet.Views.UserControls
         public ObservableCollection<UserControl> Controls { get; set; } = new ObservableCollection<UserControl>();
         private List<PropertyInfo> ValidProperties { get; set; } = new List<PropertyInfo>();
 
-        public PluginControl(Type type, IApplication app)
+        public PluginControl(Type type, IApplication app, bool supportsPropertyChanged = false)
         {
             InitializeComponent();
             DataContext = this;
@@ -40,7 +41,8 @@ namespace OpenBullet.Views.UserControls
             foreach (var p in type.GetProperties().Where(p => Check.InputProperty(p)))
             {
                 ValidProperties.Add(p);
-                Controls.Add(Build.InputField(Plugin, p));
+                Controls.Add(Build.InputField(Plugin, p,
+                    supportsPropertyChanged ? (Plugin as ViewModelBase) : null));
             }
 
             // For each valid method, add button

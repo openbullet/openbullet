@@ -116,11 +116,12 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
+                <RowDefinition Height="5" />
                 <RowDefinition Height="150" />
             </Grid.RowDefinitions>
 
             <!-- Splitter -->
-            <GridSplitter Grid.Column="1" Grid.Row="0" Width="5" HorizontalAlignment="Stretch" />
+            <GridSplitter ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" Grid.Column="1" Grid.Row="0" Width="5" VerticalAlignment="Stretch" />
 
             <!-- Right Grid -->
             <Grid x:Name="rightGrid" Grid.Column="2" Grid.Row="0">
@@ -370,7 +371,7 @@
             </ListView>
 
             <!-- Bot Log Textbox -->
-            <Grid x:Name="bottomLeftGrid" Grid.Column="0" Grid.Row="1">
+            <Grid x:Name="bottomLeftGrid" Grid.Column="0" Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
@@ -406,9 +407,11 @@
                 </StackPanel>
             </Grid>
 
-
+            <!-- Splitter -->
+            <GridSplitter ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" Grid.Column="0" Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
+            
             <!-- Stats Grid -->
-            <Grid Grid.Column="2" Grid.Row="1">
+            <Grid Grid.Column="2" Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />

@@ -214,7 +214,19 @@ namespace RuriLib
                                 break;
 
                             default:
-                                keyActions.SendKeys(s);
+                                // List of available keys https://github.com/SeleniumHQ/selenium/blob/master/dotnet/src/webdriver/Keys.cs
+                                var keyFields = typeof(Keys).GetFields();
+                                var matchingField = keyFields.FirstOrDefault(f =>
+                                    $"<{f.Name}>".Equals(s, StringComparison.InvariantCultureIgnoreCase));
+
+                                if (matchingField != null)
+                                {
+                                    keyActions.SendKeys(matchingField.GetValue(null).ToString());
+                                }
+                                else 
+                                {
+                                    keyActions.SendKeys(s);
+                                }
                                 break;
                         }
                     }

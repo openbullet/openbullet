@@ -1,13 +1,9 @@
-﻿using LiteDB;
-using OpenBullet.ViewModels;
-using RuriLib;
+﻿using OpenBullet.ViewModels;
 using RuriLib.Models;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -29,8 +25,6 @@ namespace OpenBullet.Views.Main
             DataContext = vm;
 
             InitializeComponent();
-
-            vm.RefreshList();
         }
 
         public void AddWordlist(Wordlist wordlist)
@@ -78,6 +72,17 @@ namespace OpenBullet.Views.Main
         {
             OB.Logger.LogWarning(Components.WordlistManager, "Deleting wordlists with missing files.");
             vm.DeleteNotFound();
+        }
+
+        private void searchButton_Click(object sender, RoutedEventArgs e)
+        {
+            vm.SearchString = filterTextbox.Text;
+        }
+
+        private void filterTextbox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+                searchButton_Click(this, null);
         }
         #endregion
 

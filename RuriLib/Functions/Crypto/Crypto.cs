@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Globalization;
+using System.Numerics;
 
 namespace RuriLib.Functions.Crypto
 {
@@ -306,6 +308,68 @@ namespace RuriLib.Functions.Crypto
                 },
                 oaep
             );
+        }
+
+        /// <summary>
+        /// Encrypts a message using RSA with PKCS1PAD2 padding.
+        /// </summary>
+        /// <param name="message">The message as a UTF-8 string</param>
+        /// <param name="modulus">The public key's modulus as a HEX string</param>
+        /// <param name="exponent">The public key's exponent as a HEX string</param>
+        /// <returns>The encrypted message.</returns>
+        // Thanks to TheLittleTrain for this implementation.
+        public static string RSAPkcs1Pad2(string message, string modulus, string exponent)
+        {
+            // Convert the public key components to numbers
+            var n = HexToBigInteger(modulus);
+            var e = HexToBigInteger(exponent);
+
+            // (modulus.ToByteArray().Length - 1) * 8
+            //modulus has 256 bytes multiplied by 8 bits equals 2048
+            var encryptedNumber = Pkcs1Pad2(message, (2048 + 7) >> 3);
+
+            // And now, the RSA encryption
+            encryptedNumber = BigInteger.ModPow(encryptedNumber, e, n);
+
+            //Reverse number and convert to base64
+            var encryptedString = Convert.ToBase64String(encryptedNumber.ToByteArray().Reverse().ToArray());
+
+            return encryptedString;
+        }
+
+        private static BigInteger HexToBigInteger(string hex)
+        {
+            return BigInteger.Parse("00" + hex, NumberStyles.AllowHexSpecifier);
+        }
+
+        private static BigInteger Pkcs1Pad2(string data, int keySize)
+        {
+            if (keySize < data.Length + 11)
+                return new BigInteger();
+
+            var buffer = new byte[256];
+            var i = data.Length - 1;
+
+            while (i >= 0 && keySize > 0)
+            {
+                buffer[--keySize] = (byte)data[i--];
+            }
+
+            // Padding, I think
+            var random = new Random();
+            buffer[--keySize] = 0;
+            while (keySize > 2)
+            {
+                buffer[--keySize] = (byte)random.Next(1, 256);
+                //buffer[--keySize] = 5;
+            }
+
+            buffer[--keySize] = 2;
+            buffer[--keySize] = 0;
+
+            Array.Reverse(buffer);
+
+            return new BigInteger(buffer);
         }
         #endregion
 

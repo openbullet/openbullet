@@ -8,7 +8,6 @@ namespace OpenBullet.Plugins
 {
     public interface IControl
     {
-        string Name { get; set; }
         dynamic GetValue();
         void SetValue(dynamic value);
     }

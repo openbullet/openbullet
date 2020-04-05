@@ -49,6 +49,11 @@ namespace OpenBullet.Views.StackerBlocks
 
             fileActionCombobox.SelectedIndex = (int)block.FileAction;
 
+            foreach (var a in Enum.GetNames(typeof(FolderAction)))
+                folderActionCombobox.Items.Add(a);
+
+            folderActionCombobox.SelectedIndex = (int)block.FolderAction;
+
             foreach (var c in Enum.GetNames(typeof(Comparer)))
                 removeComparerCombobox.Items.Add(c);
 
@@ -79,6 +84,10 @@ namespace OpenBullet.Views.StackerBlocks
 
                 case UtilityGroup.File:
                     groupTabControl.SelectedIndex = 4;
+                    break;
+
+                case UtilityGroup.Folder:
+                    groupTabControl.SelectedIndex = 5;
                     break;
             }
         }
@@ -137,6 +146,11 @@ namespace OpenBullet.Views.StackerBlocks
         private void fileActionCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             block.FileAction = (FileAction)((ComboBox)e.OriginalSource).SelectedIndex;
+        }
+
+        private void folderActionCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            block.FolderAction = (FolderAction)((ComboBox)e.OriginalSource).SelectedIndex;
         }
 
         private void removeComparerCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)

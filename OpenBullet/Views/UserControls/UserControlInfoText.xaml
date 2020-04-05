@@ -6,5 +6,5 @@
              xmlns:local="clr-namespace:OpenBullet.Views.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Label Content="{Binding Path=Value, Mode=OneWay}" />
+    <Label x:Name="valueLabel" />
 </UserControl>

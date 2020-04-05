@@ -22,8 +22,12 @@
                 <Label Content="User Agent:" />
                 <TextBox Text="{Binding UserAgent, UpdateSourceTrigger=PropertyChanged}" />
             </DockPanel>
+            <DockPanel>
+                <Label Content="Security Protocol:"/>
+                <ComboBox x:Name="securityProtocolCombobox" SelectionChanged="securityProtocolCombobox_SelectionChanged"/>
+            </DockPanel>
             <CheckBox IsChecked="{Binding PrintResponseInfo}" Content="Print Response Info" VerticalContentAlignment="Center" />
-            <CheckBox IsChecked="{Binding ErrorOn302}" Content="Set Error Status on 302" VerticalContentAlignment="Center" />
+            <CheckBox IsChecked="{Binding AutoRedirect}" Content="Auto Redirect (might not work on some sites)" VerticalContentAlignment="Center" />
 
             <TextBlock
                    FontSize="12" 

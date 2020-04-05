@@ -35,6 +35,7 @@ namespace RuriLib.Runner
     /// <summary>
     /// Main class that handles all the multi-threaded checking of a Wordlist given a Config.
     /// </summary>
+    // TODO: Split this into partial classes
     public class RunnerViewModel : ViewModelBase, IRunnerMessaging, IRunner
     {
         #region Constructor
@@ -349,6 +350,7 @@ namespace RuriLib.Runner
             Config = config;
             if (setRecommended) BotsAmount = Clamp(config.Settings.SuggestedBots, 1, 200);
             OnPropertyChanged("ConfigName");
+            RaiseConfigChanged();
         }
 
         /// <summary>
@@ -360,6 +362,7 @@ namespace RuriLib.Runner
             Wordlist = wordlist;
             OnPropertyChanged("WordlistName");
             OnPropertyChanged("WordlistSize");
+            RaiseWordlistChanged();
         }
         #endregion
 
@@ -928,7 +931,7 @@ namespace RuriLib.Runner
                             RetryCount++;
                         }
 
-                        if (currentData.Retries < Settings.Proxies.BanLoopEvasion || Settings.Proxies.BanLoopEvasion == 0)
+                        if (ShouldTriggerEvasion(currentData.Retries))
                         {
                             currentData.Retries++;
                             goto GETPROXY;
@@ -1052,40 +1055,32 @@ namespace RuriLib.Runner
         #endregion
 
         #region Events
-        /// <summary>
-        /// Fired when a new message needs to be logged.
-        /// </summary>
+        /// <summary>Fired when a new message needs to be logged.</summary>
         public event Action<IRunnerMessaging, LogLevel, string, bool, int> MessageArrived;
 
-        /// <summary>
-        /// Fired when the Master Worker status changed.
-        /// </summary>
+        /// <summary>Fired when the Master Worker status changed.</summary>
         public event Action<IRunnerMessaging> WorkerStatusChanged;
 
-        /// <summary>
-        /// Fired when a Hit was found.
-        /// </summary>
+        /// <summary>Fired when a Hit was found.</summary>
         public event Action<IRunnerMessaging, Hit> FoundHit;
 
-        /// <summary>
-        /// Fired when proxies need to be reloaded.
-        /// </summary>
+        /// <summary>Fired when proxies need to be reloaded.</summary>
         public event Action<IRunnerMessaging> ReloadProxies;
 
-        /// <summary>
-        /// Fired when an Action could change the UI and needs to be dispatched to another thread (usually it's handled by the UI thread).
-        /// </summary>
+        /// <summary>/// Fired when an Action could change the UI and needs to be dispatched to another thread (usually it's handled by the UI thread).</summary>
         public event Action<IRunnerMessaging, Action> DispatchAction;
 
-        /// <summary>
-        /// Fired when the progress record needs to be saved to the Database.
-        /// </summary>
+        /// <summary>Fired when the progress record needs to be saved to the Database.</summary>
         public event Action<IRunnerMessaging> SaveProgress;
 
-        /// <summary>
-        /// Fired when custom inputs from the user are required.
-        /// </summary>
+        /// <summary>Fired when custom inputs from the user are required.</summary>
         public event Action<IRunnerMessaging> AskCustomInputs;
+
+        /// <summary>Fired when the currently selected Config changed.</summary>
+        public event Action<IRunnerMessaging> ConfigChanged;
+        
+        /// <summary>Fired when the currently selected Wordlist changed.</summary>
+        public event Action<IRunnerMessaging> WordlistChanged;
 
         private void RaiseMessageArrived(LogLevel level, string message, bool prompt = false, int timeout = 0)
         {
@@ -1121,6 +1116,16 @@ namespace RuriLib.Runner
         private void RaiseAskCustomInputs()
         {
             AskCustomInputs?.Invoke(this);
+        }
+
+        private void RaiseConfigChanged()
+        {
+            ConfigChanged?.Invoke(this);
+        }
+
+        private void RaiseWordlistChanged()
+        {
+            WordlistChanged?.Invoke(this);
         }
         #endregion
 
@@ -1263,6 +1268,15 @@ namespace RuriLib.Runner
             proxies.AddRange(lines.Select(l => new CProxy(l, type)));
 
             return proxies;
+        }
+
+        private bool ShouldTriggerEvasion(int retries)
+        {
+            var evasionValue = Config.Settings.BanLoopEvasionOverride == -1 
+                ? Settings.Proxies.BanLoopEvasion 
+                : Config.Settings.BanLoopEvasionOverride;
+            
+            return retries < evasionValue || evasionValue == 0;
         }
         #endregion
 

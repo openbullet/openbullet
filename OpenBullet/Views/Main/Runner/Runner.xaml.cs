@@ -58,7 +58,7 @@ namespace OpenBullet.Views.Main.Runner
             {
                 OB.Logger.LogInfo(Components.About, "Changed the Runner interface");
                 Grid.SetColumn(rightGrid, 0);
-                Grid.SetRow(rightGrid, 1);
+                Grid.SetRow(rightGrid, 2);
                 Grid.SetColumn(bottomLeftGrid, 2);
                 Grid.SetRow(bottomLeftGrid, 0);
             }
@@ -320,42 +320,6 @@ namespace OpenBullet.Views.Main.Runner
         }
         #endregion
 
-        #region Records
-        private void RetrieveRecord()
-        {
-            if (vm.Wordlist == null || vm.Config == null)
-                return;
-
-            using (var db = new LiteDatabase(OB.dataBaseFile))
-            {
-                var record = db.GetCollection<Record>("records").FindOne(r => r.ConfigName == vm.ConfigName && r.WordlistLocation == vm.Wordlist.Path);
-                if (record != null)
-                {
-                    vm.StartingPoint = record.Checkpoint;
-                    OB.Logger.LogInfo(Components.Runner, "Retrieved record from the DB for wordlist '" + vm.Wordlist.Name + "' and config '" + vm.ConfigName + $"' (set {vm.StartingPoint} as starting point)");
-                }
-                else
-                {
-                    vm.StartingPoint = 1;
-                    OB.Logger.LogInfo(Components.Runner, "No record found in the DB for wordlist '" + vm.Wordlist.Name + "' and config '" + vm.ConfigName + "'");
-                }
-            }
-        }
-
-        private void SaveRecord()
-        {
-            if (vm.Config == null || vm.Wordlist == null) return;
-            using (var db = new LiteDatabase(OB.dataBaseFile))
-            {
-                var coll = db.GetCollection<Record>("records");
-                var record = new Record(vm.ConfigName, vm.Wordlist.Path, vm.TestedCount + vm.StartingPoint);
-
-                coll.Delete(r => r.ConfigName == vm.ConfigName && r.WordlistLocation == vm.Wordlist.Path);
-                coll.Insert(record);
-            }
-        }
-        #endregion
-
         #region Rightclick options
         private void ListViewItem_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -441,6 +405,18 @@ namespace OpenBullet.Views.Main.Runner
                 OB.Logger.LogInfo(Components.Runner, $"Sent to the debugger");
             }
             catch (Exception ex) { OB.Logger.LogError(Components.Runner, $"Could not send data and proxy to the debugger - {ex.Message}"); }
+        }
+        #endregion
+
+        #region Records
+        private void SaveRecord()
+        {
+            OB.RunnerManager.SaveRecord(vm.Config, vm.Wordlist, vm.TestedCount + vm.StartingPoint);
+        }
+
+        private void RetrieveRecord()
+        {
+            vm.StartingPoint = OB.RunnerManager.RetrieveRecord(vm.Config, vm.Wordlist);
         }
         #endregion
     }

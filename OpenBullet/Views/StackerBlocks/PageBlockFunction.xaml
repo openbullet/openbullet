@@ -161,6 +161,18 @@
                     <CheckBox Content="Use OAEP instead of PKCS v1.5" IsChecked="{Binding RsaOAEP}" VerticalContentAlignment="Center"/>
                 </StackPanel>
             </TabItem>
+            <TabItem x:Name="rsaPkcs1Pad2Tab">
+                <StackPanel>
+                    <DockPanel Margin="0 5 0 0">
+                        <Label Content="Public Key Modulus (n):"/>
+                        <TextBox Text="{Binding RsaN, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 5 0 0">
+                        <Label Content="Public Key Exponent (e):"/>
+                        <TextBox Text="{Binding RsaE, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
             <TabItem x:Name="charAtTab">
                 <StackPanel>
                     <DockPanel>

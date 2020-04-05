@@ -170,7 +170,7 @@ namespace OpenBullet.ViewModels
         public void DeleteDuplicates()
         {
             var duplicates = HitsCollection
-                    .GroupBy(h => h.GetHashCode())
+                    .GroupBy(h => h.GetHashCode(OB.OBSettings.General.IgnoreWordlistOnHitDedupe))
                     .Where(g => g.Count() > 1)
                     .SelectMany(g => g.OrderBy(h => h.Date)
                     .Reverse().Skip(1)).ToList();

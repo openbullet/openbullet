@@ -53,6 +53,7 @@
                 <Label Content="Log Buffer Size" />
                 <xctk:IntegerUpDown Background="Transparent" Width="70" Margin="10 0 0 0" Minimum="10" Maximum="100000" Value="{Binding LogBufferSize}" Foreground="{DynamicResource ForegroundMain}"  HorizontalAlignment="Right" />
             </DockPanel>
+            <CheckBox Content="Ignore Wordlist name on hits dedupe" IsChecked="{Binding IgnoreWordlistOnHitDedupe}" VerticalContentAlignment="Center" VerticalAlignment="Center" />
         </StackPanel>
     </Grid>
 </Page>

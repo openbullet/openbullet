@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using OpenBullet.ViewModels;
+using RuriLib;
 using RuriLib.Models;
 using System;
 using System.Collections.Generic;
@@ -188,8 +189,7 @@ namespace OpenBullet.Views.Main
         {
             try
             {
-                Selected.CopyToClipboard(hit => hit.ToFormattedString((sender as MenuItem).Header.ToString()
-                    .Replace(@"\r\n", "\r\n").Replace(@"\n", "\n").Replace(@"\t", "\t")));
+                Selected.CopyToClipboard(hit => hit.ToFormattedString((sender as MenuItem).Header.ToString().Unescape()));
             }
             catch (Exception ex)
             {
@@ -239,7 +239,7 @@ namespace OpenBullet.Views.Main
         {
             try
             {
-                Selected.SaveToFile(GetSaveFile(), hit => hit.ToFormattedString((sender as MenuItem).Header.ToString().Replace(@"\r\n", "\r\n").Replace(@"\n", "\n")));
+                Selected.SaveToFile(GetSaveFile(), hit => hit.ToFormattedString((sender as MenuItem).Header.ToString().Unescape()));
             }
             catch (Exception ex)
             {
@@ -280,6 +280,7 @@ namespace OpenBullet.Views.Main
             var wordlist = new Wordlist(partialName, "NULL", OB.Settings.Environment.RecognizeWordlistType(first.Data), "", true, true);
 
             var manager = OB.RunnerManager;
+            manager.Create();
             var page = manager.RunnersCollection.Last().View;
             var runner = manager.RunnersCollection.Last().ViewModel;
             OB.MainWindow.ShowRunner(page);

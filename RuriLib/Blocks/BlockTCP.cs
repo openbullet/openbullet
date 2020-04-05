@@ -247,7 +247,7 @@ namespace RuriLib
 
                     var msg = ReplaceValues(Message, data);
                     byte[] b = { };
-                    var payload = Encoding.ASCII.GetBytes(msg.Replace(@"\r\n", "\r\n"));
+                    var payload = Encoding.ASCII.GetBytes(msg.Unescape());
 
                     // Manual implementation of the WebSocket frame
                     if (WebSocket)

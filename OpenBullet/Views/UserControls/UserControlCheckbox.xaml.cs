@@ -1,4 +1,7 @@
 ﻿using OpenBullet.Plugins;
+using RuriLib.ViewModels;
+using System;
+using System.ComponentModel;
 using System.Windows.Controls;
 
 namespace OpenBullet.Views.UserControls
@@ -8,24 +11,35 @@ namespace OpenBullet.Views.UserControls
     /// </summary>
     public partial class UserControlCheckbox : UserControl, IControl
     {
-        public bool Value { get; set; }
+        private ViewModelBase viewModel;
 
-        public UserControlCheckbox(bool value)
+        public UserControlCheckbox(bool defaultValue, ViewModelBase viewModel = null)
         {
             InitializeComponent();
             DataContext = this;
 
-            Value = value;
+            SetValue(defaultValue);
+
+            this.viewModel = viewModel;
+            if (viewModel != null)
+            {
+                viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            }
+        }
+
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            SetValue(viewModel.GetType().GetProperty(e.PropertyName).GetValue(viewModel));
         }
 
         public dynamic GetValue()
         {
-            return Value;
+            return valueCheckbox.IsChecked.Value;
         }
 
         public void SetValue(dynamic value)
         {
-            Value = (bool)value;
+            valueCheckbox.IsChecked = (bool)value;
         }
     }
 }

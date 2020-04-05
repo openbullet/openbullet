@@ -23,6 +23,7 @@ namespace OpenBullet
             Caller = caller;
             VariableName = variableName;
             questionTextbox.Text = question;
+            answerTextbox.Focus();
         }
         
         private void acceptButton_Click(object sender, RoutedEventArgs e)
@@ -36,6 +37,14 @@ namespace OpenBullet
                 ((RunnerViewModel)Caller).CustomInputs.Add(new KeyValuePair<string, string>(VariableName, answerTextbox.Text));
             }
             ((MainDialog)Parent).Close();
+        }
+
+        private void answerTextbox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                acceptButton_Click(sender, null);
+            }
         }
     }
 }

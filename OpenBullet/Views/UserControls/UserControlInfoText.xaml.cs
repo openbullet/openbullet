@@ -1,4 +1,5 @@
 ﻿using OpenBullet.Plugins;
+using RuriLib.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,24 +22,35 @@ namespace OpenBullet.Views.UserControls
     /// </summary>
     public partial class UserControlInfoText : IControl
     {
-        public string Value { get; set; }
+        private ViewModelBase viewModel;
 
-        public UserControlInfoText(string defaultValue)
+        public UserControlInfoText(string defaultValue, ViewModelBase viewModel = null)
         {
             InitializeComponent();
             DataContext = this;
 
-            Value = defaultValue;
+            SetValue(defaultValue);
+
+            this.viewModel = viewModel;
+            if (viewModel != null)
+            {
+                viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            }
+        }
+
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            SetValue(viewModel.GetType().GetProperty(e.PropertyName).GetValue(viewModel));
         }
 
         public dynamic GetValue()
         {
-            return Value;
+            return valueLabel.Content;
         }
 
         public void SetValue(dynamic value)
         {
-            Value = (string)value;
+            valueLabel.Content = (string)value;
         }
     }
 }

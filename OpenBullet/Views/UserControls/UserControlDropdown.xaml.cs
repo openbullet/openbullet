@@ -1,4 +1,7 @@
 ﻿using OpenBullet.Plugins;
+using RuriLib.ViewModels;
+using System;
+using System.ComponentModel;
 using System.Windows.Controls;
 
 namespace OpenBullet.Views.UserControls
@@ -8,27 +11,40 @@ namespace OpenBullet.Views.UserControls
     /// </summary>
     public partial class UserControlDropdown : UserControl, IControl
     {
-        public UserControlDropdown(string value, string[] options)
+        private ViewModelBase viewModel;
+
+        public UserControlDropdown(string value, string[] options, ViewModelBase viewModel = null)
         {
             InitializeComponent();
             DataContext = this;
 
             foreach (var option in options)
             {
-                Dropdown.Items.Add(option);
+                valueDropdown.Items.Add(option);
             }
 
             SetValue(value);
+
+            this.viewModel = viewModel;
+            if (viewModel != null)
+            {
+                viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            }
+        }
+
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            SetValue(viewModel.GetType().GetProperty(e.PropertyName).GetValue(viewModel));
         }
 
         public dynamic GetValue()
         {
-            return Dropdown.SelectedValue;
+            return valueDropdown.SelectedValue;
         }
 
         public void SetValue(dynamic value)
         {
-            Dropdown.SelectedValue = (string)value;
+            valueDropdown.SelectedValue = (string)value;
         }
     }
 }

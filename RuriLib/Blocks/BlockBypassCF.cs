@@ -8,6 +8,7 @@ using CloudflareSolverRe.CaptchaProviders;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Linq;
+using RuriLib.Functions.Requests;
 
 namespace RuriLib
 {
@@ -20,7 +21,7 @@ namespace RuriLib
         /// <summary>The URL of the Cloudflare-protected website.</summary>
         public string Url { get { return url; } set { url = value; OnPropertyChanged(); } }
 
-        private string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36";
+        private string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36";
         /// <summary>The User-Agent header to use when solving the challenge.</summary>
         public string UserAgent { get { return userAgent; } set { userAgent = value; OnPropertyChanged(); } }
 
@@ -28,9 +29,13 @@ namespace RuriLib
         /// <summary>Whether to print the full response info to the log.</summary>
         public bool PrintResponseInfo { get { return printResponseInfo; } set { printResponseInfo = value; OnPropertyChanged(); } }
 
-        private bool errorOn302 = true;
-        /// <summary>Whether to set ERROR Status on 302.</summary>
-        public bool ErrorOn302 { get { return errorOn302; } set { errorOn302 = value; OnPropertyChanged(); } }
+        private bool autoRedirect = false;
+        /// <summary>Whether to enable auto-redirect (situational, depends on site).</summary>
+        public bool AutoRedirect { get { return autoRedirect; } set { autoRedirect = value; OnPropertyChanged(); } }
+
+        private SecurityProtocol securityProtocol = SecurityProtocol.SystemDefault;
+        /// <summary>The security protocol(s) to use for the HTTPS request.</summary>
+        public SecurityProtocol SecurityProtocol { get { return securityProtocol; } set { securityProtocol = value; OnPropertyChanged(); } }
 
         /// <summary>
         /// Creates a Cloudflare bypass block.
@@ -52,7 +57,7 @@ namespace RuriLib
 
             /*
              * Syntax
-             * BYPASSCF "URL" ["UA"]
+             * BYPASSCF "URL" SECPROTO PROTOCOL ["UA"]
              * */
 
             Url = LineParser.ParseLiteral(ref input, "URL");
@@ -60,6 +65,12 @@ namespace RuriLib
             if (input != "" && LineParser.Lookahead(ref input) == TokenType.Literal)
             {
                 UserAgent = LineParser.ParseLiteral(ref input, "UA");
+            }
+
+            if (input != "" && LineParser.ParseToken(ref input, TokenType.Parameter, false, false) == "SECPROTO")
+            {
+                LineParser.ParseToken(ref input, TokenType.Parameter, true);
+                SecurityProtocol = LineParser.ParseEnum(ref input, "Security Protocol", typeof(SecurityProtocol));
             }
 
             while (input != "")
@@ -78,9 +89,18 @@ namespace RuriLib
                 .Label(Label)
                 .Token("BYPASSCF")
                 .Literal(Url)
-                .Literal(UserAgent, "UserAgent")
-                .Boolean(PrintResponseInfo, "PrintResponseInfo")
-                .Boolean(ErrorOn302, "ErrorOn302");
+                .Literal(UserAgent, nameof(UserAgent));
+
+            if (SecurityProtocol != SecurityProtocol.SystemDefault)
+            {
+                writer
+                    .Token("SECPROTO")
+                    .Token(SecurityProtocol);
+            }
+                
+            writer
+                .Boolean(PrintResponseInfo, nameof(PrintResponseInfo))
+                .Boolean(AutoRedirect, nameof(AutoRedirect));
             return writer.ToString();
         }
 
@@ -103,8 +123,6 @@ namespace RuriLib
 
             var localUrl = ReplaceValues(url, data);
             var uri = new Uri(localUrl);
-
-            var timeout = data.GlobalSettings.General.RequestTimeout * 1000;
 
             // Initialize the captcha provider
             // TODO: Add more providers by implementing the ICaptchaProvider interface on the missing ones
@@ -138,9 +156,10 @@ namespace RuriLib
             // Initialize the http handler
             HttpClientHandler handler = new HttpClientHandler
             {
-                AllowAutoRedirect = true,
+                AllowAutoRedirect = AutoRedirect,
                 CookieContainer = cookies,
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                SslProtocols = SecurityProtocol.ToSslProtocols()
             };
 
             // Assign the proxy to the inner handler if necessary
@@ -162,10 +181,38 @@ namespace RuriLib
 
             // Initialize the http client
             HttpClient http = new HttpClient(handler);
-            http.Timeout = TimeSpan.FromMinutes(timeout);
+            http.Timeout = TimeSpan.FromSeconds(data.GlobalSettings.General.RequestTimeout);
             http.DefaultRequestHeaders.Add("User-Agent", ReplaceValues(UserAgent, data));
 
-            var result = cf.Solve(http, handler, uri, ReplaceValues(UserAgent, data)).Result;
+            SolveResult result = new SolveResult();
+
+            try
+            {
+                result = cf.Solve(http, handler, uri, ReplaceValues(UserAgent, data)).Result;
+            }
+            catch (AggregateException ex)
+            {
+                // Join all the aggregate exception inner exception messages
+                var message = string.Join(Environment.NewLine, ex.InnerExceptions.Select(e => e.Message));
+                
+                if (data.ConfigSettings.IgnoreResponseErrors)
+                {
+                    data.Log(new LogEntry(message, Colors.Tomato));
+                    data.ResponseCode = message;
+                    return;
+                }
+                throw new Exception(message);
+            }
+            catch (Exception ex)
+            {
+                if (data.ConfigSettings.IgnoreResponseErrors)
+                {
+                    data.Log(new LogEntry(ex.Message, Colors.Tomato));
+                    data.ResponseSource = ex.Message;
+                    return;
+                }
+                throw;
+            }
 
             if (result.Success)
             {
@@ -177,7 +224,15 @@ namespace RuriLib
             }
             else
             {
-                throw new Exception($"CF Bypass Failed: {result.FailReason}");
+                var message = $"CF Bypass Failed: {result.FailReason}";
+
+                if (data.ConfigSettings.IgnoreResponseErrors)
+                {
+                    data.Log(new LogEntry(message, Colors.Tomato));
+                    data.ResponseSource = message;
+                    return;
+                }
+                throw new Exception(message);
             }
 
             // Now that we got the cookies, proceed with the normal request
@@ -188,6 +243,11 @@ namespace RuriLib
             }
             catch (Exception ex)
             {
+                if (data.ConfigSettings.IgnoreResponseErrors)
+                {
+                    data.ResponseSource = ex.Message;
+                    return;
+                }
                 throw new Exception(ex.Message);
             }
             finally
@@ -227,6 +287,10 @@ namespace RuriLib
                 data.Log(new LogEntry("Got Cloudflare clearance!", Colors.GreenYellow));
                 data.Log(new LogEntry(clearance + Environment.NewLine + cfduid + Environment.NewLine, Colors.White));
             }
+
+            // Get address
+            data.Address = response.RequestMessage.RequestUri.AbsoluteUri;
+            if (PrintResponseInfo) data.Log(new LogEntry($"Address: {data.Address}", Colors.Cyan));
 
             // Get code
             data.ResponseCode = ((int)response.StatusCode).ToString();
@@ -271,12 +335,6 @@ namespace RuriLib
             {
                 data.Log(new LogEntry("Response Source:", Colors.Green));
                 data.Log(new LogEntry(data.ResponseSource, Colors.GreenYellow));
-            }
-
-            // Error on 302 status
-            if (ErrorOn302 && response.StatusCode == HttpStatusCode.Redirect)
-            {
-                data.Status = BotStatus.ERROR;
             }
         }
     }

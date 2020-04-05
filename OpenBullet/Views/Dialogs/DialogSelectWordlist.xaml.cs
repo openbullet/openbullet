@@ -1,9 +1,8 @@
-﻿using OpenBullet.Views.Main.Runner;
+﻿using OpenBullet.ViewModels;
+using OpenBullet.Views.Main.Runner;
 using OpenBullet.Views.UserControls;
 using RuriLib.Models;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -20,12 +19,15 @@ namespace OpenBullet
         private GridViewColumnHeader listViewSortCol = null;
         private SortAdorner listViewSortAdorner = null;
         object Caller { get; set; }
+        WordlistManagerViewModel vm = null;
 
         public DialogSelectWordlist(object caller)
         {
-            InitializeComponent();
             Caller = caller;
-            DataContext = OB.WordlistManager;
+            vm = OB.WordlistManager;
+            DataContext = vm;
+
+            InitializeComponent();
         }
         
         private void selectButton_Click(object sender, RoutedEventArgs e)
@@ -80,21 +82,23 @@ namespace OpenBullet
             ofd.ShowDialog();
             try
             {
-                // Build the wordlist object
-                var wordlist = new Wordlist(Path.GetFileNameWithoutExtension(ofd.FileName), ofd.FileName, OB.Settings.Environment.WordlistTypes.First().Name, "");
-
-                // Get the first line
-                var first = File.ReadLines(wordlist.Path).First();
-
-                // Set the correct wordlist type
-                wordlist.Type = OB.Settings.Environment.RecognizeWordlistType(first);
-
                 // Add the wordlist to the runner
-                ((Runner)Caller).SetWordlist(wordlist);
+                ((Runner)Caller).SetWordlist(WordlistManagerViewModel.FileToWordlist(ofd.FileName));
 
                 ((MainDialog)Parent).Close();
             }
             catch { }
+        }
+
+        private void searchButton_Click(object sender, RoutedEventArgs e)
+        {
+            vm.SearchString = filterTextbox.Text;
+        }
+
+        private void filterTextbox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+                searchButton_Click(this, null);
         }
     }
 }

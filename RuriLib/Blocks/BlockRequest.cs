@@ -87,9 +87,13 @@ namespace RuriLib
         /// <summary>The method of the HTTP request.</summary>
         public HttpMethod Method { get { return method; } set { method = value; OnPropertyChanged(); } }
 
+        private SecurityProtocol securityProtocol = SecurityProtocol.SystemDefault;
+        /// <summary>The security protocol(s) to use for the HTTPS request.</summary>
+        public SecurityProtocol SecurityProtocol { get { return securityProtocol; } set { securityProtocol = value; OnPropertyChanged(); } }
+
         /// <summary>The custom headers that are sent in the HTTP request.</summary>
         public Dictionary<string, string> CustomHeaders { get; set; } = new Dictionary<string, string>() {
-            { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36" },
+            { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36" },
             { "Pragma", "no-cache" },
             { "Accept", "*/*" }
         };
@@ -221,6 +225,10 @@ namespace RuriLib
                         MultipartBoundary = LineParser.ParseLiteral(ref input, "BOUNDARY");
                         break;
 
+                    case "SECPROTO":
+                        SecurityProtocol = LineParser.ParseEnum(ref input, "Security Protocol", typeof(SecurityProtocol));
+                        break;
+
                     default:
                         break;
                 }
@@ -322,6 +330,14 @@ namespace RuriLib
                     break;
             }
 
+            if (SecurityProtocol != SecurityProtocol.SystemDefault)
+            {
+                writer
+                    .Indent()
+                    .Token("SECPROTO")
+                    .Token(SecurityProtocol, "SecurityProtocol");
+            }
+
             foreach (var c in CustomCookies)
             {
                 writer
@@ -358,7 +374,7 @@ namespace RuriLib
 
             // Setup
             var request = new Request();
-            request.Setup(data.GlobalSettings, AutoRedirect, data.ConfigSettings.MaxRedirects, AcceptEncoding);
+            request.Setup(data.GlobalSettings, securityProtocol, AutoRedirect, data.ConfigSettings.MaxRedirects, AcceptEncoding);
 
             var localUrl = ReplaceValues(Url, data);
             data.Log(new LogEntry($"Calling URL: {localUrl}", Colors.MediumTurquoise));
@@ -412,7 +428,20 @@ namespace RuriLib
             data.LogNewLine();
 
             // Perform the request
-            (data.Address, data.ResponseCode, data.ResponseHeaders, data.Cookies) = request.Perform(localUrl, Method, data.ConfigSettings.IgnoreResponseErrors, GetLogBuffer(data));
+            try
+            {
+                (data.Address, data.ResponseCode, data.ResponseHeaders, data.Cookies) = request.Perform(localUrl, Method, GetLogBuffer(data));
+            }
+            catch (Exception ex)
+            {
+                if (data.ConfigSettings.IgnoreResponseErrors)
+                {
+                    data.Log(new LogEntry(ex.Message, Colors.Tomato));
+                    data.ResponseSource = ex.Message;
+                    return;
+                }
+                throw;
+            }
 
             // Save the response content
             switch (ResponseType)

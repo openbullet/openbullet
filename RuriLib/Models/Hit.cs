@@ -86,10 +86,12 @@ namespace RuriLib.Models
         /// <summary>
         /// Gets a unique hash of the hit.
         /// </summary>
+        /// <param name="ignoreWordlistName">Whether the wordlist name should affect the generated hash</param>
         /// <returns>The hash code</returns>
-        public override int GetHashCode()
+        public int GetHashCode(bool ignoreWordlistName = true)
         {
-            return (Data + ConfigName + WordlistName).GetHashCode();
+            var id = ignoreWordlistName ? Data + ConfigName : Data + ConfigName + WordlistName;
+            return id.GetHashCode();
         }
     }
 }
