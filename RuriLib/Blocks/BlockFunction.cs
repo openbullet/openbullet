@@ -546,12 +546,8 @@ namespace RuriLib
                         .Indent();
                     break;
 
-                case Function.DateToUnixTime:
-                    writer
-                        .Literal(DateFormat);
-                    break;
-
                 case Function.UnixTimeToDate:
+                case Function.DateToUnixTime:
                     writer
                         .Literal(DateFormat);
                     break;
