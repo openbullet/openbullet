@@ -172,6 +172,10 @@ namespace RuriLib
         /// <summary>The hashing function to use.</summary>
         public Hash HashType { get { return hashType; } set { hashType = value; OnPropertyChanged(); } }
 
+        private bool inputBase64 = false;
+        /// <summary>Whether the input is a base64-encoded string instead of UTF8.</summary>
+        public bool InputBase64 { get { return inputBase64; } set { inputBase64 = value; OnPropertyChanged(); } }
+
         // -- Hmac
         private string hmacKey = "";
         /// <summary>The key used to authenticate the message.</summary>
@@ -182,7 +186,7 @@ namespace RuriLib
         public bool HmacBase64 { get { return hmacBase64; } set { hmacBase64 = value; OnPropertyChanged(); } }
 
         private bool keyBase64 = false;
-        /// <summary>Whether the HMAC Key is a base64-encoded string instead of ascii.</summary>
+        /// <summary>Whether the HMAC Key is a base64-encoded string instead of UTF8.</summary>
         public bool KeyBase64 { get { return keyBase64; } set { keyBase64 = value; OnPropertyChanged(); } }
 
         // -- Translate
@@ -355,6 +359,8 @@ namespace RuriLib
             {
                 case Function.Hash:
                     HashType = LineParser.ParseEnum(ref input, "Hash Type", typeof(Hash));
+                    while (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                        LineParser.SetBool(ref input, this);
                     break;
 
                 case Function.HMAC:
@@ -520,20 +526,22 @@ namespace RuriLib
             {
                 case Function.Hash:
                     writer
-                        .Token(HashType);
+                        .Token(HashType)
+                        .Boolean(InputBase64, nameof(InputBase64));
                     break;
 
                 case Function.HMAC:
                     writer
                         .Token(HashType)
                         .Literal(HmacKey)
-                        .Boolean(HmacBase64, "HmacBase64")
-                        .Boolean(KeyBase64, "KeyBase64");
+                        .Boolean(InputBase64, nameof(InputBase64))
+                        .Boolean(HmacBase64, nameof(HmacBase64))
+                        .Boolean(KeyBase64, nameof(KeyBase64));
                     break;
 
                 case Function.Translate:
                     writer
-                        .Boolean(StopAfterFirstMatch, "StopAfterFirstMatch");
+                        .Boolean(StopAfterFirstMatch, nameof(StopAfterFirstMatch));
                     foreach (var t in TranslationDictionary)
                         writer
                             .Indent()
@@ -556,19 +564,19 @@ namespace RuriLib
                     writer
                         .Literal(ReplaceWhat)
                         .Literal(ReplaceWith)
-                        .Boolean(UseRegex, "UseRegex");
+                        .Boolean(UseRegex, nameof(UseRegex));
                     break;
 
                 case Function.RegexMatch:
                     writer
-                        .Literal(RegexMatch, "RegexMatch");
+                        .Literal(RegexMatch, nameof(RegexMatch));
                     break;
 
                 case Function.RandomNum:
                     writer
                         .Literal(RandomMin)
                         .Literal(RandomMax)
-                        .Boolean(RandomZeroPad, "RandomZeroPad");
+                        .Boolean(RandomZeroPad, nameof(RandomZeroPad));
                     break;
 
                 case Function.CountOccurrences:
@@ -591,7 +599,7 @@ namespace RuriLib
                     writer
                         .Literal(RsaN)
                         .Literal(RsaE)
-                        .Boolean(RsaOAEP, "RsaOAEP");
+                        .Boolean(RsaOAEP, nameof(RsaOAEP));
                     break;
 
                     /*
@@ -688,11 +696,11 @@ namespace RuriLib
                         break;
 
                     case Function.Hash:
-                        outputString = GetHash(localInputString, hashType).ToLower();
+                        outputString = GetHash(localInputString, hashType, InputBase64).ToLower();
                         break;
 
                     case Function.HMAC:
-                        outputString = Hmac(localInputString, hashType, ReplaceValues(hmacKey, data), hmacBase64, keyBase64);
+                        outputString = Hmac(localInputString, hashType, ReplaceValues(hmacKey, data), InputBase64, KeyBase64, HmacBase64);
                         break;
 
                     case Function.Translate:
@@ -891,32 +899,44 @@ namespace RuriLib
         /// </summary>
         /// <param name="baseString">The string to hash</param>
         /// <param name="type">The hashing function</param>
-        /// <returns>The hash digest as a hex-encoded string</returns>
-        public static string GetHash(string baseString, Hash type)
+        /// <param name="inputBase64">Whether the base string should be treated as base64 encoded (if false, it will be treated as UTF8 encoded)</param>
+        /// <returns>The hash digest as a hex-encoded uppercase string.</returns>
+        public static string GetHash(string baseString, Hash type, bool inputBase64)
         {
+            var rawInput = inputBase64 ? Convert.FromBase64String(baseString) : Encoding.UTF8.GetBytes(baseString);
+            byte[] digest;
+            
             switch (type)
             {
                 case Hash.MD4:
-                    return Crypto.MD4(baseString);
+                    digest = Crypto.MD4(rawInput);
+                    break;
 
                 case Hash.MD5:
-                    return Crypto.MD5(baseString);
+                    digest = Crypto.MD5(rawInput);
+                    break;
 
                 case Hash.SHA1:
-                    return Crypto.SHA1(baseString);
+                    digest = Crypto.SHA1(rawInput);
+                    break;
 
                 case Hash.SHA256:
-                    return Crypto.SHA256(baseString);
+                    digest = Crypto.SHA256(rawInput);
+                    break;
 
                 case Hash.SHA384:
-                    return Crypto.SHA384(baseString);
+                    digest = Crypto.SHA384(rawInput);
+                    break;
 
                 case Hash.SHA512:
-                    return Crypto.SHA512(baseString);
+                    digest = Crypto.SHA512(rawInput);
+                    break;
 
                 default:
                     throw new NotSupportedException("Unsupported algorithm");
             }
+
+            return digest.ToHex();
         }
 
         /// <summary>
@@ -925,37 +945,43 @@ namespace RuriLib
         /// <param name="baseString">The message to sign</param>
         /// <param name="type">The hashing function</param>
         /// <param name="key">The HMAC key</param>
-        /// <param name="base64">Whether the output should be encrypted as a base64 string</param>
-        /// <param name="keyBase64"></param>
+        /// <param name="inputBase64">Whether the input string should be treated as base64 encoded (if false, it will be treated as UTF8 encoded)</param>
+        /// <param name="keyBase64">Whether the key string should be treated as base64 encoded (if false, it will be treated as UTF8 encoded)</param>
+        /// <param name="outputBase64">Whether the output should be encrypted as a base64 string</param>
         /// <returns>The HMAC signature</returns>
-        public static string Hmac(string baseString, Hash type, string key, bool base64, bool keyBase64)
+        public static string Hmac(string baseString, Hash type, string key, bool inputBase64, bool keyBase64, bool outputBase64)
         {
-            byte[] keybytes;
-            if (keyBase64)
-                keybytes = Convert.FromBase64String(key);
-            else
-                keybytes = Encoding.ASCII.GetBytes(key);
+            byte[] rawInput = inputBase64 ? Convert.FromBase64String(baseString) : Encoding.UTF8.GetBytes(baseString);
+            byte[] rawKey = keyBase64 ? Convert.FromBase64String(key) : Encoding.UTF8.GetBytes(key);
+            byte[] signature;
 
             switch (type)
             {
                 case Hash.MD5:
-                    return Crypto.HMACMD5(baseString, keybytes, base64);
+                    signature = Crypto.HMACMD5(rawInput, rawKey);
+                    break;
 
                 case Hash.SHA1:
-                    return Crypto.HMACSHA1(baseString, keybytes, base64);
+                    signature = Crypto.HMACSHA1(rawInput, rawKey);
+                    break;
 
                 case Hash.SHA256:
-                    return Crypto.HMACSHA256(baseString, keybytes, base64);
+                    signature = Crypto.HMACSHA256(rawInput, rawKey);
+                    break;
 
                 case Hash.SHA384:
-                    return Crypto.HMACSHA384(baseString, keybytes, base64);
+                    signature = Crypto.HMACSHA384(rawInput, rawKey);
+                    break;
 
                 case Hash.SHA512:
-                    return Crypto.HMACSHA512(baseString, keybytes, base64);
+                    signature = Crypto.HMACSHA512(rawInput, rawKey);
+                    break;
 
                 default:
                     throw new NotSupportedException("Unsupported algorithm");
             }
+
+            return outputBase64 ? Convert.ToBase64String(signature) : signature.ToHex();
         }
 
         #region Translation
