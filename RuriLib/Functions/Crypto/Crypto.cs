@@ -418,12 +418,7 @@ namespace RuriLib.Functions.Crypto
             string encData = null;
             byte[][] keys = ConvertKeys(key, iv);
 
-            try
-            {
-                encData = EncryptStringToBytes_Aes(data, keys[0], keys[1], mode, padding);
-            }
-            catch (CryptographicException) { }
-            catch (ArgumentNullException) { }
+            encData = EncryptStringToBytes_Aes(data, keys[0], keys[1], mode, padding);
 
             return encData;
         }
@@ -442,12 +437,7 @@ namespace RuriLib.Functions.Crypto
             string decData = null;
             byte[][] keys = ConvertKeys(key, iv);
 
-            try
-            {
-                decData = DecryptStringFromBytes_Aes(data, keys[0], keys[1], mode, padding);
-            }
-            catch (CryptographicException) { }
-            catch (ArgumentNullException) { }
+            decData = DecryptStringFromBytes_Aes(data, keys[0], keys[1], mode, padding);
 
             return decData;
         }
@@ -484,6 +474,8 @@ namespace RuriLib.Functions.Crypto
 
             using (AesManaged aesAlg = new AesManaged())
             {
+                aesAlg.KeySize = 256;
+                aesAlg.BlockSize = 128;
                 aesAlg.Key = Key;
                 aesAlg.IV = IV;
                 aesAlg.Mode = mode;
@@ -522,6 +514,8 @@ namespace RuriLib.Functions.Crypto
 
             using (Aes aesAlg = Aes.Create())
             {
+                aesAlg.KeySize = 256;
+                aesAlg.BlockSize = 128;
                 aesAlg.Key = Key;
                 aesAlg.IV = IV;
                 aesAlg.Mode = mode;
