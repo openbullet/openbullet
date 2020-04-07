@@ -49,6 +49,7 @@
                         <Label Content="Hash Type:"/>
                         <ComboBox x:Name="hashTypeCombobox" SelectionChanged="hashTypeCombobox_SelectionChanged"/>
                     </DockPanel>
+                    <CheckBox VerticalContentAlignment="Center" Content="Input is Base64" IsChecked="{Binding InputBase64}" ToolTip="Whether the input is a base64-encoded string instead of UTF8"/>
                 </StackPanel>
             </TabItem>
             <TabItem x:Name="hmacTab">
@@ -61,7 +62,8 @@
                         <Label Content="HMAC Key:"/>
                         <TextBox Text="{Binding HmacKey, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
-                    <CheckBox VerticalContentAlignment="Center" Content="HMAC Key Base64" IsChecked="{Binding KeyBase64}" ToolTip="Whether HMAC Key uses base64 encoding instead of ascii"/>
+                    <CheckBox VerticalContentAlignment="Center" Content="Input is Base64" IsChecked="{Binding InputBase64}" ToolTip="Whether the input is a base64-encoded string instead of UTF8"/>
+                    <CheckBox VerticalContentAlignment="Center" Content="HMAC Key Base64" IsChecked="{Binding KeyBase64}" ToolTip="Whether the HMAC Key is a base64-encoded string instead of UTF8"/>
                     <CheckBox VerticalContentAlignment="Center" Content="Output Base64" IsChecked="{Binding HmacBase64}" ToolTip="Whether to output with base64 encoding instead of hex encoding"/>
                 </StackPanel>
             </TabItem>

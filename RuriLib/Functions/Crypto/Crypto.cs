@@ -39,27 +39,62 @@ namespace RuriLib.Functions.Crypto
     public static class Crypto
     {
         #region Hash and Hmac
-        
+
         /// <summary>
-        /// Hashes a string through MD4.
+        /// Hashes a byte array through MD4.
         /// </summary>
-        /// <param name="input">The string for which to calculate the hsh</param>
-        /// <returns>An uppercase hex string.</returns>
-        public static string MD4(string input)
+        /// <param name="input">The byte array for which to calculate the hsh</param>
+        /// <returns>The MD4 digest.</returns>
+        public static byte[] MD4(byte[] input)
         {
-            return MD4Digest(Encoding.UTF8.GetBytes(input)).ToHex();
+            // get padded uints from bytes
+            var bytes = input.ToList();
+            uint bitCount = (uint)(bytes.Count) * 8;
+            bytes.Add(128);
+            while (bytes.Count % 64 != 56) bytes.Add(0);
+            var uints = new List<uint>();
+            for (int i = 0; i + 3 < bytes.Count; i += 4)
+                uints.Add(bytes[i] | (uint)bytes[i + 1] << 8 | (uint)bytes[i + 2] << 16 | (uint)bytes[i + 3] << 24);
+            uints.Add(bitCount);
+            uints.Add(0);
+
+            // run rounds
+            uint a = 0x67452301, b = 0xefcdab89, c = 0x98badcfe, d = 0x10325476;
+            Func<uint, uint, uint> rol = (x, y) => x << (int)y | x >> 32 - (int)y;
+            for (int q = 0; q + 15 < uints.Count; q += 16)
+            {
+                var chunk = uints.GetRange(q, 16);
+                uint aa = a, bb = b, cc = c, dd = d;
+                Action<Func<uint, uint, uint, uint>, uint[]> round = (f, y) =>
+                {
+                    foreach (uint i in new[] { y[0], y[1], y[2], y[3] })
+                    {
+                        a = rol(a + f(b, c, d) + chunk[(int)(i + y[4])] + y[12], y[8]);
+                        d = rol(d + f(a, b, c) + chunk[(int)(i + y[5])] + y[12], y[9]);
+                        c = rol(c + f(d, a, b) + chunk[(int)(i + y[6])] + y[12], y[10]);
+                        b = rol(b + f(c, d, a) + chunk[(int)(i + y[7])] + y[12], y[11]);
+                    }
+                };
+                round((x, y, z) => (x & y) | (~x & z), new uint[] { 0, 4, 8, 12, 0, 1, 2, 3, 3, 7, 11, 19, 0 });
+                round((x, y, z) => (x & y) | (x & z) | (y & z), new uint[] { 0, 1, 2, 3, 0, 4, 8, 12, 3, 5, 9, 13, 0x5a827999 });
+                round((x, y, z) => x ^ y ^ z, new uint[] { 0, 2, 1, 3, 0, 8, 4, 12, 3, 9, 11, 15, 0x6ed9eba1 });
+                a += aa; b += bb; c += cc; d += dd;
+            }
+
+            // return bytes
+            return new[] { a, b, c, d }.SelectMany(BitConverter.GetBytes).ToArray();
         }
 
         /// <summary>
-        /// Hashes a string through MD5.
+        /// Hashes a byte array through MD5.
         /// </summary>
-        /// <param name="input">The string for which to calculate the hash</param>
-        /// <returns>An uppercase hex string.</returns>
-        public static string MD5(string input)
+        /// <param name="input">The byte array for which to calculate the hsh</param>
+        /// <returns>The MD5 digest.</returns>
+        public static byte[] MD5(byte[] input)
         {
             using (MD5 md5 = System.Security.Cryptography.MD5.Create())
             {
-                return md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input)).ToHex();
+                return md5.ComputeHash(input);
             }
         }
 
@@ -68,26 +103,25 @@ namespace RuriLib.Functions.Crypto
         /// </summary>
         /// <param name="input">The message for which a signature will be generated</param>
         /// <param name="key">The secret key to use to sign the message</param>
-        /// <param name="base64">Whether to return the string as Base64 or as a Hex</param>
-        /// <returns>A base64 or uppercase hex string.</returns>
-        public static string HMACMD5(string input, byte[] key, bool base64)
+        /// <returns>The HMAC signature.</returns>
+        public static byte[] HMACMD5(byte[] input, byte[] key)
         {
-            HMACMD5 hmac = new HMACMD5(key);
-            var hash = hmac.ComputeHash(Encoding.ASCII.GetBytes(input));
-            if (base64) { return Convert.ToBase64String(hash); }
-            else { return ToHex(hash); }
+            using (HMACMD5 hmac = new HMACMD5(key))
+            {
+                return hmac.ComputeHash(input);
+            }
         }
 
         /// <summary>
-        /// Hashes a string through SHA-1.
+        /// Hashes a byte array through SHA-1.
         /// </summary>
-        /// <param name="input">The string for which to calculate the hash</param>
-        /// <returns>An uppercase hex string.</returns>
-        public static string SHA1(string input)
+        /// <param name="input">The byte array for which to calculate the hash</param>
+        /// <returns>The SHA-1 digest.</returns>
+        public static byte[] SHA1(byte[] input)
         {
             using (SHA1Managed sha1 = new SHA1Managed())
             {
-                return sha1.ComputeHash(Encoding.UTF8.GetBytes(input)).ToHex();
+                return sha1.ComputeHash(input);
             }
         }
 
@@ -96,54 +130,52 @@ namespace RuriLib.Functions.Crypto
         /// </summary>
         /// <param name="input">The message for which a signature will be generated</param>
         /// <param name="key">The secret key to use to sign the message</param>
-        /// <param name="base64">Whether to return the string as Base64 or as a Hex</param>
-        /// <returns>A base64 or uppercase hex string.</returns>
-        public static string HMACSHA1(string input, byte[] key, bool base64)
+        /// <returns>The HMAC signature.</returns>
+        public static byte[] HMACSHA1(byte[] input, byte[] key)
         {
-            HMACSHA1 hmac = new HMACSHA1(key);
-            var hash = hmac.ComputeHash(Encoding.ASCII.GetBytes(input));
-            if (base64) { return Convert.ToBase64String(hash); }
-            else { return ToHex(hash); }
-        }
-
-        /// <summary>
-        /// Hashes a string through SHA-256.
-        /// </summary>
-        /// <param name="input">The string for which to calculate the hash</param>
-        /// <returns>An uppercase hex string.</returns>
-        public static string SHA256(string input)
-        {
-            using (SHA256Managed sha256 = new SHA256Managed())
+            using (HMACSHA1 hmac = new HMACSHA1(key))
             {
-                return sha256.ComputeHash(Encoding.UTF8.GetBytes(input)).ToHex();
+                return hmac.ComputeHash(input);
             }
         }
 
         /// <summary>
-        /// Calculates an SHA-256 hash signature.
+        /// Hashes a byte array through SHA-256.
         /// </summary>
-        /// <param name="input">The message for which a signature will be generated</param>
-        /// <param name="key">The secret key to use to sign the message</param>
-        /// <param name="base64">Whether to return the string as Base64 or as a Hex</param>
-        /// <returns>A base64 or uppercase hex string.</returns>
-        public static string HMACSHA256(string input, byte[] key, bool base64)
+        /// <param name="input">The byte array for which to calculate the hash</param>
+        /// <returns>The SHA-256 digest.</returns>
+        public static byte[] SHA256(byte[] input)
         {
-            HMACSHA256 hmac = new HMACSHA256(key);
-            var hash = hmac.ComputeHash(Encoding.ASCII.GetBytes(input));
-            if (base64) { return Convert.ToBase64String(hash); }
-            else { return ToHex(hash); }
+            using (SHA256Managed sha256 = new SHA256Managed())
+            {
+                return sha256.ComputeHash(input);
+            }
         }
 
         /// <summary>
-        /// Hashes a string through SHA-384.
+        /// Calculates a SHA-256 hash signature.
         /// </summary>
-        /// <param name="input">The string for which to calculate the hash</param>
-        /// <returns>An uppercase hex string.</returns>
-        public static string SHA384(string input)
+        /// <param name="input">The message for which a signature will be generated</param>
+        /// <param name="key">The secret key to use to sign the message</param>
+        /// <returns>The HMAC signature.</returns>
+        public static byte[] HMACSHA256(byte[] input, byte[] key)
+        {
+            using (HMACSHA256 hmac = new HMACSHA256(key))
+            {
+                return hmac.ComputeHash(input);
+            }
+        }
+
+        /// <summary>
+        /// Hashes a byte array through SHA-384.
+        /// </summary>
+        /// <param name="input">The byte array for which to calculate the hash</param>
+        /// <returns>The SHA-384 digest.</returns>
+        public static byte[] SHA384(byte[] input)
         {
             using (SHA384Managed sha384 = new SHA384Managed())
             {
-                return sha384.ComputeHash(Encoding.UTF8.GetBytes(input)).ToHex();
+                return sha384.ComputeHash(input);
             }
         }
 
@@ -152,26 +184,25 @@ namespace RuriLib.Functions.Crypto
         /// </summary>
         /// <param name="input">The message for which a signature will be generated</param>
         /// <param name="key">The secret key to use to sign the message</param>
-        /// <param name="base64">Whether to return the string as Base64 or as a Hex</param>
-        /// <returns>A base64 or uppercase hex string.</returns>
-        public static string HMACSHA384(string input, byte[] key, bool base64)
+        /// <returns>The HMAC signature.</returns>
+        public static byte[] HMACSHA384(byte[] input, byte[] key)
         {
-            HMACSHA384 hmac = new HMACSHA384(key);
-            var hash = hmac.ComputeHash(Encoding.ASCII.GetBytes(input));
-            if (base64) { return Convert.ToBase64String(hash); }
-            else { return ToHex(hash); }
+            using (HMACSHA384 hmac = new HMACSHA384(key))
+            {
+                return hmac.ComputeHash(input);
+            }
         }
 
         /// <summary>
-        /// Hashes a string through SHA-512.
+        /// Hashes a byte array through SHA-512.
         /// </summary>
-        /// <param name="input">The string for which to calculate the hash</param>
-        /// <returns>An uppercase hex string.</returns>
-        public static string SHA512(string input)
+        /// <param name="input">The byte array for which to calculate the hash</param>
+        /// <returns>The SHA-512 digest.</returns>
+        public static byte[] SHA512(byte[] input)
         {
             using (SHA512Managed sha512 = new SHA512Managed())
             {
-                return sha512.ComputeHash(Encoding.UTF8.GetBytes(input)).ToHex();
+                return sha512.ComputeHash(input);
             }
         }
 
@@ -180,14 +211,13 @@ namespace RuriLib.Functions.Crypto
         /// </summary>
         /// <param name="input">The message for which a signature will be generated</param>
         /// <param name="key">The secret key to use to sign the message</param>
-        /// <param name="base64">Whether to return the string as Base64 or as a Hex</param>
-        /// <returns>A base64 or uppercase hex string.</returns>
-        public static string HMACSHA512(string input, byte[] key, bool base64)
+        /// <returns>The HMAC signature.</returns>
+        public static byte[] HMACSHA512(byte[] input, byte[] key)
         {
-            HMACSHA512 hmac = new HMACSHA512(key);
-            var hash = hmac.ComputeHash(Encoding.ASCII.GetBytes(input));
-            if (base64) { return Convert.ToBase64String(hash); }
-            else { return ToHex(hash); }
+            using (HMACSHA512 hmac = new HMACSHA512(key))
+            {
+                return hmac.ComputeHash(input);
+            }
         }
 
         /// <summary>
@@ -536,48 +566,6 @@ namespace RuriLib.Functions.Crypto
                 }
             }
             return plaintext;
-        }
-        #endregion
-
-        #region Private Methods
-        private static byte[] MD4Digest(byte[] input)
-        {
-            // get padded uints from bytes
-            var bytes = input.ToList();
-            uint bitCount = (uint)(bytes.Count) * 8;
-            bytes.Add(128);
-            while (bytes.Count % 64 != 56) bytes.Add(0);
-            var uints = new List<uint>();
-            for (int i = 0; i + 3 < bytes.Count; i += 4)
-                uints.Add(bytes[i] | (uint)bytes[i + 1] << 8 | (uint)bytes[i + 2] << 16 | (uint)bytes[i + 3] << 24);
-            uints.Add(bitCount);
-            uints.Add(0);
-
-            // run rounds
-            uint a = 0x67452301, b = 0xefcdab89, c = 0x98badcfe, d = 0x10325476;
-            Func<uint, uint, uint> rol = (x, y) => x << (int)y | x >> 32 - (int)y;
-            for (int q = 0; q + 15 < uints.Count; q += 16)
-            {
-                var chunk = uints.GetRange(q, 16);
-                uint aa = a, bb = b, cc = c, dd = d;
-                Action<Func<uint, uint, uint, uint>, uint[]> round = (f, y) =>
-                {
-                    foreach (uint i in new[] { y[0], y[1], y[2], y[3] })
-                    {
-                        a = rol(a + f(b, c, d) + chunk[(int)(i + y[4])] + y[12], y[8]);
-                        d = rol(d + f(a, b, c) + chunk[(int)(i + y[5])] + y[12], y[9]);
-                        c = rol(c + f(d, a, b) + chunk[(int)(i + y[6])] + y[12], y[10]);
-                        b = rol(b + f(c, d, a) + chunk[(int)(i + y[7])] + y[12], y[11]);
-                    }
-                };
-                round((x, y, z) => (x & y) | (~x & z), new uint[] { 0, 4, 8, 12, 0, 1, 2, 3, 3, 7, 11, 19, 0 });
-                round((x, y, z) => (x & y) | (x & z) | (y & z), new uint[] { 0, 1, 2, 3, 0, 4, 8, 12, 3, 5, 9, 13, 0x5a827999 });
-                round((x, y, z) => x ^ y ^ z, new uint[] { 0, 2, 1, 3, 0, 8, 4, 12, 3, 9, 11, 15, 0x6ed9eba1 });
-                a += aa; b += bb; c += cc; d += dd;
-            }
-
-            // return bytes
-            return new[] { a, b, c, d }.SelectMany(BitConverter.GetBytes).ToArray();
         }
         #endregion
     }
