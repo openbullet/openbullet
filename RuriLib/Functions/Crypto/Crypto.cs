@@ -416,7 +416,7 @@ namespace RuriLib.Functions.Crypto
         public static string AESEncrypt(string data, string key, string iv = "", CipherMode mode = CipherMode.CBC, PaddingMode padding = PaddingMode.None)
         {
             string encData = null;
-            byte[][] keys = GetHashKeys(key, iv);
+            byte[][] keys = ConvertKeys(key, iv);
 
             try
             {
@@ -440,7 +440,7 @@ namespace RuriLib.Functions.Crypto
         public static string AESDecrypt(string data, string key, string iv = "", CipherMode mode = CipherMode.CBC, PaddingMode padding = PaddingMode.None)
         {
             string decData = null;
-            byte[][] keys = GetHashKeys(key, iv);
+            byte[][] keys = ConvertKeys(key, iv);
 
             try
             {
@@ -452,22 +452,21 @@ namespace RuriLib.Functions.Crypto
             return decData;
         }
 
-        private static byte[][] GetHashKeys(string key, string iv)
+        private static byte[][] ConvertKeys(string key, string iv)
         {
             byte[][] result = new byte[2][];
 
-            SHA256 sha2 = new SHA256CryptoServiceProvider();
+            result[0] = Convert.FromBase64String(key);
 
-            byte[] rawKey = Convert.FromBase64String(key);
-            byte[] rawIV = iv != string.Empty ? Convert.FromBase64String(iv) : Convert.FromBase64String(key);
-
-            byte[] hashKey = sha2.ComputeHash(rawKey);
-            byte[] hashIV = sha2.ComputeHash(rawIV);
-
-            Array.Resize(ref hashIV, 16);
-
-            result[0] = hashKey;
-            result[1] = hashIV;
+            if (string.IsNullOrEmpty(iv))
+            {
+                result[1] = Convert.FromBase64String(key);
+                Array.Resize(ref result[1], 16);
+            }
+            else
+            {
+                result[1] = Convert.FromBase64String(iv);
+            }
 
             return result;
         }
