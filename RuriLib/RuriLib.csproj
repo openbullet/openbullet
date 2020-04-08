@@ -316,6 +316,7 @@
     <Compile Include="CaptchaServices\DeathByCaptcha.cs" />
     <Compile Include="CaptchaServices\DeCaptcher.cs" />
     <Compile Include="CaptchaServices\ImageTyperz.cs" />
+    <Compile Include="CaptchaServices\SolveReCaptcha.cs" />
     <Compile Include="CaptchaServices\TwoCaptcha.cs" />
     <Compile Include="Functions\Conditions\Condition.cs" />
     <Compile Include="IOManager.cs" />

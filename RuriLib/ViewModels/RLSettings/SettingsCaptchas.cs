@@ -49,6 +49,14 @@ namespace RuriLib.ViewModels
         /// <summary>The AZCaptcha API Token.</summary>
         public string AZCapToken { get { return azCapToken; } set { azCapToken = value; OnPropertyChanged(); } }
 
+        private string srUserId = "";
+        /// <summary>The SolveReCaptcha User Id.</summary>
+        public string SRUserId { get { return srUserId; } set { srUserId = value; OnPropertyChanged(); } }
+
+        private string srToken = "";
+        /// <summary>The SolveReCaptcha API Token.</summary>
+        public string SRToken { get { return srToken; } set { srToken = value; OnPropertyChanged(); } }
+
         private string cIOToken = "";
         /// <summary>The CaptchasIO API Token.</summary>
         public string CIOToken { get { return cIOToken; } set { cIOToken = value; OnPropertyChanged(); } }
