@@ -1,7 +1,9 @@
 ﻿using Extreme.Net;
 using Newtonsoft.Json;
+using RuriLib.Interfaces;
 using RuriLib.LS;
 using RuriLib.Models;
+using RuriLib.Models.Stats;
 using RuriLib.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -33,7 +35,8 @@ namespace RuriLib.Runner
     /// <summary>
     /// Main class that handles all the multi-threaded checking of a Wordlist given a Config.
     /// </summary>
-    public class RunnerViewModel : ViewModelBase, IRunnerMessaging
+    // TODO: Split this into partial classes
+    public class RunnerViewModel : ViewModelBase, IRunnerMessaging, IRunner
     {
         #region Constructor
         /// <summary>
@@ -42,11 +45,11 @@ namespace RuriLib.Runner
         /// <param name="environment">The environment settings</param>
         /// <param name="settings">The RuriLib settings</param>
         /// <param name="random">A reference to the global random generator</param>
-        public RunnerViewModel(EnvironmentSettings environment, RLSettingsViewModel settings, Random random)
+        public RunnerViewModel(EnvironmentSettings environment, RLSettingsViewModel settings, Random random = null)
         {
             Env = environment;
             Settings = settings;
-            Random = random;
+            this.random = random != null ? random : new Random();
             OnPropertyChanged("Busy");
             OnPropertyChanged("ControlsEnabled");
         }
@@ -55,7 +58,8 @@ namespace RuriLib.Runner
         #region Settings
         private RLSettingsViewModel Settings { get; set; }
         private EnvironmentSettings Env { get; set; }
-        private Random Random { get; set; }
+        private Random random;
+        private object randomLocker = new object();
         #endregion
 
         #region Workers
@@ -69,14 +73,14 @@ namespace RuriLib.Runner
 
         #region Visible Properties and Components
         /// <summary>Whether the Master Worker is busy or idle.</summary>
-        public bool Busy { get { return Master.Status != WorkerStatus.Idle; } }
+        public bool Busy => Master.Status != WorkerStatus.Idle;
 
         /// <summary>Whether the user can set the properties (a.k.a. whether the Master Worker is idle).</summary>
-        public bool ControlsEnabled { get { return !Busy; } }
+        public bool ControlsEnabled => !Busy;
 
-        private int botsNumber = 1;
+        private int botsAmount = 1;
         /// <summary>The amount of bots to run simultaneously for multi-threaded checking.</summary>
-        public int BotsNumber { get { return botsNumber; } set { botsNumber = value; OnPropertyChanged(); } }
+        public int BotsAmount { get => botsAmount; set { botsAmount = value; OnPropertyChanged(); } }
 
         private int startingPoint = 1;
         /// <summary>How many data lines to skip before starting the checking process.</summary>
@@ -250,6 +254,9 @@ namespace RuriLib.Runner
         /// <summary>Auxiliary empty list.</summary>
         public ObservableCollection<ValidData> EmptyList { get; set; } = new ObservableCollection<ValidData>();
 
+        /// <summary>The collection of data that was checked with a positive outcome.</summary>
+        public IEnumerable<ValidData> Checked => (new IEnumerable<ValidData>[] { HitsList, CustomList, ToCheckList }).SelectMany(h => h).OrderBy(h => h.Time);
+
         /// <summary>Filter based on the Bot Status.</summary>
         public BotStatus ResultsFilter { get; set; } = BotStatus.SUCCESS;
 
@@ -271,6 +278,16 @@ namespace RuriLib.Runner
 
         /// <summary>Total amount of successfully tested data lines.</summary>
         public int TestedCount { get { return FailCount + HitCount + CustomCount + ToCheckCount; } }
+        #endregion
+
+        #region Stats
+        /// <summary>
+        /// Statistics of the checking process.
+        /// </summary>
+        public RunnerStats Stats => new RunnerStats(
+                new RunnerStatsData(TestedCount, HitCount, CustomCount, FailCount, RetryCount, ToCheckCount),
+                new RunnerStatsProxies(TotalProxiesCount, AliveProxiesCount, BannedProxiesCount, BadProxiesCount),
+                CPM, (decimal)Balance);
         #endregion
 
         #region Locks
@@ -331,8 +348,9 @@ namespace RuriLib.Runner
         public void SetConfig(Config config, bool setRecommended)
         {
             Config = config;
-            if (setRecommended) BotsNumber = Clamp(config.Settings.SuggestedBots, 1, 200);
+            if (setRecommended) BotsAmount = Clamp(config.Settings.SuggestedBots, 1, 200);
             OnPropertyChanged("ConfigName");
+            RaiseConfigChanged();
         }
 
         /// <summary>
@@ -344,6 +362,7 @@ namespace RuriLib.Runner
             Wordlist = wordlist;
             OnPropertyChanged("WordlistName");
             OnPropertyChanged("WordlistSize");
+            RaiseWordlistChanged();
         }
         #endregion
 
@@ -458,7 +477,7 @@ namespace RuriLib.Runner
             RaiseDispatchAction(new Action(() => Bots.Clear()));
 
             // Create the given amount of bots and assign them their DoWork function
-            for (int i = 1; i <= BotsNumber; i++)
+            for (int i = 1; i <= BotsAmount; i++)
             {
                 RaiseMessageArrived(LogLevel.Info, $"Creating bot {i}", false);
                 var bot = new RunnerBotViewModel(i);
@@ -494,15 +513,15 @@ namespace RuriLib.Runner
                 UpdateCPM();
 
                 // If the amount of Bots was changed
-                if (BotsNumber != Bots.Count)
+                if (BotsAmount != Bots.Count)
                 {
-                    RaiseMessageArrived(LogLevel.Info, $"Bots Number was changed from {Bots.Count} to {BotsNumber}", false);
+                    RaiseMessageArrived(LogLevel.Info, $"Bots Number was changed from {Bots.Count} to {BotsAmount}", false);
 
                     // If it was increased
-                    if (BotsNumber > Bots.Count)
+                    if (BotsAmount > Bots.Count)
                     {
                         // Create the missing bots
-                        for (int b = Bots.Count + 1; b <= BotsNumber; b++)
+                        for (int b = Bots.Count + 1; b <= BotsAmount; b++)
                         {
                             RaiseMessageArrived(LogLevel.Info, $"Creating bot {b}", false);
                             try
@@ -521,7 +540,7 @@ namespace RuriLib.Runner
                     else
                     {
                         // Terminate the unnecessary bots
-                        for (int b = Bots.Count - 1; b >= BotsNumber; b--)
+                        for (int b = Bots.Count - 1; b >= BotsAmount; b--)
                         {
                             RaiseMessageArrived(LogLevel.Info, $"Removing bot {b}", false);
                             try
@@ -620,6 +639,18 @@ namespace RuriLib.Runner
         // Executed when the Master Worker has finished its job
         private void RunCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (Settings.General.SendToCheckOnAbort)
+            {
+                foreach (var bot in Bots.Where(b => b.Worker.IsBusy))
+                {
+                    ValidData validData = new ValidData(bot.Data, bot.Proxy, ProxyType.Http, BotStatus.NONE, "NONE", "", "", new List<LogEntry>());
+                    ToCheckList.Add(validData);
+                    UpdateStats();
+                    var hit = new Hit(bot.Data, new VariableList(), bot.Proxy, "NONE", ConfigName, WordlistName);
+                    RaiseFoundHit(hit);
+                }
+            }
+
             if (e.Error != null) RaiseMessageArrived(LogLevel.Error, "The Master Worker has encountered an error: " + e.Error.Message, true);
             Master.Status = WorkerStatus.Idle;
             OnPropertyChanged("Busy");
@@ -714,7 +745,11 @@ namespace RuriLib.Runner
                 var proxyUsedText = currentProxy == null ? "NONE" : $"{currentProxy.Proxy} ({currentProxy.Type})";
 
                 // Initialize the Bot Data
-                BotData botData = new BotData(Settings, Config.Settings, currentData, currentProxy, UseProxies, Random, bot.Id, false);
+                BotData botData = null;
+                lock (randomLocker)
+                {
+                    botData = new BotData(Settings, Config.Settings, currentData, currentProxy, UseProxies, random, bot.Id, false);
+                }
                 botData.Driver = bot.Driver;
                 botData.BrowserOpen = bot.IsDriverOpen;
                 List<LogEntry> BotLog = new List<LogEntry>();
@@ -735,7 +770,7 @@ namespace RuriLib.Runner
                 catch { }
 
                 // Set the cloudflare cookies (to be used in normal requests) if we already have clearance and we don't have to get it each time
-                if (botData.UseProxies && botData.Proxy != null && botData.Proxy.Clearance != "" && !Settings.Proxies.AlwaysGetClearance)
+                if (botData.UseProxies && botData.Proxy != null && botData.Proxy.Clearance != string.Empty && !Settings.Proxies.AlwaysGetClearance)
                 {
                     botData.Cookies["cf_clearance"] = botData.Proxy.Clearance;
                     botData.Cookies["__cfduid"] = botData.Proxy.Cfduid;
@@ -821,7 +856,7 @@ namespace RuriLib.Runner
                 RaiseMessageArrived(LogLevel.Info, $"[{bot.Id}][{bot.Data}][{proxyUsedText}] Ended with result {botData.StatusString}", false);
 
                 // Quit Browser if Always Quit
-                if (Config.Settings.AlwaysQuit)
+                if (Config.Settings.AlwaysQuit || (Config.Settings.QuitOnBanRetry && (botData.Status == BotStatus.BAN || botData.Status == BotStatus.RETRY)))
                     try { botData.Driver.Quit(); botData.BrowserOpen = false; } catch { }
 
                 // Save Browser Status
@@ -896,7 +931,7 @@ namespace RuriLib.Runner
                             RetryCount++;
                         }
 
-                        if (currentData.Retries < Settings.Proxies.BanLoopEvasion || Settings.Proxies.BanLoopEvasion == 0)
+                        if (ShouldTriggerEvasion(currentData.Retries))
                         {
                             currentData.Retries++;
                             goto GETPROXY;
@@ -1019,41 +1054,33 @@ namespace RuriLib.Runner
         }
         #endregion
 
-        #region Interface Calls
-        /// <summary>
-        /// Fired when a new message needs to be logged.
-        /// </summary>
+        #region Events
+        /// <summary>Fired when a new message needs to be logged.</summary>
         public event Action<IRunnerMessaging, LogLevel, string, bool, int> MessageArrived;
 
-        /// <summary>
-        /// Fired when the Master Worker status changed.
-        /// </summary>
+        /// <summary>Fired when the Master Worker status changed.</summary>
         public event Action<IRunnerMessaging> WorkerStatusChanged;
 
-        /// <summary>
-        /// Fired when a Hit was found.
-        /// </summary>
+        /// <summary>Fired when a Hit was found.</summary>
         public event Action<IRunnerMessaging, Hit> FoundHit;
 
-        /// <summary>
-        /// Fired when proxies need to be reloaded.
-        /// </summary>
+        /// <summary>Fired when proxies need to be reloaded.</summary>
         public event Action<IRunnerMessaging> ReloadProxies;
 
-        /// <summary>
-        /// Fired when an Action could change the UI and needs to be dispatched to another thread (usually it's handled by the UI thread).
-        /// </summary>
+        /// <summary>/// Fired when an Action could change the UI and needs to be dispatched to another thread (usually it's handled by the UI thread).</summary>
         public event Action<IRunnerMessaging, Action> DispatchAction;
 
-        /// <summary>
-        /// Fired when the progress record needs to be saved to the Database.
-        /// </summary>
+        /// <summary>Fired when the progress record needs to be saved to the Database.</summary>
         public event Action<IRunnerMessaging> SaveProgress;
 
-        /// <summary>
-        /// Fired when custom inputs from the user are required.
-        /// </summary>
+        /// <summary>Fired when custom inputs from the user are required.</summary>
         public event Action<IRunnerMessaging> AskCustomInputs;
+
+        /// <summary>Fired when the currently selected Config changed.</summary>
+        public event Action<IRunnerMessaging> ConfigChanged;
+        
+        /// <summary>Fired when the currently selected Wordlist changed.</summary>
+        public event Action<IRunnerMessaging> WordlistChanged;
 
         private void RaiseMessageArrived(LogLevel level, string message, bool prompt = false, int timeout = 0)
         {
@@ -1089,6 +1116,16 @@ namespace RuriLib.Runner
         private void RaiseAskCustomInputs()
         {
             AskCustomInputs?.Invoke(this);
+        }
+
+        private void RaiseConfigChanged()
+        {
+            ConfigChanged?.Invoke(this);
+        }
+
+        private void RaiseWordlistChanged()
+        {
+            WordlistChanged?.Invoke(this);
         }
         #endregion
 
@@ -1231,6 +1268,15 @@ namespace RuriLib.Runner
             proxies.AddRange(lines.Select(l => new CProxy(l, type)));
 
             return proxies;
+        }
+
+        private bool ShouldTriggerEvasion(int retries)
+        {
+            var evasionValue = Config.Settings.BanLoopEvasionOverride == -1 
+                ? Settings.Proxies.BanLoopEvasion 
+                : Config.Settings.BanLoopEvasionOverride;
+            
+            return retries < evasionValue || evasionValue == 0;
         }
         #endregion
 

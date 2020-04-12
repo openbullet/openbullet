@@ -87,9 +87,13 @@ namespace RuriLib
         /// <summary>The method of the HTTP request.</summary>
         public HttpMethod Method { get { return method; } set { method = value; OnPropertyChanged(); } }
 
+        private SecurityProtocol securityProtocol = SecurityProtocol.SystemDefault;
+        /// <summary>The security protocol(s) to use for the HTTPS request.</summary>
+        public SecurityProtocol SecurityProtocol { get { return securityProtocol; } set { securityProtocol = value; OnPropertyChanged(); } }
+
         /// <summary>The custom headers that are sent in the HTTP request.</summary>
         public Dictionary<string, string> CustomHeaders { get; set; } = new Dictionary<string, string>() {
-            { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko" },
+            { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36" },
             { "Pragma", "no-cache" },
             { "Accept", "*/*" }
         };
@@ -164,7 +168,7 @@ namespace RuriLib
 
             CustomHeaders.Clear(); // Remove the default headers
 
-            while (input != "" && !input.StartsWith("->"))
+            while (input != string.Empty && !input.StartsWith("->"))
             {
                 var parsed = LineParser.ParseToken(ref input, TokenType.Parameter, true).ToUpper();
                 switch (parsed)
@@ -219,6 +223,10 @@ namespace RuriLib
 
                     case "BOUNDARY":
                         MultipartBoundary = LineParser.ParseLiteral(ref input, "BOUNDARY");
+                        break;
+
+                    case "SECPROTO":
+                        SecurityProtocol = LineParser.ParseEnum(ref input, "Security Protocol", typeof(SecurityProtocol));
                         break;
 
                     default:
@@ -285,7 +293,7 @@ namespace RuriLib
                     break;
 
                 case RequestType.Standard:
-                    if (Request.CanContainBody(method))
+                    if (HttpRequest.CanContainRequestBody(method))
                     {
                         writer
                             .Token("CONTENT")
@@ -320,6 +328,14 @@ namespace RuriLib
                             .Literal(MultipartBoundary);
                     }
                     break;
+            }
+
+            if (SecurityProtocol != SecurityProtocol.SystemDefault)
+            {
+                writer
+                    .Indent()
+                    .Token("SECPROTO")
+                    .Token(SecurityProtocol, "SecurityProtocol");
             }
 
             foreach (var c in CustomCookies)
@@ -358,7 +374,7 @@ namespace RuriLib
 
             // Setup
             var request = new Request();
-            request.Setup(data.GlobalSettings, AutoRedirect, data.ConfigSettings.MaxRedirects, AcceptEncoding);
+            request.Setup(data.GlobalSettings, securityProtocol, AutoRedirect, data.ConfigSettings.MaxRedirects, AcceptEncoding);
 
             var localUrl = ReplaceValues(Url, data);
             data.Log(new LogEntry($"Calling URL: {localUrl}", Colors.MediumTurquoise));
@@ -367,7 +383,7 @@ namespace RuriLib
             switch (RequestType)
             {
                 case RequestType.Standard:
-                    request.SetStandardContent(ReplaceValues(PostData, data), ReplaceValues(ContentType, data), Method, EncodeContent, data.LogBuffer);
+                    request.SetStandardContent(ReplaceValues(PostData, data), ReplaceValues(ContentType, data), Method, EncodeContent, GetLogBuffer(data));
                     break;
 
                 case RequestType.BasicAuth:
@@ -383,7 +399,7 @@ namespace RuriLib
                             ContentType = ReplaceValues(m.Value, data),
                             Type = m.Type
                         });
-                    request.SetMultipartContent(contents, ReplaceValues(MultipartBoundary, data), data.LogBuffer);
+                    request.SetMultipartContent(contents, ReplaceValues(MultipartBoundary, data), GetLogBuffer(data));
                     break;
             }
 
@@ -398,7 +414,7 @@ namespace RuriLib
             var headers = CustomHeaders.Select( h =>
                     new KeyValuePair<string, string> (ReplaceValues(h.Key, data), ReplaceValues(h.Value, data))
                 ).ToDictionary(h => h.Key, h => h.Value);
-            request.SetHeaders(headers, AcceptEncoding, data.LogBuffer);
+            request.SetHeaders(headers, AcceptEncoding, GetLogBuffer(data));
 
             // Set cookies
             data.Log(new LogEntry("Sent Cookies:", Colors.MediumTurquoise));
@@ -406,19 +422,32 @@ namespace RuriLib
             foreach (var cookie in CustomCookies) // Add new user-defined custom cookies to the bot's cookie jar
                 data.Cookies[ReplaceValues(cookie.Key, data)] = ReplaceValues(cookie.Value, data);
 
-            request.SetCookies(data.Cookies, data.LogBuffer);
+            request.SetCookies(data.Cookies, GetLogBuffer(data));
 
             // End the request part
             data.LogNewLine();
 
             // Perform the request
-            (data.Address, data.ResponseCode, data.ResponseHeaders, data.Cookies) = request.Perform(localUrl, Method, data.ConfigSettings.IgnoreResponseErrors, data.LogBuffer);
+            try
+            {
+                (data.Address, data.ResponseCode, data.ResponseHeaders, data.Cookies) = request.Perform(localUrl, Method, GetLogBuffer(data));
+            }
+            catch (Exception ex)
+            {
+                if (data.ConfigSettings.IgnoreResponseErrors)
+                {
+                    data.Log(new LogEntry(ex.Message, Colors.Tomato));
+                    data.ResponseSource = ex.Message;
+                    return;
+                }
+                throw;
+            }
 
             // Save the response content
             switch (ResponseType)
             {
                 case ResponseType.String:
-                    data.ResponseSource = request.SaveString(ReadResponseSource, data.ResponseHeaders, data.LogBuffer);
+                    data.ResponseSource = request.SaveString(ReadResponseSource, data.ResponseHeaders, GetLogBuffer(data));
                     break;
 
                 case ResponseType.File:
@@ -429,7 +458,7 @@ namespace RuriLib
                     }
                     else
                     {
-                        request.SaveFile(ReplaceValues(DownloadPath, data), data.LogBuffer);
+                        request.SaveFile(ReplaceValues(DownloadPath, data), GetLogBuffer(data));
                     }
                     break;
 
@@ -541,5 +570,7 @@ namespace RuriLib
         }
 
         #endregion
+
+        private List<LogEntry> GetLogBuffer(BotData data) => data.GlobalSettings.General.EnableBotLog || data.IsDebug ? data.LogBuffer : null;
     }
 }

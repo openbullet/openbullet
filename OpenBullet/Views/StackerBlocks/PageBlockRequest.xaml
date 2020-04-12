@@ -1,0 +1,165 @@
+﻿<Page x:Class="OpenBullet.Views.StackerBlocks.PageBlockRequest"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      mc:Ignorable="d" 
+      d:DesignHeight="550" d:DesignWidth="400"
+      Title="PageBlockRequest">
+
+    <Grid>
+        <StackPanel>
+            <DockPanel>
+                <Label Content="URL:" />
+                <TextBox Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" />
+            </DockPanel>
+
+            <Grid Margin="0 5 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+
+                <!-- Row 1 -->
+                <DockPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
+                    <Label Content="Method:"/>
+                    <ComboBox x:Name="methodCombobox" SelectionChanged="methodCombobox_SelectionChanged"/>
+                </DockPanel>
+
+                <CheckBox Grid.Column="2" Grid.Row="0" Content="Auto Redirect" IsChecked="{Binding AutoRedirect}" VerticalContentAlignment="Center" />
+                
+                <!-- Row 2 -->
+                <CheckBox Grid.Column="0" Grid.Row="1" Content="Read Resp. Source" IsChecked="{Binding ReadResponseSource}" VerticalContentAlignment="Center" />
+                <CheckBox Grid.Column="1" Grid.Row="1" Content="Accept-Encoding" IsChecked="{Binding AcceptEncoding}" VerticalContentAlignment="Center"/>
+                <CheckBox Grid.Column="2" Grid.Row="1" Content="Encode Content" IsChecked="{Binding EncodeContent}" VerticalContentAlignment="Center"/>
+            </Grid>
+
+            <DockPanel>
+                <Label Content="Security Protocol:"/>
+                <ComboBox x:Name="securityProtocolCombobox" SelectionChanged="securityProtocolCombobox_SelectionChanged"/>
+            </DockPanel>
+            
+            <DockPanel Margin="0 5 0 0">
+                <Label Content="Request Type:" Foreground="{DynamicResource ForegroundCustom}" />
+                <ComboBox x:Name="requestTypeCombobox" SelectionChanged="requestTypeCombobox_SelectionChanged" />
+            </DockPanel>
+
+            <TabControl x:Name="requestTypeTabControl" Background="Transparent" BorderThickness="0">
+                <TabControl.ItemContainerStyle>
+                    <Style TargetType="{x:Type TabItem}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </Style>
+                </TabControl.ItemContainerStyle>
+                <TabItem x:Name="emptyTab">
+                    <StackPanel>
+                        <!-- EMPTY -->
+                    </StackPanel>
+                </TabItem>
+                <TabItem x:Name="basicAuthTab">
+                    <StackPanel>
+                        <DockPanel Margin="0 5 0 0">
+                            <Label Content="Username:" />
+                            <TextBox Text="{Binding AuthUser, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                        <DockPanel Margin="0 5 0 0">
+                            <Label Content="Password:" />
+                            <TextBox Text="{Binding AuthPass, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                    </StackPanel>
+                </TabItem>
+                <TabItem x:Name="standardTab">
+                    <StackPanel>
+                        <DockPanel Margin="0 5 0 0">
+                            <Label Content="POST Data:" />
+                            <TextBox Text="{Binding PostData, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                        <DockPanel Margin="0 5 0 0">
+                            <Label Content="Content-Type:" />
+                            <ComboBox x:Name="contentTypeCombobox" IsEditable="True" Text="{Binding ContentType}" />
+                        </DockPanel>
+                    </StackPanel>
+                </TabItem>
+                <TabItem x:Name="multipartTab">
+                    <StackPanel>
+                        <DockPanel>
+                            <Label Content="Boundary (random if empty):" />
+                            <TextBox Text="{Binding MultipartBoundary, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                        <Label Content="Multipart Contents:" />
+                        <RichTextBox x:Name="multipartContentsRTB" FontFamily="Consolas" Height="60" VerticalScrollBarVisibility="Auto" LostFocus="multipartContentsRTB_LostFocus" Background="{DynamicResource BackgroundSecondary}" Foreground="{DynamicResource ForegroundMain}" >
+                            <RichTextBox.Resources>
+                                <Style TargetType="{x:Type Paragraph}">
+                                    <Setter Property="Margin" Value="0"/>
+                                </Style>
+                            </RichTextBox.Resources>
+                            <RichTextBox.ToolTip>
+                                <TextBlock>Syntax:<LineBreak/>STRING:fieldname:fieldvalue<LineBreak/>FILE:fieldname:filepath:content-type</TextBlock>
+                            </RichTextBox.ToolTip>
+                        </RichTextBox>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+
+            <StackPanel>
+                <Label Content="Custom Cookies:" />
+                <RichTextBox x:Name="customCookiesRTB" FontFamily="Consolas" Height="100" VerticalScrollBarVisibility="Auto" LostFocus="customCookiesRTB_LostFocus" Background="{DynamicResource BackgroundSecondary}" Foreground="{DynamicResource ForegroundMain}">
+                    <RichTextBox.Resources>
+                        <Style TargetType="{x:Type Paragraph}">
+                            <Setter Property="Margin" Value="0"/>
+                        </Style>
+                    </RichTextBox.Resources>
+                    <RichTextBox.ToolTip>
+                        <TextBlock>Syntax:<LineBreak/>name: value</TextBlock>
+                    </RichTextBox.ToolTip>
+                </RichTextBox>
+
+                <Label Content="Custom Headers:" />
+                <RichTextBox x:Name="customHeadersRTB" FontFamily="Consolas" Height="100" VerticalScrollBarVisibility="Auto" LostFocus="customHeadersRTB_LostFocus" Background="{DynamicResource BackgroundSecondary}" Foreground="{DynamicResource ForegroundMain}">
+                    <RichTextBox.Resources>
+                        <Style TargetType="{x:Type Paragraph}">
+                            <Setter Property="Margin" Value="0"/>
+                        </Style>
+                    </RichTextBox.Resources>
+                    <RichTextBox.ToolTip>
+                        <TextBlock>Syntax:<LineBreak/>name: value</TextBlock>
+                    </RichTextBox.ToolTip>
+                </RichTextBox>
+            </StackPanel>
+
+            <DockPanel Margin="0 5 0 0">
+                <Label Content="Response Type:" Foreground="{DynamicResource ForegroundCustom}"/>
+                <ComboBox x:Name="responseTypeCombobox" SelectionChanged="responseTypeCombobox_SelectionChanged"/>
+            </DockPanel>
+            
+            <TabControl x:Name="responseTypeTabControl" Background="Transparent" BorderThickness="0">
+                <TabControl.ItemContainerStyle>
+                    <Style TargetType="{x:Type TabItem}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </Style>
+                </TabControl.ItemContainerStyle>
+                <TabItem x:Name="emptyTab2">
+                    <StackPanel>
+                        <!-- EMPTY -->
+                    </StackPanel>
+                </TabItem>
+                <TabItem x:Name="fileTab">
+                    <StackPanel>
+                        <DockPanel>
+                            <Label Content="File Path:"/>
+                            <TextBox Text="{Binding DownloadPath, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                        <CheckBox IsChecked="{Binding SaveAsScreenshot}" Content="Save as screenshot" VerticalContentAlignment="Center"/>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+            
+        </StackPanel>
+    </Grid>
+</Page>

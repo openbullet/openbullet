@@ -27,13 +27,13 @@ namespace RuriLib.Utils.Parsing
         public static IEnumerable<string> LR(string input, string left, string right, bool recursive = false, bool useRegex = false)
         {
             // No L and R = return full input
-            if (left == "" && right == "")
+            if (left == string.Empty && right == string.Empty)
             {
                 return new string[] { input };
             }
 
             // L or R not present and not empty = return nothing
-            else if (((left != "" && !input.Contains(left)) || (right != "" && !input.Contains(right))))
+            else if (((left != string.Empty && !input.Contains(left)) || (right != string.Empty && !input.Contains(right))))
             {
                 return new string[] { };
             }
@@ -60,14 +60,14 @@ namespace RuriLib.Utils.Parsing
                 {
                     try
                     {
-                        while (left == "" || (partial.Contains(left)) && (right == "" || partial.Contains(right)))
+                        while (left == string.Empty || (partial.Contains(left)) && (right == string.Empty || partial.Contains(right)))
                         {
                             // Search for left delimiter and Calculate offset
-                            pFrom = left == "" ? 0 : partial.IndexOf(left) + left.Length;
+                            pFrom = left == string.Empty ? 0 : partial.IndexOf(left) + left.Length;
                             // Move right of offset
                             partial = partial.Substring(pFrom);
                             // Search for right delimiter and Calculate length to parse
-                            pTo = right == "" ? (partial.Length - 1) : partial.IndexOf(right);
+                            pTo = right == string.Empty ? (partial.Length - 1) : partial.IndexOf(right);
                             // Parse it
                             var parsed = partial.Substring(0, pTo);
                             list.Add(parsed);
@@ -92,9 +92,9 @@ namespace RuriLib.Utils.Parsing
                 {
                     try
                     {
-                        pFrom = left == "" ? 0 : partial.IndexOf(left) + left.Length;
+                        pFrom = left == string.Empty ? 0 : partial.IndexOf(left) + left.Length;
                         partial = partial.Substring(pFrom);
-                        pTo = right == "" ? partial.Length : partial.IndexOf(right);
+                        pTo = right == string.Empty ? partial.Length : partial.IndexOf(right);
                         list.Add(partial.Substring(0, pTo));
                     }
                     catch { }
@@ -241,14 +241,16 @@ namespace RuriLib.Utils.Parsing
         /// <param name="pattern">The Regex pattern containing groups</param>
         /// <param name="output">The output format string, for which [0] will be replaced with the full match, [1] with the first group etc.</param>
         /// <param name="recursive">Whether to make multiple matches</param>
+        /// <param name="options">The Regex Options to use</param>
         /// <returns>The parsed string(s).</returns>
-        public static IEnumerable<string> REGEX(string input, string pattern, string output, bool recursive = false)
+        public static IEnumerable<string> REGEX(string input, string pattern, string output, bool recursive = false, RegexOptions? options = null)
         {
             var list = new List<string>();
+            if (!options.HasValue) options = new RegexOptions();
 
             if (recursive)
             {
-                var matches = Regex.Matches(input, pattern);
+                var matches = Regex.Matches(input, pattern, options.Value);
                 foreach (Match match in matches)
                 {
                     var final = output;
@@ -258,7 +260,7 @@ namespace RuriLib.Utils.Parsing
             }
             else
             {
-                var match = Regex.Match(input, pattern);
+                var match = Regex.Match(input, pattern, options.Value);
                 if (match.Success)
                 {
                     var final = output;

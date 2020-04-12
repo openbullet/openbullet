@@ -1,0 +1,36 @@
+﻿<Page x:Class="OpenBullet.Views.Main.Configs.OtherOptions.Proxies"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      xmlns:local="clr-namespace:OpenBullet.Views.Main.Configs.OtherOptions"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="780"
+      Title="ConfigOtherOptionsProxies">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel>
+            <StackPanel Grid.Column="0" Margin="5">
+                <CheckBox Content="Needs Proxies" IsChecked="{Binding NeedsProxies}" VerticalContentAlignment="Center"/>
+                <CheckBox Content="Use Only Socks Proxies" IsChecked="{Binding OnlySocks}" VerticalContentAlignment="Center"/>
+                <CheckBox Content="Use Only SSL Proxies" IsChecked="{Binding OnlySsl}" VerticalContentAlignment="Center"/>
+                <DockPanel>
+                    <Label Content="Max Uses Per Proxy (0 = infinite)" />
+                    <xctk:IntegerUpDown Background="Transparent" Width="50" Margin="10 0 0 0" Value="{Binding MaxProxyUses}" Foreground="{DynamicResource ForegroundMain}" HorizontalAlignment="Right"/>
+                </DockPanel>
+                <CheckBox Content="Ban Proxy after Good Status" IsChecked="{Binding BanProxyAfterGoodStatus}" VerticalContentAlignment="Center" ToolTip="Bans a Proxy after a SUCCESS, CUSTOM or TOCHECK result."/>
+                <DockPanel>
+                    <Label Content="Ban Loop Evasion (-1 = default)" />
+                    <xctk:IntegerUpDown Background="Transparent" Width="50" Margin="10 0 0 0" Minimum="-1" Value="{Binding BanLoopEvasionOverride}" Foreground="{DynamicResource ForegroundMain}" HorizontalAlignment="Right"/>
+                </DockPanel>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>

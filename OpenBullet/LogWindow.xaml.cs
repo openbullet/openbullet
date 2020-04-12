@@ -13,13 +13,13 @@ namespace OpenBullet
         public LogWindow()
         {
             InitializeComponent();
-            DataContext = Globals.log;
+            DataContext = OB.Logger;
             Closing += LogWindowClosing;
         }
 
         private void LogWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Globals.logWindow = null;
+            OB.LogWindow = null;
         }
 
         private void copyClick(object sender, RoutedEventArgs e)
@@ -51,14 +51,14 @@ namespace OpenBullet
         {
             try
             {
-                Globals.log.List.Clear();
+                OB.Logger.EntriesCollection.Clear();
             }
             catch { }
         }
         
         private void searchButton_Click(object sender, RoutedEventArgs e)
         {
-            Globals.log.Refresh();
+            OB.Logger.Refresh();
         }
     }
 }

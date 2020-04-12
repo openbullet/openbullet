@@ -7,11 +7,8 @@ namespace RuriLib.Models
     /// <summary>
     /// Represents a file as a source of input data that needs to be tested against a Config by the Runner.
     /// </summary>
-    public class Wordlist
+    public class Wordlist : Persistable<Guid>
     {
-        /// <summary>Needed for NoSQL storage.</summary>
-        public Guid Id { get; set; }
-
         /// <summary>The name of the Wordlist.</summary>
         public string Name { get; set; }
 

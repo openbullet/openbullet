@@ -83,7 +83,11 @@ namespace RuriLib.LS
             {
                 prop = instance.GetType().GetProperty(result[0]);
             }
-            catch { throw new ArgumentException($"There is no property called {result[0]} in the type {instance.GetType().ToString()}"); }
+            catch 
+            {
+                return;
+                // throw new ArgumentException($"There is no property called {result[0]} in the type {instance.GetType().ToString()}");
+            }
             var propVal = prop.GetValue(instance);
             if (propVal.GetType() != typeof(bool)) throw new InvalidCastException($"The property {result[0]} is not a boolean");
 

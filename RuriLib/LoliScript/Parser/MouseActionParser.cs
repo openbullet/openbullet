@@ -50,14 +50,24 @@ namespace RuriLib.LS
             IWebElement elem1 = null;
             IWebElement elem2 = null;
             Line newLine = null;
-            while (input != "")
+            while (input != string.Empty)
             {
                 var parsed = LineParser.ParseToken(ref input, TokenType.Parameter, true).ToUpper();
                 switch (parsed)
                 {
                     case "SPAWN":
                         // Spawn a div in a certain position so you can hook to it later via id
-                        SpawnDiv(data.Driver, LineParser.ParseInt(ref input, "X"), LineParser.ParseInt(ref input, "Y"), LineParser.ParseLiteral(ref input, "ID"));
+                        if (LineParser.Lookahead(ref input) == TokenType.Integer)
+                        {
+                            point1X = LineParser.ParseInt(ref input, "X");
+                            point1Y = LineParser.ParseInt(ref input, "Y");
+                        }
+                        else if (LineParser.Lookahead(ref input) == TokenType.Literal)
+                        {
+                            point1X = int.Parse(BlockBase.ReplaceValues(LineParser.ParseLiteral(ref input, "X"), data));
+                            point1Y = int.Parse(BlockBase.ReplaceValues(LineParser.ParseLiteral(ref input, "Y"), data));
+                        }
+                        SpawnDiv(data.Driver, point1X, point1Y, LineParser.ParseLiteral(ref input, "ID"));
                         break;
 
                     case "CLICK":
@@ -96,8 +106,16 @@ namespace RuriLib.LS
                         break;
 
                     case "DRAGANDDROPWITHOFFSET":
-                        offsetX = LineParser.ParseInt(ref input, "OFFSET X");
-                        offsetY = LineParser.ParseInt(ref input, "OFFSET Y");
+                        if (LineParser.Lookahead(ref input) == TokenType.Integer)
+                        {
+                            offsetX = LineParser.ParseInt(ref input, "OFFSET X");
+                            offsetY = LineParser.ParseInt(ref input, "OFFSET Y");
+                        }
+                        else if (LineParser.Lookahead(ref input) == TokenType.Literal)
+                        {
+                            offsetX = int.Parse(BlockBase.ReplaceValues(LineParser.ParseLiteral(ref input, "OFFSET X"), data));
+                            offsetY = int.Parse(BlockBase.ReplaceValues(LineParser.ParseLiteral(ref input, "OFFSET Y"), data));
+                        }
                         actions.DragAndDropToOffset(ParseElement(ref input, data), offsetX, offsetY);
                         break;
 
@@ -118,8 +136,16 @@ namespace RuriLib.LS
                         break;
 
                     case "MOVEBY":
-                        offsetX = LineParser.ParseInt(ref input, "OFFSET X");
-                        offsetY = LineParser.ParseInt(ref input, "OFFSET Y");
+                        if (LineParser.Lookahead(ref input) == TokenType.Integer)
+                        {
+                            offsetX = LineParser.ParseInt(ref input, "OFFSET X");
+                            offsetY = LineParser.ParseInt(ref input, "OFFSET Y");
+                        }
+                        else if (LineParser.Lookahead(ref input) == TokenType.Literal)
+                        {
+                            offsetX = int.Parse(BlockBase.ReplaceValues(LineParser.ParseLiteral(ref input, "OFFSET X"), data));
+                            offsetY = int.Parse(BlockBase.ReplaceValues(LineParser.ParseLiteral(ref input, "OFFSET Y"), data));
+                        }
                         actions.MoveByOffset(offsetX, offsetY);
                         break;
 
@@ -166,6 +192,7 @@ namespace RuriLib.LS
                         break;
 
                     case "DRAWLINE":
+                        // DRAWLINE 10 10 -> 20 20
                         if (LineParser.Lookahead(ref input) == TokenType.Integer)
                         {
                             point1X = LineParser.ParseInt(ref input, "X1");
@@ -173,6 +200,15 @@ namespace RuriLib.LS
                             LineParser.ParseToken(ref input, TokenType.Arrow, true);
                             point2X = LineParser.ParseInt(ref input, "X2");
                             point2Y = LineParser.ParseInt(ref input, "Y2");
+                        }
+                        // DRAWLINE "10" "20" -> "<MY_X>" "<MY_Y>"
+                        else if (LineParser.Lookahead(ref input) == TokenType.Literal)
+                        {
+                            point1X = int.Parse(BlockBase.ReplaceValues(LineParser.ParseLiteral(ref input, "X1"), data));
+                            point1Y = int.Parse(BlockBase.ReplaceValues(LineParser.ParseLiteral(ref input, "Y1"), data));
+                            LineParser.ParseToken(ref input, TokenType.Arrow, true);
+                            point2X = int.Parse(BlockBase.ReplaceValues(LineParser.ParseLiteral(ref input, "X2"), data));
+                            point2Y = int.Parse(BlockBase.ReplaceValues(LineParser.ParseLiteral(ref input, "Y2"), data));
                         }
                         else
                         {
@@ -198,6 +234,7 @@ namespace RuriLib.LS
                         break;
 
                     case "DRAWLINEHUMAN":
+                        // DRAWLINEHUMAN 10 10 -> 20 20
                         if (LineParser.Lookahead(ref input) == TokenType.Integer)
                         {
                             point1X = LineParser.ParseInt(ref input, "X1");
@@ -205,6 +242,15 @@ namespace RuriLib.LS
                             LineParser.ParseToken(ref input, TokenType.Arrow, true);
                             point2X = LineParser.ParseInt(ref input, "X2");
                             point2Y = LineParser.ParseInt(ref input, "Y2");
+                        }
+                        // DRAWLINEHUMAN "10" "20" -> "<MY_X>" "<MY_Y>"
+                        else if (LineParser.Lookahead(ref input) == TokenType.Literal)
+                        {
+                            point1X = int.Parse(BlockBase.ReplaceValues(LineParser.ParseLiteral(ref input, "X1"), data));
+                            point1Y = int.Parse(BlockBase.ReplaceValues(LineParser.ParseLiteral(ref input, "Y1"), data));
+                            LineParser.ParseToken(ref input, TokenType.Arrow, true);
+                            point2X = int.Parse(BlockBase.ReplaceValues(LineParser.ParseLiteral(ref input, "X2"), data));
+                            point2Y = int.Parse(BlockBase.ReplaceValues(LineParser.ParseLiteral(ref input, "Y2"), data));
                         }
                         else
                         {

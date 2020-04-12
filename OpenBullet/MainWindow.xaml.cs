@@ -1,4 +1,7 @@
 ﻿using OpenBullet.ViewModels;
+using OpenBullet.Views.Main;
+using OpenBullet.Views.Main.Settings;
+using OpenBullet.Views.Main.Runner;
 using RuriLib;
 using RuriLib.ViewModels;
 using System;
@@ -16,6 +19,11 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using OpenBullet.Plugins;
+using System.Collections.Generic;
+using OpenBullet.Views.UserControls;
+using OpenBullet.Views.StackerBlocks;
+using RuriLib.LS;
 
 namespace OpenBullet
 {
@@ -28,41 +36,38 @@ namespace OpenBullet
         private int snowBuffer = 0;
 
         public RunnerManager RunnerManagerPage { get; set; }
+        // TODO: Do not create a different View for each RunnerInstance, but instead just replace the vm!
         public Runner CurrentRunnerPage { get; set; }
         public ProxyManager ProxyManagerPage { get; set; }
         public WordlistManager WordlistManagerPage { get; set; }
-        public Configs ConfigsPage { get; set; }
+        public ConfigsSection ConfigsPage { get; set; }
         public HitsDB HitsDBPage { get; set; }
         public Settings OBSettingsPage { get; set; }
-        public Tools ToolsPage { get; set; }
+        public ToolsSection ToolsPage { get; set; }
+        public PluginsSection PluginsPage { get; set; }
         public About AboutPage { get; set; }
-        public System.Drawing.Rectangle Bounds { get; private set; }
+        public Rectangle Bounds { get; private set; }
 
-        private string title = $"OpenBullet {Globals.obVersion}";
         private bool maximized = false;
         System.Windows.Point _startPosition;
         bool _isResizing = false;
 
-        private BackgroundWorker ruriGuard = new BackgroundWorker();
-        private BackgroundWorker ruriKiller = new BackgroundWorker();
-        private BackgroundWorker ruriScout = new BackgroundWorker();
-
         public MainWindow()
         {
+            OB.MainWindow = this;
+
             // Clean or create log file
-            File.WriteAllText(Globals.logFile, "");
+            File.WriteAllText(OB.logFile, "");
 
             InitializeComponent();
 
+            var title = $"OpenBullet {OB.Version}";
             Title = title;
             titleLabel.Content = title;
 
-            // Set global reference to this window
-            Globals.mainWindow = this;
-
             // Make sure all folders are there or recreate them
-            var folders = new string[] { "Captchas", "ChromeExtensions", "Configs", "DB", "Screenshots", "Settings", "Sounds", "Wordlists" };
-            foreach (var folder in folders.Select(f => System.IO.Path.Combine(Directory.GetCurrentDirectory(), f)))
+            var folders = new string[] { "Captchas", "ChromeExtensions", "Configs", "DB", "Plugins", "Screenshots", "Settings", "Sounds", "Wordlists" };
+            foreach (var folder in folders.Select(f => Path.Combine(Directory.GetCurrentDirectory(), f)))
             {
                 if (!Directory.Exists(folder))
                     Directory.CreateDirectory(folder);
@@ -71,111 +76,169 @@ namespace OpenBullet
             // Initialize Environment Settings
             try
             {
-                Globals.environment = IOManager.ParseEnvironmentSettings(Globals.envFile);
+                OB.Settings.Environment = IOManager.ParseEnvironmentSettings(OB.envFile);
             }
             catch
             {
-                MessageBox.Show("Could not find / parse the Environment Settings file. Please fix the issue and try again.");
+                OB.Logger.LogError(Components.Main, 
+                    "Could not find / parse the Environment Settings file. Please fix the issue and try again.", true);
                 Environment.Exit(0);
             }
 
-            if (Globals.environment.WordlistTypes.Count == 0 || Globals.environment.CustomKeychains.Count == 0)
+            if (OB.Settings.Environment.WordlistTypes.Count == 0 || OB.Settings.Environment.CustomKeychains.Count == 0)
             {
-                MessageBox.Show("At least one WordlistType and one CustomKeychain must be defined in the Environment Settings file.");
+                OB.Logger.LogError(Components.Main, 
+                    "At least one WordlistType and one CustomKeychain must be defined in the Environment Settings file.", true);
                 Environment.Exit(0);
             }
 
             // Initialize Settings
-            Globals.rlSettings = new RLSettingsViewModel();
-            Globals.obSettings = new OBSettingsViewModel();
+            OB.Settings.RLSettings = new RLSettingsViewModel();
+            OB.OBSettings = new OBSettingsViewModel();
 
             // Create / Load Settings
-            if (!File.Exists(Globals.rlSettingsFile))
+            if (!File.Exists(OB.rlSettingsFile))
             {
                 MessageBox.Show("RuriLib Settings file not found, generating a default one");
-                Globals.LogWarning(Components.Main, "RuriLib Settings file not found, generating a default one");
-                IOManager.SaveSettings(Globals.rlSettingsFile, Globals.rlSettings);
-                Globals.LogInfo(Components.Main, $"Created the default RuriLib Settings file {Globals.rlSettingsFile}");
+                OB.Logger.LogWarning(Components.Main, "RuriLib Settings file not found, generating a default one");
+                IOManager.SaveSettings(OB.rlSettingsFile, OB.Settings.RLSettings);
+                OB.Logger.LogInfo(Components.Main, $"Created the default RuriLib Settings file {OB.rlSettingsFile}");
             }
             else
             {
-                Globals.rlSettings = IOManager.LoadSettings(Globals.rlSettingsFile);
-                Globals.LogInfo(Components.Main, "Loaded the existing RuriLib Settings file");
+                OB.Settings.RLSettings = IOManager.LoadSettings(OB.rlSettingsFile);
+                OB.Logger.LogInfo(Components.Main, "Loaded the existing RuriLib Settings file");
             }
 
-            if (!File.Exists(Globals.obSettingsFile))
+            if (!File.Exists(OB.obSettingsFile))
             {
                 MessageBox.Show("OpenBullet Settings file not found, generating a default one");
-                Globals.LogWarning(Components.Main, "OpenBullet Settings file not found, generating a default one");
-                OBIOManager.SaveSettings(Globals.obSettingsFile, Globals.obSettings);
-                Globals.LogInfo(Components.Main, $"Created the default OpenBullet Settings file {Globals.obSettingsFile}");
+                OB.Logger.LogWarning(Components.Main, "OpenBullet Settings file not found, generating a default one");
+                OBIOManager.SaveSettings(OB.obSettingsFile, OB.OBSettings);
+                OB.Logger.LogInfo(Components.Main, $"Created the default OpenBullet Settings file {OB.obSettingsFile}");
             }
             else
             {
-                Globals.obSettings = OBIOManager.LoadSettings(Globals.obSettingsFile);
-                Globals.LogInfo(Components.Main, "Loaded the existing OpenBullet Settings file");
+                OB.OBSettings = OBIOManager.LoadSettings(OB.obSettingsFile);
+                OB.Logger.LogInfo(Components.Main, "Loaded the existing OpenBullet Settings file");
             }
 
             // If there is no DB backup or if it's more than 1 day old, back up the DB
             try
             {
-                if (Globals.obSettings.General.BackupDB &&
-                    (!File.Exists(Globals.dataBaseBackupFile) || 
-                    (File.Exists(Globals.dataBaseBackupFile) && ((DateTime.Now - File.GetCreationTime(Globals.dataBaseBackupFile)).TotalDays > 1))))
+                if (OB.OBSettings.General.BackupDB &&
+                    (!File.Exists(OB.dataBaseBackupFile) || 
+                    (File.Exists(OB.dataBaseBackupFile) && ((DateTime.Now - File.GetCreationTime(OB.dataBaseBackupFile)).TotalDays > 1))))
                 {
                     // Check that the DB is not corrupted by accessing a random collection. If this fails, an exception will be thrown.
-                    using (var db = new LiteDB.LiteDatabase(Globals.dataBaseFile))
+                    using (var db = new LiteDB.LiteDatabase(OB.dataBaseFile))
                     {
                         var coll = db.GetCollection<RuriLib.Models.CProxy>("proxies");
                     }
 
                     // Delete the old file and copy over the new one
-                    File.Delete(Globals.dataBaseBackupFile);
-                    File.Copy(Globals.dataBaseFile, Globals.dataBaseBackupFile);
-                    Globals.LogInfo(Components.Main, "Backed up the DB");
+                    File.Delete(OB.dataBaseBackupFile);
+                    File.Copy(OB.dataBaseFile, OB.dataBaseBackupFile);
+                    OB.Logger.LogInfo(Components.Main, "Backed up the DB");
                 }
             }
             catch (Exception ex)
             {
-                Globals.LogError(Components.Main, $"Could not backup the DB: {ex.Message}");
+                OB.Logger.LogError(Components.Main, $"Could not backup the DB: {ex.Message}");
             }
 
-            Topmost = Globals.obSettings.General.AlwaysOnTop;
+            Topmost = OB.OBSettings.General.AlwaysOnTop;
 
-            RunnerManagerPage = new RunnerManager(Globals.obSettings.General.AutoCreateRunner);
-            if (Globals.obSettings.General.AutoCreateRunner)
-                CurrentRunnerPage = RunnerManagerPage.vm.Runners.FirstOrDefault().Page;
-            Globals.LogInfo(Components.Main, "Initialized RunnerManager");
+            // Load Plugins
+            var (plugins, blockPlugins) = Loader.LoadPlugins(OB.pluginsFolder);
+            OB.BlockPlugins = blockPlugins.ToList();
+
+            // Set mappings
+            OB.BlockMappings = new List<(Type, Type, System.Windows.Media.Color)>()
+            {
+                ( typeof(BlockBypassCF),        typeof(PageBlockBypassCF),          Colors.DarkSalmon ),
+                ( typeof(BlockImageCaptcha),    typeof(PageBlockCaptcha),           Colors.DarkOrange ),
+                ( typeof(BlockFunction),        typeof(PageBlockFunction),          Colors.YellowGreen ),
+                ( typeof(BlockKeycheck),        typeof(PageBlockKeycheck),          Colors.DodgerBlue ),
+                ( typeof(BlockLSCode),          typeof(PageBlockLSCode),            Colors.White ),
+                ( typeof(BlockParse),           typeof(PageBlockParse),             Colors.Gold ),
+                ( typeof(BlockRecaptcha),       typeof(PageBlockRecaptcha),         Colors.Turquoise ),
+                ( typeof(BlockRequest),         typeof(PageBlockRequest),           Colors.LimeGreen ),
+                ( typeof(BlockTCP),             typeof(PageBlockTCP),               Colors.MediumPurple ),
+                ( typeof(BlockUtility),         typeof(PageBlockUtility),           Colors.Wheat ),
+                ( typeof(SBlockBrowserAction),  typeof(PageSBlockBrowserAction),    Colors.Green ),
+                ( typeof(SBlockElementAction),  typeof(PageSBlockElementAction),    Colors.Firebrick ),
+                ( typeof(SBlockExecuteJS),      typeof(PageSBlockExecuteJS),        Colors.Indigo ),
+                ( typeof(SBlockNavigate),       typeof(PageSBlockNavigate),         Colors.RoyalBlue )
+            };
+
+            // Add block plugins to mappings
+            foreach (var plugin in blockPlugins)
+            {
+                try
+                {
+                    var color = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(plugin.Color);
+                    OB.BlockMappings.Add((plugin.GetType(), typeof(BlockPluginPage), color));
+                    BlockParser.BlockMappings.Add(plugin.Name, plugin.GetType());
+                    OB.Logger.LogInfo(Components.Main, $"Initialized {plugin.Name} block plugin");
+                }
+                catch 
+                {
+                    OB.Logger.LogError(Components.Main, $"The color {plugin.Color} in block plugin {plugin.Name} is invalid", true);
+                    Environment.Exit(0);
+                }
+            }
+
+            // ViewModels
+            OB.RunnerManager = new RunnerManagerViewModel();
+            OB.ProxyManager = new ProxyManagerViewModel();
+            OB.WordlistManager = new WordlistManagerViewModel();
+            OB.ConfigManager = new ConfigManagerViewModel();
+            OB.HitsDB = new HitsDBViewModel();
+
+            // Views
+            RunnerManagerPage = new RunnerManager();
+            
+            // If we create first runner and there was no session to restore
+            if (OB.OBSettings.General.AutoCreateRunner & !OB.RunnerManager.RestoreSession())
+            {
+                var firstRunner = OB.RunnerManager.Create();
+                CurrentRunnerPage = OB.RunnerManager.RunnersCollection.FirstOrDefault().View;
+            }
+                
+            OB.Logger.LogInfo(Components.Main, "Initialized RunnerManager");
             ProxyManagerPage = new ProxyManager();
-            Globals.LogInfo(Components.Main, "Initialized ProxyManager");
+            OB.Logger.LogInfo(Components.Main, "Initialized ProxyManager");
             WordlistManagerPage = new WordlistManager();
-            Globals.LogInfo(Components.Main, "Initialized WordlistManager");
-            ConfigsPage = new Configs();
-            Globals.LogInfo(Components.Main, "Initialized ConfigManager");
+            OB.Logger.LogInfo(Components.Main, "Initialized WordlistManager");
+            ConfigsPage = new ConfigsSection();
+            OB.Logger.LogInfo(Components.Main, "Initialized ConfigManager");
             HitsDBPage = new HitsDB();
-            Globals.LogInfo(Components.Main, "Initialized HitsDB");
+            OB.Logger.LogInfo(Components.Main, "Initialized HitsDB");
             OBSettingsPage = new Settings();
-            Globals.LogInfo(Components.Main, "Initialized Settings");
-            ToolsPage = new Tools();
-            Globals.LogInfo(Components.Main, "Initialized Tools");
+            OB.Logger.LogInfo(Components.Main, "Initialized Settings");
+            ToolsPage = new ToolsSection();
+            OB.Logger.LogInfo(Components.Main, "Initialized Tools");
+            PluginsPage = new PluginsSection(plugins);
+            OB.Logger.LogInfo(Components.Main, "Initialized Plugins");
             AboutPage = new About();
 
             menuOptionRunner_MouseDown(this, null);
 
-            var width = Globals.obSettings.General.StartingWidth;
-            var height = Globals.obSettings.General.StartingHeight;
+            var width = OB.OBSettings.General.StartingWidth;
+            var height = OB.OBSettings.General.StartingHeight;
             if (width > 800) Width = width;
             if (height > 600) Height = height;
 
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
-            if (Globals.obSettings.Themes.EnableSnow)
+            if (OB.OBSettings.Themes.EnableSnow)
                 Loaded += MainWindow_Loaded;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            var t = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(10000 / Globals.obSettings.Themes.SnowAmount) };
+            var t = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(10000 / OB.OBSettings.Themes.SnowAmount) };
             t.Tick += (s, ea) => Snow();
             t.Start();
         }
@@ -278,6 +341,12 @@ namespace OpenBullet
             menuOptionSelected(menuOptionTools);
         }
 
+        private void menuOptionPlugins_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Main.Content = PluginsPage;
+            menuOptionSelected(menuOptionPlugins);
+        }
+
         private void menuOptionSettings_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Main.Content = OBSettingsPage;
@@ -297,11 +366,11 @@ namespace OpenBullet
                 try
                 {
                     var c = (Label)child;
-                    c.Foreground = Globals.GetBrush("ForegroundMain");
+                    c.Foreground = Utils.GetBrush("ForegroundMain");
                 }
                 catch { }
             }
-            ((Label)sender).Foreground = Globals.GetBrush("ForegroundMenuSelected");
+            ((Label)sender).Foreground = Utils.GetBrush("ForegroundMenuSelected");
         }
         #endregion
 
@@ -322,10 +391,10 @@ namespace OpenBullet
 
         private bool CheckOnQuit()
         {
-            var active = RunnerManagerPage.vm.Runners.Count(r => r.Runner.Busy);
-            if (!Globals.obSettings.General.DisableQuitWarning || active > 0)
+            var active = OB.RunnerManager.RunnersCollection.Count(r => r.ViewModel.Busy);
+            if (!OB.OBSettings.General.DisableQuitWarning || active > 0)
             {
-                Globals.LogWarning(Components.Main, "Prompting quit confirmation");
+                OB.Logger.LogWarning(Components.Main, "Prompting quit confirmation");
 
                 if (active == 0)
                 {
@@ -341,14 +410,18 @@ namespace OpenBullet
                 }
             }
 
-            if (!Globals.obSettings.General.DisableNotSavedWarning && !Globals.mainWindow.ConfigsPage.ConfigManagerPage.CheckSaved())
+            if (!OB.OBSettings.General.DisableNotSavedWarning && !OB.MainWindow.ConfigsPage.ConfigManagerPage.CheckSaved())
             {
-                Globals.LogWarning(Components.Main, "Config not saved, prompting quit confirmation");
+                OB.Logger.LogWarning(Components.Main, "Config not saved, prompting quit confirmation");
                 if (MessageBox.Show("The Config in Stacker wasn't saved.\nAre you sure you want to quit?",
                     "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                     return false;
             }
-            Globals.LogInfo(Components.Main, "Quit sequence initiated");
+            
+            OB.Logger.LogInfo(Components.Main, "Saving RunnerManager session to the database");
+            OB.RunnerManager.SaveSession();
+
+            OB.Logger.LogInfo(Components.Main, "Quit sequence initiated");
             return true;
         }
 
@@ -367,8 +440,8 @@ namespace OpenBullet
             if (maximized)
             {
                 Rect workArea = SystemParameters.WorkArea;
-                this.Width = Globals.obSettings.General.StartingWidth;
-                this.Height = Globals.obSettings.General.StartingHeight;
+                this.Width = OB.OBSettings.General.StartingWidth;
+                this.Height = OB.OBSettings.General.StartingHeight;
                 Left = (workArea.Width - this.Width) / 2 + workArea.Left;
                 Top = (workArea.Height - this.Height) / 2 + workArea.Top;
                 maximized = false;
@@ -408,8 +481,8 @@ namespace OpenBullet
                 if (maximized)
                 {
                     Rect workArea = SystemParameters.WorkArea;
-                    this.Width = Globals.obSettings.General.StartingWidth;
-                    this.Height = Globals.obSettings.General.StartingHeight;
+                    this.Width = OB.OBSettings.General.StartingWidth;
+                    this.Height = OB.OBSettings.General.StartingHeight;
                     Left = (workArea.Width - this.Width) / 2 + workArea.Left;
                     Top = (workArea.Height - this.Height) / 2 + workArea.Top;
                     maximized = false;
@@ -469,7 +542,7 @@ namespace OpenBullet
             var bitmap = CopyScreen((int)Width, (int)Height, (int)Top, (int)Left);
             Clipboard.SetImage(bitmap);
             GetBitmap(bitmap).Save("screenshot.jpg", ImageFormat.Jpeg);
-            Globals.LogInfo(Components.Main, "Acquired screenshot");
+            OB.Logger.LogInfo(Components.Main, "Acquired screenshot");
         }
 
         private static BitmapSource CopyScreen(int width, int height, int top, int left)
@@ -509,14 +582,14 @@ namespace OpenBullet
 
         private void logImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (Globals.logWindow == null)
+            if (OB.LogWindow == null)
             {
-                Globals.logWindow = new LogWindow();
-                Globals.logWindow.Show();
+                OB.LogWindow = new LogWindow();
+                OB.LogWindow.Show();
             }
             else
             {
-                Globals.logWindow.Show();
+                OB.LogWindow.Show();
             }
         }
 
@@ -524,9 +597,9 @@ namespace OpenBullet
         {
             try
             {
-                var brush = Globals.GetBrush("BackgroundMain");
+                var brush = Utils.GetBrush("BackgroundMain");
 
-                if (!Globals.obSettings.Themes.UseImage)
+                if (!OB.OBSettings.Themes.UseImage)
                 {
                     Background = brush;
                     Main.Background = brush;
@@ -534,10 +607,10 @@ namespace OpenBullet
                 else
                 {
                     // BACKGROUND
-                    if (File.Exists(Globals.obSettings.Themes.BackgroundImage))
+                    if (File.Exists(OB.OBSettings.Themes.BackgroundImage))
                     {
-                        var bbrush = new ImageBrush(new BitmapImage(new Uri(Globals.obSettings.Themes.BackgroundImage)));
-                        bbrush.Opacity = (double)((double)Globals.obSettings.Themes.BackgroundImageOpacity / (double)100);
+                        var bbrush = new ImageBrush(new BitmapImage(new Uri(OB.OBSettings.Themes.BackgroundImage)));
+                        bbrush.Opacity = (double)((double)OB.OBSettings.Themes.BackgroundImageOpacity / (double)100);
                         Background = bbrush;
                     }
                     else
@@ -546,13 +619,13 @@ namespace OpenBullet
                     }
 
                     // LOGO
-                    if (File.Exists(Globals.obSettings.Themes.BackgroundLogo))
+                    if (File.Exists(OB.OBSettings.Themes.BackgroundLogo))
                     {
-                        var lbrush = new ImageBrush(new BitmapImage(new Uri(Globals.obSettings.Themes.BackgroundLogo)));
+                        var lbrush = new ImageBrush(new BitmapImage(new Uri(OB.OBSettings.Themes.BackgroundLogo)));
                         lbrush.AlignmentX = AlignmentX.Center;
                         lbrush.AlignmentY = AlignmentY.Center;
                         lbrush.Stretch = Stretch.None;
-                        lbrush.Opacity = (double)((double)Globals.obSettings.Themes.BackgroundImageOpacity / (double)100);
+                        lbrush.Opacity = (double)((double)OB.OBSettings.Themes.BackgroundImageOpacity / (double)100);
                         Main.Background = lbrush;
                     }
                     else

@@ -37,7 +37,7 @@ namespace RuriLib
         public bool DangerousScriptPresent { get { return Script.ToUpper().Contains("BEGIN SCRIPT"); } }
 
         /// <summary>Whether captcha solving blocks are present in the Config.</summary>
-        public bool CaptchasNeeded { get { return Script.Contains("CAPTCHA"); } }
+        public bool CaptchasNeeded { get { return Regex.Match(Script, "(^|\n)(#[^ ]* )?(RE)?CAPTCHA").Success; } }
 
         /// <summary>Whether bypasscf blocks are present in the Config.</summary>
         public bool HasCFBypass { get { return Script.Contains("BYPASSCF"); } }

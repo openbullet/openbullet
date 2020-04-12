@@ -61,6 +61,14 @@ namespace RuriLib
         /// <summary>Whether to parse multiple values that match the criteria or just the first one.</summary>
         public bool Recursive { get { return recursive; } set { recursive = value; OnPropertyChanged(); } }
 
+        private bool dotMatches = false;
+        /// <summary>Whether Regex . matches over multiple lines.</summary>
+        public bool DotMatches { get { return dotMatches; } set { dotMatches = value; OnPropertyChanged(); } }
+
+        private bool caseSensitive = true;
+        /// <summary>Whether Regex matches are case sensitive.</summary>
+        public bool CaseSensitive { get { return caseSensitive; } set { caseSensitive = value; OnPropertyChanged(); } }
+
         private bool encodeOutput = false;
         /// <summary>Whether to URL encode the parsed text.</summary>
         public bool EncodeOutput { get { return encodeOutput; } set { encodeOutput = value; OnPropertyChanged(); } }
@@ -257,7 +265,9 @@ namespace RuriLib
                         .Literal(RegexOutput)
                         .Boolean(Recursive, "Recursive")
                         .Boolean(EncodeOutput, "EncodeOutput")
-                        .Boolean(CreateEmpty, "CreateEmpty");
+                        .Boolean(CreateEmpty, "CreateEmpty")
+                        .Boolean(DotMatches, "DotMatches")
+                        .Boolean(CaseSensitive, "CaseSensitive");
                     break;
             }
 
@@ -299,11 +309,16 @@ namespace RuriLib
                     throw new NotImplementedException("XPATH parsing is not implemented yet");
 
                 case ParseType.REGEX:
-                    list = Parse.REGEX(original, ReplaceValues(regexString, data), ReplaceValues(regexOutput, data), recursive).ToList();
+                    RegexOptions regexOptions = new RegexOptions();
+                    if (dotMatches)
+                        regexOptions |= RegexOptions.Singleline;
+                    if (caseSensitive == false)
+                        regexOptions |= RegexOptions.IgnoreCase;
+                    list = Parse.REGEX(original, ReplaceValues(regexString, data), ReplaceValues(regexOutput, data), recursive, regexOptions).ToList();
                     break;
             }
 
-            InsertVariables(data, isCapture, recursive, list, variableName, prefix, suffix, encodeOutput, createEmpty);
+            InsertVariable(data, isCapture, recursive, list, variableName, prefix, suffix, encodeOutput, createEmpty);
         }
     }
 }

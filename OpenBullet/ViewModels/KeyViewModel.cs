@@ -1,4 +1,4 @@
-﻿using OpenBullet.Pages.StackerBlocks;
+﻿using OpenBullet.Views.StackerBlocks;
 using RuriLib;
 using RuriLib.Functions.Conditions;
 using RuriLib.Models;

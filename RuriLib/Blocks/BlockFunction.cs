@@ -1,13 +1,12 @@
-﻿using Extreme.Net;
-using RuriLib.Functions.Crypto;
+﻿using RuriLib.Functions.Crypto;
 using RuriLib.Functions.Formats;
 using RuriLib.Functions.Time;
+using RuriLib.Functions.UserAgent;
 using RuriLib.LS;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
@@ -115,8 +114,11 @@ namespace RuriLib
             /// <summary>Encrypts a string with RSA.</summary>
             RSAEncrypt,
 
-            /// <summary>Decrypts a string with RSA.</summary>
-            RSADecrypt,
+            // <summary>Decrypts a string with RSA.</summary>
+            // RSADecrypt,
+
+            /// <summary>Encrypts a string with RSA PKCS1PAD2.</summary>
+            RSAPKCS1PAD2,
 
             /// <summary>Waits a given amount of milliseconds.</summary>
             Delay,
@@ -170,6 +172,10 @@ namespace RuriLib
         /// <summary>The hashing function to use.</summary>
         public Hash HashType { get { return hashType; } set { hashType = value; OnPropertyChanged(); } }
 
+        private bool inputBase64 = false;
+        /// <summary>Whether the input is a base64-encoded string instead of UTF8.</summary>
+        public bool InputBase64 { get { return inputBase64; } set { inputBase64 = value; OnPropertyChanged(); } }
+
         // -- Hmac
         private string hmacKey = "";
         /// <summary>The key used to authenticate the message.</summary>
@@ -178,6 +184,10 @@ namespace RuriLib
         private bool hmacBase64 = false;
         /// <summary>Whether to output the message as a base64-encoded string instead of a hex-encoded string.</summary>
         public bool HmacBase64 { get { return hmacBase64; } set { hmacBase64 = value; OnPropertyChanged(); } }
+
+        private bool keyBase64 = false;
+        /// <summary>Whether the HMAC Key is a base64-encoded string instead of UTF8.</summary>
+        public bool KeyBase64 { get { return keyBase64; } set { keyBase64 = value; OnPropertyChanged(); } }
 
         // -- Translate
         private bool stopAfterFirstMatch = true;
@@ -211,13 +221,17 @@ namespace RuriLib
         public string RegexMatch { get { return regexMatch; } set { regexMatch = value; OnPropertyChanged(); } }
 
         // -- Random Number
-        private int randomMin = 0;
-        /// <summary>The minimum random number that can be generated.</summary>
-        public int RandomMin { get { return randomMin; } set { randomMin = value; OnPropertyChanged(); } }
+        private string randomMin = "0";
+        /// <summary>The minimum random number that can be generated (inclusive).</summary>
+        public string RandomMin { get { return randomMin; } set { randomMin = value; OnPropertyChanged(); } }
 
-        private int randomMax = 0;
-        /// <summary>The maximum random number that can be generated.</summary>
-        public int RandomMax { get { return randomMax; } set { randomMax = value; OnPropertyChanged(); } }
+        private string randomMax = "0";
+        /// <summary>The maximum random number that can be generated (exclusive).</summary>
+        public string RandomMax { get { return randomMax; } set { randomMax = value; OnPropertyChanged(); } }
+
+        private bool randomZeroPad = false;
+        /// <summary>Whether to pad with zeros on the left to match the length of the maximum provided.</summary>
+        public bool RandomZeroPad { get { return randomZeroPad; } set { randomZeroPad = value; OnPropertyChanged(); } }
 
         // -- CountOccurrences
         private string stringToFind = "";
@@ -225,17 +239,17 @@ namespace RuriLib
         public string StringToFind { get { return stringToFind; } set { stringToFind = value; OnPropertyChanged(); } }
 
         // -- RSA
-        private string rsaKey = "";
-        /// <summary>The RSA private key as a base64 string.</summary>
-        public string RsaKey { get { return rsaKey; } set { rsaKey = value; OnPropertyChanged(); } }
-
-        private string rsaMod = "";
+        private string rsaN = "";
         /// <summary>The modulus of the RSA public key as a base64 string.</summary>
-        public string RsaMod { get { return rsaMod; } set { rsaMod = value; OnPropertyChanged(); } }
+        public string RsaN { get { return rsaN; } set { rsaN = value; OnPropertyChanged(); } }
 
-        private string rsaExp = "";
+        private string rsaE = "";
         /// <summary>The exponent of the RSA public key as a base64 string.</summary>
-        public string RsaExp { get { return rsaExp; } set { rsaExp = value; OnPropertyChanged(); } }
+        public string RsaE { get { return rsaE; } set { rsaE = value; OnPropertyChanged(); } }
+
+        private string rsaD = "";
+        /// <summary>The exponent of the RSA private key as a base64 string.</summary>
+        public string RsaD { get { return rsaD; } set { rsaD = value; OnPropertyChanged(); } }
 
         private bool rsaOAEP = true;
         /// <summary>Whether to use OAEP padding instead of PKCS v1.5.</summary>
@@ -254,6 +268,15 @@ namespace RuriLib
         private string substringLength = "1";
         /// <summary>The length of the wanted substring.</summary>
         public string SubstringLength { get { return substringLength; } set { substringLength = value; OnPropertyChanged(); } }
+
+        // -- User Agent
+        private bool userAgentSpecifyBrowser = false;
+        /// <summary>Whether to only limit the UA generation to a certain browser.</summary>
+        public bool UserAgentSpecifyBrowser { get { return userAgentSpecifyBrowser; } set { userAgentSpecifyBrowser = value; OnPropertyChanged(); } }
+
+        private UserAgent.Browser userAgentBrowser = UserAgent.Browser.Chrome;
+        /// <summary>The browser for which the User Agent should be generated.</summary>
+        public UserAgent.Browser UserAgentBrowser { get { return userAgentBrowser; } set { userAgentBrowser = value; OnPropertyChanged(); } }
 
         // -- AES
         private string aesKey = "";
@@ -294,6 +317,17 @@ namespace RuriLib
         public Hash KdfAlgorithm { get { return kdfAlgorithm; } set { kdfAlgorithm = value; OnPropertyChanged(); } }
         #endregion
 
+        #region RandomString Properties
+        private static readonly string _lowercase = "abcdefghijklmnopqrstuvwxyz";
+        private static readonly string _uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private static readonly string _digits = "0123456789";
+        private static readonly string _symbols = "\\!\"£$%&/()=?^'{}[]@#,;.:-_*+";
+        private static readonly string _hex = _digits + "abcdef";
+        private static readonly string _allChars = _lowercase + _uppercase + _digits + _symbols;
+        private static readonly string _udChars = _uppercase + _digits;
+        private static readonly string _ludChars = _lowercase + _uppercase + _digits;
+        #endregion
+
         /// <summary>
         /// Creates a Function block.
         /// </summary>
@@ -325,6 +359,8 @@ namespace RuriLib
             {
                 case Function.Hash:
                     HashType = LineParser.ParseEnum(ref input, "Hash Type", typeof(Hash));
+                    while (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                        LineParser.SetBool(ref input, this);
                     break;
 
                 case Function.HMAC:
@@ -338,7 +374,7 @@ namespace RuriLib
                     if (LineParser.Lookahead(ref input) == TokenType.Boolean)
                         LineParser.SetBool(ref input, this);
                     TranslationDictionary = new Dictionary<string, string>();
-                    while (input != "" && LineParser.Lookahead(ref input) == TokenType.Parameter)
+                    while (input != string.Empty && LineParser.Lookahead(ref input) == TokenType.Parameter)
                     {
                         LineParser.EnsureIdentifier(ref input, "KEY");
                         var k = LineParser.ParseLiteral(ref input, "Key");
@@ -350,6 +386,16 @@ namespace RuriLib
 
                 case Function.DateToUnixTime:
                     DateFormat = LineParser.ParseLiteral(ref input, "DATE FORMAT");
+                    break;
+
+                case Function.UnixTimeToDate:
+                    DateFormat = LineParser.ParseLiteral(ref input, "DATE FORMAT");
+                    // a little backward compatability with the old line format.
+                    if (LineParser.Lookahead(ref input) != TokenType.Literal)
+                    {
+                        InputString = DateFormat;
+                        DateFormat = "yyyy-MM-dd:HH-mm-ss";
+                    }
                     break;
 
                 case Function.Replace:
@@ -364,8 +410,20 @@ namespace RuriLib
                     break;
 
                 case Function.RandomNum:
-                    RandomMin = LineParser.ParseInt(ref input, "Minimum");
-                    RandomMax = LineParser.ParseInt(ref input, "Maximum");
+                    if (LineParser.Lookahead(ref input) == TokenType.Literal)
+                    {
+                        RandomMin = LineParser.ParseLiteral(ref input, "Minimum");
+                        RandomMax = LineParser.ParseLiteral(ref input, "Maximum");
+                    }
+                    // Support for old integer definition of Min and Max
+                    else
+                    {
+                        RandomMin = LineParser.ParseInt(ref input, "Minimum").ToString();
+                        RandomMax = LineParser.ParseInt(ref input, "Maximum").ToString();
+                    }
+                    
+                    if (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                        LineParser.SetBool(ref input, this);
                     break;
 
                 case Function.CountOccurrences:
@@ -382,12 +440,33 @@ namespace RuriLib
                     break;
 
                 case Function.RSAEncrypt:
-                case Function.RSADecrypt:
-                    RsaKey = LineParser.ParseLiteral(ref input, "Private Key");
-                    RsaMod = LineParser.ParseLiteral(ref input, "Public Key Modulus");
-                    RsaExp = LineParser.ParseLiteral(ref input, "Public Key Exponent");
+                    RsaN = LineParser.ParseLiteral(ref input, "Public Key Modulus");
+                    RsaE = LineParser.ParseLiteral(ref input, "Public Key Exponent");
                     if (LineParser.Lookahead(ref input) == TokenType.Boolean)
                         LineParser.SetBool(ref input, this);
+                    break;
+
+                /*
+            case Function.RSADecrypt:
+                RsaN = LineParser.ParseLiteral(ref input, "Public Key Modulus");
+                RsaD = LineParser.ParseLiteral(ref input, "Private Key Exponent");
+                if (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                    LineParser.SetBool(ref input, this);
+                break;
+                */
+
+                case Function.RSAPKCS1PAD2:
+                    RsaN = LineParser.ParseLiteral(ref input, "Public Key Modulus");
+                    RsaE = LineParser.ParseLiteral(ref input, "Public Key Exponent");
+                    break;
+
+                case Function.GetRandomUA:
+                    if (LineParser.ParseToken(ref input, TokenType.Parameter, false, false) == "BROWSER")
+                    {
+                        LineParser.EnsureIdentifier(ref input, "BROWSER");
+                        UserAgentSpecifyBrowser = true;
+                        UserAgentBrowser = LineParser.ParseEnum(ref input, "BROWSER", typeof(UserAgent.Browser));
+                    };
                     break;
 
                 case Function.AESDecrypt:
@@ -415,7 +494,7 @@ namespace RuriLib
                 InputString = LineParser.ParseLiteral(ref input, "INPUT");
 
             // Try to parse the arrow, otherwise just return the block as is with default var name and var / cap choice
-            if (LineParser.ParseToken(ref input, TokenType.Arrow, false) == "")
+            if (LineParser.ParseToken(ref input, TokenType.Arrow, false) == string.Empty)
                 return this;
 
             // Parse the VAR / CAP
@@ -447,19 +526,22 @@ namespace RuriLib
             {
                 case Function.Hash:
                     writer
-                        .Token(HashType);
+                        .Token(HashType)
+                        .Boolean(InputBase64, nameof(InputBase64));
                     break;
 
                 case Function.HMAC:
                     writer
                         .Token(HashType)
                         .Literal(HmacKey)
-                        .Boolean(HmacBase64, "HmacBase64");
+                        .Boolean(InputBase64, nameof(InputBase64))
+                        .Boolean(HmacBase64, nameof(HmacBase64))
+                        .Boolean(KeyBase64, nameof(KeyBase64));
                     break;
 
                 case Function.Translate:
                     writer
-                        .Boolean(StopAfterFirstMatch, "StopAfterFirstMatch");
+                        .Boolean(StopAfterFirstMatch, nameof(StopAfterFirstMatch));
                     foreach (var t in TranslationDictionary)
                         writer
                             .Indent()
@@ -472,27 +554,29 @@ namespace RuriLib
                         .Indent();
                     break;
 
+                case Function.UnixTimeToDate:
                 case Function.DateToUnixTime:
                     writer
-                        .Literal(DateFormat, "DateFormat");
+                        .Literal(DateFormat);
                     break;
 
                 case Function.Replace:
                     writer
                         .Literal(ReplaceWhat)
                         .Literal(ReplaceWith)
-                        .Boolean(UseRegex, "UseRegex");
+                        .Boolean(UseRegex, nameof(UseRegex));
                     break;
 
                 case Function.RegexMatch:
                     writer
-                        .Literal(RegexMatch, "RegexMatch");
+                        .Literal(RegexMatch, nameof(RegexMatch));
                     break;
 
                 case Function.RandomNum:
                     writer
-                        .Integer(RandomMin)
-                        .Integer(RandomMax);
+                        .Literal(RandomMin)
+                        .Literal(RandomMax)
+                        .Boolean(RandomZeroPad, nameof(RandomZeroPad));
                     break;
 
                 case Function.CountOccurrences:
@@ -512,12 +596,34 @@ namespace RuriLib
                     break;
 
                 case Function.RSAEncrypt:
+                    writer
+                        .Literal(RsaN)
+                        .Literal(RsaE)
+                        .Boolean(RsaOAEP, nameof(RsaOAEP));
+                    break;
+
+                    /*
                 case Function.RSADecrypt:
                     writer
-                        .Literal(RsaKey)
-                        .Literal(RsaMod)
-                        .Literal(RsaExp)
+                        .Literal(RsaN)
+                        .Literal(RsaD)
                         .Boolean(RsaOAEP, "RsaOAEP");
+                    break;
+                    */
+
+                case Function.RSAPKCS1PAD2:
+                    writer
+                        .Literal(RsaN)
+                        .Literal(RsaE);
+                    break;
+
+                case Function.GetRandomUA:
+                    if (UserAgentSpecifyBrowser)
+                    {
+                        writer
+                            .Token("BROWSER")
+                            .Token(UserAgentBrowser);
+                    }
                     break;
 
                 case Function.AESDecrypt:
@@ -530,7 +636,7 @@ namespace RuriLib
                     break;
 
                 case Function.PBKDF2PKCS5:
-                    if (KdfSalt != "") writer.Literal(KdfSalt);
+                    if (KdfSalt != string.Empty) writer.Literal(KdfSalt);
                     else writer.Integer(KdfSaltSize);
                     writer
                         .Integer(KdfIterations)
@@ -551,18 +657,18 @@ namespace RuriLib
             return writer.ToString();
         }
 
+        private static readonly NumberStyles _style = NumberStyles.Number | NumberStyles.AllowCurrencySymbol;
+        private static readonly IFormatProvider _provider = new CultureInfo("en-US");
+
         /// <inheritdoc />
         public override void Process(BotData data)
         {
             base.Process(data);
 
-            var style = NumberStyles.Number | NumberStyles.AllowCurrencySymbol;
-            var provider = new CultureInfo("en-US");
-
             var localInputStrings = ReplaceValuesRecursive(inputString, data);
             var outputs = new List<string>();
 
-            for(int i = 0; i < localInputStrings.Count; i++)
+            for (int i = 0; i < localInputStrings.Count; i++)
             {
                 var localInputString = localInputStrings[i];
                 var outputString = "";
@@ -590,11 +696,11 @@ namespace RuriLib
                         break;
 
                     case Function.Hash:
-                        outputString = GetHash(localInputString, hashType).ToLower();
+                        outputString = GetHash(localInputString, hashType, InputBase64).ToLower();
                         break;
 
                     case Function.HMAC:
-                        outputString = Hmac(localInputString, hashType, ReplaceValues(hmacKey, data), hmacBase64);
+                        outputString = Hmac(localInputString, hashType, ReplaceValues(hmacKey, data), InputBase64, KeyBase64, HmacBase64);
                         break;
 
                     case Function.Translate:
@@ -635,11 +741,11 @@ namespace RuriLib
                     case Function.RegexMatch:
                         outputString = Regex.Match(localInputString, ReplaceValues(regexMatch, data)).Value;
                         break;
-                        
+
                     case Function.Unescape:
                         outputString = Regex.Unescape(localInputString);
-                        break;                        
-                   
+                        break;
+
                     case Function.URLEncode:
                         // The maximum allowed Uri size is 2083 characters, we use 2080 as a precaution
                         outputString = string.Join("", SplitInChunks(localInputString, 2080).Select(s => Uri.EscapeDataString(s)));
@@ -650,7 +756,7 @@ namespace RuriLib
                         break;
 
                     case Function.UnixTimeToDate:
-                        outputString = double.Parse(localInputString).ToDateTime().ToShortDateString();
+                        outputString = double.Parse(localInputString).ToDateTime().ToString(dateFormat);
                         break;
 
                     case Function.CurrentUnixTime:
@@ -662,52 +768,34 @@ namespace RuriLib
                         break;
 
                     case Function.RandomNum:
-                        outputString = (data.Random.Next(randomMin, randomMax)).ToString();
+                        var min = int.Parse(ReplaceValues(randomMin, data));
+                        var max = int.Parse(ReplaceValues(randomMax, data));
+                        var randomNumString = data.random.Next(min, max).ToString();
+                        outputString = randomZeroPad ? randomNumString.PadLeft(max.ToString().Length, '0') : randomNumString;
                         break;
 
                     case Function.RandomString:
-                        var reserved = new string[] { "?l", "?u", "?d", "?s", "?h", "?a", "?m", "?i" };
-                        var lowercase = "abcdefghijklmnopqrstuvwxyz";
-                        var uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                        var digits = "0123456789";
-                        var symbols = "\\!\"£$%&/()=?^'{}[]@#,;.:-_*+";
-                        var hex = digits + "abcdef";
-                        var allchars = lowercase + uppercase + digits + symbols;
-                        var udchars = uppercase + digits;
-                        var ludchars = lowercase + uppercase + digits;
-
                         outputString = localInputString;
-                        while (reserved.Any(r => outputString.Contains(r))){
-                            if (outputString.Contains("?l"))
-                                outputString = ReplaceFirst(outputString, "?l", lowercase[data.Random.Next(0, lowercase.Length)].ToString());
-                            else if (outputString.Contains("?u"))
-                                outputString = ReplaceFirst(outputString, "?u", uppercase[data.Random.Next(0, uppercase.Length)].ToString());
-                            else if (outputString.Contains("?d"))
-                                outputString = ReplaceFirst(outputString, "?d", digits[data.Random.Next(0, digits.Length)].ToString());
-                            else if (outputString.Contains("?s"))
-                                outputString = ReplaceFirst(outputString, "?s", symbols[data.Random.Next(0, symbols.Length)].ToString());
-                            else if (outputString.Contains("?h"))
-                                outputString = ReplaceFirst(outputString, "?h", hex[data.Random.Next(0, hex.Length)].ToString());
-                            else if (outputString.Contains("?a"))
-                                outputString = ReplaceFirst(outputString, "?a", allchars[data.Random.Next(0, allchars.Length)].ToString());
-                            else if (outputString.Contains("?m"))
-                                outputString = ReplaceFirst(outputString, "?m", udchars[data.Random.Next(0, udchars.Length)].ToString());
-                            else if (outputString.Contains("?i"))
-                                outputString = ReplaceFirst(outputString, "?i", ludchars[data.Random.Next(0, ludchars.Length)].ToString());
-                         
-                        }
+                        outputString = Regex.Replace(outputString, @"\?l", m => _lowercase[data.random.Next(_lowercase.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?u", m => _uppercase[data.random.Next(_uppercase.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?d", m => _digits[data.random.Next(_digits.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?s", m => _symbols[data.random.Next(_symbols.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?h", m => _hex[data.random.Next(_hex.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?a", m => _allChars[data.random.Next(_allChars.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?m", m => _udChars[data.random.Next(_udChars.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?i", m => _ludChars[data.random.Next(_ludChars.Length)].ToString());
                         break;
 
                     case Function.Ceil:
-                        outputString = Math.Ceiling(Decimal.Parse(localInputString, style, provider)).ToString();
+                        outputString = Math.Ceiling(Decimal.Parse(localInputString, _style, _provider)).ToString();
                         break;
 
                     case Function.Floor:
-                        outputString = Math.Floor(Decimal.Parse(localInputString, style, provider)).ToString();
+                        outputString = Math.Floor(Decimal.Parse(localInputString, _style, _provider)).ToString();
                         break;
 
                     case Function.Round:
-                        outputString = Math.Round(Decimal.Parse(localInputString, style, provider), 0, MidpointRounding.AwayFromZero).ToString();
+                        outputString = Math.Round(Decimal.Parse(localInputString, _style, _provider), 0, MidpointRounding.AwayFromZero).ToString();
                         break;
 
                     case Function.Compute:
@@ -725,20 +813,28 @@ namespace RuriLib
                     case Function.RSAEncrypt:
                         outputString = Crypto.RSAEncrypt(
                             localInputString,
-                            ReplaceValues(RsaKey, data),
-                            ReplaceValues(RsaMod, data),
-                            ReplaceValues(RsaExp, data),
+                            ReplaceValues(RsaN, data),
+                            ReplaceValues(RsaE, data),
                             RsaOAEP
                             );
                         break;
 
+                        /*
                     case Function.RSADecrypt:
                         outputString = Crypto.RSADecrypt(
                             localInputString,
-                            ReplaceValues(RsaKey, data),
-                            ReplaceValues(RsaMod, data),
-                            ReplaceValues(RsaExp, data),
+                            ReplaceValues(RsaN, data),
+                            ReplaceValues(RsaD, data),
                             RsaOAEP
+                            );
+                        break;
+                        */
+
+                    case Function.RSAPKCS1PAD2:
+                        outputString = Crypto.RSAPkcs1Pad2(
+                            localInputString,
+                            ReplaceValues(RsaN, data),
+                            ReplaceValues(RsaE, data)
                             );
                         break;
 
@@ -751,7 +847,7 @@ namespace RuriLib
                         break;
 
                     case Function.Substring:
-                        outputString = localInputString.Substring(int.Parse(ReplaceValues(substringIndex, data)), int.Parse(ReplaceValues(substringLength,data)));
+                        outputString = localInputString.Substring(int.Parse(ReplaceValues(substringIndex, data)), int.Parse(ReplaceValues(substringLength, data)));
                         break;
 
                     case Function.ReverseString:
@@ -765,7 +861,14 @@ namespace RuriLib
                         break;
 
                     case Function.GetRandomUA:
-                        outputString = RandomUserAgent(data.Random);
+                        if (UserAgentSpecifyBrowser)
+                        {
+                            outputString = UserAgent.ForBrowser(UserAgentBrowser);
+                        }
+                        else
+                        {
+                            outputString = UserAgent.Random(data.random);
+                        }
                         break;
 
                     case Function.AESEncrypt:
@@ -780,7 +883,7 @@ namespace RuriLib
                         outputString = Crypto.PBKDF2PKCS5(localInputString, ReplaceValues(KdfSalt, data), KdfSaltSize, KdfIterations, KdfKeySize, KdfAlgorithm);
                         break;
                 }
-                
+
                 data.Log(new LogEntry(string.Format("Executed function {0} on input {1} with outcome {2}", functionType, localInputString, outputString), Colors.GreenYellow));
 
                 // Add to the outputs
@@ -788,7 +891,7 @@ namespace RuriLib
             }
 
             var isList = outputs.Count > 1 || InputString.Contains("[*]") || InputString.Contains("(*)") || InputString.Contains("{*}");
-            InsertVariables(data, isCapture, isList, outputs, variableName, "", "", false, true);
+            InsertVariable(data, isCapture, isList, outputs, variableName, "", "", false, true);
         }
 
         /// <summary>
@@ -796,32 +899,44 @@ namespace RuriLib
         /// </summary>
         /// <param name="baseString">The string to hash</param>
         /// <param name="type">The hashing function</param>
-        /// <returns>The hash digest as a hex-encoded string</returns>
-        public static string GetHash(string baseString, Hash type)
+        /// <param name="inputBase64">Whether the base string should be treated as base64 encoded (if false, it will be treated as UTF8 encoded)</param>
+        /// <returns>The hash digest as a hex-encoded uppercase string.</returns>
+        public static string GetHash(string baseString, Hash type, bool inputBase64)
         {
+            var rawInput = inputBase64 ? Convert.FromBase64String(baseString) : Encoding.UTF8.GetBytes(baseString);
+            byte[] digest;
+            
             switch (type)
             {
                 case Hash.MD4:
-                    return Crypto.MD4(baseString);
+                    digest = Crypto.MD4(rawInput);
+                    break;
 
                 case Hash.MD5:
-                    return Crypto.MD5(baseString);
+                    digest = Crypto.MD5(rawInput);
+                    break;
 
                 case Hash.SHA1:
-                    return Crypto.SHA1(baseString);
+                    digest = Crypto.SHA1(rawInput);
+                    break;
 
                 case Hash.SHA256:
-                    return Crypto.SHA256(baseString);
+                    digest = Crypto.SHA256(rawInput);
+                    break;
 
                 case Hash.SHA384:
-                    return Crypto.SHA384(baseString);
+                    digest = Crypto.SHA384(rawInput);
+                    break;
 
                 case Hash.SHA512:
-                    return Crypto.SHA512(baseString);
+                    digest = Crypto.SHA512(rawInput);
+                    break;
 
                 default:
                     throw new NotSupportedException("Unsupported algorithm");
             }
+
+            return digest.ToHex();
         }
 
         /// <summary>
@@ -830,30 +945,43 @@ namespace RuriLib
         /// <param name="baseString">The message to sign</param>
         /// <param name="type">The hashing function</param>
         /// <param name="key">The HMAC key</param>
-        /// <param name="base64">Whether the output should be encrypted as a base64 string</param>
+        /// <param name="inputBase64">Whether the input string should be treated as base64 encoded (if false, it will be treated as UTF8 encoded)</param>
+        /// <param name="keyBase64">Whether the key string should be treated as base64 encoded (if false, it will be treated as UTF8 encoded)</param>
+        /// <param name="outputBase64">Whether the output should be encrypted as a base64 string</param>
         /// <returns>The HMAC signature</returns>
-        public static string Hmac(string baseString, Hash type, string key, bool base64)
+        public static string Hmac(string baseString, Hash type, string key, bool inputBase64, bool keyBase64, bool outputBase64)
         {
+            byte[] rawInput = inputBase64 ? Convert.FromBase64String(baseString) : Encoding.UTF8.GetBytes(baseString);
+            byte[] rawKey = keyBase64 ? Convert.FromBase64String(key) : Encoding.UTF8.GetBytes(key);
+            byte[] signature;
+
             switch (type)
             {
                 case Hash.MD5:
-                    return Crypto.HMACMD5(baseString, key, base64);
+                    signature = Crypto.HMACMD5(rawInput, rawKey);
+                    break;
 
                 case Hash.SHA1:
-                    return Crypto.HMACSHA1(baseString, key, base64);
+                    signature = Crypto.HMACSHA1(rawInput, rawKey);
+                    break;
 
                 case Hash.SHA256:
-                    return Crypto.HMACSHA256(baseString, key, base64);
+                    signature = Crypto.HMACSHA256(rawInput, rawKey);
+                    break;
 
                 case Hash.SHA384:
-                    return Crypto.HMACSHA384(baseString, key, base64);
+                    signature = Crypto.HMACSHA384(rawInput, rawKey);
+                    break;
 
                 case Hash.SHA512:
-                    return Crypto.HMACSHA512(baseString, key, base64);
+                    signature = Crypto.HMACSHA512(rawInput, rawKey);
+                    break;
 
                 default:
                     throw new NotSupportedException("Unsupported algorithm");
             }
+
+            return outputBase64 ? Convert.ToBase64String(signature) : signature.ToHex();
         }
 
         #region Translation
@@ -911,53 +1039,6 @@ namespace RuriLib
                 count++;
             }
             return count;
-        }
-        #endregion
-
-        #region RandomString
-        private string ReplaceFirst(string text, string search, string replace)
-        {
-            int pos = text.IndexOf(search);
-            if (pos < 0)
-            {
-                return text;
-            }
-            return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
-        }
-        #endregion
-
-        #region RandomUA
-
-        // All credits for this method goes to the Leaf.xNet fork of Extreme.NET
-        // https://github.com/csharp-leaf/Leaf.xNet
-
-        /// <summary>
-        /// Gets a random User-Agent header.
-        /// </summary>
-        /// <param name="rand">A random number generator</param>
-        /// <returns>A randomly generated User-Agent header</returns>
-        public static string RandomUserAgent(Random rand)
-        {
-            int random = rand.Next(99) + 1;
-
-            // Chrome = 70%
-            if (random >= 1 && random <= 70)
-                return Http.ChromeUserAgent();
-
-            // Firefox = 15%
-            if (random > 70 && random <= 85)
-                return Http.FirefoxUserAgent();
-
-            // IE = 6%
-            if (random > 85 && random <= 91)
-                return Http.IEUserAgent();
-
-            // Opera 12 = 5%
-            if (random > 91 && random <= 96)
-                return Http.OperaUserAgent();
-
-            // Opera mini = 4%
-            return Http.OperaMiniUserAgent();
         }
         #endregion
 

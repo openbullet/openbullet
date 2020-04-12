@@ -50,6 +50,8 @@ namespace OpenBullet.ViewModels
         public int LogBufferSize { get { return logBufferSize; } set { logBufferSize = value; OnPropertyChanged(); } }
         private bool backupDB = true;
         public bool BackupDB { get { return backupDB; } set { backupDB = value; OnPropertyChanged(); } }
+        private bool ignoreWordlistOnHitsDedupe = false;
+        public bool IgnoreWordlistOnHitDedupe { get { return ignoreWordlistOnHitsDedupe; } set { ignoreWordlistOnHitsDedupe = value; OnPropertyChanged(); } }
 
         public void Reset()
         {

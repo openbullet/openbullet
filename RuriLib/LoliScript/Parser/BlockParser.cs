@@ -15,47 +15,22 @@ namespace RuriLib.LS
         /// <summary>
         /// The allowed block identifiers.
         /// </summary>
-        public enum BlockName
+        public static Dictionary<string, Type> BlockMappings { get; set; } = new Dictionary<string, Type>()
         {
-            /// <summary>The BYPASSCF block.</summary>
-            BYPASSCF,
-
-            /// <summary>The CAPTCHA block.</summary>
-            CAPTCHA,
-
-            /// <summary>The FUNCTION block.</summary>
-            FUNCTION,
-
-            /// <summary>The KEYCHECK block.</summary>
-            KEYCHECK,
-
-            /// <summary>The PARSE block.</summary>
-            PARSE,
-
-            /// <summary>The RECAPTCHA block.</summary>
-            RECAPTCHA,
-
-            /// <summary>The REQUEST block.</summary>
-            REQUEST,
-
-            /// <summary>The TCP block.</summary>
-            TCP,
-
-            /// <summary>The UTILITY block.</summary>
-            UTILITY,
-
-            /// <summary>The BROWSERACTION block.</summary>
-            BROWSERACTION,
-
-            /// <summary>The ELEMENTACTION block.</summary>
-            ELEMENTACTION,
-
-            /// <summary>The EXECUTEJS block.</summary>
-            EXECUTEJS,
-
-            /// <summary>The NAVIGATE block.</summary>
-            NAVIGATE
-        }
+            { "BYPASSCF", typeof(BlockBypassCF) },
+            { "CAPTCHA", typeof(BlockImageCaptcha) },
+            { "FUNCTION", typeof(BlockFunction) },
+            { "KEYCHECK", typeof(BlockKeycheck) },
+            { "PARSE", typeof(BlockParse) },
+            { "RECAPTCHA", typeof(BlockRecaptcha) },
+            { "REQUEST", typeof(BlockRequest) },
+            { "TCP", typeof(BlockTCP) },
+            { "UTILITY", typeof(BlockUtility) },
+            { "BROWSERACTION", typeof(SBlockBrowserAction) },
+            { "ELEMENTACTION", typeof(SBlockElementAction) },
+            { "EXECUTEJS", typeof(SBlockExecuteJS) },
+            { "NAVIGATE", typeof(SBlockNavigate) }
+        };
 
         /// <summary>
         /// Tests if a line is parsable as a block.
@@ -64,7 +39,8 @@ namespace RuriLib.LS
         /// <returns>Whether the line contains a block or not.</returns>
         public static bool IsBlock(string line)
         {
-            return Enum.GetNames(typeof(BlockName))
+            return BlockMappings
+                .Keys
                 .Select(n => n.ToUpper())
                 .Contains(GetBlockType(line).ToUpper());
         }
@@ -91,7 +67,7 @@ namespace RuriLib.LS
             var input = line.Trim();
 
             // Return an exception if the line is empty
-            if (input == "") throw new ArgumentNullException();
+            if (input == string.Empty) throw new ArgumentNullException();
 
             // Parse if disabled or not
             var disabled = input.StartsWith("!");
@@ -104,70 +80,14 @@ namespace RuriLib.LS
             try { identifier = LineParser.ParseToken(ref input, TokenType.Parameter, true); }
             catch { throw new ArgumentException("Missing identifier"); }
 
-            BlockBase block = null;
-            switch ((BlockName)Enum.Parse(typeof(BlockName), identifier, true))
-            {
-                case BlockName.FUNCTION:
-                    block = (new BlockFunction()).FromLS(input);
-                    break;
-
-                case BlockName.KEYCHECK:
-                    block = (new BlockKeycheck()).FromLS(input);
-                    break;
-
-                case BlockName.RECAPTCHA:
-                    block = (new BlockRecaptcha()).FromLS(input);
-                    break;
-
-                case BlockName.REQUEST:
-                    block = (new BlockRequest()).FromLS(input);
-                    break;
-
-                case BlockName.PARSE:
-                    block = (new BlockParse()).FromLS(input);
-                    break;
-
-                case BlockName.CAPTCHA:
-                    block = (new BlockImageCaptcha()).FromLS(input);
-                    break;
-
-                case BlockName.BYPASSCF:
-                    block = (new BlockBypassCF()).FromLS(input);
-                    break;
-
-                case BlockName.UTILITY:
-                    block = (new BlockUtility()).FromLS(input);
-                    break;
-
-                case BlockName.TCP:
-                    block = (new BlockTCP()).FromLS(input);
-                    break;
-
-                case BlockName.NAVIGATE:
-                    block = (new SBlockNavigate()).FromLS(input);
-                    break;
-
-                case BlockName.BROWSERACTION:
-                    block = (new SBlockBrowserAction()).FromLS(input);
-                    break;
-
-                case BlockName.ELEMENTACTION:
-                    block = (new SBlockElementAction()).FromLS(input);
-                    break;
-
-                case BlockName.EXECUTEJS:
-                    block = (new SBlockExecuteJS()).FromLS(input);
-                    break;
-                    
-                default:
-                    throw new ArgumentException($"Invalid identifier '{identifier}'");
-            }
-
+            // Create the actual block from the identifier
+            BlockBase block = (Activator.CreateInstance(BlockMappings[identifier]) as BlockBase).FromLS(input);
+            
             // Set disabled
             if (block != null) block.Disabled = disabled;
 
             // Set the label
-            if (block != null && label != "") block.Label = label.Replace("#", "");
+            if (block != null && label != string.Empty) block.Label = label.Replace("#", "");
 
             return block;
         }

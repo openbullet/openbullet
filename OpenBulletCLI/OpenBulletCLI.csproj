@@ -52,11 +52,11 @@
     <ApplicationIcon>OBlogoIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Colorful.Console, Version=1.2.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Colorful.Console.1.2.9\lib\net461\Colorful.Console.dll</HintPath>
+    <Reference Include="Colorful.Console, Version=1.2.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Colorful.Console.1.2.10\lib\net461\Colorful.Console.dll</HintPath>
     </Reference>
-    <Reference Include="CommandLine, Version=2.6.0.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommandLineParser.2.6.0\lib\net461\CommandLine.dll</HintPath>
+    <Reference Include="CommandLine, Version=2.7.82.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommandLineParser.2.7.82\lib\net461\CommandLine.dll</HintPath>
     </Reference>
     <Reference Include="Extreme.Net, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
