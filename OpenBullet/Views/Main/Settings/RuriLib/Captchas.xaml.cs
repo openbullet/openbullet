@@ -47,15 +47,15 @@ namespace OpenBullet.Views.Main.Settings.RL
             captchaServiceTabControl.SelectedIndex = dict[OB.Settings.RLSettings.Captchas.CurrentService];
         }
 
-        private void checkBalanceButton_Click(object sender, RoutedEventArgs e)
+        private async void checkBalanceButton_Click(object sender, RoutedEventArgs e)
         {
             // Save
             IOManager.SaveSettings(OB.rlSettingsFile, OB.Settings.RLSettings);
 
             try
             {
-                var balance = RuriLib.Functions.Captchas.Captchas.GetService(OB.Settings.RLSettings.Captchas)
-                    .GetBalanceAsync().Result;
+                var balance = await RuriLib.Functions.Captchas.Captchas.GetService(OB.Settings.RLSettings.Captchas)
+                    .GetBalanceAsync();
 
                 balanceLabel.Content = balance;
                 balanceLabel.Foreground = balance > 0 ? Utils.GetBrush("ForegroundGood") : Utils.GetBrush("ForegroundBad");
