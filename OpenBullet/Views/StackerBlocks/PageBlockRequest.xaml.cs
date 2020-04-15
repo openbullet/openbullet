@@ -93,6 +93,10 @@ namespace OpenBullet.Views.StackerBlocks
                 case ResponseType.File:
                     responseTypeTabControl.SelectedIndex = 1;
                     break;
+
+                case ResponseType.Base64String:
+                    responseTypeTabControl.SelectedIndex = 2;
+                    break;
             }
         }
 

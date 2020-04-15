@@ -52,7 +52,10 @@ namespace RuriLib
         String,
 
         /// <summary>A file response, e.g. an image.</summary>
-        File
+        File,
+
+        /// <summary>A byte array response encoded as a base64 string.</summary>
+        Base64String
     }
 
     /// <summary>
@@ -137,6 +140,10 @@ namespace RuriLib
         /// <summary>The path of the file where a FILE response needs to be stored.</summary>
         public string DownloadPath { get { return downloadPath; } set { downloadPath = value; OnPropertyChanged(); } }
 
+        private string outputVariable = "";
+        /// <summary>The variable name for Base64String response.</summary>
+        public string OutputVariable { get { return outputVariable; } set { outputVariable = value; OnPropertyChanged(); } }
+        
         private bool saveAsScreenshot = false;
         /// <summary>Whether to add the downloaded image to the default screenshot path.</summary>
         public bool SaveAsScreenshot { get { return saveAsScreenshot; } set { saveAsScreenshot = value; OnPropertyChanged(); } }
@@ -247,6 +254,11 @@ namespace RuriLib
                     {
                         LineParser.SetBool(ref input, this);
                     }
+                }
+                else if (outType.ToUpper() == "BASE64")
+                {
+                    ResponseType = ResponseType.Base64String;
+                    OutputVariable = LineParser.ParseLiteral(ref input, "OUTPUT VARIABLE");
                 }
             }
 
@@ -363,6 +375,14 @@ namespace RuriLib
                     .Literal(DownloadPath)
                     .Boolean(SaveAsScreenshot, "SaveAsScreenshot");
             }
+            else if (ResponseType == ResponseType.Base64String)
+            {
+                writer
+                    .Indent()
+                    .Arrow()
+                    .Token("BASE64")
+                    .Literal(OutputVariable);
+            }
 
             return writer.ToString();
         }
@@ -460,6 +480,11 @@ namespace RuriLib
                     {
                         request.SaveFile(ReplaceValues(DownloadPath, data), GetLogBuffer(data));
                     }
+                    break;
+
+                case ResponseType.Base64String:
+                    var base64 = Convert.ToBase64String(request.GetResponseStream().ToArray());
+                    InsertVariable(data, false, base64, OutputVariable);
                     break;
 
                 default:

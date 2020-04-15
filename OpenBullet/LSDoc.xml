@@ -283,7 +283,7 @@ REQUEST METHOD "URL" [AcceptEncoding?] [AutoRedirect?] [ReadResponseSource?] [Pa
   [COOKIE "abc: def"]*
   [HEADER "abc: def"]*
   [SECPROTO security-protocol]
-  [-> STRING / -> FILE "path"]
+  [-> STRING / -> FILE "path" / -> BASE64 "VARNAME"]
   
 Examples:
 REQUEST GET "http://example.com/file.zip" -> FILE "file.zip"
