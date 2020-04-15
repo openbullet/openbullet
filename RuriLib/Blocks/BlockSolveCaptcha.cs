@@ -328,9 +328,8 @@ namespace RuriLib
             }
 
             writer
-                .Indent()
                 .Boolean(UseProxy, nameof(UseProxy))
-                .Literal(UserAgent);
+                .Literal(UserAgent, nameof(UserAgent));
 
             return writer.ToString();
         }
