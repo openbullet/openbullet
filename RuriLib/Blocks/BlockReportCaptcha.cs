@@ -16,7 +16,7 @@ namespace RuriLib
         /// <summary>The type of captcha to report.</summary>
         public CaptchaType Type { get { return type; } set { type = value; OnPropertyChanged(); } }
 
-        private string captchaId = "";
+        private string captchaId = "<CAPTCHAID>";
         /// <summary>The ID of the captcha to report.</summary>
         public string CaptchaId { get { return captchaId; } set { captchaId = value; OnPropertyChanged(); } }
 
