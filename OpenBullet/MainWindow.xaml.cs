@@ -158,11 +158,13 @@ namespace OpenBullet
             {
                 ( typeof(BlockBypassCF),        typeof(PageBlockBypassCF),          Colors.DarkSalmon ),
                 ( typeof(BlockImageCaptcha),    typeof(PageBlockCaptcha),           Colors.DarkOrange ),
+                ( typeof(BlockReportCaptcha),   typeof(PageBlockReportCaptcha),     Colors.DarkOrange ),
                 ( typeof(BlockFunction),        typeof(PageBlockFunction),          Colors.YellowGreen ),
                 ( typeof(BlockKeycheck),        typeof(PageBlockKeycheck),          Colors.DodgerBlue ),
                 ( typeof(BlockLSCode),          typeof(PageBlockLSCode),            Colors.White ),
                 ( typeof(BlockParse),           typeof(PageBlockParse),             Colors.Gold ),
                 ( typeof(BlockRecaptcha),       typeof(PageBlockRecaptcha),         Colors.Turquoise ),
+                ( typeof(BlockSolveCaptcha),    typeof(PageBlockSolveCaptcha),      Colors.Turquoise ),
                 ( typeof(BlockRequest),         typeof(PageBlockRequest),           Colors.LimeGreen ),
                 ( typeof(BlockTCP),             typeof(PageBlockTCP),               Colors.MediumPurple ),
                 ( typeof(BlockUtility),         typeof(PageBlockUtility),           Colors.Wheat ),

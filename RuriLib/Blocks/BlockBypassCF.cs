@@ -129,11 +129,11 @@ namespace RuriLib
             ICaptchaProvider provider = null;
             switch (data.GlobalSettings.Captchas.CurrentService)
             {
-                case CaptchaServices.ServiceType.AntiCaptcha:
+                case Enums.CaptchaServiceType.AntiCaptcha:
                     provider = new AntiCaptchaProvider(data.GlobalSettings.Captchas.AntiCapToken);
                     break;
 
-                case CaptchaServices.ServiceType.TwoCaptcha:
+                case Enums.CaptchaServiceType.TwoCaptcha:
                     provider = new TwoCaptchaProvider(data.GlobalSettings.Captchas.TwoCapToken);
                     break;
             }

@@ -144,9 +144,9 @@ namespace RuriLib.Runner
             }
         }
 
-        private double _balance = 0;
+        private decimal _balance = 0;
         /// <summary>The remaining balance in the captcha solver account.</summary>
-        public double Balance { get { return _balance; } set { _balance = value; OnPropertyChanged("BalanceString"); } }
+        public decimal Balance { get { return _balance; } set { _balance = value; OnPropertyChanged("BalanceString"); } }
 
         /// <summary>The remaining balance in the captcha solver account preceeded by a $ sign.</summary>
         public string BalanceString { get { return $"${_balance}"; } }

@@ -1,6 +1,4 @@
-﻿using Extreme.Net;
-using RuriLib.CaptchaServices;
-using RuriLib.LS;
+﻿using RuriLib.LS;
 using RuriLib.Models;
 using System;
 using System.Drawing;
@@ -9,12 +7,14 @@ using System.Linq;
 using System.Windows.Media;
 using RuriLib.Functions.Download;
 using System.Collections.Generic;
+using RuriLib.Functions.Captchas;
 
 namespace RuriLib
 {
     /// <summary>
     /// A block that solves an image captcha challenge.
     /// </summary>
+    [Obsolete]
     public class BlockImageCaptcha : BlockCaptcha
     {
         private string url = "";
@@ -107,6 +107,7 @@ namespace RuriLib
 
             var localUrl = ReplaceValues(url, data);
 
+            data.Log(new LogEntry("WARNING! This block is obsolete and WILL BE REMOVED IN THE FUTURE! Use the SOLVECAPTCHA block!", Colors.Tomato));
             data.Log(new LogEntry("Downloading image...", Colors.White));
 
             // Download captcha
@@ -142,7 +143,11 @@ namespace RuriLib
             var bitmap = new Bitmap(captchaFile);
             try
             {
-                response = Service.Initialize(data.GlobalSettings.Captchas).SolveCaptcha(bitmap);
+                var converter = new ImageConverter();
+                var bytes = (byte[])converter.ConvertTo(bitmap, typeof(byte[]));
+
+                response = Captchas.GetService(data.GlobalSettings.Captchas)
+                    .SolveImageCaptchaAsync(Convert.ToBase64String(bytes)).Result.Response;
             }
             catch(Exception ex) { data.Log(new LogEntry(ex.Message, Colors.Tomato)); throw; }
             finally { bitmap.Dispose(); }

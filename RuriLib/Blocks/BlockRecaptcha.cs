@@ -1,4 +1,4 @@
-﻿using RuriLib.CaptchaServices;
+﻿using RuriLib.Functions.Captchas;
 using RuriLib.LS;
 using RuriLib.Models;
 using System;
@@ -9,6 +9,7 @@ namespace RuriLib
     /// <summary>
     /// A block that solves a reCaptcha challenge.
     /// </summary>
+    [Obsolete]
     public class BlockRecaptcha : BlockCaptcha
     {
         private string variableName = "";
@@ -81,11 +82,20 @@ namespace RuriLib
             if(!data.GlobalSettings.Captchas.BypassBalanceCheck)
                 base.Process(data);
 
+            data.Log(new LogEntry("WARNING! This block is obsolete and WILL BE REMOVED IN THE FUTURE! Use the SOLVECAPTCHA block!", Colors.Tomato));
             data.Log(new LogEntry("Solving reCaptcha...", Colors.White));
 
-            string recapResponse = Service.Initialize(data.GlobalSettings.Captchas).SolveRecaptcha(siteKey, ReplaceValues(url, data));
+            string recapResponse = "";
+            try
+            {
+                recapResponse = Captchas.GetService(data.GlobalSettings.Captchas)
+                    .SolveRecaptchaV2Async(ReplaceValues(siteKey, data), ReplaceValues(url, data)).Result.Response;
+            }
+            catch
+            {
+                data.Log(recapResponse == string.Empty ? new LogEntry("Couldn't get a reCaptcha response from the service", Colors.Tomato) : new LogEntry("Succesfully got the response: " + recapResponse, Colors.GreenYellow));
+            }
 
-            data.Log(recapResponse == string.Empty ? new LogEntry("Couldn't get a reCaptcha response from the service", Colors.Tomato) : new LogEntry("Succesfully got the response: " + recapResponse, Colors.GreenYellow));
             if (VariableName != string.Empty)
             {
                 data.Log(new LogEntry("Response stored in variable: " + variableName, Colors.White));

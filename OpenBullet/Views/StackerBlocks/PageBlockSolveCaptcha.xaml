@@ -1,0 +1,209 @@
+﻿<Page x:Class="OpenBullet.Views.StackerBlocks.PageBlockSolveCaptcha"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OpenBullet.Views.StackerBlocks"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      mc:Ignorable="d" 
+      d:DesignHeight="500" d:DesignWidth="400"
+      Title="PageBlockSolveCaptcha">
+
+    <StackPanel>
+        <DockPanel Margin="0 0 0 5">
+            <Label Content="Type:"/>
+            <ComboBox x:Name="captchaTypeCombobox" SelectionChanged="captchaTypeCombobox_SelectionChanged"/>
+        </DockPanel>
+        <CheckBox Content="Send proxy to solver service to use for token based captchas" IsChecked="{Binding UseProxy}" VerticalContentAlignment="Center" />
+        <DockPanel>
+            <Label Content="User Agent:"/>
+            <TextBox Text="{Binding UserAgent, UpdateSourceTrigger=PropertyChanged}"/>
+        </DockPanel>
+
+        <TabControl x:Name="captchaTypeTabControl" Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="0 10 0 0">
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="{x:Type TabItem}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+            </TabControl.ItemContainerStyle>
+            
+            <!-- TEXT CAPTCHA -->
+            <TabItem>
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Question:"/>
+                        <TextBox Text="{Binding Question, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Language Group:"/>
+                        <ComboBox x:Name="textLanguageGroupCombobox" SelectionChanged="languageGroupCombobox_SelectionChanged"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Language:"/>
+                        <ComboBox x:Name="textLanguageCombobox" SelectionChanged="languageCombobox_SelectionChanged"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+            
+            <!-- IMAGE CAPTCHA -->
+            <TabItem>
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Base64:"/>
+                        <TextBox Text="{Binding Base64, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Language Group:"/>
+                        <ComboBox x:Name="imageLanguageGroupCombobox" SelectionChanged="languageGroupCombobox_SelectionChanged"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Language:"/>
+                        <ComboBox x:Name="imageLanguageCombobox" SelectionChanged="languageCombobox_SelectionChanged"/>
+                    </DockPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Content="Is Phrase" IsChecked="{Binding IsPhrase}" VerticalContentAlignment="Center" />
+                        <CheckBox Content="Case Sensitive" IsChecked="{Binding CaseSensitive}" VerticalContentAlignment="Center" />
+                        <CheckBox Content="Requires Calculation" IsChecked="{Binding RequiresCalculation}" VerticalContentAlignment="Center" />
+                    </StackPanel>
+                    <DockPanel>
+                        <Label Content="Character Set:"/>
+                        <ComboBox x:Name="charSetCombobox" SelectionChanged="charSetCombobox_SelectionChanged"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Min Length:"/>
+                        <xctk:IntegerUpDown Value="{Binding MinLength}" HorizontalAlignment="Right" Width="60" />
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Max Length:"/>
+                        <xctk:IntegerUpDown Value="{Binding MaxLength}" HorizontalAlignment="Right" Width="60" />
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Text Instructions:"/>
+                        <TextBox Text="{Binding TextInstructions, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+            
+            <!-- RECAPTCHA V2 -->
+            <TabItem>
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Site Key:"/>
+                        <TextBox Text="{Binding SiteKey, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Site URL:"/>
+                        <TextBox Text="{Binding SiteUrl, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <CheckBox Content="Invisible" IsChecked="{Binding IsInvisible}" VerticalContentAlignment="Center" />
+                </StackPanel>
+            </TabItem>
+
+            <!-- RECAPTCHA V3 -->
+            <TabItem>
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Site Key:"/>
+                        <TextBox Text="{Binding SiteKey, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Site URL:"/>
+                        <TextBox Text="{Binding SiteUrl, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Action:"/>
+                        <TextBox Text="{Binding Action, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Min Score:"/>
+                        <TextBox Text="{Binding MinScore, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+
+            <!-- FUN CAPTCHA -->
+            <TabItem>
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Public Key:"/>
+                        <TextBox Text="{Binding PublicKey, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Service URL:"/>
+                        <TextBox Text="{Binding ServiceUrl, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <CheckBox Content="Solve without JS" IsChecked="{Binding NoJS}" VerticalContentAlignment="Center" />
+                </StackPanel>
+            </TabItem>
+
+            <!-- H CAPTCHA -->
+            <TabItem>
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Site Key:"/>
+                        <TextBox Text="{Binding SiteKey, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Site URL:"/>
+                        <TextBox Text="{Binding SiteUrl, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+            
+            <!-- KEY CAPTCHA -->
+            <TabItem>
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="User ID:"/>
+                        <TextBox Text="{Binding UserId, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Session ID:"/>
+                        <TextBox Text="{Binding SessionId, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="WebServer Sign 1:"/>
+                        <TextBox Text="{Binding WebServerSign1, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="WebServer Sign 2:"/>
+                        <TextBox Text="{Binding WebServerSign2, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+
+            <!-- GEE TEST -->
+            <TabItem>
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="GT:"/>
+                        <TextBox Text="{Binding GT, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Challenge:"/>
+                        <TextBox Text="{Binding Challenge, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="API Server:"/>
+                        <TextBox Text="{Binding ApiServer, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+
+            <!-- CAPY -->
+            <TabItem>
+                <StackPanel>
+                    <DockPanel>
+                        <Label Content="Site Key:"/>
+                        <TextBox Text="{Binding SiteKey, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Site URL:"/>
+                        <TextBox Text="{Binding SiteUrl, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+            
+        </TabControl>
+    </StackPanel>
+</Page>
