@@ -64,10 +64,18 @@ namespace RuriLib
 
             try
             {
-                var replacedId = ReplaceValues(CaptchaId, data);
-                service.ReportSolution(long.Parse(replacedId), Type).Wait();
-                data.Log(new LogEntry($"Captcha reported successfully!", Colors.GreenYellow));
-                return;
+                try
+                {
+                    var replacedId = ReplaceValues(CaptchaId, data);
+                    service.ReportSolution(long.Parse(replacedId), Type).Wait();
+                    data.Log(new LogEntry($"Captcha reported successfully!", Colors.GreenYellow));
+                    return;
+                }
+                catch (Exception ex) // This unwraps aggregate exceptions
+                {
+                    if (ex is AggregateException) throw ex.InnerException;
+                    else throw;
+                }
             }
             catch (TaskReportException ex) { errorMessage = $"The captcha report was not accepted! {ex.Message}"; }
             catch (NotSupportedException ex) { errorMessage = 

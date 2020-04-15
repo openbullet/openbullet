@@ -9,6 +9,7 @@ using RuriLib.Functions.Captchas;
 using CaptchaSharp.Exceptions;
 using System.Windows.Media;
 using CaptchaSharp.Models;
+using CaptchaSharp;
 
 namespace RuriLib
 {
@@ -370,93 +371,107 @@ namespace RuriLib
 
             try
             {
-                CaptchaResponse response;
-
-                switch (Type)
+                try
                 {
-                    case CaptchaType.TextCaptcha:
-                        response = service.SolveTextCaptchaAsync(ReplaceValues(Question, data), new TextCaptchaOptions 
-                        { CaptchaLanguage = Language, CaptchaLanguageGroup = LanguageGroup }).Result;
-                        break;
+                    var response = GetResponse(service, data, proxy);
 
-                    case CaptchaType.ImageCaptcha:
-                        response = service.SolveImageCaptchaAsync(ReplaceValues(Base64, data), new ImageCaptchaOptions
-                        {
-                            CaptchaLanguage = Language,
-                            CaptchaLanguageGroup = LanguageGroup,
-                            IsPhrase = IsPhrase,
-                            CaseSensitive = CaseSensitive,
-                            RequiresCalculation = RequiresCalculation,
-                            CharacterSet = CharSet,
-                            MinLength = MinLength,
-                            MaxLength = MaxLength,
-                            TextInstructions = ReplaceValues(TextInstructions, data)
-                        }).Result;
-                        break;
+                    InsertVariable(data, false, response.Id.ToString(), "CAPTCHAID");
 
-                    case CaptchaType.ReCaptchaV2:
-                        response = service.SolveRecaptchaV2Async(ReplaceValues(SiteKey, data), ReplaceValues(SiteUrl, data),
-                            IsInvisible, proxy).Result;
-                        break;
+                    switch (response)
+                    {
+                        case StringResponse r:
+                            InsertVariable(data, false, r.Response, "SOLUTION");
+                            data.Log(new LogEntry($"Captcha solved successfully! Id: {r.Id} Solution: {r.Response}", Colors.GreenYellow));
+                            break;
 
-                    case CaptchaType.ReCaptchaV3:
-                        response = service.SolveRecaptchaV3Async(ReplaceValues(SiteKey, data), ReplaceValues(SiteUrl, data),
-                            ReplaceValues(Action, data), float.Parse(ReplaceValues(MinScore, data)), proxy).Result;
-                        break;
+                        case GeeTestResponse r:
+                            InsertVariable(data, false, r.Challenge, "GT_CHALLENGE");
+                            InsertVariable(data, false, r.Validate, "GT_VALIDATE");
+                            InsertVariable(data, false, r.SecCode, "GT_SECCODE");
+                            data.Log(new LogEntry($"Captcha solved successfully! Id: {r.Id} Challenge: {r.Challenge}\r\nValidate: {r.Validate}\r\nSecCode: {r.SecCode}", Colors.GreenYellow));
+                            break;
+                    }
 
-                    case CaptchaType.FunCaptcha:
-                        response = service.SolveFuncaptchaAsync(ReplaceValues(PublicKey, data), ReplaceValues(ServiceUrl, data),
-                            ReplaceValues(SiteUrl, data), NoJS, proxy).Result;
-                        break;
-
-                    case CaptchaType.HCaptcha:
-                        response = service.SolveHCaptchaAsync(ReplaceValues(SiteKey, data), ReplaceValues(SiteUrl, data), proxy).Result;
-                        break;
-
-                    case CaptchaType.Capy:
-                        response = service.SolveCapyAsync(ReplaceValues(SiteKey, data), ReplaceValues(SiteUrl, data), proxy).Result;
-                        break;
-
-                    case CaptchaType.KeyCaptcha:
-                        response = service.SolveKeyCaptchaAsync(ReplaceValues(UserId, data), ReplaceValues(SessionId, data),
-                            ReplaceValues(WebServerSign1, data), ReplaceValues(WebServerSign2, data), ReplaceValues(SiteUrl, data), proxy).Result;
-                        break;
-
-                    case CaptchaType.GeeTest:
-                        response = service.SolveGeeTestAsync(ReplaceValues(GT, data), ReplaceValues(Challenge, data),
-                            ReplaceValues(ApiServer, data), ReplaceValues(SiteUrl, data), proxy).Result;
-                        break;
-
-                    default:
-                        throw new NotSupportedException();
+                    return;
                 }
-
-                InsertVariable(data, false, response.Id.ToString(), "CAPTCHAID");
-
-                switch (response)
+                catch (Exception ex) // This unwraps aggregate exceptions
                 {
-                    case StringResponse r:
-                        InsertVariable(data, false, r.Response, "SOLUTION");
-                        data.Log(new LogEntry($"Captcha solved successfully! Id: {r.Id} Solution: {r.Response}", Colors.GreenYellow));
-                        break;
-
-                    case GeeTestResponse r:
-                        InsertVariable(data, false, r.Challenge, "GT_CHALLENGE");
-                        InsertVariable(data, false, r.Validate, "GT_VALIDATE");
-                        InsertVariable(data, false, r.SecCode, "GT_SECCODE");
-                        data.Log(new LogEntry($"Captcha solved successfully! Id: {r.Id} Challenge: {r.Challenge}\r\nValidate: {r.Validate}\r\nSecCode: {r.SecCode}", Colors.GreenYellow));
-                        break;
+                    if (ex is AggregateException) throw ex.InnerException;
+                    else throw;
                 }
-
-                return;
             }
-            catch (NotSupportedException ex) { errorMessage = 
-                    $"The currently selected service ({data.GlobalSettings.Captchas.CurrentService}) does not support this task! {ex.Message}"; }
+            catch (NotSupportedException ex) { errorMessage = $"The currently selected service ({data.GlobalSettings.Captchas.CurrentService}) does not support this task! {ex.Message}"; }
             catch (TaskCreationException ex) { errorMessage = $"Could not create the captcha task! {ex.Message}"; }
             catch (TaskSolutionException ex) { errorMessage = $"Could not solve the captcha! {ex.Message}"; }
-            catch (Exception ex) { errorMessage = $"An error occurred! {ex.Message}"; }
+            catch (Exception ex)             { errorMessage = $"An error occurred! {ex.Message}"; }
 
             data.Log(new LogEntry(errorMessage, Colors.Tomato));
+        }
+
+        private CaptchaResponse GetResponse(CaptchaService service, BotData data, Proxy proxy)
+        {
+            CaptchaResponse response;
+
+            switch (Type)
+            {
+                case CaptchaType.TextCaptcha:
+                    response = service.SolveTextCaptchaAsync(ReplaceValues(Question, data), new TextCaptchaOptions
+                    { CaptchaLanguage = Language, CaptchaLanguageGroup = LanguageGroup }).Result;
+                    break;
+
+                case CaptchaType.ImageCaptcha:
+                    response = service.SolveImageCaptchaAsync(ReplaceValues(Base64, data), new ImageCaptchaOptions
+                    {
+                        CaptchaLanguage = Language,
+                        CaptchaLanguageGroup = LanguageGroup,
+                        IsPhrase = IsPhrase,
+                        CaseSensitive = CaseSensitive,
+                        RequiresCalculation = RequiresCalculation,
+                        CharacterSet = CharSet,
+                        MinLength = MinLength,
+                        MaxLength = MaxLength,
+                        TextInstructions = ReplaceValues(TextInstructions, data)
+                    }).Result;
+                    break;
+
+                case CaptchaType.ReCaptchaV2:
+                    response = service.SolveRecaptchaV2Async(ReplaceValues(SiteKey, data), ReplaceValues(SiteUrl, data),
+                        IsInvisible, proxy).Result;
+                    break;
+
+                case CaptchaType.ReCaptchaV3:
+                    response = service.SolveRecaptchaV3Async(ReplaceValues(SiteKey, data), ReplaceValues(SiteUrl, data),
+                        ReplaceValues(Action, data), float.Parse(ReplaceValues(MinScore, data)), proxy).Result;
+                    break;
+
+                case CaptchaType.FunCaptcha:
+                    response = service.SolveFuncaptchaAsync(ReplaceValues(PublicKey, data), ReplaceValues(ServiceUrl, data),
+                        ReplaceValues(SiteUrl, data), NoJS, proxy).Result;
+                    break;
+
+                case CaptchaType.HCaptcha:
+                    response = service.SolveHCaptchaAsync(ReplaceValues(SiteKey, data), ReplaceValues(SiteUrl, data), proxy).Result;
+                    break;
+
+                case CaptchaType.Capy:
+                    response = service.SolveCapyAsync(ReplaceValues(SiteKey, data), ReplaceValues(SiteUrl, data), proxy).Result;
+                    break;
+
+                case CaptchaType.KeyCaptcha:
+                    response = service.SolveKeyCaptchaAsync(ReplaceValues(UserId, data), ReplaceValues(SessionId, data),
+                        ReplaceValues(WebServerSign1, data), ReplaceValues(WebServerSign2, data), ReplaceValues(SiteUrl, data), proxy).Result;
+                    break;
+
+                case CaptchaType.GeeTest:
+                    response = service.SolveGeeTestAsync(ReplaceValues(GT, data), ReplaceValues(Challenge, data),
+                        ReplaceValues(ApiServer, data), ReplaceValues(SiteUrl, data), proxy).Result;
+                    break;
+
+                default:
+                    throw new NotSupportedException();
+            }
+
+            return response;
         }
     }
 }
