@@ -18,6 +18,8 @@ namespace RuriLib.LS
         public static Dictionary<string, Type> BlockMappings { get; set; } = new Dictionary<string, Type>()
         {
             { "BYPASSCF", typeof(BlockBypassCF) },
+            { "SOLVECAPTCHA", typeof(BlockSolveCaptcha) },
+            { "REPORTCAPTCHA", typeof(BlockReportCaptcha) },
             { "CAPTCHA", typeof(BlockImageCaptcha) },
             { "FUNCTION", typeof(BlockFunction) },
             { "KEYCHECK", typeof(BlockKeycheck) },
