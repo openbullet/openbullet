@@ -245,7 +245,8 @@ namespace RuriLib
             while (LineParser.Lookahead(ref input) == TokenType.Boolean)
                 LineParser.SetBool(ref input, this);
 
-            UserAgent = LineParser.ParseLiteral(ref input, "USER AGENT");
+            if (LineParser.Lookahead(ref input) == TokenType.Literal)
+                UserAgent = LineParser.ParseLiteral(ref input, "USER AGENT");
 
             return this;
         }

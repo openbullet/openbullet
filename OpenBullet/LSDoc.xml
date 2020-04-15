@@ -306,15 +306,15 @@ REQUEST GET "http://example.com/basic" BASICAUTH
 This will spawn and execute a SolveCaptcha Block.
 
 Syntax:
-SOLVECAPTCHA TextCaptcha "question?" LANGUAGEGROUP LANGUAGE
-SOLVECAPTCHA ImageCaptcha "base64" LANGUAGEGROUP LANGUAGE MINLEN MAXLEN CHARSET "instructions" [IsPhrase?] [CaseSensitive?] [RequiresCalculation?]
-SOLVECAPTCHA ReCaptchaV2 "sitekey" "siteurl" [IsInvisible?]
-SOLVECAPTCHA ReCaptchaV3 "sitekey" "siteurl" "action" "minscore"
-SOLVECAPTCHA FunCaptcha "pkey" "serviceurl" [NoJS?]
-SOLVECAPTCHA KeyCaptcha "userid" "sessionid" "wss1" "wss2"
-SOLVECAPTCHA HCaptcha "sitekey" "siteurl"
-SOLVECAPTCHA GeeTest "gt" "challenge" "apiserver"
-SOLVECAPTCHA Capy "sitekey" "siteurl"
+SOLVECAPTCHA TextCaptcha "question?" LANGUAGEGROUP LANGUAGE [UseProxy?] ["UserAgent"]
+SOLVECAPTCHA ImageCaptcha "base64" LANGUAGEGROUP LANGUAGE MINLEN MAXLEN CHARSET "instructions" [IsPhrase?] [CaseSensitive?] [RequiresCalculation?] [UseProxy?] ["UserAgent"]
+SOLVECAPTCHA ReCaptchaV2 "sitekey" "siteurl" [IsInvisible?] [UseProxy?] ["UserAgent"]
+SOLVECAPTCHA ReCaptchaV3 "sitekey" "siteurl" "action" "minscore" [UseProxy?] ["UserAgent"]
+SOLVECAPTCHA FunCaptcha "pkey" "serviceurl" [NoJS?] [UseProxy?] ["UserAgent"]
+SOLVECAPTCHA KeyCaptcha "userid" "sessionid" "wss1" "wss2" [UseProxy?] ["UserAgent"]
+SOLVECAPTCHA HCaptcha "sitekey" "siteurl" [UseProxy?] ["UserAgent"]
+SOLVECAPTCHA GeeTest "gt" "challenge" "apiserver" [UseProxy?] ["UserAgent"]
+SOLVECAPTCHA Capy "sitekey" "siteurl" [UseProxy?] ["UserAgent"]
 
 When the block is processed, if the solution was sucessful it will generate 2 variables:
 - SOLUTION (containing the solution as plaintext)
