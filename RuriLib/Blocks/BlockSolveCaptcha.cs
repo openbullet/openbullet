@@ -242,6 +242,11 @@ namespace RuriLib
                     break;
             }
 
+            while (LineParser.Lookahead(ref input) == TokenType.Boolean)
+                LineParser.SetBool(ref input, this);
+
+            UserAgent = LineParser.ParseLiteral(ref input, "USER AGENT");
+
             return this;
         }
 
@@ -321,6 +326,11 @@ namespace RuriLib
                         .Literal(ApiServer);
                     break;
             }
+
+            writer
+                .Indent()
+                .Boolean(UseProxy, nameof(UseProxy))
+                .Literal(UserAgent);
 
             return writer.ToString();
         }
