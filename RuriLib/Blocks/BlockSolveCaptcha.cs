@@ -152,7 +152,7 @@ namespace RuriLib
         /// </summary>
         public BlockSolveCaptcha()
         {
-            Label = "SOLVECAPTCHA";
+            Label = "SOLVE CAPTCHA";
         }
 
         /// <inheritdoc />
@@ -170,7 +170,7 @@ namespace RuriLib
             switch (Type)
             {
                 case CaptchaType.TextCaptcha:
-                    // SOLVECAPTCHA TextCaptcha "question?" LANGUAGEGROUP LANGUAGE -> VAR/CAP "SOLUTION"
+                    // SOLVECAPTCHA TextCaptcha "question?" LANGUAGEGROUP LANGUAGE
                     Question = LineParser.ParseLiteral(ref input, "QUESTION");
                     LanguageGroup = (CaptchaLanguageGroup)LineParser.ParseEnum(ref input, "LANG GROUP", typeof(CaptchaLanguageGroup));
                     Language = (CaptchaLanguage)LineParser.ParseEnum(ref input, "LANG", typeof(CaptchaLanguage));
@@ -178,7 +178,7 @@ namespace RuriLib
 
                 case CaptchaType.ImageCaptcha:
                     // SOLVECAPTCHA ImageCaptcha "base64" LANGUAGEGROUP LANGUAGE MINLEN MAXLEN CHARSET "instructions"
-                    // [IsPhrase?] [CaseSensitive?] [RequiresCalculation?] -> VAR/CAP "SOLUTION"
+                    // [IsPhrase?] [CaseSensitive?] [RequiresCalculation?]
                     Base64 = LineParser.ParseLiteral(ref input, "BASE64");
                     LanguageGroup = (CaptchaLanguageGroup)LineParser.ParseEnum(ref input, "LANG GROUP", typeof(CaptchaLanguageGroup));
                     Language = (CaptchaLanguage)LineParser.ParseEnum(ref input, "LANG", typeof(CaptchaLanguage));
@@ -191,7 +191,7 @@ namespace RuriLib
                     break;
 
                 case CaptchaType.ReCaptchaV2:
-                    // SOLVECAPTCHA ReCaptchaV2 "sitekey" "siteurl" [IsInvisible?] -> VAR/CAP "SOLUTION"
+                    // SOLVECAPTCHA ReCaptchaV2 "sitekey" "siteurl" [IsInvisible?]
                     SiteKey = LineParser.ParseLiteral(ref input, "SITE KEY");
                     SiteUrl = LineParser.ParseLiteral(ref input, "SITE URL");
                     while (LineParser.Lookahead(ref input) == TokenType.Boolean)
@@ -199,7 +199,7 @@ namespace RuriLib
                     break;
 
                 case CaptchaType.ReCaptchaV3:
-                    // SOLVECAPTCHA ReCaptchaV2 "sitekey" "siteurl" "action" "minscore" -> VAR/CAP "SOLUTION"
+                    // SOLVECAPTCHA ReCaptchaV3 "sitekey" "siteurl" "action" "minscore"
                     SiteKey = LineParser.ParseLiteral(ref input, "SITE KEY");
                     SiteUrl = LineParser.ParseLiteral(ref input, "SITE URL");
                     Action = LineParser.ParseLiteral(ref input, "ACTION");
@@ -207,7 +207,7 @@ namespace RuriLib
                     break;
 
                 case CaptchaType.FunCaptcha:
-                    // SOLVECAPTCHA FunCaptcha "pkey" "serviceurl" [NoJS?] -> VAR/CAP "SOLUTION"
+                    // SOLVECAPTCHA FunCaptcha "pkey" "serviceurl" [NoJS?]
                     PublicKey = LineParser.ParseLiteral(ref input, "PUBLIC KEY");
                     ServiceUrl = LineParser.ParseLiteral(ref input, "SERVICE URL");
                     while (LineParser.Lookahead(ref input) == TokenType.Boolean)
@@ -215,7 +215,7 @@ namespace RuriLib
                     break;
 
                 case CaptchaType.KeyCaptcha:
-                    // SOLVECAPTCHA KeyCaptcha "userid" "sessionid" "wss1" "wss2" -> VAR/CAP "SOLUTION"
+                    // SOLVECAPTCHA KeyCaptcha "userid" "sessionid" "wss1" "wss2"
                     UserId = LineParser.ParseLiteral(ref input, "USER ID");
                     SessionId = LineParser.ParseLiteral(ref input, "SESSION ID");
                     WebServerSign1 = LineParser.ParseLiteral(ref input, "WEBSERVER SIGN 1");
@@ -223,20 +223,20 @@ namespace RuriLib
                     break;
 
                 case CaptchaType.HCaptcha:
-                    // SOLVECAPTCHA HCaptcha "sitekey" "siteurl" -> VAR/CAP "SOLUTION"
+                    //  SOLVECAPTCHA HCaptcha "sitekey" "siteurl"
                     SiteKey = LineParser.ParseLiteral(ref input, "SITE KEY");
                     SiteUrl = LineParser.ParseLiteral(ref input, "SITE URL");
                     break;
 
                 case CaptchaType.GeeTest:
-                    // SOLVECAPTCHA GeeTest "gt" "challenge" "apiserver" -> VAR/CAP "SOLUTION"
+                    // SOLVECAPTCHA GeeTest "gt" "challenge" "apiserver"
                     GT = LineParser.ParseLiteral(ref input, "GT");
                     Challenge = LineParser.ParseLiteral(ref input, "CHALLENGE");
                     ApiServer = LineParser.ParseLiteral(ref input, "API SERVER");
                     break;
 
                 case CaptchaType.Capy:
-                    // SOLVECAPTCHA Capy "sitekey" "siteurl" -> VAR/CAP "SOLUTION"
+                    // SOLVECAPTCHA Capy "sitekey" "siteurl"
                     SiteKey = LineParser.ParseLiteral(ref input, "SITE KEY");
                     SiteUrl = LineParser.ParseLiteral(ref input, "SITE URL");
                     break;

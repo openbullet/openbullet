@@ -302,7 +302,38 @@ REQUEST POST "http://example.com/multi" MULTIPART
   
 REQUEST GET "http://example.com/basic" BASICAUTH
     </item>
-    <item name="Recaptcha">
+    <item name="SolveCaptcha">
+This will spawn and execute a SolveCaptcha Block.
+
+Syntax:
+SOLVECAPTCHA TextCaptcha "question?" LANGUAGEGROUP LANGUAGE
+SOLVECAPTCHA ImageCaptcha "base64" LANGUAGEGROUP LANGUAGE MINLEN MAXLEN CHARSET "instructions" [IsPhrase?] [CaseSensitive?] [RequiresCalculation?]
+SOLVECAPTCHA ReCaptchaV2 "sitekey" "siteurl" [IsInvisible?]
+SOLVECAPTCHA ReCaptchaV3 "sitekey" "siteurl" "action" "minscore"
+SOLVECAPTCHA FunCaptcha "pkey" "serviceurl" [NoJS?]
+SOLVECAPTCHA KeyCaptcha "userid" "sessionid" "wss1" "wss2"
+SOLVECAPTCHA HCaptcha "sitekey" "siteurl"
+SOLVECAPTCHA GeeTest "gt" "challenge" "apiserver"
+SOLVECAPTCHA Capy "sitekey" "siteurl"
+
+When the block is processed, if the solution was sucessful it will generate 2 variables:
+- SOLUTION (containing the solution as plaintext)
+- CAPTCHAID (containing the id you can send to report bad captchas)
+
+In the case of GeeTest, the block will generate 4 variables instead:
+- CHALLENGE
+- VALIDATE
+- SECCODE
+- CAPTCHAID
+    </item>
+    <item name="ReportCaptcha">
+This will spawn and execute a ReportCaptcha Block.
+
+Syntax:
+REPORTCAPTCHA Type "id"
+    </item>
+    <item name="Recaptcha (Obsolete)">
+THIS BLOCK IS OBSOLETE! IT WILL BE REMOVED IN THE FUTURE, DO NOT USE IT!
 This will spawn and execute a Recaptcha Block.
 
 Syntax:
@@ -311,7 +342,8 @@ RECAPTCHA "URL" "SITEKEY" -> VAR "NAME"
 Example:
 RECAPTCHA "http://example.com" "ABCD" -> VAR "RECAP"
     </item>
-    <item name="Captcha">
+    <item name="Captcha (Obsolete)">
+THIS BLOCK IS OBSOLETE! IT WILL BE REMOVED IN THE FUTURE, DO NOT USE IT!
 This will spawn and execute a Captcha Block.
 
 Syntax:

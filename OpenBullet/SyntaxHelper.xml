@@ -22,10 +22,26 @@ REQUEST METHOD "URL" [AcceptEncoding?] [AutoRedirect?] [ReadResponseSource?] [Pa
   [SECPROTO security-protocol]
   [-> STRING / -> FILE "path"]
   </item>
+  <item name="SOLVECAPTCHA">
+SOLVECAPTCHA TextCaptcha "question?" LANGUAGEGROUP LANGUAGE
+SOLVECAPTCHA ImageCaptcha "base64" LANGUAGEGROUP LANGUAGE MINLEN MAXLEN CHARSET "instructions" [IsPhrase?] [CaseSensitive?] [RequiresCalculation?]
+SOLVECAPTCHA ReCaptchaV2 "sitekey" "siteurl" [IsInvisible?]
+SOLVECAPTCHA ReCaptchaV3 "sitekey" "siteurl" "action" "minscore"
+SOLVECAPTCHA FunCaptcha "pkey" "serviceurl" [NoJS?]
+SOLVECAPTCHA KeyCaptcha "userid" "sessionid" "wss1" "wss2"
+SOLVECAPTCHA HCaptcha "sitekey" "siteurl"
+SOLVECAPTCHA GeeTest "gt" "challenge" "apiserver"
+SOLVECAPTCHA Capy "sitekey" "siteurl"
+  </item>
+  <item name="REPORTCAPTCHA">
+REPORTCAPTCHA Type "id"
+  </item>
   <item name="RECAPTCHA">
+(OBSOLETE! DO NOT USE!)
 RECAPTCHA "URL" "SITEKEY" -> VAR "NAME"
   </item>
   <item name="CAPTCHA">
+(OBSOLETE! DO NOT USE!)
 CAPTCHA "URL" [Base64?] [SendScreenshot?] -> VAR "NAME"
   </item>
   <item name="PARSE">

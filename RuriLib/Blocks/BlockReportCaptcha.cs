@@ -25,7 +25,7 @@ namespace RuriLib
         /// </summary>
         public BlockReportCaptcha()
         {
-            Label = "REPORTCAPTCHA";
+            Label = "REPORT CAPTCHA";
         }
 
         /// <inheritdoc />

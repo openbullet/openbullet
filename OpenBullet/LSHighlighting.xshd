@@ -45,6 +45,7 @@
 
     <Keywords fontWeight="bold" foreground="Turquoise">
       <Word>RECAPTCHA</Word>
+      <Word>SOLVECAPTCHA</Word>
     </Keywords>
 
     <Keywords fontWeight="bold" foreground="LimeGreen">
@@ -72,6 +73,7 @@
 
     <Keywords fontWeight="bold" foreground="DarkOrange">
       <Word>CAPTCHA</Word>
+      <Word>REPORTCAPTCHA</Word>
     </Keywords>
 
     <Keywords fontWeight="bold" foreground="DarkSalmon">
