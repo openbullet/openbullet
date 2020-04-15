@@ -48,7 +48,7 @@ namespace RuriLib
         {
             return new BlockWriter(GetType(), indent, Disabled)
                 .Label(Label)
-                .Token("SOLVECAPTCHA")
+                .Token("REPORTCAPTCHA")
                 .Token(Type)
                 .Literal(CaptchaId)
                 .ToString();
