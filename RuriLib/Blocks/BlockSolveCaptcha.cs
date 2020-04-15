@@ -359,14 +359,29 @@ namespace RuriLib
             {
                 try
                 {
-                    data.Balance = service.GetBalanceAsync().Result;
-                    data.Log($"[{data.GlobalSettings.Captchas.CurrentService}] Balance: ${data.Balance}");
+                    try
+                    {
+                        data.Balance = service.GetBalanceAsync().Result;
+                        data.Log($"[{data.GlobalSettings.Captchas.CurrentService}] Balance: ${data.Balance}");
 
-                    if (data.Balance < (decimal)0.002)
-                        throw new Exception("The remaining balance is too low!");
+                        if (data.Balance < (decimal)0.002)
+                            throw new Exception("The remaining balance is too low!");
+                    }
+                    catch (Exception ex) // This unwraps aggregate exceptions
+                    {
+                        if (ex is AggregateException) throw ex.InnerException;
+                        else throw;
+                    }
                 }
-                catch (BadAuthenticationException ex) { errorMessage = $"Bad credentials! {ex.Message}"; }
-                catch (Exception ex) { errorMessage = $"An error occurred! {ex.Message}"; }
+                catch (BadAuthenticationException ex) 
+                { 
+                    data.Log(new LogEntry($"Bad credentials! {ex.Message}", Colors.Tomato));
+                    return;
+                }
+                catch (Exception ex) 
+                {
+                    data.Log(new LogEntry($"An error occurred! {ex.Message}", Colors.Tomato));
+                }
             }
 
             try
