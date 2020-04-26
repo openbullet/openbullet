@@ -42,15 +42,15 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="150" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="50" />
                                 <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Slice Name:" />
                             <TextBox Grid.Column="1" Text="{Binding SliceName}" Margin="5 0"/>
-                            <ComboBox Tag="{Binding Id}" Grid.Column="2" x:Name="ruleTypeCombobox" Margin="5 0" SelectionChanged="ruleTypeCombobox_SelectionChanged" Loaded="ruleTypeCombobox_Loaded"/>
-                            <ComboBox Tag="{Binding Id}" Grid.Column="3" x:Name="ruleStringCombobox" IsEditable="True" Margin="5 0" SelectionChanged="ruleStringCombobox_SelectionChanged" Loaded="ruleStringCombobox_Loaded" TextBoxBase.TextChanged="ruleStringCombobox_TextChanged"/>
+                            <ComboBox Tag="{Binding Id}" ItemsSource="{Binding RuleTypes}" SelectedItem="{Binding RuleType}" Grid.Column="2" x:Name="ruleTypeCombobox" Margin="5 0"/>
+                            <ComboBox Tag="{Binding Id}" ItemsSource="{Binding RuleStrings}" Text="{Binding RuleString}" Grid.Column="3" x:Name="ruleStringCombobox" IsEditable="True" Margin="5 0"/>
                             <Button Grid.Column="5" x:Name="removeRuleButton" Tag="{Binding Id}" Content="Remove" Click="removeRuleButton_Click" />
                         </Grid>
                     </DataTemplate>
