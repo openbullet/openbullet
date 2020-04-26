@@ -1,4 +1,6 @@
-﻿using OpenBullet.Repositories;
+﻿using System;
+using System.Collections;
+using OpenBullet.Repositories;
 using OpenBullet.Views.Main.Configs;
 using RuriLib;
 using RuriLib.Functions.Files;
@@ -24,9 +26,15 @@ namespace OpenBullet
             nameTextbox.Focus();
 
             categoryCombobox.Items.Add(ConfigRepository.defaultCategory);
-            foreach(var category in OB.ConfigManager.ConfigsCollection.Select(c => c.Category).Distinct())
+
+            IEnumerable categories = OB.ConfigManager.ConfigsCollection
+                .Select(c => c.Category)
+                .Where(category => category != ConfigRepository.defaultCategory)
+                .Distinct();
+
+            foreach (var category in categories)
                 categoryCombobox.Items.Add(category);
-            
+
             categoryCombobox.SelectedIndex = 0;
         }
 
@@ -42,7 +50,15 @@ namespace OpenBullet
                 if (string.IsNullOrWhiteSpace(categoryCombobox.Text)) categoryCombobox.Text = ConfigRepository.defaultCategory;
                 else if (categoryCombobox.Text != Files.MakeValidFileName(categoryCombobox.Text)) { MessageBox.Show("The category contains invalid characters"); return; }
 
-                ((ConfigManager)Caller).CreateConfig(nameTextbox.Text, categoryCombobox.Text, authorTextbox.Text);
+                try
+                {
+                    ((ConfigManager)Caller).CreateConfig(nameTextbox.Text, categoryCombobox.Text, authorTextbox.Text);
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
             }
             ((MainDialog)Parent).Close();
         }
