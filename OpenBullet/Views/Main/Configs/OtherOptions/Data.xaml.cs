@@ -53,52 +53,6 @@ namespace OpenBullet.Views.Main.Configs.OtherOptions
             vm.RemoveDataRuleById((int)(sender as Button).Tag);
         }
 
-        private void ruleTypeCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            vm.GetDataRuleById((int)(sender as ComboBox).Tag).RuleType = (RuleType)(sender as ComboBox).SelectedIndex;
-        }
-
-        private void ruleStringCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var cb = sender as ComboBox;
-            vm.GetDataRuleById((int)cb.Tag).RuleString = cb.Text;
-        }
-
-        private void ruleTypeCombobox_Loaded(object sender, RoutedEventArgs e)
-        {
-            var dr = vm.GetDataRuleById((int)(sender as ComboBox).Tag);
-            if (dr.TypeInitialized)
-                return;
-
-            dr.TypeInitialized = true;
-            foreach (var t in Enum.GetNames(typeof(RuleType)))
-                (sender as ComboBox).Items.Add(t);
-
-            (sender as ComboBox).SelectedIndex = (int)dr.RuleType;
-        }
-
-        private void ruleStringCombobox_Loaded(object sender, RoutedEventArgs e)
-        {
-            var dr = vm.GetDataRuleById((int)(sender as ComboBox).Tag);
-            if (dr.StringInitialized)
-                return;
-
-            dr.StringInitialized = true;
-
-            var defaults = new string[] { "Lowercase", "Uppercase", "Digit", "Symbol" };
-
-            foreach (var d in defaults)
-                (sender as ComboBox).Items.Add(d);
-
-            (sender as ComboBox).Text = dr.RuleString;
-        }
-
-        private void ruleStringCombobox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            var cb = sender as ComboBox;
-            vm.GetDataRuleById((int)cb.Tag).RuleString = cb.Text;
-        }
-
         private void allowedWordlist1Combobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             vm.AllowedWordlist1 = (string)allowedWordlist1Combobox.SelectedValue;
