@@ -44,26 +44,128 @@ namespace OpenBullet.ViewModels
         }
 
         #region Statistics
-        public int Tested => ProxiesCollection.Count(x => x.Working != ProxyWorking.UNTESTED);
-        public int Http => ProxiesCollection.Count(x => x.Type == ProxyType.Http);
-        public int Socks4 => ProxiesCollection.Count(x => x.Type == ProxyType.Socks4);
-        public int Socks4a => ProxiesCollection.Count(x => x.Type == ProxyType.Socks4a);
-        public int Socks5 => ProxiesCollection.Count(x => x.Type == ProxyType.Socks5);
-        public int Chain => ProxiesCollection.Count(x => x.Type == ProxyType.Chain);
-        public int Working => ProxiesCollection.Count(x => x.Working == ProxyWorking.YES);
-        public int NotWorking => ProxiesCollection.Count(x => x.Working == ProxyWorking.NO);
+
+        public object testedLock = new object();
+        private int tested;
+        public int Tested
+        {
+            set
+            {
+                tested = value;
+                OnPropertyChanged();
+            }
+            get { return tested; }
+        }
+
+        public object httpLock = new object();
+        private int http;
+        public int Http
+        {
+            set
+            {
+                http = value;
+                OnPropertyChanged();
+            }
+            get { return http; }
+        }
+
+        public object socks4Lock = new object();
+        private int socks4;
+        public int Socks4
+        {
+            set
+            {
+                socks4 = value;
+                OnPropertyChanged();
+            }
+            get { return socks4; }
+        }
+
+        public object socks4aLock = new object();
+        private int socks4a;
+        public int Socks4a
+        {
+            set
+            {
+                socks4a = value;
+                OnPropertyChanged();
+            }
+            get { return socks4a; }
+        }
+
+        public object socks5Lock = new object();
+        private int socks5;
+        public int Socks5
+        {
+            set
+            {
+                socks5 = value;
+                OnPropertyChanged();
+            }
+            get { return socks5; }
+        }
+
+        public object chainLock = new object();
+        private int chain;
+        public int Chain
+        {
+            set
+            {
+                chain = value;
+                OnPropertyChanged();
+            }
+            get { return chain; }
+        }
+
+        public object workingLock = new object();
+        private int working;
+        public int Working
+        {
+            set
+            {
+                working = value;
+                OnPropertyChanged();
+            }
+            get { return working; }
+        }
+
+        public object notWorkingLock = new object();
+        private int notWorking;
+        public int NotWorking
+        {
+            set
+            {
+                notWorking = value;
+                OnPropertyChanged();
+            }
+            get { return notWorking; }
+        }
 
         public void UpdateProperties()
         {
-            OnPropertyChanged(nameof(Total));
-            OnPropertyChanged(nameof(Tested));
-            OnPropertyChanged(nameof(Http));
-            OnPropertyChanged(nameof(Socks4));
-            OnPropertyChanged(nameof(Socks4));
-            OnPropertyChanged(nameof(Socks5));
-            OnPropertyChanged(nameof(Chain));
-            OnPropertyChanged(nameof(Working));
-            OnPropertyChanged(nameof(NotWorking));
+            lock (testedLock)
+                Tested = ProxiesCollection.Count(x => x.Working != ProxyWorking.UNTESTED);
+
+            lock (httpLock)
+                Http = ProxiesCollection.Count(x => x.Type == ProxyType.Http);
+
+            lock (socks4Lock)
+                Socks4 = ProxiesCollection.Count(x => x.Type == ProxyType.Socks4);
+
+            lock (socks4aLock)
+                Socks4a = ProxiesCollection.Count(x => x.Type == ProxyType.Socks4a);
+
+            lock (socks5Lock)
+                Socks5 = ProxiesCollection.Count(x => x.Type == ProxyType.Socks5);
+
+            lock (chainLock)
+                Chain = ProxiesCollection.Count(x => x.Type == ProxyType.Chain);
+
+            lock (workingLock)
+                Working = ProxiesCollection.Count(x => x.Working == ProxyWorking.YES);
+
+            lock (notWorkingLock)
+                NotWorking = ProxiesCollection.Count(x => x.Working == ProxyWorking.NO);
         }
 
         public ProxyManagerStats Stats => new ProxyManagerStats(Total, Tested, Working, Http, Socks4, Socks4a, Socks5);

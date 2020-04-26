@@ -14,6 +14,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace OpenBullet.Views.Main
 {
@@ -62,41 +63,61 @@ namespace OpenBullet.Views.Main
 
                     try
                     {
-                        await vm.CheckAllAsync(items, cts.Token,
-                        new Action<CheckResult<ProxyResult>>(check =>
+                        await Task.Run(async () =>
                         {
-                            var result = check.result;
-                            var proxy = result.proxy;
+                            await vm.CheckAllAsync(items, cts.Token,
+                                new Action<CheckResult<ProxyResult>>(check =>
+                                {
+                                    var result = check.result;
+                                    var proxy = result.proxy;
 
-                            proxy.LastChecked = DateTime.Now;
+                                    proxy.LastChecked = DateTime.Now;
 
-                            if (check.success)
-                            {
-                                // Set all the changed proxy fields
-                                proxy.Working = result.working ? ProxyWorking.YES : ProxyWorking.NO;
-                                proxy.Ping = result.ping;
-                                proxy.Country = result.country;
+                                    if (check.success)
+                                    {
+                                        // Set all the changed proxy fields
+                                        proxy.Working = result.working ? ProxyWorking.YES : ProxyWorking.NO;
+                                        proxy.Ping = result.ping;
+                                        proxy.Country = result.country;
 
-                                var infoLog = $"[{DateTime.Now.ToLongTimeString()}] Check for proxy {proxy.Proxy} succeeded in {result.ping} milliseconds.";
-                                OB.Logger.LogInfo(Components.ProxyManager, infoLog);
-                            }
-                            else
-                            {
-                                proxy.Working = ProxyWorking.NO;
-                                proxy.Ping = 0;
+                                        var infoLog = $"[{DateTime.Now.ToLongTimeString()}] Check for proxy {proxy.Proxy} succeeded in {result.ping} milliseconds.";
+                                        OB.Logger.LogInfo(Components.ProxyManager, infoLog);
+                                    }
+                                    else
+                                    {
+                                        proxy.Working = ProxyWorking.NO;
+                                        proxy.Ping = 0;
 
-                                var errorLog = $"[{DateTime.Now.ToLongTimeString()}] Check for proxy {proxy.Proxy} failed with error: {check.error}";
-                                OB.Logger.LogError(Components.ProxyManager, errorLog);
-                            }
+                                        var errorLog = $"[{DateTime.Now.ToLongTimeString()}] Check for proxy {proxy.Proxy} failed with error: {check.error}";
+                                        OB.Logger.LogError(Components.ProxyManager, errorLog);
+                                    }
 
-                            // Update the proxy in the database
-                            vm.Update(proxy);
-                        }),
-                        new Progress<float>(progress =>
-                        {
-                            progressBar.Value = progress;
-                            vm.UpdateProperties();
-                        }));
+                                    if (proxy.Working == ProxyWorking.YES)
+                                    {
+                                        lock (proxy)
+                                            vm.Working++;
+                                    }
+                                    else
+                                    {
+                                        lock (vm.notWorkingLock)
+                                            vm.NotWorking++;
+                                    }
+
+                                    lock (vm.testedLock)
+                                        vm.Tested++;
+
+                                    // Update the proxy in the database
+                                    vm.Update(proxy);
+                                }),
+                                new Progress<float>(progress =>
+                                {
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        progressBar.Value = progress;
+                                        vm.UpdateProperties();
+                                    });
+                                }));
+                        });
                     }
                     catch
                     {
@@ -209,7 +230,7 @@ namespace OpenBullet.Views.Main
             vm.UpdateProperties();
         }
 
-        private void DeleteUntestedButton_Click(object sender, RoutedEventArgs e)
+        private async void DeleteUntestedButton_Click(object sender, RoutedEventArgs e)
         {
             OB.Logger.LogInfo(Components.ProxyManager, "Deleting all untested proxies");
 
