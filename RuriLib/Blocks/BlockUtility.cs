@@ -119,7 +119,10 @@ namespace RuriLib
         Copy,
 
         /// <summary>Moves a file to a different location.</summary>
-        Move
+        Move,
+
+        /// <summary>Deletes a file in the OB folder.</summary>
+        Delete
     }
 
     /// <summary>
@@ -131,7 +134,10 @@ namespace RuriLib
         Exists,
 
         /// <summary>Creates a folder.</summary>
-        Create
+        Create,
+
+        /// <summary>Deletes a folder.</summary>
+        Delete
     }
 
     /// <summary>
@@ -664,6 +670,13 @@ namespace RuriLib
                                     lock (FileLocker.GetLock(fileMoveLocation))
                                         File.Move(file, fileMoveLocation);
                                 break;
+
+                            case FileAction.Delete:
+                                // No deletion if the file is in use (DB/OpenBullet.db cannot be deleted but instead DB/OpenBullet-BackupCopy.db)
+                                // If another process is just reading the file it will be deleted
+                                lock (FileLocker.GetLock(file))
+                                    File.Delete(file);
+                                break;
                         }
                         data.Log(new LogEntry($"Executed action {fileAction} on file {file}", isCapture ? Colors.Tomato : Colors.Yellow));
                         break;
@@ -680,6 +693,13 @@ namespace RuriLib
 
                             case FolderAction.Create:
                                 data.Variables.Set(new CVar(variableName, Directory.CreateDirectory(folder).ToString(), isCapture));
+                                break;
+
+                            case FolderAction.Delete:
+                                // All files in the folder will be deleted expect the ones that are in use
+                                // DB/OpenBullet.db cannot be deleted but instead DB/OpenBullet-BackupCopy.db
+                                // If another process is just reading a file in the folder it will be deleted
+                                Directory.Delete(folder, true);
                                 break;
                         }
                         data.Log(new LogEntry($"Executed action {folderAction} on folder {folder}", isCapture ? Colors.Tomato : Colors.Yellow));
