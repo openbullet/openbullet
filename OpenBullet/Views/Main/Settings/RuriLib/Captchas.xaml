@@ -10,111 +10,94 @@
       Title="RLSettingsCaptchas">
 
     <Grid>
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="0">
-                <Grid>
+        <StackPanel Margin="0">
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="Captcha Service in use" />
+                <ComboBox DockPanel.Dock="Left" x:Name="currentServiceCombobox" SelectionChanged="currentServiceCombobox_SelectionChanged"/>
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="AntiCaptcha API Key" />
+                <TextBox DockPanel.Dock="Left" Text="{Binding AntiCapToken}" />
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="2Captcha API Key" />
+                <TextBox DockPanel.Dock="Left" Text="{Binding TwoCapToken}" />
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="RuCaptcha API Key" />
+                <TextBox DockPanel.Dock="Left" Text="{Binding RuCapToken}" />
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="AZCaptcha API Key" />
+                <TextBox DockPanel.Dock="Left" Text="{Binding AZCapToken}" />
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="ImageTyperz API Key" />
+                <TextBox DockPanel.Dock="Left" Text="{Binding ImageTypToken}" />
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="DeathByCaptcha Credentials (User | Pass)" />
+                <Grid DockPanel.Dock="Left">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <Label Content="Captcha Service in use" Grid.Column="0" Grid.Row="0" />
-                    <ComboBox x:Name="currentServiceCombobox" SelectionChanged="currentServiceCombobox_SelectionChanged" Grid.Column="1" Grid.Row="0" />
-
-                    <Label Content="AntiCaptcha API Key" Margin="0 5 0 0" Grid.Column="0" Grid.Row="1" />
-                    <TextBox Text="{Binding AntiCapToken}" Margin="0 5 0 0" Grid.Column="1" Grid.Row="1" />
-
-                    <Label Content="2Captcha API Key" Margin="0 5 0 0" Grid.Column="0" Grid.Row="2" />
-                    <TextBox Text="{Binding TwoCapToken}" Margin="0 5 0 0" Grid.Column="1" Grid.Row="2" />
-
-                    <Label Content="RuCaptcha API Key" Margin="0 5 0 0" Grid.Column="0" Grid.Row="3" />
-                    <TextBox Text="{Binding RuCapToken}" Margin="0 5 0 0" Grid.Column="1" Grid.Row="3" />
-
-                    <Label Content="AZCaptcha API Key" Margin="0 5 0 0" Grid.Column="0" Grid.Row="4" />
-                    <TextBox Text="{Binding AZCapToken}" Margin="0 5 0 0" Grid.Column="1" Grid.Row="4" />
-
-                    <Label Content="ImageTyperz API Key" Margin="0 5 0 0" Grid.Column="0" Grid.Row="5" />
-                    <TextBox Text="{Binding ImageTypToken}" Margin="0 5 0 0" Grid.Column="1" Grid.Row="5" />
-
-                    <Label Content="DeathByCaptcha (User | Pass)" Margin="0 5 0 0" Grid.Column="0" Grid.Row="6" />
-                    <Grid Margin="0 5 0 0" Grid.Column="1" Grid.Row="6">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" Text="{Binding DBCUser}" Margin="0 0 5 0" />
-                        <TextBox Grid.Column="1" Text="{Binding DBCPass}" Margin="5 0 0 0"/>
-                    </Grid>
-
-                    <Label Content="DeCaptcher (User | Pass)" Margin="0 5 0 0" Grid.Column="0" Grid.Row="7" />
-                    <Grid Margin="0 5 0 0" Grid.Column="1" Grid.Row="7" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" Text="{Binding DCUser}" Margin="0 0 5 0" />
-                        <TextBox Grid.Column="1" Text="{Binding DCPass}" Margin="5 0 0 0"/>
-                    </Grid>
-
-                    <Label Content="SolveRecaptcha (UserId | API Key)" Margin="0 5 0 0" Grid.Column="0" Grid.Row="8" />
-                    <Grid Margin="0 5 0 0" Grid.Column="1" Grid.Row="8" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" Text="{Binding SRUserId}" Margin="0 0 5 0" />
-                        <TextBox Grid.Column="1" Text="{Binding SRToken}" Margin="5 0 0 0"/>
-                    </Grid>
-
-                    <Label Content="CaptchasIO API Key" Margin="0 5 0 0" Grid.Column="0" Grid.Row="9" />
-                    <TextBox Text="{Binding CIOToken}" Margin="0 5 0 0" Grid.Column="1" Grid.Row="9" />
+                    <TextBox Grid.Column="0" Text="{Binding DBCUser}" Margin="0 0 5 0" />
+                    <TextBox Grid.Column="1" Text="{Binding DBCPass}" Margin="5 0 0 0"/>
                 </Grid>
-                <DockPanel Margin="0 5 0 0" >
-                    <Label DockPanel.Dock="Left" Content="Custom 2Captcha Server (API Key | Domain | Port)" />
-                    <Grid DockPanel.Dock="Left">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" Text="{Binding CustomTwoCapToken}" Margin="0 0 5 0" />
-                        <TextBox Grid.Column="1" Text="{Binding CustomTwoCapDomain}" Margin="5 0 0 0"/>
-                        <xctk:IntegerUpDown Grid.Column="2" Background="Transparent" Width="100" Minimum="0" Maximum="65535" Margin="10 0 0 0" Value="{Binding CustomTwoCapPort}" Foreground="{DynamicResource ForegroundMain}"  HorizontalAlignment="Right"/>
-                    </Grid>
-                </DockPanel>
-
-                <DockPanel Margin="0 5 0 0" >
-                    <Grid DockPanel.Dock="Top">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <CheckBox Content="Bypass Balance Check (useful for OCR Software)" IsChecked="{Binding BypassBalanceCheck}" VerticalContentAlignment="Center" Grid.Column="0"/>
-                        <DockPanel Grid.Column="2">
-                            <Label Content="Timeout for captcha response (seconds):" />
-                            <xctk:IntegerUpDown Background="Transparent" Width="70" Margin="10 0 0 0" Value="{Binding Timeout}" Foreground="{DynamicResource ForegroundMain}"  HorizontalAlignment="Right" />
-                        </DockPanel>
-                    </Grid>
-                    <StackPanel Orientation="Horizontal" Margin="0 5 0 0" >
-                        <Button x:Name="checkBalanceButton" Content="Check Balance" Click="checkBalanceButton_Click" />
-                        <Label Content="Your balance is:" Margin="5 0 0 0" />
-                        <Label x:Name="balanceLabel" Content="" Foreground="{DynamicResource ForegroundGood}"/>
-                    </StackPanel>
-                </DockPanel>
-                
-            </StackPanel>
-        </ScrollViewer>
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="DeCaptcher Credentials (User | Pass)" />
+                <Grid DockPanel.Dock="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Text="{Binding DCUser}" Margin="0 0 5 0" />
+                    <TextBox Grid.Column="1" Text="{Binding DCPass}" Margin="5 0 0 0"/>
+                </Grid>
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="SolveRecaptcha Credentials (UserId | API Key)" />
+                <Grid DockPanel.Dock="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Text="{Binding SRUserId}" Margin="0 0 5 0" />
+                    <TextBox Grid.Column="1" Text="{Binding SRToken}" Margin="5 0 0 0"/>
+                </Grid>
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="CaptchasIO API Key" />
+                <TextBox Grid.Column="0" Text="{Binding CIOToken}" Margin="0 0 5 0" />
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="Custom 2Captcha Server (API Key | Domain | Port)" />
+                <Grid DockPanel.Dock="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Text="{Binding CustomTwoCapToken}" Margin="0 0 5 0" />
+                    <TextBox Grid.Column="1" Text="{Binding CustomTwoCapDomain}" Margin="5 0 0 0"/>
+                    <xctk:IntegerUpDown Grid.Column="2" Background="Transparent" Width="100" Minimum="0" Maximum="65535" Margin="10 0 0 0" Value="{Binding CustomTwoCapPort}" Foreground="{DynamicResource ForegroundMain}"  HorizontalAlignment="Right"/>
+                </Grid>
+            </DockPanel>
+            
+            <DockPanel>
+                <CheckBox DockPanel.Dock="Top" Content="Bypass Balance Check (useful for OCR Software)" IsChecked="{Binding BypassBalanceCheck}" VerticalContentAlignment="Center"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="checkBalanceButton" Content="Check Balance" Click="checkBalanceButton_Click" />
+                    <Label Content="Your balance is:" Margin="5 0 0 0" />
+                    <Label x:Name="balanceLabel" Content="" Foreground="{DynamicResource ForegroundGood}"/>
+                </StackPanel>
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Top">
+                <Label Content="Timeout for captcha response (seconds):" />
+                <xctk:IntegerUpDown Background="Transparent" Width="70" Margin="10 0 0 0" Value="{Binding Timeout}" Foreground="{DynamicResource ForegroundMain}"  HorizontalAlignment="Right"/>
+            </DockPanel>
+        </StackPanel>
     </Grid>
 </Page>

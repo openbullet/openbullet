@@ -9,7 +9,7 @@
       Title="OBSettingsSounds">
 
     <Grid>
-        <StackPanel>
+        <StackPanel Margin="5">
             <CheckBox Content="Enable" IsChecked="{Binding EnableSounds}" VerticalAlignment="Center" VerticalContentAlignment="Center" />
             <Label Content="On-Hit Sound"/>
             <TextBox Text="{Binding OnHitSound}" />

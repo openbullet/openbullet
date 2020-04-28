@@ -16,7 +16,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Margin="0 0 5 0">
+        <StackPanel Grid.Column="0" Margin="5">
             <Label Content="COLORS" FontWeight="Bold" />
             <DockPanel>
                 <Label Content="Background Main" />
@@ -58,7 +58,7 @@
             <Button x:Name="resetButton" Content="RESET" Click="resetButton_Click" />
         </StackPanel>
 
-        <StackPanel Grid.Column="1" Margin="5 0">
+        <StackPanel Grid.Column="1" Margin="5">
             <Label Content="IMAGES" FontWeight="Bold" />
             <CheckBox x:Name="useImagesCheckbox" Content="Use Images" IsChecked="{Binding UseImage}" VerticalAlignment="Center" VerticalContentAlignment="Center" Checked="useImagesCheckbox_Checked" Unchecked="useImagesCheckbox_Unchecked"/>
             <DockPanel DockPanel.Dock="Top">
@@ -81,7 +81,7 @@
             <Image x:Name="backgroundLogoPreview" Width="80" Height="80" Source="/Images/Themes/empty.png" Margin="0 10 0 0"/>
         </StackPanel>
 
-        <StackPanel Grid.Column="2" Margin="5 0 0 0">
+        <StackPanel Grid.Column="2" Margin="5">
             <Label Content="ADDITIONAL" FontWeight="Bold" />
             <CheckBox Content="Allow Transparency [EXTREME CARE]" IsChecked="{Binding AllowTransparency}" VerticalAlignment="Center" VerticalContentAlignment="Center" >
                 <CheckBox.ToolTip>

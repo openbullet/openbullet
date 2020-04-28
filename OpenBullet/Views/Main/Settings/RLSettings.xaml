@@ -33,7 +33,7 @@
                 <Label x:Name="menuOptionSelenium" Content="Selenium" MouseDown="menuOptionSelenium_MouseDown" />
             </StackPanel>
 
-            <Frame Grid.Row="1" x:Name="Main" NavigationUIVisibility="Hidden" Margin="5 0"/>
+            <Frame Grid.Row="1" x:Name="Main" NavigationUIVisibility="Hidden" />
 
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
