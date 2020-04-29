@@ -8,5 +8,6 @@ namespace OpenBullet
     {
         public EnvironmentSettings Environment { get; set; }
         public RLSettingsViewModel RLSettings { get; set; }
+        public ProxyManagerSettings ProxyManagerSettings { get; set; }
     }
 }

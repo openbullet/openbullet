@@ -6,6 +6,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:utils="clr-namespace:System.Web;assembly=System"
       xmlns:local="clr-namespace:OpenBullet.Views.Main"
+      xmlns:openbullet="clr-namespace:OpenBullet"
       mc:Ignorable="d" 
       d:DesignHeight="550" d:DesignWidth="780"
       Title="ProxyManager">
@@ -31,7 +32,7 @@
         <Grid Grid.Column="0" Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="65" />
-                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1.5*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
@@ -43,17 +44,76 @@
             <Label Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Content="Progress:" />
             <Label Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Content="Test On:" />
             <ProgressBar x:Name="progressBar" Grid.Column="1" Grid.Row="0" Minimum="0" Maximum="1" Margin="5" />
-            <TextBox Grid.Column="1" Grid.Row="1" Margin="5" Text="{Binding TestSite}" VerticalContentAlignment="Center"/>
+            <Grid Grid.Column="1" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="35"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox IsEditable="True" Text="{Binding TestSite}"
+                          ItemsSource="{Binding Source={x:Static openbullet:OB.Settings}, Path=ProxyManagerSettings.ProxySiteUrls}" Grid.Column="0" Margin="5">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="30"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Grid.Column="0"/>
+                                <Image Source="/Images/Icons/minus.png" Width="20" MouseDown="RemoveProxySiteUrl_OnMouseDown" MouseEnter="Image_MouseEnter" MouseLeave="Image_MouseLeave" Margin="5 0 0 0" ToolTip="Delete the test site url" Grid.Column="2" />
+                            </Grid>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ComboBoxItem}">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                </ComboBox>
+                <Image Source="/Images/Icons/plus.png" Width="20" MouseDown="AddProxySiteUrl_OnMouseDown" MouseEnter="Image_MouseEnter" MouseLeave="Image_MouseLeave" Margin="5 0" ToolTip="Add the test site url" Grid.Column="1" />
+            </Grid>
             <DockPanel Grid.Column="2" Grid.Row="0" VerticalAlignment="Center">
                 <Label Content="Bots: " />
                 <Label Width="35" Content="{Binding BotsAmount}" />
                 <Slider x:Name="botsSlider" VerticalAlignment="Center" TickFrequency="20" TickPlacement="Both" Minimum="1" Maximum="200" ValueChanged="botsSlider_ValueChanged" Margin="0 0 10 0"/>
             </DockPanel>
-            <DockPanel Grid.Column="2" Grid.Row="1">
-                <Label Content="Success Key:" VerticalAlignment="Center" />
-                <TextBox Margin="5" Text="{Binding SuccessKey}" VerticalContentAlignment="Center"/>
-            </DockPanel>
-
+            <Grid Grid.Column="2" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="35"/>
+                </Grid.ColumnDefinitions>
+                <DockPanel Grid.Column="0">
+                    <Label Content="Success Key:" VerticalAlignment="Center" />
+                    <ComboBox IsEditable="True" Text="{Binding SuccessKey}"
+                              ItemsSource="{Binding Source={x:Static openbullet:OB.Settings}, Path=ProxyManagerSettings.ProxyKeys}" Margin="5">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid VerticalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="30"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="25"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Grid.Column="0"/>
+                                    <Image Source="/Images/Icons/minus.png" Width="20" MouseDown="RemoveProxyKey_OnMouseDown" MouseEnter="Image_MouseEnter" MouseLeave="Image_MouseLeave" Margin="5 0 0 0" ToolTip="Delete the test site key" Grid.Column="2" />
+                                </Grid>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ComboBoxItem}">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            </Style>
+                        </ComboBox.ItemContainerStyle>
+                    </ComboBox>
+                </DockPanel>
+                <Image Source="/Images/Icons/plus.png" Width="20" MouseDown="AddProxyKey_OnMouseDown" MouseEnter="Image_MouseEnter" MouseLeave="Image_MouseLeave" Margin="5 0" ToolTip="Add the test site key" Grid.Column="1" />
+            </Grid>
         </Grid>
 
         <!-- Check Button -->

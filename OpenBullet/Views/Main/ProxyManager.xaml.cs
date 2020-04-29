@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
+using RuriLib;
 
 namespace OpenBullet.Views.Main
 {
@@ -52,6 +53,18 @@ namespace OpenBullet.Views.Main
                     checkButton.Content = "ABORT";
                     botsSlider.IsEnabled = false;
                     Status = WorkerStatus.Running;
+
+                    if (OB.Settings.ProxyManagerSettings.ProxySiteUrls.Contains(vm.TestSite) == false)
+                    {
+                        OB.Settings.ProxyManagerSettings.ProxySiteUrls.Add(vm.TestSite);
+                    }
+
+                    if (OB.Settings.ProxyManagerSettings.ProxyKeys.Contains(vm.SuccessKey) == false)
+                    {
+                        OB.Settings.ProxyManagerSettings.ProxyKeys.Add(vm.SuccessKey);
+                    }
+
+                    IOManager.SaveSettings(OB.proxyManagerSettingsFile, OB.Settings.ProxyManagerSettings);
 
                     var items = vm.OnlyUntested ? vm.Proxies.Where(p => p.Working == ProxyWorking.UNTESTED) : vm.Proxies;
 
@@ -330,6 +343,66 @@ namespace OpenBullet.Views.Main
         private void ListViewItem_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
 
+        }
+
+        private void AddProxySiteUrl_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (OB.Settings.ProxyManagerSettings.ProxySiteUrls.Contains(vm.TestSite) == false)
+            {
+                OB.Settings.ProxyManagerSettings.ProxySiteUrls.Add(vm.TestSite);
+                IOManager.SaveSettings(OB.proxyManagerSettingsFile, OB.Settings.ProxyManagerSettings);
+            }
+        }
+
+        private void RemoveProxySiteUrl_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Image image && 
+                image.Parent is Grid grid && 
+                grid.Children.Count == 2 && 
+                grid.Children[0] is TextBlock textBlock)
+            {
+                OB.Settings.ProxyManagerSettings.ProxySiteUrls.Remove(textBlock.Text);
+                IOManager.SaveSettings(OB.proxyManagerSettingsFile, OB.Settings.ProxyManagerSettings);
+            }
+        }
+
+        private void AddProxyKey_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (OB.Settings.ProxyManagerSettings.ProxyKeys.Contains(vm.SuccessKey) == false)
+            {
+                OB.Settings.ProxyManagerSettings.ProxyKeys.Add(vm.SuccessKey);
+                IOManager.SaveSettings(OB.proxyManagerSettingsFile, OB.Settings.ProxyManagerSettings);
+            }
+        }
+
+        private void RemoveProxyKey_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Image image &&
+                image.Parent is Grid grid &&
+                grid.Children.Count == 2 &&
+                grid.Children[0] is TextBlock textBlock)
+            {
+                OB.Settings.ProxyManagerSettings.ProxyKeys.Remove(textBlock.Text);
+                IOManager.SaveSettings(OB.proxyManagerSettingsFile, OB.Settings.ProxyManagerSettings);
+            }
+        }
+
+        private void Image_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (sender is Image image)
+            {
+                image.Width = 25;
+                image.Height = 25;
+            }
+        }
+
+        private void Image_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (sender is Image image)
+            {
+                image.Width = 20;
+                image.Height = 20;
+            }
         }
         #endregion
     }
