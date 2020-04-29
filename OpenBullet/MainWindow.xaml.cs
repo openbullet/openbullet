@@ -94,6 +94,7 @@ namespace OpenBullet
 
             // Initialize Settings
             OB.Settings.RLSettings = new RLSettingsViewModel();
+            OB.Settings.ProxyManagerSettings = new ProxyManagerSettings();
             OB.OBSettings = new OBSettingsViewModel();
 
             // Create / Load Settings
@@ -106,8 +107,24 @@ namespace OpenBullet
             }
             else
             {
-                OB.Settings.RLSettings = IOManager.LoadSettings(OB.rlSettingsFile);
+                OB.Settings.RLSettings = IOManager.LoadSettings<RLSettingsViewModel>(OB.rlSettingsFile);
                 OB.Logger.LogInfo(Components.Main, "Loaded the existing RuriLib Settings file");
+            }
+
+            if (!File.Exists(OB.proxyManagerSettingsFile))
+            {
+                OB.Logger.LogWarning(Components.Main, "Proxy manager Settings file not found, generating a default one");
+                OB.Settings.ProxyManagerSettings.ProxySiteUrls.Add(OB.defaultProxySiteUrl);
+                OB.Settings.ProxyManagerSettings.ActiveProxySiteUrl = OB.defaultProxySiteUrl;
+                OB.Settings.ProxyManagerSettings.ProxyKeys.Add(OB.defaultProxyKey);
+                OB.Settings.ProxyManagerSettings.ActiveProxyKey = OB.defaultProxyKey;
+                IOManager.SaveSettings(OB.proxyManagerSettingsFile, OB.Settings.ProxyManagerSettings);
+                OB.Logger.LogInfo(Components.Main, $"Created the default proxy manager Settings file {OB.proxyManagerSettingsFile}");
+            }
+            else
+            {
+                OB.Settings.ProxyManagerSettings = IOManager.LoadSettings<ProxyManagerSettings>(OB.proxyManagerSettingsFile);
+                OB.Logger.LogInfo(Components.Main, "Loaded the existing proxy manager Settings file");
             }
 
             if (!File.Exists(OB.obSettingsFile))

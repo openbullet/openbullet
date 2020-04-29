@@ -21,7 +21,7 @@ namespace RuriLib
         /// </summary>
         /// <param name="settingsFile">The file you want to save to</param>
         /// <param name="settings">The RuriLib settings object</param>
-        public static void SaveSettings(string settingsFile, RLSettingsViewModel settings)
+        public static void SaveSettings<T>(string settingsFile, T settings)
         {
             File.WriteAllText(settingsFile, JsonConvert.SerializeObject(settings, Formatting.Indented));
         }
@@ -31,9 +31,9 @@ namespace RuriLib
         /// </summary>
         /// <param name="settingsFile">The file you want to load from</param>
         /// <returns>An instance of RLSettingsViewModel</returns>
-        public static RLSettingsViewModel LoadSettings(string settingsFile)
+        public static T LoadSettings<T>(string settingsFile)
         {
-            return JsonConvert.DeserializeObject<RLSettingsViewModel>(File.ReadAllText(settingsFile));
+            return JsonConvert.DeserializeObject<T>(File.ReadAllText(settingsFile));
         }
 
         /// <summary>

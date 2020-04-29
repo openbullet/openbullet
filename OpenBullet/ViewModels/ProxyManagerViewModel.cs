@@ -175,11 +175,9 @@ namespace OpenBullet.ViewModels
         private int botsAmount = 1;
         public int BotsAmount { get { return botsAmount; } set { botsAmount = value; OnPropertyChanged(); } }
 
-        private string testSite = "https://google.com";
-        public string TestSite { get { return testSite; } set { testSite = value; OnPropertyChanged(); } }
+        public string TestSite { get { return OB.Settings.ProxyManagerSettings.ActiveProxySiteUrl; } set { OB.Settings.ProxyManagerSettings.ActiveProxySiteUrl = value; OnPropertyChanged(); } }
 
-        private string successKey = "title>Google";
-        public string SuccessKey { get { return successKey; } set { successKey = value; OnPropertyChanged(); } }
+        public string SuccessKey { get { return OB.Settings.ProxyManagerSettings.ActiveProxyKey; } set { OB.Settings.ProxyManagerSettings.ActiveProxyKey = value; OnPropertyChanged(); } }
 
         private bool onlyUntested = true;
         public bool OnlyUntested { get { return onlyUntested; } set { onlyUntested = value; OnPropertyChanged(); } }

@@ -342,6 +342,7 @@
     <Compile Include="Models\CustomKeychain.cs" />
     <Compile Include="Models\EnvironmentSettings.cs" />
     <Compile Include="Models\DataRule.cs" />
+    <Compile Include="ViewModels\ProxyManagerSettings.cs" />
     <Compile Include="ViewModels\RLSettings\SettingsCaptchas.cs" />
     <Compile Include="ViewModels\RLSettings\SettingsGeneral.cs" />
     <Compile Include="ViewModels\RLSettings\SettingsProxies.cs" />

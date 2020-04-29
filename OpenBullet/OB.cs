@@ -56,10 +56,13 @@ namespace OpenBullet
         public static readonly string dataBaseBackupFile = @"DB/OpenBullet-BackupCopy.db";
         public static readonly string obSettingsFile = @"Settings/OBSettings.json";
         public static readonly string rlSettingsFile = @"Settings/RLSettings.json";
+        public static readonly string proxyManagerSettingsFile = @"Settings/ProxyManagerSettings.json";
         public static readonly string envFile = @"Settings/Environment.ini";
         public static readonly string licenseFile = @"Settings/License.txt";
         public static readonly string logFile = @"Log.txt";
         public static readonly string configFolder = @"Configs";
         public static readonly string pluginsFolder = @"Plugins";
+        public static readonly string defaultProxySiteUrl = "https://google.com";
+        public static readonly string defaultProxyKey = "title>Google";
     }
 }
