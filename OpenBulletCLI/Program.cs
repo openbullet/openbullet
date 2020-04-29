@@ -101,7 +101,7 @@ namespace OpenBulletCLI
 
             // Read Settings file
             if (!File.Exists(settFile)) IOManager.SaveSettings(settFile, new RLSettingsViewModel());
-            RLSettings = IOManager.LoadSettings(settFile);
+            RLSettings = IOManager.LoadSettings<RLSettingsViewModel>(settFile);
 
             // Initialize the Runner (and hook event handlers)
             Runner = new RunnerViewModel(Env, RLSettings, random);
