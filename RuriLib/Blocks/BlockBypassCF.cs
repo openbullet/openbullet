@@ -10,6 +10,7 @@ using System.Linq;
 using RuriLib.Functions.Requests;
 using CaptchaSharp;
 using CaptchaSharp.Services;
+using RuriLib.Functions.Captchas;
 
 namespace RuriLib
 {
@@ -126,21 +127,10 @@ namespace RuriLib
             var uri = new Uri(localUrl);
 
             // Initialize the captcha provider
-            // TODO: Add more providers by implementing the ICaptchaProvider interface on the missing ones
-            CaptchaService provider = null;
-            switch (data.GlobalSettings.Captchas.CurrentService)
-            {
-                case Enums.CaptchaServiceType.AntiCaptcha:
-                    provider = new AntiCaptchaService(data.GlobalSettings.Captchas.AntiCapToken);
-                    break;
-
-                case Enums.CaptchaServiceType.TwoCaptcha:
-                    provider = new TwoCaptchaService(data.GlobalSettings.Captchas.TwoCapToken);
-                    break;
-            }
+            CaptchaService service = Captchas.GetService(data.GlobalSettings.Captchas);
 
             // Initialize the Cloudflare Solver
-            CloudflareSolver cf = new CloudflareSolver(provider, ReplaceValues(UserAgent, data))
+            CloudflareSolver cf = new CloudflareSolver(service, ReplaceValues(UserAgent, data))
             {
                 ClearanceDelay = 3000,
                 MaxCaptchaTries = 1,
