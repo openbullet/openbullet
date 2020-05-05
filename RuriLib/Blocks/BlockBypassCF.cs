@@ -4,11 +4,12 @@ using System.Windows.Media;
 using System.Net;
 using CloudflareSolverRe;
 using CloudflareSolverRe.Types;
-using CloudflareSolverRe.CaptchaProviders;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Linq;
 using RuriLib.Functions.Requests;
+using CaptchaSharp;
+using CaptchaSharp.Services;
 
 namespace RuriLib
 {
@@ -126,15 +127,15 @@ namespace RuriLib
 
             // Initialize the captcha provider
             // TODO: Add more providers by implementing the ICaptchaProvider interface on the missing ones
-            ICaptchaProvider provider = null;
+            CaptchaService provider = null;
             switch (data.GlobalSettings.Captchas.CurrentService)
             {
                 case Enums.CaptchaServiceType.AntiCaptcha:
-                    provider = new AntiCaptchaProvider(data.GlobalSettings.Captchas.AntiCapToken);
+                    provider = new AntiCaptchaService(data.GlobalSettings.Captchas.AntiCapToken);
                     break;
 
                 case Enums.CaptchaServiceType.TwoCaptcha:
-                    provider = new TwoCaptchaProvider(data.GlobalSettings.Captchas.TwoCapToken);
+                    provider = new TwoCaptchaService(data.GlobalSettings.Captchas.TwoCapToken);
                     break;
             }
 

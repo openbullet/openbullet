@@ -52,9 +52,6 @@
     <Reference Include="CloudflareSolverRe">
       <HintPath>..\CloudflareSolverRe.dll</HintPath>
     </Reference>
-    <Reference Include="CloudflareSolverRe.Captcha">
-      <HintPath>..\CloudflareSolverRe.Captcha.dll</HintPath>
-    </Reference>
     <Reference Include="Esprima, Version=1.0.1258.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
       <HintPath>..\packages\Esprima.1.0.1258\lib\net45\Esprima.dll</HintPath>
     </Reference>
