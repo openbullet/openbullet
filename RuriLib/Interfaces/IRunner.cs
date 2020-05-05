@@ -82,5 +82,32 @@ namespace RuriLib.Interfaces
         /// The starting point of the Wordlist.
         /// </summary>
         int StartingPoint { get; set; }
+
+        /// <summary>Fired when a new message needs to be logged.</summary>
+        event Action<IRunnerMessaging, LogLevel, string, bool, int> MessageArrived;
+
+        /// <summary>Fired when the Master Worker status changed.</summary>
+        event Action<IRunnerMessaging> WorkerStatusChanged;
+
+        /// <summary>Fired when a Hit was found.</summary>
+        event Action<IRunnerMessaging, Hit> FoundHit;
+
+        /// <summary>Fired when proxies need to be reloaded.</summary>
+        event Action<IRunnerMessaging> ReloadProxies;
+
+        /// <summary>/// Fired when an Action could change the UI and needs to be dispatched to another thread (usually it's handled by the UI thread).</summary>
+        event Action<IRunnerMessaging, Action> DispatchAction;
+
+        /// <summary>Fired when the progress record needs to be saved to the Database.</summary>
+        event Action<IRunnerMessaging> SaveProgress;
+
+        /// <summary>Fired when custom inputs from the user are required.</summary>
+        event Action<IRunnerMessaging> AskCustomInputs;
+
+        /// <summary>Fired when the currently selected Config changed.</summary>
+        event Action<IRunnerMessaging> ConfigChanged;
+
+        /// <summary>Fired when the currently selected Wordlist changed.</summary>
+        event Action<IRunnerMessaging> WordlistChanged;
     }
 }
