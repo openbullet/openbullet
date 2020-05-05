@@ -176,6 +176,10 @@
             <TabItem>
                 <StackPanel>
                     <DockPanel>
+                        <Label Content="Site URL:"/>
+                        <TextBox Text="{Binding SiteUrl, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <DockPanel>
                         <Label Content="GT:"/>
                         <TextBox Text="{Binding GT, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>

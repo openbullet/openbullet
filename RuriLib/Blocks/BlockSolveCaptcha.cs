@@ -230,7 +230,8 @@ namespace RuriLib
                     break;
 
                 case CaptchaType.GeeTest:
-                    // SOLVECAPTCHA GeeTest "gt" "challenge" "apiserver"
+                    // SOLVECAPTCHA GeeTest "siteurl" "gt" "challenge" "apiserver"
+                    SiteUrl = LineParser.ParseLiteral(ref input, "SITE URL");
                     GT = LineParser.ParseLiteral(ref input, "GT");
                     Challenge = LineParser.ParseLiteral(ref input, "CHALLENGE");
                     ApiServer = LineParser.ParseLiteral(ref input, "API SERVER");
@@ -323,6 +324,7 @@ namespace RuriLib
 
                 case CaptchaType.GeeTest:
                     writer
+                        .Literal(SiteUrl)
                         .Literal(GT)
                         .Literal(Challenge)
                         .Literal(ApiServer);
