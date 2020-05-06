@@ -109,12 +109,12 @@ namespace OpenBullet.Views.Main.Runner
                     try
                     {
                         OB.Logger.LogInfo(Components.Runner, $"Adding {hit.Type} hit " + hit.Data + " to the text file");
-                        var folderName = RuriLib.Functions.Files.Files.MakeValidFileName(vm.Config.Settings.Name);
+                        var folderName = Path.Combine("Hits", RuriLib.Functions.Files.Files.MakeValidFileName(vm.Config.Settings.Name));
 
                         if (!Directory.Exists(folderName))
                             Directory.CreateDirectory(folderName);
 
-                        var fileName = Path.Combine("Hits", folderName, $"{hit.Type}.txt");
+                        var fileName = Path.Combine(folderName, $"{hit.Type}.txt");
 
                         lock (FileLocker.GetLock(fileName))
                         {
