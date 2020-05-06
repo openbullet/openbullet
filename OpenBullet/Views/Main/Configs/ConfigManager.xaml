@@ -234,7 +234,7 @@
                     </GridViewColumn>
                     <GridViewColumn Width="200" DisplayMemberBinding="{Binding Path=Config.Settings.LastModified}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="LastModified" Click="listViewColumnHeader_Click">Last Modified</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="Config.Settings.LastModified" Click="listViewColumnHeader_Click">Last Modified</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                 </GridView>
