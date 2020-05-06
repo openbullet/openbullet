@@ -57,6 +57,12 @@ namespace RuriLib
         private bool continueOnCustom = false;
         /// <summary>Whether to continue execution after a Custom status has been reached.</summary>
         public bool ContinueOnCustom { get { return continueOnCustom; } set { continueOnCustom = value; OnPropertyChanged(); } }
+
+        // HACK: This setting should not be here, it should be in the individual runner's scope!!!
+        // I just put it here as a quick patch as this is going to be moved in OB2 and I don't want to touch the runner interface.
+        private bool saveHitsToTextFile = false;
+        /// <summary>Whether to save hits to a text file instead of the database.</summary>
+        public bool SaveHitsToTextFile { get { return saveHitsToTextFile; } set { saveHitsToTextFile = value; OnPropertyChanged(); } }
         #endregion
 
         #region Requests

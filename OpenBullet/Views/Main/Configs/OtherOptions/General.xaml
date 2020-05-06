@@ -27,6 +27,7 @@
             </DockPanel>
             <CheckBox Content="Save empty captures" IsChecked="{Binding SaveEmptyCaptures}" VerticalContentAlignment="Center"/>
             <CheckBox Content="Continue after Custom Status" IsChecked="{Binding ContinueOnCustom}" VerticalContentAlignment="Center"/>
+            <CheckBox Content="Save hits to a text file instead of DB (the output can be found in the Hits/ConfigName folder)" IsChecked="{Binding SaveHitsToTextFile}" VerticalContentAlignment="Center"/>
         </StackPanel>
     </Grid>
 </Page>
