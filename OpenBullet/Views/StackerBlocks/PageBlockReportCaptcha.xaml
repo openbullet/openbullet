@@ -1,0 +1,23 @@
+﻿<Page x:Class="OpenBullet.Views.StackerBlocks.PageBlockReportCaptcha"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OpenBullet.Views.StackerBlocks"
+      mc:Ignorable="d" 
+      d:DesignHeight="500" d:DesignWidth="400"
+      Title="PageBlockReportCaptcha">
+
+    <Grid>
+        <StackPanel>
+            <DockPanel Margin="0 0 0 5">
+                <Label Content="Captcha Type:"/>
+                <ComboBox x:Name="captchaTypeCombobox" SelectionChanged="captchaTypeCombobox_SelectionChanged"/>
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Captcha ID:"/>
+                <TextBox Text="{Binding CaptchaId, UpdateSourceTrigger=PropertyChanged}"/>
+            </DockPanel>
+        </StackPanel>
+    </Grid>
+</Page>

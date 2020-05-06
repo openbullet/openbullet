@@ -76,14 +76,14 @@ namespace OpenBullet.Views.Dialogs
             SendBack(new BlockFunction());
         }
 
-        private void blockRecaptchaButton_Click(object sender, RoutedEventArgs e)
+        private void blockSolveCaptchaButton_Click(object sender, RoutedEventArgs e)
         {
-            SendBack(new BlockRecaptcha());
+            SendBack(new BlockSolveCaptcha());
         }
 
-        private void blockCaptchaButton_Click(object sender, RoutedEventArgs e)
+        private void blockReportCaptchaButton_Click(object sender, RoutedEventArgs e)
         {
-            SendBack(new BlockImageCaptcha());
+            SendBack(new BlockReportCaptcha());
         }
 
         private void blockBypassCFButton_Click(object sender, RoutedEventArgs e)

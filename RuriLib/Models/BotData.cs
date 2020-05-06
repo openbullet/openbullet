@@ -1,5 +1,6 @@
 ﻿using Extreme.Net;
 using OpenQA.Selenium.Remote;
+using RuriLib.Enums;
 using RuriLib.Models;
 using RuriLib.ViewModels;
 using System;
@@ -57,9 +58,6 @@ namespace RuriLib
         /// <summary>The id of the current Bot.</summary>
         public int BotNumber { get; set; }
 
-        /// <summary>The captcha service currently being used.</summary>
-        public CaptchaServices.CaptchaService CaptchaService { get; set; }
-
         /// <summary>The selenium webdriver currently being used.</summary>
         public RemoteWebDriver Driver { get; set; }
 
@@ -85,7 +83,7 @@ namespace RuriLib
         public ConfigSettings ConfigSettings { get; set; }
 
         /// <summary>The remaining balance on the captcha service account.</summary>
-        public double Balance { get; set; }
+        public decimal Balance { get; set; }
 
         /// <summary>The paths of the Screenshots saved by selenium.</summary>
         public List<string> Screenshots { get; set; }

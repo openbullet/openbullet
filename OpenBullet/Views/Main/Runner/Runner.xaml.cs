@@ -104,13 +104,35 @@ namespace OpenBullet.Views.Main.Runner
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                try
+                if (vm.Config != null && vm.Config.Settings.SaveHitsToTextFile)
                 {
-                    OB.Logger.LogInfo(Components.Runner, $"Adding {hit.Type} hit " + hit.Data + " to the DB");
-                    OB.HitsDB.Add(hit);
-                    OB.MainWindow.HitsDBPage.AddConfigToFilter(vm.ConfigName);
+                    try
+                    {
+                        OB.Logger.LogInfo(Components.Runner, $"Adding {hit.Type} hit " + hit.Data + " to the text file");
+                        var folderName = Path.Combine("Hits", RuriLib.Functions.Files.Files.MakeValidFileName(vm.Config.Settings.Name));
+
+                        if (!Directory.Exists(folderName))
+                            Directory.CreateDirectory(folderName);
+
+                        var fileName = Path.Combine(folderName, $"{hit.Type}.txt");
+
+                        lock (FileLocker.GetLock(fileName))
+                        {
+                            File.AppendAllText(fileName, $"{hit.Data} | {hit.CapturedString}{Environment.NewLine}");
+                        }
+                    }
+                    catch (Exception ex) { OB.Logger.LogError(Components.Runner, $"Failed to add {hit.Type} hit " + hit.Data + $" to the text file - {ex.Message}"); }
                 }
-                catch (Exception ex) { OB.Logger.LogError(Components.Runner, $"Failed to add {hit.Type} hit " + hit.Data + $" to the DB - {ex.Message}"); }
+                else
+                {
+                    try
+                    {
+                        OB.Logger.LogInfo(Components.Runner, $"Adding {hit.Type} hit " + hit.Data + " to the DB");
+                        OB.HitsDB.Add(hit);
+                        OB.MainWindow.HitsDBPage.AddConfigToFilter(vm.ConfigName);
+                    }
+                    catch (Exception ex) { OB.Logger.LogError(Components.Runner, $"Failed to add {hit.Type} hit " + hit.Data + $" to the DB - {ex.Message}"); }
+                }
             }));
         }
 

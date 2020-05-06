@@ -64,6 +64,12 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CaptchaSharp, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CaptchaSharp.1.0.1\lib\netstandard2.0\CaptchaSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="CaptchaSharp.Services.More, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CaptchaSharp.Services.More.1.0.0\lib\netstandard2.0\CaptchaSharp.Services.More.dll</HintPath>
+    </Reference>
     <Reference Include="Extreme.Net, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Extreme.Net.dll</HintPath>
@@ -232,6 +238,12 @@
     </Compile>
     <Compile Include="Views\Main\PluginsSection.xaml.cs">
       <DependentUpon>PluginsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StackerBlocks\PageBlockReportCaptcha.xaml.cs">
+      <DependentUpon>PageBlockReportCaptcha.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StackerBlocks\PageBlockSolveCaptcha.xaml.cs">
+      <DependentUpon>PageBlockSolveCaptcha.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UserControls\ButtonContainer.xaml.cs">
       <DependentUpon>ButtonContainer.xaml</DependentUpon>
@@ -639,6 +651,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\StackerBlocks\PageBlockReportCaptcha.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\StackerBlocks\PageBlockBypassCF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -668,6 +684,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\StackerBlocks\PageBlockRequest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StackerBlocks\PageBlockSolveCaptcha.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

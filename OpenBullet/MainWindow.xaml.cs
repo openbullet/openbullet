@@ -66,7 +66,7 @@ namespace OpenBullet
             titleLabel.Content = title;
 
             // Make sure all folders are there or recreate them
-            var folders = new string[] { "Captchas", "ChromeExtensions", "Configs", "DB", "Plugins", "Screenshots", "Settings", "Sounds", "Wordlists" };
+            var folders = new string[] { "Captchas", "ChromeExtensions", "Configs", "DB", "Hits", "Plugins", "Screenshots", "Settings", "Sounds", "Wordlists" };
             foreach (var folder in folders.Select(f => Path.Combine(Directory.GetCurrentDirectory(), f)))
             {
                 if (!Directory.Exists(folder))
@@ -175,11 +175,13 @@ namespace OpenBullet
             {
                 ( typeof(BlockBypassCF),        typeof(PageBlockBypassCF),          Colors.DarkSalmon ),
                 ( typeof(BlockImageCaptcha),    typeof(PageBlockCaptcha),           Colors.DarkOrange ),
+                ( typeof(BlockReportCaptcha),   typeof(PageBlockReportCaptcha),     Colors.DarkOrange ),
                 ( typeof(BlockFunction),        typeof(PageBlockFunction),          Colors.YellowGreen ),
                 ( typeof(BlockKeycheck),        typeof(PageBlockKeycheck),          Colors.DodgerBlue ),
                 ( typeof(BlockLSCode),          typeof(PageBlockLSCode),            Colors.White ),
                 ( typeof(BlockParse),           typeof(PageBlockParse),             Colors.Gold ),
                 ( typeof(BlockRecaptcha),       typeof(PageBlockRecaptcha),         Colors.Turquoise ),
+                ( typeof(BlockSolveCaptcha),    typeof(PageBlockSolveCaptcha),      Colors.Turquoise ),
                 ( typeof(BlockRequest),         typeof(PageBlockRequest),           Colors.LimeGreen ),
                 ( typeof(BlockTCP),             typeof(PageBlockTCP),               Colors.MediumPurple ),
                 ( typeof(BlockUtility),         typeof(PageBlockUtility),           Colors.Wheat ),

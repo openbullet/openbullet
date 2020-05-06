@@ -20,12 +20,28 @@ REQUEST METHOD "URL" [AcceptEncoding?] [AutoRedirect?] [ReadResponseSource?] [Pa
   [COOKIE "abc: def"]*
   [HEADER "abc: def"]*
   [SECPROTO security-protocol]
-  [-> STRING / -> FILE "path"]
+  [-> STRING / -> FILE "path" / -> BASE64 "VARNAME"]
+  </item>
+  <item name="SOLVECAPTCHA">
+SOLVECAPTCHA TextCaptcha "question?" LANGUAGEGROUP LANGUAGE [UseProxy?] ["UserAgent"]
+SOLVECAPTCHA ImageCaptcha "base64" LANGUAGEGROUP LANGUAGE MINLEN MAXLEN CHARSET "instructions" [IsPhrase?] [CaseSensitive?] [RequiresCalculation?] [UseProxy?] ["UserAgent"]
+SOLVECAPTCHA ReCaptchaV2 "sitekey" "siteurl" [IsInvisible?] [UseProxy?] ["UserAgent"]
+SOLVECAPTCHA ReCaptchaV3 "sitekey" "siteurl" "action" "minscore" [UseProxy?] ["UserAgent"]
+SOLVECAPTCHA FunCaptcha "pkey" "serviceurl" [NoJS?] [UseProxy?] ["UserAgent"]
+SOLVECAPTCHA KeyCaptcha "userid" "sessionid" "wss1" "wss2" [UseProxy?] ["UserAgent"]
+SOLVECAPTCHA HCaptcha "sitekey" "siteurl" [UseProxy?] ["UserAgent"]
+SOLVECAPTCHA GeeTest "gt" "challenge" "apiserver" [UseProxy?] ["UserAgent"]
+SOLVECAPTCHA Capy "sitekey" "siteurl" [UseProxy?] ["UserAgent"]
+  </item>
+  <item name="REPORTCAPTCHA">
+REPORTCAPTCHA Type "id"
   </item>
   <item name="RECAPTCHA">
+(OBSOLETE! DO NOT USE!)
 RECAPTCHA "URL" "SITEKEY" -> VAR "NAME"
   </item>
   <item name="CAPTCHA">
+(OBSOLETE! DO NOT USE!)
 CAPTCHA "URL" [Base64?] [SendScreenshot?] -> VAR "NAME"
   </item>
   <item name="PARSE">

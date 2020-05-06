@@ -405,8 +405,6 @@ namespace RuriLib
         #endregion
 
         #region File Utilities
-
-
         /// <summary>
         /// Truncates a string to fit a given size and adds ' [...]' (5 characters) at the end to display that the string would be longer.
         /// </summary>

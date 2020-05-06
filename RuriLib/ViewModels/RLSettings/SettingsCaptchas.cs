@@ -1,4 +1,4 @@
-﻿using RuriLib.CaptchaServices;
+﻿using RuriLib.Enums;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -9,9 +9,9 @@ namespace RuriLib.ViewModels
     /// </summary>
     public class SettingsCaptchas : ViewModelBase
     {
-        private ServiceType currentService = ServiceType.AntiCaptcha;
+        private CaptchaServiceType currentService = CaptchaServiceType.TwoCaptcha;
         /// <summary>Which Captcha Service is currently selected for solving captcha challenges.</summary>
-        public ServiceType CurrentService { get { return currentService; } set { currentService = value; OnPropertyChanged(); } }
+        public CaptchaServiceType CurrentService { get { return currentService; } set { currentService = value; OnPropertyChanged(); } }
 
         private string antiCapToken = "";
         /// <summary>The AntiCaptcha API Token.</summary>
@@ -49,6 +49,10 @@ namespace RuriLib.ViewModels
         /// <summary>The AZCaptcha API Token.</summary>
         public string AZCapToken { get { return azCapToken; } set { azCapToken = value; OnPropertyChanged(); } }
 
+        private string scToken = "";
+        /// <summary>The SolveCaptcha API Token.</summary>
+        public string SCToken { get { return scToken; } set { scToken = value; OnPropertyChanged(); } }
+
         private string srUserId = "";
         /// <summary>The SolveReCaptcha User Id.</summary>
         public string SRUserId { get { return srUserId; } set { srUserId = value; OnPropertyChanged(); } }
@@ -56,6 +60,14 @@ namespace RuriLib.ViewModels
         private string srToken = "";
         /// <summary>The SolveReCaptcha API Token.</summary>
         public string SRToken { get { return srToken; } set { srToken = value; OnPropertyChanged(); } }
+
+        private string trueCapUser = "";
+        /// <summary>The TrueCaptcha username.</summary>
+        public string TrueCapUser { get { return trueCapUser; } set { trueCapUser = value; OnPropertyChanged(); } }
+
+        private string trueCapToken = "";
+        /// <summary>The TrueCaptcha API Token.</summary>
+        public string TrueCapToken { get { return trueCapToken; } set { trueCapToken = value; OnPropertyChanged(); } }
 
         private string cIOToken = "";
         /// <summary>The CaptchasIO API Token.</summary>

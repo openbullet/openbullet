@@ -158,6 +158,14 @@
                         <CheckBox IsChecked="{Binding SaveAsScreenshot}" Content="Save as screenshot" VerticalContentAlignment="Center"/>
                     </StackPanel>
                 </TabItem>
+                <TabItem x:Name="base64Tab">
+                    <StackPanel>
+                        <DockPanel>
+                            <Label Content="Output Variable:"/>
+                            <TextBox Text="{Binding OutputVariable, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                    </StackPanel>
+                </TabItem>
             </TabControl>
             
         </StackPanel>
