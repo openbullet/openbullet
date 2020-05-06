@@ -66,7 +66,7 @@ namespace OpenBullet
             titleLabel.Content = title;
 
             // Make sure all folders are there or recreate them
-            var folders = new string[] { "Captchas", "ChromeExtensions", "Configs", "DB", "Plugins", "Screenshots", "Settings", "Sounds", "Wordlists" };
+            var folders = new string[] { "Captchas", "ChromeExtensions", "Configs", "DB", "Hits", "Plugins", "Screenshots", "Settings", "Sounds", "Wordlists" };
             foreach (var folder in folders.Select(f => Path.Combine(Directory.GetCurrentDirectory(), f)))
             {
                 if (!Directory.Exists(folder))
