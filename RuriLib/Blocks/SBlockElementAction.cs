@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
 using System.Windows.Media;
@@ -92,8 +93,11 @@ namespace RuriLib
         /// <summary>Retrieves the height of the element.</summary>
         SizeY,
 
-        /// <summary>Takes a screenshot of the element.</summary>
+        /// <summary>Takes a screenshot of the element and saves it as an image.</summary>
         Screenshot,
+
+        /// <summary>Takes a screenshot of the element and saves it as a base64-encoded string.</summary>
+        ScreenshotBase64,
 
         /// <summary>Switches to the iframe element.</summary>
         SwitchToFrame,
@@ -323,6 +327,13 @@ namespace RuriLib
                     case ElementAction.Screenshot:
                         var image = GetElementScreenShot(data.Driver, element);
                         Files.SaveScreenshot(image, data);
+                        break;
+
+                    case ElementAction.ScreenshotBase64:
+                        var image2 = GetElementScreenShot(data.Driver, element);
+                        var memStream = new MemoryStream();
+                        image2.Save(memStream, ImageFormat.Jpeg);
+                        outputs.Add(Convert.ToBase64String(memStream.ToArray()));
                         break;
 
                     case ElementAction.SwitchToFrame:
