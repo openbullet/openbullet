@@ -118,7 +118,7 @@ namespace OpenBullet.Views.Main.Runner
 
                         lock (FileLocker.GetLock(fileName))
                         {
-                            File.AppendAllText(fileName, $"{hit.Data} | {hit.CapturedString}");
+                            File.AppendAllText(fileName, $"{hit.Data} | {hit.CapturedString}{Environment.NewLine}");
                         }
                     }
                     catch (Exception ex) { OB.Logger.LogError(Components.Runner, $"Failed to add {hit.Type} hit " + hit.Data + $" to the text file - {ex.Message}"); }
