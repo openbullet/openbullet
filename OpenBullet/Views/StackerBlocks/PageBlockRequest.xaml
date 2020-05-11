@@ -105,6 +105,18 @@
                         </RichTextBox>
                     </StackPanel>
                 </TabItem>
+                <TabItem x:Name="rawTab">
+                    <StackPanel>
+                        <DockPanel Margin="0 5 0 0">
+                            <Label Content="Raw HEX Data:" />
+                            <TextBox Text="{Binding RawData, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                        <DockPanel Margin="0 5 0 0">
+                            <Label Content="Content-Type:" />
+                            <TextBox Text="{Binding ContentType, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                    </StackPanel>
+                </TabItem>
             </TabControl>
 
             <StackPanel>

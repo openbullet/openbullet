@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using RuriLib.Functions.Files;
 using System.Windows.Media;
+using RuriLib.Functions.Conversions;
 
 namespace RuriLib.Functions.Requests
 {
@@ -117,6 +118,32 @@ namespace RuriLib.Functions.Requests
                 content.ContentType = contentType;
 
                 if (log != null) log.Add(new LogEntry($"Post Data: {pData}", Colors.MediumTurquoise));
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets a raw content for the request.
+        /// </summary>
+        /// <param name="rawData">The raw HEX data</param>
+        /// <param name="contentType">The content type</param>
+        /// <param name="method">The HTTP method</param>
+        /// <param name="log">The log (if any)</param>
+        /// <returns>The request itself</returns>
+        public Request SetRawContent(string rawData, string contentType,
+            HttpMethod method = HttpMethod.POST, List<LogEntry> log = null)
+        {
+            this.contentType = contentType;
+            var rData = Conversion.ConvertFrom(rawData, Conversions.Encoding.HEX);
+
+            if (HttpRequest.CanContainRequestBody(method))
+            {
+                var ms = new MemoryStream(rData);
+                content = new StreamContent(ms);
+                content.ContentType = contentType;
+
+                if (log != null) log.Add(new LogEntry($"Raw Data: {rawData}", Colors.MediumTurquoise));
             }
 
             return this;

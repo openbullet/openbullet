@@ -77,6 +77,10 @@ namespace OpenBullet.Views.StackerBlocks
                 case RequestType.Multipart:
                     requestTypeTabControl.SelectedIndex = 3;
                     break;
+
+                case RequestType.Raw:
+                    requestTypeTabControl.SelectedIndex = 4;
+                    break;
             }
         }
 

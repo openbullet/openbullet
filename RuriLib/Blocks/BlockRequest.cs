@@ -28,7 +28,10 @@ namespace RuriLib
         BasicAuth,
 
         /// <summary>A request which contains multipart content (strings and/or files).</summary>
-        Multipart
+        Multipart,
+
+        /// <summary>A request which sends a raw byte stream.</summary>
+        Raw
     }
 
     /// <summary>
@@ -85,6 +88,11 @@ namespace RuriLib
         private string postData = "";
         /// <summary>The content of the request, sent after the headers. Use '\n' to input a linebreak.</summary>
         public string PostData { get { return postData; } set { postData = value; OnPropertyChanged(); } }
+
+        // Raw
+        private string rawData = "";
+        /// <summary>The content of the request as a raw HEX string that will be sent as a bytestream.</summary>
+        public string RawData { get { return rawData; } set { rawData = value; OnPropertyChanged(); } }
 
         private HttpMethod method = HttpMethod.GET;
         /// <summary>The method of the HTTP request.</summary>
@@ -192,8 +200,16 @@ namespace RuriLib
                         RequestType = RequestType.Standard;
                         break;
 
+                    case "RAW":
+                        RequestType = RequestType.Raw;
+                        break;
+
                     case "CONTENT":
                         PostData = LineParser.ParseLiteral(ref input, "POST DATA");
+                        break;
+
+                    case "RAWDATA":
+                        RawData = LineParser.ParseLiteral(ref input, "RAW DATA");
                         break;
 
                     case "STRINGCONTENT":
@@ -340,6 +356,18 @@ namespace RuriLib
                             .Literal(MultipartBoundary);
                     }
                     break;
+
+                case RequestType.Raw:
+                    if (HttpRequest.CanContainRequestBody(method))
+                    {
+                        writer
+                            .Token("RAWDATA")
+                            .Literal(RawData)
+                            .Indent()
+                            .Token("CONTENTTYPE")
+                            .Literal(ContentType);
+                    }
+                    break;
             }
 
             if (SecurityProtocol != SecurityProtocol.SystemDefault)
@@ -420,6 +448,10 @@ namespace RuriLib
                             Type = m.Type
                         });
                     request.SetMultipartContent(contents, ReplaceValues(MultipartBoundary, data), GetLogBuffer(data));
+                    break;
+
+                case RequestType.Raw:
+                    request.SetRawContent(ReplaceValues(RawData, data), ReplaceValues(ContentType, data), Method, GetLogBuffer(data));
                     break;
             }
 
