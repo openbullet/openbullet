@@ -34,17 +34,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="2Captcha, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\2CaptchaAPI.1.4.0\lib\netstandard2.0\2Captcha.dll</HintPath>
-    </Reference>
     <Reference Include="AngleSharp, Version=0.13.0.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
       <HintPath>..\packages\AngleSharp.0.13.0\lib\net46\AngleSharp.dll</HintPath>
     </Reference>
-    <Reference Include="AntiCaptcha, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AntiCaptchaAPI.1.1.0\lib\netstandard2.0\AntiCaptcha.dll</HintPath>
-    </Reference>
-    <Reference Include="CaptchaSharp, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CaptchaSharp.1.0.1\lib\netstandard2.0\CaptchaSharp.dll</HintPath>
+    <Reference Include="CaptchaSharp, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CaptchaSharp.1.0.2\lib\netstandard2.0\CaptchaSharp.dll</HintPath>
     </Reference>
     <Reference Include="CaptchaSharp.Services.More, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CaptchaSharp.Services.More.1.0.0\lib\netstandard2.0\CaptchaSharp.Services.More.dll</HintPath>

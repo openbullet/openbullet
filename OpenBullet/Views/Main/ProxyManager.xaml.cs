@@ -243,7 +243,7 @@ namespace OpenBullet.Views.Main
             vm.UpdateProperties();
         }
 
-        private async void DeleteUntestedButton_Click(object sender, RoutedEventArgs e)
+        private void DeleteUntestedButton_Click(object sender, RoutedEventArgs e)
         {
             OB.Logger.LogInfo(Components.ProxyManager, "Deleting all untested proxies");
 
