@@ -209,6 +209,7 @@ namespace RuriLib
 
                 case CaptchaType.FunCaptcha:
                     // SOLVECAPTCHA FunCaptcha "pkey" "serviceurl" [NoJS?]
+                    SiteUrl = LineParser.ParseLiteral(ref input, "SITE URL");
                     PublicKey = LineParser.ParseLiteral(ref input, "PUBLIC KEY");
                     ServiceUrl = LineParser.ParseLiteral(ref input, "SERVICE URL");
                     while (LineParser.Lookahead(ref input) == TokenType.Boolean)
@@ -217,6 +218,7 @@ namespace RuriLib
 
                 case CaptchaType.KeyCaptcha:
                     // SOLVECAPTCHA KeyCaptcha "userid" "sessionid" "wss1" "wss2"
+                    SiteUrl = LineParser.ParseLiteral(ref input, "SITE URL");
                     UserId = LineParser.ParseLiteral(ref input, "USER ID");
                     SessionId = LineParser.ParseLiteral(ref input, "SESSION ID");
                     WebServerSign1 = LineParser.ParseLiteral(ref input, "WEBSERVER SIGN 1");
@@ -302,6 +304,7 @@ namespace RuriLib
 
                 case CaptchaType.FunCaptcha:
                     writer
+                        .Literal(SiteUrl)
                         .Literal(PublicKey)
                         .Literal(ServiceUrl)
                         .Boolean(NoJS, nameof(NoJS));
@@ -309,6 +312,7 @@ namespace RuriLib
 
                 case CaptchaType.KeyCaptcha:
                     writer
+                        .Literal(SiteUrl)
                         .Literal(UserId)
                         .Literal(SessionId)
                         .Literal(WebServerSign1)
