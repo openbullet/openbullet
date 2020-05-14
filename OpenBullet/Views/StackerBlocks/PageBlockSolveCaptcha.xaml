@@ -154,8 +154,8 @@
             <TabItem>
                 <StackPanel>
                     <DockPanel>
-                        <Label Content="Site Key:"/>
-                        <TextBox Text="{Binding SiteKey, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label Content="Site URL:"/>
+                        <TextBox Text="{Binding SiteUrl, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
                     <DockPanel>
                         <Label Content="User ID:"/>
