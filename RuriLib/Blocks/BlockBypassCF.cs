@@ -166,7 +166,7 @@ namespace RuriLib
 
                 if (!string.IsNullOrEmpty(data.Proxy.Username))
                 {
-                    handler.DefaultProxyCredentials = new NetworkCredential(data.Proxy.Username, data.Proxy.Password);
+                    handler.Proxy.Credentials = new NetworkCredential(data.Proxy.Username, data.Proxy.Password);
                 }
             }
 
