@@ -54,7 +54,8 @@ namespace RuriLib.LS
                         break;
 
                     case "PROXY":
-                        data.Proxy = new CProxy(LineParser.ParseLiteral(ref input, "PROXY", true, data), data.Proxy.Type);
+                        var prox = LineParser.ParseLiteral(ref input, "PROXY", true, data);
+                        data.Proxy = new CProxy(BlockBase.ReplaceValues(prox, data), data.Proxy.Type);
                         break;
 
                     case "PROXYTYPE":
