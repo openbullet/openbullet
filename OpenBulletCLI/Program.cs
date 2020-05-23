@@ -176,7 +176,10 @@ namespace OpenBulletCLI
             // If an output file was specified, print them to the output file as well
             if (outFile != string.Empty)
             {
-                File.AppendAllText(outFile, $"[{ DateTime.Now}][{hit.Type}][{hit.Proxy}] {hit.Data}{Environment.NewLine}");
+                lock (FileLocker.GetLock(outFile))
+                {
+                    File.AppendAllText(outFile, $"[{ DateTime.Now}][{hit.Type}][{hit.Proxy}] {hit.Data}{Environment.NewLine}");
+                }
             }
         }
 
