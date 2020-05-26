@@ -33,8 +33,6 @@ namespace OpenBullet.ViewModels
             }
         }
 
-        public int Total => ProxiesCollection.Count;
-
         public IEnumerable<CProxy> Proxies => ProxiesCollection;
 
         public ProxyManagerViewModel()
@@ -44,6 +42,17 @@ namespace OpenBullet.ViewModels
         }
 
         #region Statistics
+        public object totalLock = new object();
+        private int total;
+        public int Total
+        {
+            set
+            {
+                total = value;
+                OnPropertyChanged();
+            }
+            get { return total; }
+        }
 
         public object testedLock = new object();
         private int tested;
@@ -143,6 +152,9 @@ namespace OpenBullet.ViewModels
 
         public void UpdateProperties()
         {
+            lock (totalLock)
+                Total = ProxiesCollection.Count();
+
             lock (testedLock)
                 Tested = ProxiesCollection.Count(x => x.Working != ProxyWorking.UNTESTED);
 
