@@ -167,7 +167,7 @@ namespace OpenBullet.Views.StackerBlocks
             { "CurrentUnixTime", "This Returns theh Current Unixtime. ex(1577840461)" },
             { "UnixTimeToISO8601", "This Returns theh Current Unixtime. ex(1577840461 to 2020-01-01T01:01:01.000Z)" },
             { "RandomNum", "Generates a random number based on ranges (min max) given." },
-            { "RandomString", "?l = Lowercase, ?u = Uppercase, ?d = Digit, ?f = Uppercase + Lowercase, ?s = Symbol, ?h = Hex (Lowercase), ?m = Upper + Digits, ?i = Lower + Upper + Digits, ?a = Any"},
+            { "RandomString", "?l = Lowercase, ?u = Uppercase, ?d = Digit, ?f = Uppercase + Lowercase, ?s = Symbol, ?h = Hex (Lowercase), ?m = Upper + Digits,?n = Lower + Digits ?i = Lower + Upper + Digits, ?a = Any"},
             { "Ceil", "This function rounds up to the input to the next full integer. Ex(input = 2.9 Output = 3"},
             { "Floor", "This function gets rid of the numbers after the decimal. Ex(input = 2.9 Output = 2"},
             { "Round", "This function round input to the nearest integer. Ex(input = 2.5 Output = 3"},
