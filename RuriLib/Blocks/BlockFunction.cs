@@ -323,9 +323,12 @@ namespace RuriLib
         private static readonly string _digits = "0123456789";
         private static readonly string _symbols = "\\!\"£$%&/()=?^'{}[]@#,;.:-_*+";
         private static readonly string _hex = _digits + "abcdef";
-        private static readonly string _allChars = _lowercase + _uppercase + _digits + _symbols;
         private static readonly string _udChars = _uppercase + _digits;
+        private static readonly string _ldChars = _lowercase + _digits;
+        private static readonly string _upperlwr = _lowercase + _uppercase;
         private static readonly string _ludChars = _lowercase + _uppercase + _digits;
+        private static readonly string _allChars = _lowercase + _uppercase + _digits + _symbols;
+        
         #endregion
 
         /// <summary>
@@ -783,7 +786,9 @@ namespace RuriLib
                         outputString = Regex.Replace(outputString, @"\?h", m => _hex[data.random.Next(_hex.Length)].ToString());
                         outputString = Regex.Replace(outputString, @"\?a", m => _allChars[data.random.Next(_allChars.Length)].ToString());
                         outputString = Regex.Replace(outputString, @"\?m", m => _udChars[data.random.Next(_udChars.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?n", m => _ldChars[data.random.Next(_ldChars.Length)].ToString());
                         outputString = Regex.Replace(outputString, @"\?i", m => _ludChars[data.random.Next(_ludChars.Length)].ToString());
+                        outputString = Regex.Replace(outputString, @"\?f", m => _upperlwr[data.random.Next(_upperlwr.Length)].ToString());
                         break;
 
                     case Function.Ceil:
