@@ -207,7 +207,7 @@ namespace OpenBulletCLI
             // Create the hits file
             if (opts.OutputFile != string.Empty)
             {
-                File.Create(outFile);
+                File.Create(outFile).Close();
                 Console.WriteLine($"The hits file is {outFile}", Color.Aquamarine);
             }
 
