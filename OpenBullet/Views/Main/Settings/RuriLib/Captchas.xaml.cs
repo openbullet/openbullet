@@ -33,6 +33,7 @@ namespace OpenBullet.Views.Main.Settings.RL
                 { CaptchaServiceType.TwoCaptcha,        0 },
                 { CaptchaServiceType.AntiCaptcha,       1 },
                 { CaptchaServiceType.CustomTwoCaptcha,  2 },
+                { CaptchaServiceType.CapMonster,        2 },
                 { CaptchaServiceType.DeathByCaptcha,    3 },
                 { CaptchaServiceType.DeCaptcher,        4 },
                 { CaptchaServiceType.ImageTyperz,       5 },

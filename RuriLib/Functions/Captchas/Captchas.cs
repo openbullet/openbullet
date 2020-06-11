@@ -46,6 +46,11 @@ namespace RuriLib.Functions.Captchas
                     service = new ImageTyperzService(settings.ImageTypToken);
                     break;
 
+                case CaptchaServiceType.CapMonster:
+                    service = new CapMonsterService(settings.CustomTwoCapToken,
+                        new Uri($"http://{settings.CustomTwoCapDomain}:{settings.CustomTwoCapPort}"));
+                    break;
+
                 case CaptchaServiceType.RuCaptcha:
                     service = new RuCaptchaService(settings.RuCapToken);
                     break;
