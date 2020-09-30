@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using RuriLib.Functions.Files;
 using RuriLib.LS;
@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Media;
 
@@ -238,6 +239,10 @@ namespace RuriLib
                 throw new Exception("Browser not open");
             }
 
+            int waitingTime = 10;
+            try { waitingTime = Int32.Parse(input);}catch{}
+            WebDriverWait driverWait = new WebDriverWait(data.Driver,TimeSpan.FromSeconds(waitingTime));
+
             // Find the element
             IWebElement element = null;
             ReadOnlyCollection<IWebElement> elements = null;
@@ -341,20 +346,18 @@ namespace RuriLib
                         break;
 
                     case ElementAction.WaitForElement:
-                        var ms = 0; // Currently waited milliseconds
-                        var max = 10000;
-                        try { max = int.Parse(input) * 1000; } catch { }// Max ms to wait
-                        var found = false;
-                        while(ms < max)
+                        bool found = false;
+                        try
                         {
-                            try
+                            var displayed = driverWait.Until(condition: driver => (elements = FindElements(data)).Select(webElement => webElement.Displayed));
+                            if (displayed.Any())
                             {
-                                elements = FindElements(data);
                                 element = elements[0];
-                                found = true;
-                                break;
                             }
-                            catch { ms += 200; Thread.Sleep(200); }
+                        }
+                        catch (Exception e)
+                        {
+                            found = false;
                         }
                         if (!found) { data.Log(new LogEntry("Timeout while waiting for element", Colors.White)); }
                         break;
@@ -391,7 +394,7 @@ namespace RuriLib
             var img = Image.FromStream(new MemoryStream(sc.AsByteArray)) as Bitmap;
             return img.Clone(new Rectangle(element.Location, element.Size), img.PixelFormat);
         }
-
+        
         private ReadOnlyCollection<IWebElement> FindElements(BotData data)
         {
             switch (locator)
