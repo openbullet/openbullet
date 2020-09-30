@@ -239,16 +239,12 @@ namespace RuriLib
                 throw new Exception("Browser not open");
             }
 
-            int waitingTime = 10;
-            try { waitingTime = Int32.Parse(input);}catch{}
-            WebDriverWait driverWait = new WebDriverWait(data.Driver,TimeSpan.FromSeconds(waitingTime));
-
             // Find the element
             IWebElement element = null;
             ReadOnlyCollection<IWebElement> elements = null;
             try
             {
-                if(action != ElementAction.WaitForElement)
+                if (action != ElementAction.WaitForElement)
                 {
                     elements = FindElements(data);
                     element = elements[elementIndex];
@@ -349,8 +345,11 @@ namespace RuriLib
                         bool found = false;
                         try
                         {
+                            int waitingTime = 10;
+                            try { waitingTime = Int32.Parse(input); } catch { }
+                            WebDriverWait driverWait = new WebDriverWait(data.Driver, TimeSpan.FromSeconds(waitingTime));
                             var displayed = driverWait.Until(condition: driver => (elements = FindElements(data)).Select(webElement => webElement.Displayed));
-                            if (displayed.Any())
+                            if (found = displayed.Any())
                             {
                                 element = elements[0];
                             }
@@ -365,7 +364,8 @@ namespace RuriLib
                     case ElementAction.SendKeysHuman:
                         var toSend = ReplaceValues(input, data);
                         var rand = new Random();
-                        foreach(char c in toSend) {
+                        foreach (char c in toSend)
+                        {
                             element.SendKeys(c.ToString());
                             Thread.Sleep(rand.Next(100, 300));
                         }
@@ -394,7 +394,7 @@ namespace RuriLib
             var img = Image.FromStream(new MemoryStream(sc.AsByteArray)) as Bitmap;
             return img.Clone(new Rectangle(element.Location, element.Size), img.PixelFormat);
         }
-        
+
         private ReadOnlyCollection<IWebElement> FindElements(BotData data)
         {
             switch (locator)
