@@ -244,7 +244,7 @@ namespace RuriLib
             ReadOnlyCollection<IWebElement> elements = null;
             try
             {
-                if (action != ElementAction.WaitForElement)
+                if(action != ElementAction.WaitForElement)
                 {
                     elements = FindElements(data);
                     element = elements[elementIndex];
@@ -343,15 +343,17 @@ namespace RuriLib
 
                     case ElementAction.WaitForElement:
                         bool found = false;
+                        int waitingTime = 10;
+                        try { waitingTime = Int32.Parse(input); } catch { }
+                        WebDriverWait driverWait = new WebDriverWait(data.Driver, TimeSpan.FromSeconds(waitingTime));
                         try
                         {
-                            int waitingTime = 10;
-                            try { waitingTime = Int32.Parse(input); } catch { }
-                            WebDriverWait driverWait = new WebDriverWait(data.Driver, TimeSpan.FromSeconds(waitingTime));
-                            var displayed = driverWait.Until(condition: driver => (elements = FindElements(data)).Select(webElement => webElement.Displayed));
-                            if (found = displayed.Any())
+                            var displayed = driverWait.Until(condition: ExpectedConditions.ElementExists(FindElements2(locator,data)));
+                            if (displayed.Displayed)
                             {
+                                elements = FindElements(data);
                                 element = elements[0];
+                                found = true;
                             }
                         }
                         catch (Exception e)
@@ -364,8 +366,7 @@ namespace RuriLib
                     case ElementAction.SendKeysHuman:
                         var toSend = ReplaceValues(input, data);
                         var rand = new Random();
-                        foreach (char c in toSend)
-                        {
+                        foreach(char c in toSend) {
                             element.SendKeys(c.ToString());
                             Thread.Sleep(rand.Next(100, 300));
                         }
@@ -395,31 +396,24 @@ namespace RuriLib
             return img.Clone(new Rectangle(element.Location, element.Size), img.PixelFormat);
         }
 
+        private By FindElements2(ElementLocator locator, BotData data) => (locator == ElementLocator.Class)
+            ? By.ClassName(ReplaceValues(elementString, data))
+            : (locator == ElementLocator.Id)
+                ? By.Id(ReplaceValues(elementString, data))
+                : (locator == ElementLocator.Name)
+                    ? By.Name(ReplaceValues(elementString, data))
+                    : (locator == ElementLocator.Selector)
+                        ? By.CssSelector(ReplaceValues(elementString, data))
+                        : (locator == ElementLocator.Tag)
+                            ? By.TagName(ReplaceValues(elementString, data))
+                            : (locator == ElementLocator.XPath)
+                                ? By.XPath(ReplaceValues(elementString, data))
+                                : null;
+
+
         private ReadOnlyCollection<IWebElement> FindElements(BotData data)
         {
-            switch (locator)
-            {
-                case ElementLocator.Id:
-                    return data.Driver.FindElements(By.Id(ReplaceValues(elementString, data)));
-
-                case ElementLocator.Class:
-                    return data.Driver.FindElements(By.ClassName(ReplaceValues(elementString, data)));
-
-                case ElementLocator.Name:
-                    return data.Driver.FindElements(By.Name(ReplaceValues(elementString, data)));
-
-                case ElementLocator.Tag:
-                    return data.Driver.FindElements(By.TagName(ReplaceValues(elementString, data)));
-
-                case ElementLocator.Selector:
-                    return data.Driver.FindElements(By.CssSelector(ReplaceValues(elementString, data)));
-
-                case ElementLocator.XPath:
-                    return data.Driver.FindElements(By.XPath(ReplaceValues(elementString, data)));
-
-                default:
-                    return null;
-            }
+            return data.Driver.FindElements(FindElements2(locator, data)) ?? null;
         }
     }
 }
