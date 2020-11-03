@@ -1,11 +1,9 @@
 # OpenBullet
 [![Build status](https://ci.appveyor.com/api/projects/status/ubdcnn38uanaoqic?svg=true)](https://ci.appveyor.com/project/openbullet/openbullet)
 
-**OpenBullet needs YOUR help to stay alive!** https://forum.openbullet.dev/topic/505/openbullet-crowdfunding
-
 Link to the [Official Forum](https://forum.openbullet.dev/)
 
-**NEW!** The Plugin System was released with version 1.2.0. You can find a [sample Plugin](https://github.com/openbullet/openbullet-plugin) with fully documented code that you can use as a basis to develop your own plugins!
+The Plugin System was released with version 1.2.0. You can find a [sample Plugin](https://github.com/openbullet/openbullet-plugin) with fully documented code that you can use as a basis to develop your own plugins!
 
 - - - -
 
