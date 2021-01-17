@@ -10,7 +10,7 @@ namespace RuriLib
     /// </summary>
     public class SBlockExecuteJS : BlockBase
     {
-        private string javascriptCode = "alert('henlo');";
+        private string javascriptCode = "alert('hello');";
         /// <summary>The javascript code.</summary>
         public string JavascriptCode { get { return javascriptCode; } set { javascriptCode = value; OnPropertyChanged(); } }
 
