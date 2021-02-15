@@ -13,9 +13,9 @@ OpenBullet is a webtesting suite that allows to perform requests towards a targe
 
 ![Runner](https://i.imgur.com/vb8OUfr.jpg)
 
-[Here](https://openbullet.github.io) you can find the complete documentation for **usage**, **config making** and the **RuriLib API**.
+[Here](https://openbullet.github.io/ob1) you can find the complete documentation for **usage**, **config making** and the **RuriLib API**.
 
-The **OpenBullet API** was released. It can be used to host configs remotely on your server and have OpenBullet download them upon Rescan. It's very useful to always have updated configs between different computers or people. You can learn more about it [here](https://openbullet.github.io/remote.html).
+The **OpenBullet API** was released. It can be used to host configs remotely on your server and have OpenBullet download them upon Rescan. It's very useful to always have updated configs between different computers or people. You can learn more about it [here](https://openbullet.github.io/ob1/remote.html).
 
 Found a bug? [Create an issue!](https://help.github.com/en/articles/creating-an-issue)
 
