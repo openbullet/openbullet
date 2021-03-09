@@ -1,6 +1,12 @@
 # OpenBullet
 [![Build status](https://ci.appveyor.com/api/projects/status/ubdcnn38uanaoqic?svg=true)](https://ci.appveyor.com/project/openbullet/openbullet)
 
+**IMPORTANT NOTICE**
+
+OpenBullet 1 has reached the end of its life, no more support will be provided for it. Please consider switching to [OpenBullet 2](https://github.com/openbullet/OpenBullet2) as it will be kept up to date and offers a lot more features.
+
+- - - -
+
 Link to the [Official Forum](https://forum.openbullet.dev/)
 
 The Plugin System was released with version 1.2.0. You can find a [sample Plugin](https://github.com/openbullet/openbullet-plugin) with fully documented code that you can use as a basis to develop your own plugins!
