@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using RuriLib.Functions.Files;
 using RuriLib.LS;
@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Media;
 
@@ -341,20 +342,23 @@ namespace RuriLib
                         break;
 
                     case ElementAction.WaitForElement:
-                        var ms = 0; // Currently waited milliseconds
-                        var max = 10000;
-                        try { max = int.Parse(input) * 1000; } catch { }// Max ms to wait
-                        var found = false;
-                        while(ms < max)
+                        bool found = false;
+                        int waitingTime = 10;
+                        try { waitingTime = Int32.Parse(input); } catch { }
+                        WebDriverWait driverWait = new WebDriverWait(data.Driver, TimeSpan.FromSeconds(waitingTime));
+                        try
                         {
-                            try
+                            var displayed = driverWait.Until(condition: ExpectedConditions.ElementExists(FindElements2(locator,data)));
+                            if (displayed.Displayed)
                             {
                                 elements = FindElements(data);
                                 element = elements[0];
                                 found = true;
-                                break;
                             }
-                            catch { ms += 200; Thread.Sleep(200); }
+                        }
+                        catch (Exception e)
+                        {
+                            found = false;
                         }
                         if (!found) { data.Log(new LogEntry("Timeout while waiting for element", Colors.White)); }
                         break;
@@ -392,31 +396,24 @@ namespace RuriLib
             return img.Clone(new Rectangle(element.Location, element.Size), img.PixelFormat);
         }
 
+        private By FindElements2(ElementLocator locator, BotData data) => (locator == ElementLocator.Class)
+            ? By.ClassName(ReplaceValues(elementString, data))
+            : (locator == ElementLocator.Id)
+                ? By.Id(ReplaceValues(elementString, data))
+                : (locator == ElementLocator.Name)
+                    ? By.Name(ReplaceValues(elementString, data))
+                    : (locator == ElementLocator.Selector)
+                        ? By.CssSelector(ReplaceValues(elementString, data))
+                        : (locator == ElementLocator.Tag)
+                            ? By.TagName(ReplaceValues(elementString, data))
+                            : (locator == ElementLocator.XPath)
+                                ? By.XPath(ReplaceValues(elementString, data))
+                                : null;
+
+
         private ReadOnlyCollection<IWebElement> FindElements(BotData data)
         {
-            switch (locator)
-            {
-                case ElementLocator.Id:
-                    return data.Driver.FindElements(By.Id(ReplaceValues(elementString, data)));
-
-                case ElementLocator.Class:
-                    return data.Driver.FindElements(By.ClassName(ReplaceValues(elementString, data)));
-
-                case ElementLocator.Name:
-                    return data.Driver.FindElements(By.Name(ReplaceValues(elementString, data)));
-
-                case ElementLocator.Tag:
-                    return data.Driver.FindElements(By.TagName(ReplaceValues(elementString, data)));
-
-                case ElementLocator.Selector:
-                    return data.Driver.FindElements(By.CssSelector(ReplaceValues(elementString, data)));
-
-                case ElementLocator.XPath:
-                    return data.Driver.FindElements(By.XPath(ReplaceValues(elementString, data)));
-
-                default:
-                    return null;
-            }
+            return data.Driver.FindElements(FindElements2(locator, data)) ?? null;
         }
     }
 }
