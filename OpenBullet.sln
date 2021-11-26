@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29509.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenBullet", "OpenBullet\OpenBullet.csproj", "{99E40E7F-00A4-4FB1-9441-B05A56C47C08}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenBullet by @J23982", "OpenBullet\OpenBullet.csproj", "{99E40E7F-00A4-4FB1-9441-B05A56C47C08}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuriLib", "RuriLib\RuriLib.csproj", "{17E95D0B-C1FD-445C-9FDF-244AF7299A67}"
 EndProject
