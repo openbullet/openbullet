@@ -7,7 +7,7 @@ OpenBullet 1 has reached the end of its life, no more support will be provided f
 
 - - - -
 
-Link to the [Official Forum](https://forum.openbullet.dev/)
+Link to the [Official Forum](https://discourse.openbullet.dev)
 
 The Plugin System was released with version 1.2.0. You can find a [sample Plugin](https://github.com/openbullet/openbullet-plugin) with fully documented code that you can use as a basis to develop your own plugins!
 
