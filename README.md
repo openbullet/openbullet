@@ -1,6 +1,7 @@
 # OpenBullet
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ubdcnn38uanaoqic?svg=true)](https://ci.appveyor.com/project/openbullet/openbullet)
+[![Build status](https://ci.appveyor.com/api/projects/status/ubdcnn38uan
+aoqic?svg=true)](https://ci.appveyor.com/project/openbullet/openbullet)
 
 ## $\mathbf{\color{red} IMPORTANT\space \space NOTICE}$
 
